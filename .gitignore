@@ -10,6 +10,7 @@
 
 # misc
 .DS_Store
+.python-version
 
 /export/
 __pycache__/
