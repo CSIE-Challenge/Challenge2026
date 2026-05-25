@@ -1,3 +1,16 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+# IDE stuff
+.vscode
+
+# python virtual environment
+.venv/
+
+# misc
+.DS_Store
+.python-version
+
+/export/
+__pycache__/
