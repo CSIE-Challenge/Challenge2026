@@ -1,5 +1,3 @@
-# What does this PR do?
-
 ## Related Issue
 
 <!-- Link the issue this PR closes, if any. -->
