@@ -13,6 +13,7 @@ var rng := RandomNumberGenerator.new()
 
 const MINE_TRAP_SCENE = preload("res://Scenes/mine_trap.tscn")
 
+
 func _ready() -> void:
 	GlobalSignal.player_hit.connect(on_player_hit)
 	energy_ball.connect("collected", _on_energy_ball_collected)
@@ -20,8 +21,7 @@ func _ready() -> void:
 	_update_energy_counter()
 	_respawn_energy_ball()
 
-
-func on_player_hit(damage: int) -> void:
+func on_player_hit(damage: int) -> void
 	print("玩家受到了", damage, "點傷害")
 	player.health = max(player.health - damage, 0.0)
 	health_label.text = "Health: %d" % player.health
@@ -61,11 +61,9 @@ func _on_energy_ball_collected() -> void:
 func _update_energy_counter() -> void:
 	energy_counter_label.text = "Energy Balls: %d" % energy_ball_count
 
-func spawn_mine_trap(spawn_position: Vector2) -> void:
 
-	var new_trap:Area2D = MINE_TRAP_SCENE.instantiate()
+func spawn_mine_trap(spawn_position: Vector2) -> void:
+	var new_trap: Area2D = MINE_TRAP_SCENE.instantiate()
 
 	add_child(new_trap)
 	new_trap.global_position = spawn_position
-	
-	
