@@ -13,6 +13,7 @@ var current_jump_velocity: float
 var current_sprite_y: float
 @onready var body_sprite = $BodySprite
 
+signal player_landed(player_node: Node2D)#This is used for the mines, trap no.1
 
 func _ready() -> void:
 	health = max_health

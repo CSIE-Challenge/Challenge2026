@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://cnaanuabg2p08"]
+
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="1_jo334"]
+[ext_resource type="Script" uid="uid://c3wedrfqpagbc" path="res://Scenes/mine_trap.gd" id="1_lts3b"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_lts3b"]
+radius = 7.0
+
+[node name="MineTrap" type="Area2D" unique_id=1087280953]
+script = ExtResource("1_lts3b")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=775120694]
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("1_jo334")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1880470178]
+shape = SubResource("CircleShape2D_lts3b")
