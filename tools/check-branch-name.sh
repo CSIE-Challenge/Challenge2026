@@ -12,7 +12,7 @@ if [ -z "$branch" ] || [[ "$branch" =~ ^(main|master|develop)$ ]]; then
     exit 0
 fi
 
-allowed="^(feat|fix|chore|doc|style|refactor|test|perf)/.+"
+allowed="^(feat|fix|chore|doc|style|refactor|test|perf)/[a-z0-9]+(-[a-z0-9]+)*$"
 
 if [[ "$branch" =~ $allowed ]]; then
     exit 0
