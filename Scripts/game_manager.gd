@@ -2,6 +2,7 @@ extends Node2D
 
 @export var energy_ball_spawn_bounds := Rect2(Vector2(-220, -220), Vector2(440, 440))
 @export var min_spawn_distance_from_player := 48.0
+@export var max_spawn_attempts := 100
 
 var energy_ball_count := 0
 var rng := RandomNumberGenerator.new()
@@ -29,8 +30,9 @@ func _respawn_energy_ball() -> void:
 
 func _get_random_spawn_position() -> Vector2:
 	var spawn_position := Vector2.ZERO
+	var attempts := 0
 
-	for _attempt in 20:
+	while attempts < max_spawn_attempts:
 		spawn_position = Vector2(
 			rng.randf_range(energy_ball_spawn_bounds.position.x, energy_ball_spawn_bounds.end.x),
 			rng.randf_range(energy_ball_spawn_bounds.position.y, energy_ball_spawn_bounds.end.y)
@@ -39,7 +41,9 @@ func _get_random_spawn_position() -> Vector2:
 		if spawn_position.distance_to(player.position) >= min_spawn_distance_from_player:
 			return spawn_position
 
-	return spawn_position
+		attempts += 1
+
+	return energy_ball_spawn_bounds.get_center()
 
 
 func _on_energy_ball_collected() -> void:
