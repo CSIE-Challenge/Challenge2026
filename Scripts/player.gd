@@ -1,4 +1,5 @@
 extends CharacterBody2D
+@export var acceleration: float = 100
 @export var move_speed: float
 @export var jump_velocity: float
 @export var jump_gravity: float
@@ -17,7 +18,7 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	var input_dir = Input.get_vector("move_left", "move_right", "move_up", "move_down")
-	move(input_dir, move_speed)
+	move(input_dir, move_speed, delta)
 	if Input.is_action_just_pressed("jump"):
 		jump()
 		GlobalSignal.player_hit.emit(67)  #只是測試與示範player_hit怎麼呼叫
@@ -25,8 +26,13 @@ func _physics_process(delta: float) -> void:
 		jump_process(delta)
 
 
-func move(dir: Vector2, speed: float):
-	velocity = dir * speed
+func move(dir: Vector2, speed: float, delta: float):
+	var target_velocity = dir * speed
+	var weight = 1.0 - exp(-acceleration * delta)
+	if dir != Vector2.ZERO:
+		velocity = velocity.lerp(target_velocity, weight)
+	else:
+		velocity = velocity.lerp(Vector2.ZERO, weight)
 	move_and_slide()
 
 

@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://bjm2jsv5qry5v"]
+[gd_scene format=3 uid="uid://bjm2jsv5qry5v"]
 
 [ext_resource type="Texture2D" uid="uid://dle4xt8upfg42" path="res://Shapes/Square.svg" id="1_hf1ha"]
 [ext_resource type="Script" uid="uid://dven18jgarb7v" path="res://Scripts/game_manager.gd" id="1_kwrm5"]
 [ext_resource type="Script" uid="uid://bdl6qti40jt4x" path="res://Scripts/player.gd" id="2_m34ki"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_wbxth"]
+[ext_resource type="PackedScene" uid="uid://blesmlfba01ny" path="res://Scenes/trap_icefloor.tscn" id="5_r8bcl"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wbxth"]
 size = Vector2(135, 135)
@@ -11,64 +12,67 @@ size = Vector2(135, 135)
 [sub_resource type="CircleShape2D" id="CircleShape2D_wbxth"]
 radius = 13.5
 
-[node name="Gameplay" type="Node2D"]
+[node name="Gameplay" type="Node2D" unique_id=1188795252]
 
-[node name="GameManager" type="Node2D" parent="."]
+[node name="GameManager" type="Node2D" parent="." unique_id=2146552977]
 script = ExtResource("1_kwrm5")
 
-[node name="Stage" type="Node2D" parent="."]
+[node name="Stage" type="Node2D" parent="." unique_id=1980485792]
 position = Vector2(576, 324)
 
-[node name="Walls" type="Node2D" parent="Stage"]
+[node name="trap_icefloor" parent="Stage" unique_id=1192991918 instance=ExtResource("5_r8bcl")]
+position = Vector2(119, -121)
 
-[node name="RightWall" type="StaticBody2D" parent="Stage/Walls"]
+[node name="Walls" type="Node2D" parent="Stage" unique_id=233821969]
+
+[node name="RightWall" type="StaticBody2D" parent="Stage/Walls" unique_id=2060612604]
 position = Vector2(250, 0)
 scale = Vector2(0.1, 3.6)
 collision_layer = 2
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Stage/Walls/RightWall"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stage/Walls/RightWall" unique_id=1482547204]
 shape = SubResource("RectangleShape2D_wbxth")
 
-[node name="Sprite2D" type="Sprite2D" parent="Stage/Walls/RightWall"]
+[node name="Sprite2D" type="Sprite2D" parent="Stage/Walls/RightWall" unique_id=27848925]
 texture = ExtResource("1_hf1ha")
 
-[node name="LeftWall" type="StaticBody2D" parent="Stage/Walls"]
+[node name="LeftWall" type="StaticBody2D" parent="Stage/Walls" unique_id=1237316130]
 position = Vector2(-250, 0)
 scale = Vector2(0.1, 3.6)
 collision_layer = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Stage/Walls/LeftWall"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stage/Walls/LeftWall" unique_id=1579235731]
 shape = SubResource("RectangleShape2D_wbxth")
 
-[node name="Sprite2D" type="Sprite2D" parent="Stage/Walls/LeftWall"]
+[node name="Sprite2D" type="Sprite2D" parent="Stage/Walls/LeftWall" unique_id=1138110843]
 texture = ExtResource("1_hf1ha")
 
-[node name="UpWall" type="StaticBody2D" parent="Stage/Walls"]
+[node name="UpWall" type="StaticBody2D" parent="Stage/Walls" unique_id=1931367358]
 position = Vector2(0, 250)
 rotation = 1.5707964
 scale = Vector2(0.1, 3.6)
 collision_layer = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Stage/Walls/UpWall"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stage/Walls/UpWall" unique_id=473867449]
 shape = SubResource("RectangleShape2D_wbxth")
 
-[node name="Sprite2D" type="Sprite2D" parent="Stage/Walls/UpWall"]
+[node name="Sprite2D" type="Sprite2D" parent="Stage/Walls/UpWall" unique_id=2134883391]
 texture = ExtResource("1_hf1ha")
 
-[node name="DownWall" type="StaticBody2D" parent="Stage/Walls"]
+[node name="DownWall" type="StaticBody2D" parent="Stage/Walls" unique_id=344945539]
 position = Vector2(0, -250)
 rotation = 1.5707964
 scale = Vector2(0.1, 3.6)
 collision_layer = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Stage/Walls/DownWall"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stage/Walls/DownWall" unique_id=1865613336]
 shape = SubResource("RectangleShape2D_wbxth")
 
-[node name="Sprite2D" type="Sprite2D" parent="Stage/Walls/DownWall"]
+[node name="Sprite2D" type="Sprite2D" parent="Stage/Walls/DownWall" unique_id=1126737212]
 texture = ExtResource("1_hf1ha")
 
-[node name="Player" type="CharacterBody2D" parent="Stage"]
+[node name="Player" type="CharacterBody2D" parent="Stage" unique_id=731616286]
 collision_mask = 2
 motion_mode = 1
 script = ExtResource("2_m34ki")
@@ -77,14 +81,14 @@ jump_velocity = 750.0
 jump_gravity = 2500.0
 jump_fall_multiplier = 1.5
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Stage/Player"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stage/Player" unique_id=292475681]
 shape = SubResource("CircleShape2D_wbxth")
 
-[node name="ShadowSprite" type="Sprite2D" parent="Stage/Player"]
+[node name="ShadowSprite" type="Sprite2D" parent="Stage/Player" unique_id=711688744]
 modulate = Color(0, 0, 0, 1)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("2_wbxth")
 
-[node name="BodySprite" type="Sprite2D" parent="Stage/Player"]
+[node name="BodySprite" type="Sprite2D" parent="Stage/Player" unique_id=1001969496]
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("2_wbxth")
