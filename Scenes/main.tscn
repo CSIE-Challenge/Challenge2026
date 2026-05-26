@@ -1,9 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://djbv2ryrcr3pl"]
+[gd_scene format=3 uid="uid://djbv2ryrcr3pl"]
 
 [ext_resource type="PackedScene" uid="uid://bjm2jsv5qry5v" path="res://Scenes/gameplay.tscn" id="1_jjgbg"]
 
-[node name="Main" type="Node2D"]
+[node name="Main" type="Node2D" unique_id=1214856468]
 
-[node name="CurrentScene" type="Node2D" parent="."]
+[node name="CurrentScene" type="Node2D" parent="." unique_id=121520446]
 
-[node name="Gameplay" parent="CurrentScene" instance=ExtResource("1_jjgbg")]
+[node name="Gameplay" parent="CurrentScene" unique_id=867248935 instance=ExtResource("1_jjgbg")]

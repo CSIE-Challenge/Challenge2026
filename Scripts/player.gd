@@ -10,6 +10,7 @@ var current_sprite_y: float
 
 @onready var body_sprite = $BodySprite
 
+signal player_landed(player_node: Node2D)#This is used for the mines, trap no.1
 
 func _ready() -> void:
 	pass
@@ -49,6 +50,7 @@ func jump_process(delta: float):
 		isjumping = false
 		body_sprite.position.y = 0
 		jump_invisiblility_toggle(false)
+		player_landed.emit(self) #trigger mine trap
 	else:
 		body_sprite.position.y = -current_sprite_y
 
