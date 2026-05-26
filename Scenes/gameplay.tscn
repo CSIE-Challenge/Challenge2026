@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://bjm2jsv5qry5v"]
+[gd_scene load_steps=8 format=3 uid="uid://bjm2jsv5qry5v"]
 
 [ext_resource type="Texture2D" uid="uid://dle4xt8upfg42" path="res://Shapes/Square.svg" id="1_hf1ha"]
 [ext_resource type="Script" uid="uid://dven18jgarb7v" path="res://Scripts/game_manager.gd" id="1_kwrm5"]
+[ext_resource type="PackedScene" uid="uid://c8igbkqxla1gy" path="res://Scenes/energy_ball.tscn" id="2_ap8xm"]
 [ext_resource type="Script" uid="uid://bdl6qti40jt4x" path="res://Scripts/player.gd" id="2_m34ki"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_wbxth"]
 
@@ -68,6 +69,8 @@ shape = SubResource("RectangleShape2D_wbxth")
 [node name="Sprite2D" type="Sprite2D" parent="Stage/Walls/DownWall"]
 texture = ExtResource("1_hf1ha")
 
+[node name="EnergyBall" parent="Stage" instance=ExtResource("2_ap8xm")]
+
 [node name="Player" type="CharacterBody2D" parent="Stage"]
 collision_mask = 2
 motion_mode = 1
@@ -88,3 +91,13 @@ texture = ExtResource("2_wbxth")
 [node name="BodySprite" type="Sprite2D" parent="Stage/Player"]
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("2_wbxth")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="EnergyCounterLabel" type="Label" parent="HUD"]
+offset_left = 20.0
+offset_top = 16.0
+offset_right = 240.0
+offset_bottom = 48.0
+theme_override_font_sizes/font_size = 24
+text = "Energy Balls: 0"
