@@ -2,35 +2,20 @@
 set -e
 
 echo "[INFO] Switching to the root of the git repository..."
-cd "$(git rev-parse --show-toplevel)"
+cd "$(dirname $0)"
 
-if ! command -v python3.11 &>/dev/null; then
-    echo "[ERROR] python3.11 is not installed or not in PATH."
-    echo "        Please install it manually or via pyenv:"
-    echo "        pyenv install 3.11.13 && pyenv global 3.11.13"
+if ! command -v python3 &>/dev/null; then
+    echo "[ERROR] python3 is not installed or not in PATH."
+    echo "        Please install it manually"
     exit 1
 fi
 
-ensure_pre_commit() {
-    if ! command -v pre-commit &>/dev/null; then
-        echo "[INFO] pre-commit not found. Installing via pipx..."
-        pipx install pre-commit
-        return
-    fi
-
-    if pre-commit --version &>/dev/null; then
-        echo "[INFO] pre-commit is already installed and healthy."
-        return
-    fi
-
-    echo "[WARN] pre-commit is installed but broken. Reinstalling via pipx..."
-    pipx reinstall pre-commit || {
-        pipx uninstall pre-commit || true
-        pipx install pre-commit
-    }
-}
-
-ensure_pre_commit
+if ! command -v pre-commit &>/dev/null; then
+    echo "[INFO] pre-commit not found. Installing via pipx..."
+    pipx install pre-commit
+else
+    echo "[INFO] pre-commit is already installed."
+fi
 
 echo "[INFO] Installing pre-commit hook..."
 pre-commit install
