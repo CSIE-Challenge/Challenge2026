@@ -6,6 +6,8 @@ signal player_landed(player_node: Node2D)  #This is used for the mines, trap no.
 @export var jump_velocity: float
 @export var jump_gravity: float
 @export var jump_fall_multiplier: float
+@export var max_health: float
+@export var health: float
 
 var isjumping := false
 var current_jump_velocity: float
@@ -15,7 +17,7 @@ var current_sprite_y: float
 
 
 func _ready() -> void:
-	pass
+	health = max_health
 
 
 func _physics_process(delta: float) -> void:
