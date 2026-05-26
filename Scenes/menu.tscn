@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://c8n4ortwop0"]
+
+[ext_resource type="Script" uid="uid://c6pumifmyfl7q" path="res://Scenes/menu_manager.gd" id="1_1rerr"]
+
+[node name="Menu" type="Control" unique_id=1229865894]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_1rerr")
+
+[node name="Panel" type="Panel" parent="." unique_id=1740201432]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel" unique_id=413349039]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -331.0
+offset_top = -192.5
+offset_right = 331.0
+offset_bottom = 192.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Panel/VBoxContainer" unique_id=642453348]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 70
+bbcode_enabled = true
+text = "躲陷阱對抗賽"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StartButton" type="Button" parent="Panel/VBoxContainer" unique_id=204886571]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "start"
+
+[node name="QuitButton" type="Button" parent="Panel/VBoxContainer" unique_id=1642981513]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "quit"
+
+[connection signal="button_up" from="Panel/VBoxContainer/StartButton" to="." method="_on_start_button_button_up"]
+[connection signal="button_up" from="Panel/VBoxContainer/QuitButton" to="." method="_on_quit_button_button_up"]
