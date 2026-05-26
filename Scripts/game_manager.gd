@@ -6,7 +6,7 @@ extends Node2D
 
 func _ready() -> void:
 	GlobalSignal.player_hit.connect(on_player_hit)
-	health_label.text = "Health: %d" % player.health
+	health_label.text = "Health: %d" % player.max_health
 
 
 func on_player_hit(damage: int):
