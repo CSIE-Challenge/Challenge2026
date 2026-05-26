@@ -33,6 +33,9 @@ python3 "$PRECOMMIT_PYZ" install
 echo "[INFO] Installing commit-msg hook..."
 python3 "$PRECOMMIT_PYZ" install --hook-type commit-msg
 
+echo "[INFO] Installing post-checkout hook..."
+python3 "$PRECOMMIT_PYZ" install --hook-type post-checkout
+
 echo "[INFO] Pre-installing all hook environments..."
 python3 "$PRECOMMIT_PYZ" install-hooks
 
