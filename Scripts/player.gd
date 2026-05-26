@@ -28,7 +28,8 @@ func _physics_process(delta: float) -> void:
 
 func move(dir: Vector2, speed: float, delta: float):
 	var target_velocity = dir * speed
-	var weight = 1.0 - exp(-acceleration * delta)
+	var effective_acc = acceleration if not isjumping else 100.
+	var weight = 1.0 - exp(-effective_acc * delta)
 	if dir != Vector2.ZERO:
 		velocity = velocity.lerp(target_velocity, weight)
 	else:
