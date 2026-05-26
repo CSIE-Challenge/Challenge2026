@@ -1,5 +1,9 @@
 extends Node2D
 
+@export var player: CharacterBody2D
+@export var health_label: Label
+@export var energy_ball: Area2D
+@export var energy_counter_label: Label
 @export var energy_ball_spawn_bounds := Rect2(Vector2(-220, -220), Vector2(440, 440))
 @export var min_spawn_distance_from_player := 48.0
 @export var max_spawn_attempts := 100
@@ -7,20 +11,21 @@ extends Node2D
 var energy_ball_count := 0
 var rng := RandomNumberGenerator.new()
 
-@onready var player: CharacterBody2D = $"../Stage/Player"
-@onready var energy_ball: Area2D = $"../Stage/EnergyBall"
-@onready var energy_counter_label: Label = $"../HUD/EnergyCounterLabel"
-
 
 func _ready() -> void:
 	GlobalSignal.player_hit.connect(on_player_hit)
 	energy_ball.connect("collected", _on_energy_ball_collected)
+	health_label.text = "Health: %d" % player.max_health
 	_update_energy_counter()
 	_respawn_energy_ball()
 
 
 func on_player_hit(damage: int) -> void:
 	print("玩家受到了", damage, "點傷害")
+	player.health = max(player.health - damage, 0.0)
+	health_label.text = "Health: %d" % player.health
+	if player.health <= 0.0:
+		print("玩家死掉了！")
 
 
 func _respawn_energy_ball() -> void:
