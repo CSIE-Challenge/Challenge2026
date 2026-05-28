@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://bmd5f51xmki4l"]
+
+[ext_resource type="Script" uid="uid://skscisg15d2a" path="res://Scripts/tracing_bullet.gd" id="1_uwr5t"]
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_a2phm"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_br684"]
+
+[node name="TracingBullet" type="CharacterBody2D" unique_id=1605080651]
+script = ExtResource("1_uwr5t")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=302945391]
+modulate = Color(1, 0.16470589, 0.15294118, 1)
+position = Vector2(-7.6293945e-06, -7.6293945e-06)
+scale = Vector2(0.15463917, 0.15463917)
+texture = ExtResource("2_a2phm")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=153259014]
+shape = SubResource("CircleShape2D_br684")
