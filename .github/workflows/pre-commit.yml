@@ -18,16 +18,14 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Install Python dependencies
-        run: |
-          pip install pre-commit gitlint
-          pre-commit install
-          pre-commit install-hooks
+      - name: Install pre-commit
+        run: pip install pre-commit gitlint
 
-      - name: Run pre-commit
-        run: |
-          pre-commit run --all-files --hook-stage pre-commit --show-diff-on-failure
+      - name: Pre-install hook environments
+        run: pre-commit install-hooks
+
+      - name: Run linters and formatters
+        run: pre-commit run --all-files --hook-stage pre-commit --show-diff-on-failure
 
       - name: Run gitlint
-        run: |
-          gitlint --debug
+        run: gitlint --debug
