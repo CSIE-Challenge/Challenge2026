@@ -35,3 +35,13 @@ repos:
         language_version: python3
         require_serial: true
         types: [gdscript]
+
+  - repo: local
+    hooks:
+      - id: check-branch-name
+        name: Check branch name
+        language: system
+        entry: bash tools/check-branch-name.sh
+        stages: [post-checkout]
+        always_run: true
+        pass_filenames: false
