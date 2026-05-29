@@ -2,9 +2,12 @@ name: Pre-commit CI
 
 on:
   push:
-    branches: ["**"]
+    branches-ignore: [main, develop]
   pull_request:
     branches: ["**"]
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   pre-commit:
