@@ -1,5 +1,11 @@
 [general]
-ignore=body-is-missing, T3, T5
+# body-is-missing (B6): commit body is optional
+# title-must-not-contain-word (T5): allow WIP commits on feature branches
+ignore=body-is-missing, title-must-not-contain-word
 
 [title-match-regex]
+# conventional commits: type(scope)!: description
+# types: feat, fix, docs, style, refactor, perf, test, chore, ci, build, revert
+# scope: optional, e.g. feat(ui): ...
+# !: optional, marks breaking change, e.g. feat!: ...
 regex=^(feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert)(\([\w\-]+\))?!?: .+$
