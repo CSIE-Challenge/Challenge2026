@@ -12,14 +12,14 @@ if [ -z "$branch" ] || [[ "$branch" =~ ^(main|master|develop)$ ]]; then
     exit 0
 fi
 
-allowed="^(feat|fix|chore|doc|style|refactor|test|perf)/[a-z0-9]+(-[a-z0-9]+)*$"
+allowed="^(feat|fix|chore|docs|style|refactor|test|perf)/[a-z0-9]+(-[a-z0-9]+)*$"
 
 if [[ "$branch" =~ $allowed ]]; then
     exit 0
 fi
 
 echo "ERROR: Branch '$branch' does not match naming convention."
-echo "       Required prefix: feat/ fix/ chore/ doc/ style/ refactor/ test/ perf/"
+echo "       Required prefix: feat/ fix/ chore/ docs/ style/ refactor/ test/ perf/"
 echo ""
 
 # Switch back to previous branch before deleting
