@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://blesmlfba01ny"]
+
+[ext_resource type="Script" uid="uid://cnnpbfnww61wx" path="res://Scripts/trap_icefloor.gd" id="1_j7spk"]
+[ext_resource type="Texture2D" uid="uid://gqgkp3rm4qmj" path="res://Shapes/IceFloor.svg" id="2_j7spk"]
+
+[node name="IceFloor" type="Area2D" unique_id=1192991918]
+script = ExtResource("1_j7spk")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2135560715]
+texture = ExtResource("2_j7spk")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=897093263]
+visible = false
+polygon = PackedVector2Array(-67.5, -67.5, -67.5, 67.5, 67.5, 67.5, 67.5, -67.5)
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]

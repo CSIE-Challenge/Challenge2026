@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://c8igbkqxla1gy" path="res://Scenes/energy_ball.tscn" id="2_ap8xm"]
 [ext_resource type="Script" uid="uid://bdl6qti40jt4x" path="res://Scripts/player.gd" id="2_m34ki"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_wbxth"]
+[ext_resource type="PackedScene" uid="uid://blesmlfba01ny" path="res://Scenes/trap_icefloor.tscn" id="5_r8bcl"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wbxth"]
 size = Vector2(135, 135)
@@ -23,6 +24,9 @@ energy_counter_label = NodePath("../HUD/EnergyCounterLabel")
 
 [node name="Stage" type="Node2D" parent="." unique_id=1447728601]
 position = Vector2(576, 324)
+
+[node name="trap_icefloor" parent="Stage" unique_id=1192991918 instance=ExtResource("5_r8bcl")]
+position = Vector2(119, -121)
 
 [node name="Walls" type="Node2D" parent="Stage" unique_id=57048490]
 
