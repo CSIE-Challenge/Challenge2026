@@ -5,8 +5,9 @@
 [ext_resource type="PackedScene" uid="uid://c8igbkqxla1gy" path="res://Scenes/energy_ball.tscn" id="2_ap8xm"]
 [ext_resource type="Script" uid="uid://bdl6qti40jt4x" path="res://Scripts/player.gd" id="2_m34ki"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_wbxth"]
-[ext_resource type="PackedScene" uid="uid://b8iiygtorg8eo" path="res://Scenes/trap_icefloor.tscn" id="3_1qnfl"]
+[ext_resource type="PackedScene" uid="uid://blesmlfba01ny" path="res://Scenes/trap_icefloor.tscn" id="3_1qnfl"]
 [ext_resource type="PackedScene" uid="uid://d0xq1elehua3l" path="res://Scenes/electric_ring.tscn" id="5_r8bcl"]
+[ext_resource type="PackedScene" uid="uid://bn2r2n5iik0jg" path="res://Scenes/conveyor.tscn" id="7_1qnfl"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wbxth"]
 size = Vector2(135, 135)
@@ -28,6 +29,9 @@ autostart = true
 
 [node name="Stage" type="Node2D" parent="." unique_id=1447728601]
 position = Vector2(576, 324)
+
+[node name="EnergyBall" parent="Stage" unique_id=1714624484 node_paths=PackedStringArray("player_node") instance=ExtResource("2_ap8xm")]
+player_node = NodePath("../Player")
 
 [node name="Walls" type="Node2D" parent="Stage" unique_id=57048490]
 
@@ -80,10 +84,8 @@ texture = ExtResource("1_hf1ha")
 
 [node name="IceFloor" parent="Stage" unique_id=1192991918 instance=ExtResource("3_1qnfl")]
 
-[node name="EnergyBall" parent="Stage" unique_id=1190476371 node_paths=PackedStringArray("player_node") instance=ExtResource("2_ap8xm")]
-player_node = NodePath("../Player")
-
 [node name="Player" type="CharacterBody2D" parent="Stage" unique_id=1716138881]
+position = Vector2(35, 35)
 collision_mask = 2
 motion_mode = 1
 script = ExtResource("2_m34ki")
@@ -114,7 +116,11 @@ offset_top = -236.0
 offset_right = -196.0
 offset_bottom = -213.0
 
-[node name="HUD" type="CanvasLayer" parent="." unique_id=1536352798]
+[node name="Conveyor" parent="Stage" unique_id=745938423 instance=ExtResource("7_1qnfl")]
+z_index = -10
+position = Vector2(-114, -1)
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=2039367638]
 
 [node name="EnergyBallsLabel" type="Label" parent="HUD" unique_id=312988717]
 offset_left = 20.0

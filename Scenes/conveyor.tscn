@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://bn2r2n5iik0jg"]
+
+[ext_resource type="Script" uid="uid://b8jegvbjhjdha" path="res://Scripts/conveyor.gd" id="1_d7757"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_k3tq1"]
+size = Vector2(100, 100)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_d7757"]
+size = Vector2(100, 100)
+
+[node name="Conveyor" type="Area2D" unique_id=745938423]
+script = ExtResource("1_d7757")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1023844829]
+shape = SubResource("RectangleShape2D_k3tq1")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2126618245]
+modulate = Color(0.65481544, 0.13069847, 0.16253066, 1)
+texture = SubResource("PlaceholderTexture2D_d7757")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]

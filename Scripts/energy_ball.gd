@@ -25,6 +25,7 @@ func _on_body_entered(body: Node2D) -> void:
 
 func _respawn_energy_ball() -> void:
 	position = _get_random_spawn_position()
+	print(position)
 	visible = true
 
 

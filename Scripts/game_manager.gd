@@ -15,7 +15,7 @@ var rng := RandomNumberGenerator.new()
 
 func _ready() -> void:
 	GlobalSignal.player_hit.connect(on_player_hit)
-	GlobalSignal.energyball_collecetd.connect(_on_energyball_collected)
+	GlobalSignal.energyball_colleceted.connect(_on_energyball_collected)
 	health_label.text = "Health: %d" % player.max_health
 	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
 	energy_bar_label.text = "Energy Bar: %d" % energy_amount
