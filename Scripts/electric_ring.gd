@@ -3,6 +3,7 @@ extends Node2D
 @export var player_radius: float
 @export var stay_time: float
 @export var ring_thickness: float
+@export var test_player: CharacterBody2D
 var player: CharacterBody2D
 var current_fill: float
 var radius: float
@@ -16,8 +17,9 @@ var died: bool
 
 
 func _ready():
-	player = GameManager.player
-	spawn(randf_range(75, 150), randf_range(1.0, 2.0))
+	if not test_player == null:
+		player = test_player
+		spawn(randf_range(75, 150), randf_range(1.0, 2.0), player)
 
 
 func _physics_process(delta: float) -> void:
@@ -41,7 +43,9 @@ func _physics_process(delta: float) -> void:
 			_detect_player()
 
 
-func spawn(set_radius: float, delay_time: float):
+func spawn(set_radius: float, delay_time: float, target_player: CharacterBody2D):
+	if player == null:
+		player = target_player
 	radius = set_radius
 	died = false
 	warning_sprite.visible = true
