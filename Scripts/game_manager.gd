@@ -1,4 +1,5 @@
 extends Node2D
+var player: CharacterBody2D = null
 
 @export var player: CharacterBody2D
 @export var health_label: Label

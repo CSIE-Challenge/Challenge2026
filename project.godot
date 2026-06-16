@@ -22,6 +22,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 GlobalSignal="*res://Scripts/global_signal.gd"
+GameManager="*uid://dven18jgarb7v"
 
 [display]
 
