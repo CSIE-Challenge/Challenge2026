@@ -1,5 +1,8 @@
 extends CharacterBody2D
 
+const PLAYER_COLLISION_LAYER := 1
+const WALL_COLLISION_LAYER := 2
+
 @export var max_turn_rate := deg_to_rad(180.0)
 
 var target: Node2D = null
@@ -9,6 +12,7 @@ var tracing := true
 
 
 func _ready() -> void:
+	collision_mask = PLAYER_COLLISION_LAYER | WALL_COLLISION_LAYER
 	set_physics_process(false)
 	visible = false
 
@@ -47,11 +51,20 @@ func _physics_process(delta):
 		turn_toward_target(delta)
 
 		if target_passed_stop_line():
-			print("target passed stop line")
 			tracing = false
 
 	velocity = Vector2.RIGHT.rotated(rotation) * speed
-	move_and_slide()
+
+	var collision := move_and_collide(velocity * delta)
+
+	if collision:
+		var collider := collision.get_collider()
+
+		if collider == target:
+			GlobalSignal.player_hit.emit(67)
+			deactivate()
+		elif (collider.collision_layer & WALL_COLLISION_LAYER) != 0:
+			deactivate()
 
 
 func turn_toward_target(delta):
