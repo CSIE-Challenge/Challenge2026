@@ -1,14 +1,14 @@
 extends Node2D
 
 const DAMAGE: float = 5.0
-const AIMING_TIME: float = 1.2
+const BULLET_SPEED: float = 700.0
+const AIMING_TIME: float = 1.5
 const AIMING_LINE_COLOR: Color = Color(
 	0.937,
 	0.373,
 	0.285,
 )
 
-var bullet_speed: float = 700.0
 var directions: Array[Vector2] = []
 var aiming: bool = false
 var firing: bool = false
@@ -37,10 +37,12 @@ func activate(pos: Vector2, dir1: Vector2, dir2: Vector2, dir3: Vector2) -> void
 	$AimingLines.visible = true
 	# initialize aiming lines and bullets
 	for i in range(3):
+		var intersect = _calculate_aiming_line_end_point(global_position, directions[i])
+		var local_intersect = to_local(intersect)
 		var line = lines[i]
 		line.clear_points()
 		line.add_point(Vector2.ZERO)
-		line.add_point(directions[i] * 2000.0)
+		line.add_point(local_intersect)
 		line.default_color = AIMING_LINE_COLOR
 		line.width = 8.0
 
@@ -72,7 +74,7 @@ func _physics_process(delta: float) -> void:
 		for i in range(3):
 			var bullet = bullets[i]
 			if bullet.visible:
-				bullet.position += directions[i] * bullet_speed * delta
+				bullet.position += directions[i] * BULLET_SPEED * delta
 				bullets_still_moving = true
 
 				if bullet.position.length() > 5000.0:
@@ -97,3 +99,23 @@ func _on_bullet_body_entered(body: Node2D, bullet_node: Area2D) -> void:
 	bullet_node.visible = false
 	# disable collision for this bullet
 	bullet_node.get_node("CollisionShape2D").set_deferred("disabled", true)
+
+
+func _calculate_aiming_line_end_point(origin: Vector2, dir: Vector2) -> Vector2:
+	var border = Rect2(326, 74, 500, 500)
+	if dir.x == 0:
+		dir.x = 0.00001
+	if dir.y == 0:
+		dir.y = 0.00001
+
+	# aabb ray collision
+	var t_min_x = (border.position.x - origin.x) / dir.x
+	var t_max_x = (border.end.x - origin.x) / dir.x
+	var t_min_y = (border.position.y - origin.y) / dir.y
+	var t_max_y = (border.end.y - origin.y) / dir.y
+
+	var t_exit_x = max(t_min_x, t_max_x)
+	var t_exit_y = max(t_min_y, t_max_y)
+	var t_exit = min(t_exit_x, t_exit_y)
+
+	return origin + dir * t_exit
