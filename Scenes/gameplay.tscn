@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://c8igbkqxla1gy" path="res://Scenes/energy_ball.tscn" id="2_ap8xm"]
 [ext_resource type="Script" uid="uid://bdl6qti40jt4x" path="res://Scripts/player.gd" id="2_m34ki"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_wbxth"]
-[ext_resource type="PackedScene" uid="uid://blesmlfba01ny" path="res://Scenes/trap_icefloor.tscn" id="3_1qnfl"]
+[ext_resource type="PackedScene" uid="uid://b8iiygtorg8eo" path="res://Scenes/trap_icefloor.tscn" id="3_1qnfl"]
 [ext_resource type="PackedScene" uid="uid://d0xq1elehua3l" path="res://Scenes/electric_ring.tscn" id="5_r8bcl"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wbxth"]
@@ -16,11 +16,15 @@ radius = 13.5
 
 [node name="Gameplay" type="Node2D" unique_id=678551049]
 
-[node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "health_label", "energy_counter_label")]
+[node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "health_label", "energy_balls_label", "energy_bar_label")]
 script = ExtResource("1_kwrm5")
 player = NodePath("../Stage/Player")
-health_label = NodePath("../Stage/Label")
-energy_counter_label = NodePath("../HUD/EnergyCounterLabel")
+health_label = NodePath("../Stage/HealthLabel")
+energy_balls_label = NodePath("../HUD/EnergyBallsLabel")
+energy_bar_label = NodePath("../HUD/EnergyBarLabel")
+
+[node name="EnergyIncreaseTimer" type="Timer" parent="GameManager" unique_id=1538767547]
+autostart = true
 
 [node name="Stage" type="Node2D" parent="." unique_id=1447728601]
 position = Vector2(576, 324)
@@ -76,7 +80,8 @@ texture = ExtResource("1_hf1ha")
 
 [node name="IceFloor" parent="Stage" unique_id=1192991918 instance=ExtResource("3_1qnfl")]
 
-[node name="EnergyBall" parent="Stage" unique_id=1190476371 instance=ExtResource("2_ap8xm")]
+[node name="EnergyBall" parent="Stage" unique_id=1190476371 node_paths=PackedStringArray("player_node") instance=ExtResource("2_ap8xm")]
+player_node = NodePath("../Player")
 
 [node name="Player" type="CharacterBody2D" parent="Stage" unique_id=1716138881]
 collision_mask = 2
@@ -103,7 +108,7 @@ texture = ExtResource("2_wbxth")
 [node name="ElectricRing" parent="Stage" unique_id=1133403726 node_paths=PackedStringArray("test_player") instance=ExtResource("5_r8bcl")]
 test_player = NodePath("../Player")
 
-[node name="Label" type="Label" parent="Stage" unique_id=1134340444]
+[node name="HealthLabel" type="Label" parent="Stage" unique_id=1134340444]
 offset_left = -236.0
 offset_top = -236.0
 offset_right = -196.0
@@ -111,10 +116,20 @@ offset_bottom = -213.0
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=1536352798]
 
-[node name="EnergyCounterLabel" type="Label" parent="HUD" unique_id=1410736274]
+[node name="EnergyBallsLabel" type="Label" parent="HUD" unique_id=312988717]
 offset_left = 20.0
 offset_top = 16.0
 offset_right = 240.0
 offset_bottom = 48.0
 theme_override_font_sizes/font_size = 24
 text = "Energy Balls: 0"
+
+[node name="EnergyBarLabel" type="Label" parent="HUD" unique_id=1081919481]
+offset_left = 21.0
+offset_top = 56.0
+offset_right = 241.0
+offset_bottom = 90.0
+theme_override_font_sizes/font_size = 24
+text = "Energy Bar: 0"
+
+[connection signal="timeout" from="GameManager/EnergyIncreaseTimer" to="GameManager" method="_on_energy_increase_timer_timeout"]

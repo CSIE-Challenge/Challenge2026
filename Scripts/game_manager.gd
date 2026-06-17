@@ -1,20 +1,24 @@
 extends Node2D
 
 const MINE_TRAP_SCENE = preload("res://Scenes/mine_trap.tscn")
+const ENERGY_GAIN_PER_BALL = 10
 
 @export var player: CharacterBody2D
 @export var health_label: Label
-@export var energy_counter_label: Label
+@export var energy_balls_label: Label
+@export var energy_bar_label: Label
 
 var energy_ball_count := 0
+var energy_amount := 0
 var rng := RandomNumberGenerator.new()
 
 
 func _ready() -> void:
 	GlobalSignal.player_hit.connect(on_player_hit)
 	GlobalSignal.energyball_collecetd.connect(_on_energyball_collected)
-	health_label.text = "Health: %d" % player.health
-	energy_counter_label.text = "Energy Balls: %d" % energy_ball_count
+	health_label.text = "Health: %d" % player.max_health
+	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
+	energy_bar_label.text = "Energy Bar: %d" % energy_amount
 
 
 func on_player_hit(damage: int) -> void:
@@ -27,11 +31,11 @@ func on_player_hit(damage: int) -> void:
 
 func _on_energyball_collected() -> void:
 	energy_ball_count += 1
-	energy_counter_label.text = "Energy Balls: %d" % energy_ball_count
+	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
+	energy_amount += ENERGY_GAIN_PER_BALL
+	energy_bar_label.text = "Energy Bar: %d" % energy_amount
 
 
-func spawn_mine_trap(spawn_position: Vector2) -> void:
-	var new_trap: Node2D = MINE_TRAP_SCENE.instantiate()
-
-	add_child(new_trap)
-	new_trap.initialize(spawn_position)
+func _on_energy_increase_timer_timeout() -> void:
+	energy_amount += 1
+	energy_bar_label.text = "Energy Bar: %d" % energy_amount
