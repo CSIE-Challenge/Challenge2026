@@ -68,4 +68,4 @@ func spawn_mine_trap(spawn_position: Vector2) -> void:
 	var new_trap: Node2D = MINE_TRAP_SCENE.instantiate()
 
 	add_child(new_trap)
-	new_trap.global_position = spawn_position
+	new_trap.initialize(spawn_position)

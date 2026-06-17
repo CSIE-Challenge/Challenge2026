@@ -12,7 +12,8 @@ var player_just_landed := false
 
 
 # Called when the node enters the scene tree for the first time.
-func _ready() -> void:
+func initialize(pos: Vector2) -> void:
+	self.global_position = pos
 	sprite.modulate = Color.WHITE
 	explosion_area.body_entered.connect(on_body_entered)
 	var player = get_tree().root.find_child("Player", true, false)
