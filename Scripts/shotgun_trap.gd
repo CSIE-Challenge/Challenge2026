@@ -10,6 +10,7 @@ const AIMING_LINE_COLOR: Color = Color(
 )
 
 var directions: Array[Vector2] = []
+var hit_spawn_wall: Array[bool]
 var aiming: bool = false
 var firing: bool = false
 @onready var timer: Timer = $Timer
@@ -22,6 +23,8 @@ func _ready() -> void:
 	visible = false
 	bullets_container.visible = false
 	set_physics_process(false)
+	hit_spawn_wall.resize(3)
+	hit_spawn_wall.fill(false)
 
 	# testing
 	var pos = Vector2(250, 250)
@@ -47,7 +50,8 @@ func activate(pos: Vector2, dir1: Vector2, dir2: Vector2, dir3: Vector2) -> void
 		line.width = 8.0
 
 		var bullet = bullets[i]
-		bullet.position = Vector2(directions[i] * 20.0)  # safe distance to not spawn bullets in the wall
+		hit_spawn_wall[i] = false
+		bullet.position = Vector2.ZERO
 		bullet.rotation = directions[i].angle()
 		bullet.visible = true
 		if not bullet.body_entered.is_connected(_on_bullet_body_entered):
@@ -96,9 +100,16 @@ func _on_aiming_timeout() -> void:
 func _on_bullet_body_entered(body: Node2D, bullet_node: Area2D) -> void:
 	if body.name == "Player":
 		GlobalSignal.player_hit.emit(DAMAGE)
-	bullet_node.visible = false
-	# disable collision for this bullet
-	bullet_node.get_node("CollisionShape2D").set_deferred("disabled", true)
+		bullet_node.visible = false
+		# disable collision for this bullet
+		bullet_node.get_node("CollisionShape2D").set_deferred("disabled", true)
+	else:
+		var idx = bullets.find(bullet_node)
+		if not hit_spawn_wall[idx]:
+			hit_spawn_wall[idx] = true
+		else:
+			bullet_node.visible = false
+			bullet_node.get_node("CollisionShape2D").set_deferred("disabled", true)
 
 
 func _calculate_aiming_line_end_point(origin: Vector2, dir: Vector2) -> Vector2:
