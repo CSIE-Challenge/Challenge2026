@@ -1,5 +1,7 @@
 extends Node2D
 
+const MINE_TRAP_SCENE = preload("res://Scenes/mine_trap.tscn")
+
 @export var player: CharacterBody2D
 @export var health_label: Label
 @export var energy_ball: Area2D
@@ -11,8 +13,6 @@ extends Node2D
 var energy_ball_count := 0
 var rng := RandomNumberGenerator.new()
 
-const MINE_TRAP_SCENE = preload("res://Scenes/mine_trap.tscn")
-
 
 func _ready() -> void:
 	GlobalSignal.player_hit.connect(on_player_hit)
@@ -21,7 +21,9 @@ func _ready() -> void:
 	_update_energy_counter()
 	_respawn_energy_ball()
 
-func on_player_hit(damage: int) -> void
+
+func on_player_hit(damage: int) -> void:
+	spawn_mine_trap(Vector2(500, 300))  #只是測試與示範spawn_mine_trap怎麼呼叫
 	print("玩家受到了", damage, "點傷害")
 	player.health = max(player.health - damage, 0.0)
 	health_label.text = "Health: %d" % player.health
@@ -63,7 +65,7 @@ func _update_energy_counter() -> void:
 
 
 func spawn_mine_trap(spawn_position: Vector2) -> void:
-	var new_trap: Area2D = MINE_TRAP_SCENE.instantiate()
+	var new_trap: Node2D = MINE_TRAP_SCENE.instantiate()
 
 	add_child(new_trap)
 	new_trap.global_position = spawn_position

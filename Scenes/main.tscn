@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://bjm2jsv5qry5v" path="res://Scenes/gameplay.tscn" id="1_jjgbg"]
 
 [node name="Main" type="Node2D" unique_id=1214856468]
+position = Vector2(2, 0)
 
 [node name="CurrentScene" type="Node2D" parent="." unique_id=121520446]
 
