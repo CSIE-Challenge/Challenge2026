@@ -5,9 +5,10 @@ const ENERGY_GAIN_PER_BALL = 10
 
 @export var player: CharacterBody2D
 @export var health_label: Label
+@export var shotgun_trap_scene := preload("res://Scenes/shotgun_trap.tscn")
 @export var energy_balls_label: Label
 @export var energy_bar_label: Label
-@export var energy_ball_spawn_period: int
+@export var energy_increase_period: int
 
 var energy_ball_count := 0
 var energy_amount := 0
@@ -22,8 +23,13 @@ func _ready() -> void:
 	health_label.text = "Health: %d" % player.max_health
 	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
 	energy_bar_label.text = "Energy Bar: %d" % energy_amount
-	energy_increase_timer.wait_time = energy_ball_spawn_period
-	energy_increase_timer.autostart = true
+	energy_increase_timer.wait_time = energy_increase_period
+
+	var shotgun_trap = shotgun_trap_scene.instantiate()
+	add_child(shotgun_trap)
+	shotgun_trap.activate(
+		Vector2(-250, 100) + Vector2(576, 324), Vector2(1, 0.2), Vector2(1, 0), Vector2(1, -0.2)
+	)
 
 
 func on_player_hit(damage: int) -> void:

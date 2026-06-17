@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://c8igbkqxla1gy" path="res://Scenes/energy_ball.tscn" id="2_ap8xm"]
 [ext_resource type="Script" uid="uid://bdl6qti40jt4x" path="res://Scripts/player.gd" id="2_m34ki"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_wbxth"]
-[ext_resource type="PackedScene" uid="uid://b8iiygtorg8eo" path="res://Scenes/trap_icefloor.tscn" id="3_1qnfl"]
+[ext_resource type="PackedScene" uid="uid://blesmlfba01ny" path="res://Scenes/trap_icefloor.tscn" id="3_1qnfl"]
 [ext_resource type="PackedScene" uid="uid://d0xq1elehua3l" path="res://Scenes/electric_ring.tscn" id="5_r8bcl"]
 [ext_resource type="PackedScene" uid="uid://bn2r2n5iik0jg" path="res://Scenes/conveyor.tscn" id="7_1qnfl"]
 
@@ -23,9 +23,10 @@ player = NodePath("../Stage/Player")
 health_label = NodePath("../Stage/HealthLabel")
 energy_balls_label = NodePath("../HUD/EnergyBallsLabel")
 energy_bar_label = NodePath("../HUD/EnergyBarLabel")
-energy_ball_spawn_period = 1
+energy_increase_period = 1
 
 [node name="EnergyIncreaseTimer" type="Timer" parent="GameManager" unique_id=1538767547]
+autostart = true
 
 [node name="Stage" type="Node2D" parent="." unique_id=1447728601]
 position = Vector2(576, 324)
