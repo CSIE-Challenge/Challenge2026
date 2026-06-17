@@ -118,7 +118,7 @@ offset_bottom = -213.0
 
 [node name="Conveyor" parent="Stage" unique_id=745938423 instance=ExtResource("7_1qnfl")]
 z_index = -10
-position = Vector2(-114, -1)
+position = Vector2(-152, -212)
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=2039367638]
 

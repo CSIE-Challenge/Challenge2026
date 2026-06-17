@@ -14,6 +14,8 @@ signal player_landed(player_node: Node2D)  #This is used for the mines, trap no.
 var isjumping := false
 var current_jump_velocity: float
 var current_sprite_y: float
+var external_velocity: Vector2 = Vector2.ZERO
+
 @onready var body_sprite = $BodySprite
 
 
@@ -39,7 +41,9 @@ func move(dir: Vector2, speed: float, delta: float):
 		velocity = velocity.lerp(target_velocity, weight)
 	else:
 		velocity = velocity.lerp(Vector2.ZERO, weight)
+	velocity += external_velocity
 	move_and_slide()
+	velocity -= external_velocity
 
 
 func _jump():
