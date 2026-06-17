@@ -10,6 +10,7 @@ const AGENT_SEATS: Array[String] = ["Agent1"]
 @export var energy_balls_label: Label
 @export var energy_bar_label: Label
 @export var opponent_energy_bar_label: Label
+@export var run_agent_action_debug_test := false
 @export var energy_increase_period: int
 @export var energy_ball_spawn_period: int
 @export var player_invincibility_time: float
@@ -23,6 +24,10 @@ var player_invincible := false
 @onready var player_invincibility_timer = $PlayerInvincibilityTimer
 @onready var energy_increase_timer = $EnergyIncreaseTimer
 
+@onready var team_status_service: TeamStatusService = $"../TeamStatusService"
+@onready var trap_request_scheduler: TrapRequestScheduler = $"../TrapRequestScheduler"
+@onready var agent_action_service: AgentActionService = $"../AgentActionService"
+
 
 func _ready() -> void:
 	Global.player_hit.connect(on_player_hit)
@@ -34,6 +39,14 @@ func _ready() -> void:
 	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
 	_update_energy_label()
 	_update_opponent_energy_label(0, 0)
+	_connect_team_status_signals()
+	_connect_agent_action_signals()
+
+	agent_action_service.setup_services(team_status_service, trap_request_scheduler)
+
+	if run_agent_action_debug_test:
+		_run_agent_action_debug_test()
+
 	energy_increase_timer.wait_time = energy_increase_period
 
 	energy_increase_timer.wait_time = energy_ball_spawn_period
@@ -48,6 +61,145 @@ func _spawn_agents() -> void:
 		agent.name = seat_name
 		agent.game = self
 		add_child(agent)
+
+
+# tests/examples/Api usage of Agent Action Service/Team Status Service/Trap Request Scheduler
+func _connect_team_status_signals() -> void:
+	team_status_service.energy_changed.connect(_on_team_energy_changed)
+	team_status_service.health_changed.connect(_on_team_health_changed)
+	team_status_service.mode_changed.connect(_on_team_mode_changed)
+	team_status_service.heal_used.connect(_on_team_heal_used)
+
+
+func _connect_agent_action_signals() -> void:
+	agent_action_service.trap_request_submitted.connect(_on_trap_request_submitted)
+	agent_action_service.trap_request_rejected.connect(_on_trap_request_rejected)
+	agent_action_service.trap_approved.connect(_on_trap_approved)
+	agent_action_service.trap_rejected.connect(_on_trap_rejected)
+
+
+func _on_team_energy_changed(team_id: int, current: float, max_energy: float) -> void:
+	print("ENERGY_CHANGED team=", team_id, " energy=", current, "/", max_energy)
+
+
+func _on_team_health_changed(team_id: int, current: float, max_health: float) -> void:
+	print("HEALTH_CHANGED team=", team_id, " health=", current, "/", max_health)
+
+
+func _on_team_mode_changed(team_id: int, old_mode: String, new_mode: String) -> void:
+	print("MODE_CHANGED team=", team_id, " ", old_mode, " -> ", new_mode)
+
+
+func _on_team_heal_used(
+	team_id: int, heal_amount: float, energy_cost: float, heal_uses_left: int
+) -> void:
+	print(
+		"HEAL_USED team=",
+		team_id,
+		" heal=",
+		heal_amount,
+		" cost=",
+		energy_cost,
+		" uses_left=",
+		heal_uses_left
+	)
+
+
+func _on_trap_request_submitted(request: Dictionary) -> void:
+	print(
+		"SUBMITTED request_id=",
+		request["request_id"],
+		" team=",
+		request["team_id"],
+		" trap=",
+		request["trap_id"]
+	)
+
+
+func _on_trap_request_rejected(request: Dictionary, reason: String) -> void:
+	print(
+		"SUBMIT_REJECTED team=",
+		request["team_id"],
+		" trap=",
+		request["trap_id"],
+		" reason=",
+		reason
+	)
+
+
+func _on_trap_approved(request: Dictionary, energy_cost: float) -> void:
+	print(
+		"APPROVED request_id=",
+		request["request_id"],
+		" team=",
+		request["team_id"],
+		" trap=",
+		request["trap_id"],
+		" cost=",
+		energy_cost
+	)
+
+
+func _on_trap_rejected(request: Dictionary, reason: String) -> void:
+	print(
+		"FINAL_REJECTED request_id=",
+		request["request_id"],
+		" team=",
+		request["team_id"],
+		" trap=",
+		request["trap_id"],
+		" reason=",
+		reason
+	)
+
+
+func _run_agent_action_debug_test() -> void:
+	print("=== AgentActionService + TeamStatusService Debug Test Start ===")
+
+	team_status_service.initialize_teams([0, 1])
+	trap_request_scheduler.initialize_teams([0, 1])
+
+	print("--- give team 0 enough energy, team 1 low energy ---")
+	team_status_service.add_energy(0, 100.0)
+	team_status_service.add_energy(1, 5.0)
+
+	print("--- submit valid mine: should enter queue, not spend yet ---")
+	agent_action_service.submit_trap_request(0, "mine", {"position": Vector2(100, 200)})
+
+	print("--- process tick 1: mine should approve, spend energy, start cooldown ---")
+	trap_request_scheduler.process_requests()
+
+	print("--- submit same mine during cooldown: should reject before queue ---")
+	agent_action_service.submit_trap_request(0, "mine", {"position": Vector2(200, 200)})
+
+	print("--- submit unknown trap: should reject before queue ---")
+	agent_action_service.submit_trap_request(0, "unknown_trap", {})
+
+	print("--- submit insufficient energy trap from team 1: should reject before queue ---")
+	agent_action_service.submit_trap_request(1, "shotgun", {})
+
+	print("--- health/mode test: damage team 0 below zero ---")
+	team_status_service.damage_team(0, 999.0)
+
+	print("--- heal test: should fail because team 0 is in lifesteal mode ---")
+	team_status_service.try_heal_team(0, 1.0, 10.0)
+
+	print("--- queue full / multiple request test ---")
+	agent_action_service.submit_trap_request(0, "electric_ring", {"radius": 80.0})
+	agent_action_service.submit_trap_request(0, "shotgun", {})
+	agent_action_service.submit_trap_request(0, "electric_ring", {"radius": 100.0})
+	# should reject if max_queue_size_per_team = 3
+	agent_action_service.submit_trap_request(0, "shotgun", {})
+
+	print("--- process remaining queued requests ---")
+	trap_request_scheduler.process_requests()
+	trap_request_scheduler.process_requests()
+	trap_request_scheduler.process_requests()
+
+	print("=== AgentActionService + TeamStatusService Debug Test End ===")
+
+
+#----------------------------------------------------------------------
 
 
 func on_player_hit(damage: int) -> void:
