@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://bdl6qti40jt4x" path="res://Scripts/player.gd" id="2_m34ki"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_wbxth"]
 [ext_resource type="PackedScene" uid="uid://blesmlfba01ny" path="res://Scenes/trap_icefloor.tscn" id="5_r8bcl"]
+[ext_resource type="PackedScene" uid="uid://d0xq1elehua3l" path="res://Scenes/electric_ring.tscn" id="5_r8bcl"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wbxth"]
 size = Vector2(135, 135)
@@ -101,6 +102,7 @@ texture = ExtResource("2_wbxth")
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("2_wbxth")
 
+
 [node name="Label" type="Label" parent="Stage" unique_id=1134340444]
 offset_left = -236.0
 offset_top = -236.0
@@ -116,3 +118,7 @@ offset_right = 240.0
 offset_bottom = 48.0
 theme_override_font_sizes/font_size = 24
 text = "Energy Balls: 0"
+
+[node name="ElectricRing" parent="Stage" unique_id=1133403726 node_paths=PackedStringArray("test_player") instance=ExtResource("5_r8bcl")]
+test_player = NodePath("../Player")
+
