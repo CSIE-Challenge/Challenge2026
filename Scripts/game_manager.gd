@@ -23,7 +23,6 @@ func _ready() -> void:
 
 
 func on_player_hit(damage: int) -> void:
-	spawn_mine_trap(Vector2(500, 300))  #只是測試與示範spawn_mine_trap怎麼呼叫
 	print("玩家受到了", damage, "點傷害")
 	player.health = max(player.health - damage, 0.0)
 	health_label.text = "Health: %d" % player.health

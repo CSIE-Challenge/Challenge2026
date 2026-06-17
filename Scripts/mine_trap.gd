@@ -5,16 +5,12 @@ extends Node2D
 var is_armed := false
 var player_just_landed := false
 
-# Grabs a reference to the Sprite2D child node
-@onready var sprite: Sprite2D = $Sprite2D
-@onready var sprite2: Sprite2D = $Sprite2D2
+@onready var mine_body: Sprite2D = $MineBody
 @onready var explosion_area: Area2D = $ExplosionArea
 
 
-# Called when the node enters the scene tree for the first time.
 func initialize(pos: Vector2) -> void:
 	self.global_position = pos
-	sprite.modulate = Color.WHITE
 	explosion_area.body_entered.connect(on_body_entered)
 	var player = get_tree().root.find_child("Player", true, false)
 	if player:
@@ -24,12 +20,11 @@ func initialize(pos: Vector2) -> void:
 	start_arming_sequence()
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func start_arming_sequence() -> void:
 	var tween = create_tween()
 
-	# Transition the sprite's color to Red over our arming_time duration
-	tween.tween_property(sprite, "modulate", Color.RED, arming_time)
+	# Transition the mine body's color to Red over our arming_time duration
+	tween.tween_property(mine_body, "modulate", Color.RED, arming_time)
 	tween.tween_callback(on_arming_complete)
 
 
