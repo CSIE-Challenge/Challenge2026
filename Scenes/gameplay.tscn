@@ -16,11 +16,10 @@ radius = 13.5
 
 [node name="Gameplay" type="Node2D" unique_id=678551049]
 
-[node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "health_label", "energy_ball", "energy_counter_label")]
+[node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "health_label", "energy_counter_label")]
 script = ExtResource("1_kwrm5")
 player = NodePath("../Stage/Player")
 health_label = NodePath("../Stage/Label")
-energy_ball = NodePath("../Stage/EnergyBall")
 energy_counter_label = NodePath("../HUD/EnergyCounterLabel")
 
 [node name="Stage" type="Node2D" parent="." unique_id=1447728601]
