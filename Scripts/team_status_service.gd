@@ -334,4 +334,3 @@ func _make_heal_api_result(ok: bool, team_id: int, reason: String) -> Dictionary
 		"mode": team["mode"],
 		"heal_uses_left": team["heal_uses_left"],
 		"reason": reason,
-	}

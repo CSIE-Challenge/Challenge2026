@@ -123,8 +123,6 @@ func submit_trap_request_result(
 	trap_request_submitted.emit(submitted_request)
 
 	return _make_submit_result(true, request_id, team_id, trap_id, "")
-
-
 # gdlint: enable=max-returns
 
 
@@ -226,8 +224,6 @@ func _make_request(
 		"params": params,
 		"submit_time": Time.get_ticks_msec()
 	}
-
-
 func _make_submit_result(
 	ok: bool, request_id: int, team_id: int, trap_id: String, reason: String
 ) -> Dictionary:
