@@ -27,6 +27,7 @@ func _physics_process(delta: float) -> void:
 		return
 	if not electric_on:
 		current_fill += fill_speed * delta
+		print(player)
 		position = player.position
 		warning_sprite.material.set_shader_parameter("fill", current_fill)
 		if current_fill >= 1.0:
