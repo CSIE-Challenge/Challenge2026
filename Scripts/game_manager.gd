@@ -7,10 +7,13 @@ const ENERGY_GAIN_PER_BALL = 10
 @export var health_label: Label
 @export var energy_balls_label: Label
 @export var energy_bar_label: Label
+@export var energy_ball_spawn_period: int
 
 var energy_ball_count := 0
 var energy_amount := 0
 var rng := RandomNumberGenerator.new()
+
+@onready var energy_increase_timer = $EnergyIncreaseTimer
 
 
 func _ready() -> void:
@@ -19,6 +22,8 @@ func _ready() -> void:
 	health_label.text = "Health: %d" % player.max_health
 	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
 	energy_bar_label.text = "Energy Bar: %d" % energy_amount
+	energy_increase_timer.wait_time = energy_ball_spawn_period
+	energy_increase_timer.autostart = true
 
 
 func on_player_hit(damage: int) -> void:
