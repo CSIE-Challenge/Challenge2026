@@ -18,7 +18,7 @@ func _on_body_entered(body: Node2D) -> void:
 		return
 
 	visible = false
-	GlobalSignal.energyball_collecetd.emit()
+	GlobalSignal.energyball_collected.emit()
 
 	_respawn_energy_ball()
 
