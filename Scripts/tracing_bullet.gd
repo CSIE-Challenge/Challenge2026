@@ -3,7 +3,7 @@ extends CharacterBody2D
 const PLAYER_COLLISION_LAYER := 1
 const WALL_COLLISION_LAYER := 2
 
-@export var max_turn_rate := deg_to_rad(180.0)
+@export var max_turn_rate := 2.0
 
 var target: Node2D = null
 var speed := 0.0
