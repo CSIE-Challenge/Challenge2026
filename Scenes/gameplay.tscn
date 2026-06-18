@@ -36,7 +36,7 @@ autostart = true
 position = Vector2(576, 324)
 
 [node name="EnergyBall" parent="Stage" unique_id=1714624484 node_paths=PackedStringArray("player_node") instance=ExtResource("2_ap8xm")]
-z_index = 1000
+z_index = 15
 player_node = NodePath("../Player")
 
 [node name="Walls" type="Node2D" parent="Stage" unique_id=57048490]
@@ -107,10 +107,12 @@ shape = SubResource("CircleShape2D_wbxth")
 
 [node name="ShadowSprite" type="Sprite2D" parent="Stage/Player" unique_id=1936819812]
 modulate = Color(0, 0, 0, 1)
+z_index = 18
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("2_wbxth")
 
 [node name="BodySprite" type="Sprite2D" parent="Stage/Player" unique_id=842198229]
+z_index = 20
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("2_wbxth")
 
