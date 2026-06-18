@@ -4,6 +4,7 @@ const MINE_TRAP_SCENE = preload("res://Scenes/mine_trap.tscn")
 const ENERGY_GAIN_PER_BALL = 10
 
 @export var player: CharacterBody2D
+@export var camera: Camera2D
 @export var health_label: Label
 @export var shotgun_trap_scene := preload("res://Scenes/shotgun_trap.tscn")
 @export var energy_balls_label: Label
@@ -45,6 +46,7 @@ func on_player_hit(damage: int) -> void:
 		return
 	_player_become_invincible()
 	print("玩家受到了", damage, "點傷害")
+	camera.shake_cam()
 	player.health = max(player.health - damage, 0.0)
 	health_label.text = "Health: %d" % player.health
 	if player.health <= 0.0:

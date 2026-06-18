@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://dle4xt8upfg42" path="res://Shapes/Square.svg" id="1_hf1ha"]
 [ext_resource type="Script" uid="uid://dven18jgarb7v" path="res://Scripts/game_manager.gd" id="1_kwrm5"]
+[ext_resource type="Script" uid="uid://cxd17lrphypsv" path="res://Scripts/game_camera.gd" id="1_puebw"]
 [ext_resource type="PackedScene" uid="uid://c8igbkqxla1gy" path="res://Scenes/energy_ball.tscn" id="2_ap8xm"]
 [ext_resource type="Script" uid="uid://bdl6qti40jt4x" path="res://Scripts/player.gd" id="2_m34ki"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_wbxth"]
@@ -17,9 +18,19 @@ radius = 13.5
 
 [node name="Gameplay" type="Node2D" unique_id=678551049]
 
-[node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "health_label", "energy_balls_label", "energy_bar_label")]
+[node name="GameCamera" type="Camera2D" parent="." unique_id=2130819700]
+offset = Vector2(576, 324)
+script = ExtResource("1_puebw")
+screen_center = Vector2(576, 324)
+shake_time = 0.1
+shake_magnitude = 8.0
+
+[node name="ShakeTimer" type="Timer" parent="GameCamera" unique_id=931548460]
+
+[node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "camera", "health_label", "energy_balls_label", "energy_bar_label")]
 script = ExtResource("1_kwrm5")
 player = NodePath("../Stage/Player")
+camera = NodePath("../GameCamera")
 health_label = NodePath("../Stage/HealthLabel")
 energy_balls_label = NodePath("../HUD/EnergyBallsLabel")
 energy_bar_label = NodePath("../HUD/EnergyBarLabel")
