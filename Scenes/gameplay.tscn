@@ -31,6 +31,7 @@ energy_ball_spawn_period = 1
 position = Vector2(576, 324)
 
 [node name="EnergyBall" parent="Stage" unique_id=1714624484 node_paths=PackedStringArray("player_node") instance=ExtResource("2_ap8xm")]
+z_index = 1000
 player_node = NodePath("../Player")
 
 [node name="Walls" type="Node2D" parent="Stage" unique_id=57048490]
