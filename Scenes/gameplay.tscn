@@ -24,9 +24,13 @@ health_label = NodePath("../Stage/HealthLabel")
 energy_balls_label = NodePath("../HUD/EnergyBallsLabel")
 energy_bar_label = NodePath("../HUD/EnergyBarLabel")
 energy_increase_period = 1
+energy_ball_spawn_period = 1
+player_invincibility_time = 1.0
 
 [node name="EnergyIncreaseTimer" type="Timer" parent="GameManager" unique_id=1538767547]
 autostart = true
+
+[node name="PlayerInvincibilityTimer" type="Timer" parent="GameManager" unique_id=1398851901]
 
 [node name="Stage" type="Node2D" parent="." unique_id=1447728601]
 position = Vector2(576, 324)
@@ -96,6 +100,7 @@ jump_velocity = 750.0
 jump_gravity = 2500.0
 jump_fall_multiplier = 1.5
 max_health = 100.0
+invincibility_flicker_period = 8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stage/Player" unique_id=1018866415]
 shape = SubResource("CircleShape2D_wbxth")

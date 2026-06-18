@@ -10,11 +10,13 @@ signal player_landed(player_node: Node2D)  #This is used for the mines, trap no.
 @export var jump_fall_multiplier: float
 @export var max_health: float
 @export var health: float
+@export var invincibility_flicker_period: int
 
 var isjumping := false
 var current_jump_velocity: float
 var current_sprite_y: float
 var external_velocity: Vector2 = Vector2.ZERO
+var isinvincible := false
 
 @onready var body_sprite = $BodySprite
 
@@ -28,9 +30,10 @@ func _physics_process(delta: float) -> void:
 	move(input_dir, move_speed, delta)
 	if Input.is_action_just_pressed("jump"):
 		_jump()
-		GlobalSignal.player_hit.emit(67)  #只是測試與示範player_hit怎麼呼叫
 	if isjumping:
 		_jump_process(delta)
+	if isinvincible:
+		_invincible_flicker()
 
 
 func move(dir: Vector2, speed: float, delta: float):
@@ -69,8 +72,24 @@ func _jump_process(delta: float):
 		body_sprite.position.y = -current_sprite_y
 
 
+func _invincible_flicker() -> void:
+	if (
+		Engine.get_frames_drawn() % invincibility_flicker_period
+		< (invincibility_flicker_period / 2)
+	):
+		modulate.a = 0.2
+	else:
+		modulate.a = 1
+
+
 func _jump_invisiblility_toggle(on: bool):
 	if on:
 		collision_layer = 0
 	else:
 		collision_layer = 1
+
+
+func invincibility_toggle(on: bool):
+	isinvincible = on
+	if not on:
+		modulate.a = 1

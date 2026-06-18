@@ -9,10 +9,15 @@ const ENERGY_GAIN_PER_BALL = 10
 @export var energy_balls_label: Label
 @export var energy_bar_label: Label
 @export var energy_increase_period: int
+@export var energy_ball_spawn_period: int
+@export var player_invincibility_time: float
 
 var energy_ball_count := 0
 var energy_amount := 0
 var rng := RandomNumberGenerator.new()
+var player_invincible := false
+
+@onready var player_invincibility_timer = $PlayerInvincibilityTimer
 
 @onready var energy_increase_timer = $EnergyIncreaseTimer
 
@@ -20,6 +25,7 @@ var rng := RandomNumberGenerator.new()
 func _ready() -> void:
 	GlobalSignal.player_hit.connect(on_player_hit)
 	GlobalSignal.energyball_collected.connect(_on_energyball_collected)
+	player_invincibility_timer.timeout.connect(_on_player_invincibility_timer_timeout)
 	health_label.text = "Health: %d" % player.max_health
 	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
 	energy_bar_label.text = "Energy Bar: %d" % energy_amount
@@ -30,9 +36,14 @@ func _ready() -> void:
 	shotgun_trap.activate(
 		Vector2(-250, 100) + Vector2(576, 324), Vector2(1, 0.2), Vector2(1, 0), Vector2(1, -0.2)
 	)
+	energy_increase_timer.wait_time = energy_ball_spawn_period
+	player_invincible = false
 
 
 func on_player_hit(damage: int) -> void:
+	if player_invincible:
+		return
+	_player_become_invincible()
 	print("玩家受到了", damage, "點傷害")
 	player.health = max(player.health - damage, 0.0)
 	health_label.text = "Health: %d" % player.health
@@ -45,6 +56,17 @@ func _on_energyball_collected() -> void:
 	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
 	energy_amount += ENERGY_GAIN_PER_BALL
 	energy_bar_label.text = "Energy Bar: %d" % energy_amount
+
+
+func _player_become_invincible() -> void:
+	player_invincible = true
+	player.invincibility_toggle(true)
+	player_invincibility_timer.start(player_invincibility_time)
+
+
+func _on_player_invincibility_timer_timeout() -> void:
+	player_invincible = false
+	player.invincibility_toggle(false)
 
 
 func _on_energy_increase_timer_timeout() -> void:
