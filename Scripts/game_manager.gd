@@ -1,6 +1,7 @@
 extends Node2D
 
 const MINE_TRAP_SCENE = preload("res://Scenes/mine_trap.tscn")
+const SPREADING_RIPPLES_SCENE = preload("res://Scenes/spreading_ripples.tscn")
 const ENERGY_GAIN_PER_BALL = 10
 
 @export var player: CharacterBody2D
@@ -40,6 +41,10 @@ func _ready() -> void:
 	energy_increase_timer.wait_time = energy_ball_spawn_period
 	player_invincible = false
 
+	var ripple_trap = SPREADING_RIPPLES_SCENE.instantiate()
+	add_child(ripple_trap)
+	ripple_trap.activate(Vector2(300, 300), 100.0)
+
 
 func on_player_hit(damage: int) -> void:
 	if player_invincible:
@@ -49,8 +54,8 @@ func on_player_hit(damage: int) -> void:
 	camera.shake_cam()
 	player.health = max(player.health - damage, 0.0)
 	health_label.text = "Health: %d" % player.health
-	if player.health <= 0.0:
-		print("玩家死掉了！")
+	#if player.health <= 0.0:
+	#print("玩家死掉了！")
 
 
 func _on_energyball_collected() -> void:

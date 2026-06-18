@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://c6uwokkyxaxs4"]
+
+[ext_resource type="Script" uid="uid://di3cgj2615ogj" path="res://Scripts/spreading_ripples.gd" id="1_us4h7"]
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_8v4sb"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_2fqos"]
+size = Vector2(610, 610)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2fqos"]
+radius = 96.25487
+
+[node name="SpreadingRipples" type="Area2D" unique_id=2077179031]
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("1_us4h7")
+
+[node name="WarningSprite" type="Sprite2D" parent="." unique_id=1575762953]
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("2_8v4sb")
+
+[node name="RippleSprite" type="Sprite2D" parent="." unique_id=1500531261]
+texture = SubResource("PlaceholderTexture2D_2fqos")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=781280993]
+shape = SubResource("CircleShape2D_2fqos")
