@@ -43,7 +43,7 @@ func _ready() -> void:
 
 	var ripple_trap = SPREADING_RIPPLES_SCENE.instantiate()
 	add_child(ripple_trap)
-	ripple_trap.activate(Vector2(300, 300), 100.0)
+	ripple_trap.activate(Vector2(300, 300), 150.0)
 
 
 func on_player_hit(damage: int) -> void:
@@ -54,8 +54,8 @@ func on_player_hit(damage: int) -> void:
 	camera.shake_cam()
 	player.health = max(player.health - damage, 0.0)
 	health_label.text = "Health: %d" % player.health
-	#if player.health <= 0.0:
-	#print("玩家死掉了！")
+	if player.health <= 0.0:
+		print("玩家死掉了！")
 
 
 func _on_energyball_collected() -> void:
