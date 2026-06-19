@@ -23,6 +23,7 @@ config/icon="res://icon.svg"
 
 GlobalSignal="*res://Scripts/global_signal.gd"
 ApiServer="*res://Scripts/api_server/api_server.gd"
+NetworkManager="*res://Scripts/network_manager.gd"
 
 [display]
 
