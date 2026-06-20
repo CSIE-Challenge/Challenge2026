@@ -22,6 +22,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 GlobalSignal="*res://Scripts/global_signal.gd"
+ApiServer="*res://Scripts/api_server/api_server.gd"
 
 [display]
 
