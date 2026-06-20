@@ -12,6 +12,18 @@ from .transport import Transport
 T = TypeVar("T")
 
 
+class ApiError(Exception):
+    def __init__(self, code: int) -> None:
+        super().__init__(f"server returned error code {code}")
+        self.code = code
+
+
+def _unwrap(response: dict) -> Any:
+    if response.get("status") == protocol.Status.ERROR:
+        raise ApiError(response.get("code", protocol.Code.ILLFORMED))
+    return response.get("data")
+
+
 class GameClientBase:
     def __init__(self, token: str, host: str = "127.0.0.1", port: int = 7749) -> None:
         self._token = token
@@ -56,14 +68,15 @@ class GameClientBase:
 
     # --- layer 6: game commands (skeleton) -----------------------------------
 
+    def _call(self, cmd: str, args: dict[str, Any] | None = None) -> Any:
+        """Send a command, block for the reply, and unwrap it (raises ApiError)."""
+        assert self._rpc is not None, "not connected"
+        return _unwrap(self._submit(self._rpc.call(cmd, args)))
+
     def ping(self) -> Any:
         """Round-trip through every layer; returns the server's "pong"."""
-        assert self._rpc is not None, "not connected"
-        response = self._submit(self._rpc.call(protocol.Cmd.PING))
-        return response.get("data")
+        return self._call(protocol.Cmd.PING)
 
     def get_energy(self) -> int:
         """Read the current energy amount from the game."""
-        assert self._rpc is not None, "not connected"
-        response = self._submit(self._rpc.call(protocol.Cmd.GET_ENERGY))
-        return response.get("data")
+        return self._call(protocol.Cmd.GET_ENERGY)
