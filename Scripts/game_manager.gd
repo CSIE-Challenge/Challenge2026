@@ -51,8 +51,6 @@ func _ready() -> void:
 	_spawn_agents()
 
 
-# Spin up one GameAgent per configured seat. Each owns its own connection and
-# command table; binding to `game` lets its handlers read world state.
 func _spawn_agents() -> void:
 	for seat_name: String in AGENT_SEATS:
 		var agent := GameAgent.new()
