@@ -45,6 +45,23 @@ func _ready() -> void:
 	add_child(ripple_trap)
 	ripple_trap.activate(Vector2(300, 300), 150.0)
 
+	# Register this scene's API commands
+	_register_api_commands()
+
+
+# Create one handler per API.
+func _register_api_commands() -> void:
+	ApiServer.register_command("get_energy", _api_get_energy)
+
+
+func _exit_tree() -> void:
+	ApiServer.unregister_owner(self)
+
+
+# Example API handler
+func _api_get_energy(_args: Dictionary) -> Dictionary:
+	return ApiServer.ok(energy_amount)
+
 
 func on_player_hit(damage: int) -> void:
 	if player_invincible:
