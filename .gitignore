@@ -11,6 +11,8 @@
 # misc
 .DS_Store
 .python-version
+!agent/.python-version
 
 /export/
 __pycache__/
+.ruff_cache/
