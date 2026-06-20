@@ -24,9 +24,11 @@ config/icon="res://icon.svg"
 Global="*res://Scripts/global.gd"
 ApiServer="*res://Scripts/api_server/api_server.gd"
 NetworkManager="*res://Scripts/network_manager.gd"
+SceneTransition="*uid://c0ld3cep1ugxl"
 
 [display]
 
+window/size/mode=2
 window/size/window_width_override=1152
 window/size/window_height_override=648
 window/stretch/mode="canvas_items"

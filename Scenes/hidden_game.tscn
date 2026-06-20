@@ -1,0 +1,171 @@
+[gd_scene format=3 uid="uid://dr7u7lt2gd2oa"]
+
+[ext_resource type="Script" uid="uid://4yhcryfq35n7" path="res://Scenes/hidden_game_controller.gd" id="1_ebyp3"]
+[ext_resource type="Texture2D" uid="uid://dle4xt8upfg42" path="res://Shapes/Square.svg" id="1_tfqsm"]
+[ext_resource type="Script" uid="uid://c2saqsv8nauva" path="res://Scripts/coconut_controller.gd" id="2_ebyp3"]
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="3_pger8"]
+[ext_resource type="Script" uid="uid://dmyyttuaerqgk" path="res://Scripts/boss_controller.gd" id="5_pger8"]
+[ext_resource type="PackedScene" uid="uid://crsaundxxrh0o" path="res://Scenes/attack_ball.tscn" id="6_qncmu"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qncmu"]
+size = Vector2(135, 135)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_plgjo"]
+radius = 13.5
+
+[sub_resource type="Curve" id="Curve_ebyp3"]
+_data = [Vector2(0.16312057, 1), 0.0, 0.0, 0, 0, Vector2(0.5283688, 0.5048715), -1.5645216, -1.5645216, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_pger8"]
+offsets = PackedFloat32Array(0, 0.39344263, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ebyp3"]
+radius = 68.007355
+
+[node name="hidden_game" type="Control" unique_id=18491525]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ebyp3")
+
+[node name="Panel" type="Panel" parent="." unique_id=558493639]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Stage" type="Node2D" parent="Panel" unique_id=1261095101]
+position = Vector2(576, 324)
+
+[node name="Walls" type="Node2D" parent="Panel/Stage" unique_id=907066595]
+position = Vector2(0, 100)
+scale = Vector2(0.8, 0.8)
+
+[node name="RightWall" type="StaticBody2D" parent="Panel/Stage/Walls" unique_id=963409430]
+position = Vector2(250, 0)
+scale = Vector2(0.1, 3.6)
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Panel/Stage/Walls/RightWall" unique_id=2091655395]
+shape = SubResource("RectangleShape2D_qncmu")
+
+[node name="Sprite2D" type="Sprite2D" parent="Panel/Stage/Walls/RightWall" unique_id=40708392]
+modulate = Color(1, 1, 1, 0.2509804)
+texture = ExtResource("1_tfqsm")
+
+[node name="LeftWall" type="StaticBody2D" parent="Panel/Stage/Walls" unique_id=800365782]
+position = Vector2(-250, 0)
+scale = Vector2(0.1, 3.6)
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Panel/Stage/Walls/LeftWall" unique_id=786614015]
+shape = SubResource("RectangleShape2D_qncmu")
+
+[node name="Sprite2D" type="Sprite2D" parent="Panel/Stage/Walls/LeftWall" unique_id=1792312663]
+modulate = Color(1, 1, 1, 0.2509804)
+texture = ExtResource("1_tfqsm")
+
+[node name="UpWall" type="StaticBody2D" parent="Panel/Stage/Walls" unique_id=1943974707]
+position = Vector2(0, 250)
+rotation = 1.5707964
+scale = Vector2(0.1, 3.6)
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Panel/Stage/Walls/UpWall" unique_id=339149447]
+shape = SubResource("RectangleShape2D_qncmu")
+
+[node name="Sprite2D" type="Sprite2D" parent="Panel/Stage/Walls/UpWall" unique_id=2064223693]
+modulate = Color(1, 1, 1, 0.2509804)
+texture = ExtResource("1_tfqsm")
+
+[node name="DownWall" type="StaticBody2D" parent="Panel/Stage/Walls" unique_id=452468499]
+position = Vector2(0, -250)
+rotation = 1.5707964
+scale = Vector2(0.1, 3.6)
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Panel/Stage/Walls/DownWall" unique_id=1023714697]
+shape = SubResource("RectangleShape2D_qncmu")
+
+[node name="Sprite2D" type="Sprite2D" parent="Panel/Stage/Walls/DownWall" unique_id=297151584]
+modulate = Color(1, 1, 1, 0.2509804)
+texture = ExtResource("1_tfqsm")
+
+[node name="coconut" type="CharacterBody2D" parent="Panel/Stage" unique_id=1812759276]
+position = Vector2(137, 220)
+collision_mask = 2
+motion_mode = 1
+script = ExtResource("2_ebyp3")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Panel/Stage/coconut" unique_id=499880627]
+shape = SubResource("CircleShape2D_plgjo")
+
+[node name="ShadowSprite" type="Sprite2D" parent="Panel/Stage/coconut" unique_id=302972566]
+modulate = Color(0, 0, 0, 1)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("3_pger8")
+
+[node name="BodySprite" type="Sprite2D" parent="Panel/Stage/coconut" unique_id=832913162]
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("3_pger8")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="Panel/Stage/coconut" unique_id=1255809617]
+emitting = false
+amount = 50
+texture = ExtResource("3_pger8")
+lifetime = 0.5
+one_shot = true
+explosiveness = 1.0
+randomness = 1.0
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 100.0
+initial_velocity_max = 250.0
+damping_min = 10.0
+damping_max = 50.0
+scale_amount_curve = SubResource("Curve_ebyp3")
+color_ramp = SubResource("Gradient_pger8")
+
+[node name="boss" type="Node2D" parent="Panel/Stage" unique_id=560461437]
+position = Vector2(0, -200)
+script = ExtResource("5_pger8")
+
+[node name="Sprites" type="Node" parent="Panel/Stage/boss" unique_id=1553538597]
+
+[node name="square" type="Sprite2D" parent="Panel/Stage/boss/Sprites" unique_id=1992438912]
+modulate = Color(1, 0, 0, 1)
+position = Vector2(580, 254)
+texture = ExtResource("1_tfqsm")
+
+[node name="circle" type="Sprite2D" parent="Panel/Stage/boss/Sprites" unique_id=1995987887]
+modulate = Color(1, 0, 0, 1)
+position = Vector2(577, 130)
+texture = ExtResource("3_pger8")
+
+[node name="damagefield" type="Area2D" parent="Panel/Stage/boss" unique_id=1099580206]
+position = Vector2(11, 30)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Panel/Stage/boss/damagefield" unique_id=4160317]
+position = Vector2(-247, 26)
+shape = SubResource("CircleShape2D_ebyp3")
+
+[node name="Sprite2D" type="Sprite2D" parent="Panel/Stage/boss/damagefield/CollisionShape2D" unique_id=60473123]
+modulate = Color(1, 0.4117647, 1, 1)
+texture = ExtResource("3_pger8")
+
+[node name="attack_ball" parent="Panel/Stage" unique_id=1322022260 instance=ExtResource("6_qncmu")]
+position = Vector2(-18, 136)
+
+[node name="Timer" type="Timer" parent="." unique_id=1395498405]
+autostart = true
+
+[connection signal="body_entered" from="Panel/Stage/boss/damagefield" to="Panel/Stage/coconut" method="_on_damagefield_body_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://oyyf5rhi4hx8"]
+
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="1_h36bs"]
+[ext_resource type="Script" uid="uid://btgmvivsyx30y" path="res://Scripts/attack_dot.gd" id="2_ipb0n"]
+
+[node name="attack_dot" type="Sprite2D" unique_id=339811047]
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("1_h36bs")
+script = ExtResource("2_ipb0n")

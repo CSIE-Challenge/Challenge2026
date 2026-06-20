@@ -48,11 +48,81 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "start"
 
+[node name="AboutButtom" type="Button" parent="Panel/VBoxContainer" unique_id=2043309010]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "about"
+
 [node name="QuitButton" type="Button" parent="Panel/VBoxContainer" unique_id=1642981513]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "quit"
 
+[node name="invisible" type="Button" parent="Panel" unique_id=1778200500]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -72.0
+offset_top = -31.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "invisible"
+
+[node name="AboutPanel" type="Panel" parent="Panel" unique_id=595161541]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 64.0
+offset_top = 55.0
+offset_right = -64.0
+offset_bottom = -55.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Panel/AboutPanel" unique_id=1257272971]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 66.0
+offset_top = 51.0
+offset_right = -66.0
+offset_bottom = -51.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/normal_font_size = 50
+bbcode_enabled = true
+text = "人名
+人名
+好長的人名
+人名
+人名
+人名
+人名"
+horizontal_alignment = 1
+
+[node name="CloseButton" type="Button" parent="Panel/AboutPanel" unique_id=1227301494]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -48.0
+offset_top = -31.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "close"
+
 [connection signal="button_up" from="Panel/VBoxContainer/StartButton" to="." method="_on_start_button_button_up"]
+[connection signal="button_up" from="Panel/VBoxContainer/AboutButtom" to="." method="_on_about_buttom_button_up"]
 [connection signal="button_up" from="Panel/VBoxContainer/QuitButton" to="." method="_on_quit_button_button_up"]
+[connection signal="button_up" from="Panel/invisible" to="." method="_on_invisible_button_up"]
+[connection signal="button_up" from="Panel/AboutPanel/CloseButton" to="." method="_on_close_button_button_up"]

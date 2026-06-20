@@ -16,3 +16,6 @@
 /export/
 __pycache__/
 .ruff_cache/
+
+# Godot temp save files
+*.tmp
