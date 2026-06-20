@@ -10,8 +10,6 @@ var pending_peers: Array[PendingPeer] = []
 var authing_peers: Array[WebSocketPeer] = []
 var used_token: Dictionary[String, WebSocketConnection] = {}
 
-var _command_handlers: Dictionary[String, Callable] = {}
-
 #region Initialization
 
 
@@ -23,18 +21,6 @@ func _ready() -> void:
 	var server_listen_ret = listen()
 	assert(server_listen_ret == OK)
 	print("[API Server] Listening to port: ", port)
-
-	# A connectivity health-check.
-	register_command("ping", _cmd_ping)
-
-	var conn := register_connection()
-	add_child(conn)
-	conn.received_text.connect(_on_received_text.bind(conn))
-	print("[API Server] token: ", conn.get_token())
-
-
-func _cmd_ping(_args: Dictionary) -> Dictionary:
-	return ok("pong")
 
 
 #endregion
@@ -153,7 +139,7 @@ func auth_connection(ws: WebSocketPeer) -> WebSocketConnection:
 			var conn = used_token[token]
 			if is_instance_valid(conn):
 				if not conn.is_client_connected():
-					ws.send_text("Connection OK. ")
+					ws.send_text("Connection OK. Have Fun!")
 					return conn
 				ws.send_text("Already connected.")
 				return null
@@ -164,43 +150,13 @@ func auth_connection(ws: WebSocketPeer) -> WebSocketConnection:
 #endregion
 
 
-#region Command registry + dispatch
-# Response builders so handlers stay one-liners. The server fills in "id".
+#region Response envelope helpers
+# Builders so command handlers stay one-liners; the agent fills in "id".
+# These live here (platform side) because the envelope shape is game-agnostic.
 static func ok(data: Variant = null) -> Dictionary:
 	return {"status": "ok", "data": data}
 
 
 static func err(code: int) -> Dictionary:
 	return {"status": "error", "code": code}
-
-
-# Called by game_manager.gd to plug in a command.
-func register_command(name: String, handler: Callable) -> void:
-	_command_handlers[name] = handler
-
-
-func unregister_owner(owner: Object) -> void:
-	for name: String in _command_handlers.keys():
-		if _command_handlers[name].get_object() == owner:
-			_command_handlers.erase(name)
-
-
-func _on_received_text(msg: String, conn: WebSocketConnection) -> void:
-	# Deserialize, then look the command up in the registry and call it.
-	var data: Variant = JSON.parse_string(msg)
-	if typeof(data) != TYPE_DICTIONARY:
-		conn.send_text(JSON.stringify(err(400)))
-		return
-
-	var req_id: Variant = data.get("id")
-	var cmd: String = data.get("cmd", "")
-	var args: Variant = data.get("args", {})
-	if typeof(args) != TYPE_DICTIONARY:
-		args = {}
-
-	# is_valid() also covers a handler whose owning node was freed (scene change).
-	var handler: Callable = _command_handlers.get(cmd, Callable())
-	var response: Dictionary = handler.call(args) if handler.is_valid() else err(404)
-	response["id"] = req_id
-	conn.send_text(JSON.stringify(response))
 #endregion

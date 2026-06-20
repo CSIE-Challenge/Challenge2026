@@ -3,6 +3,9 @@ extends Node2D
 const MINE_TRAP_SCENE = preload("res://Scenes/mine_trap.tscn")
 const SPREADING_RIPPLES_SCENE = preload("res://Scenes/spreading_ripples.tscn")
 const ENERGY_GAIN_PER_BALL = 10
+# Seats driven by a remote agent. The human plays directly on the keyboard, so
+# only agent seats need wiring: add a name here to add an agent (1 agent for now).
+const AGENT_SEATS: Array[String] = ["Agent1"]
 
 @export var player: CharacterBody2D
 @export var camera: Camera2D
@@ -45,22 +48,17 @@ func _ready() -> void:
 	add_child(ripple_trap)
 	ripple_trap.activate(Vector2(300, 300), 150.0)
 
-	# Register this scene's API commands
-	_register_api_commands()
+	_spawn_agents()
 
 
-# Create one handler per API.
-func _register_api_commands() -> void:
-	ApiServer.register_command("get_energy", _api_get_energy)
-
-
-func _exit_tree() -> void:
-	ApiServer.unregister_owner(self)
-
-
-# Example API handler
-func _api_get_energy(_args: Dictionary) -> Dictionary:
-	return ApiServer.ok(energy_amount)
+# Spin up one GameAgent per configured seat. Each owns its own connection and
+# command table; binding to `game` lets its handlers read world state.
+func _spawn_agents() -> void:
+	for seat_name: String in AGENT_SEATS:
+		var agent := GameAgent.new()
+		agent.name = seat_name
+		agent.game = self
+		add_child(agent)
 
 
 func on_player_hit(damage: int) -> void:
