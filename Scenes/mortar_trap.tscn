@@ -1,6 +1,9 @@
-[gd_scene format=3 uid="uid://c02snjd44u3q4"]
+[gd_scene format=3 uid="uid://nsmu2wjdd5ch"]
+
+[ext_resource type="Script" uid="uid://k7t2jgtcpypv" path="res://Scripts/mortar_trap.gd" id="1_kwi2t"]
 
 [node name="MortarTrap" type="Node2D" unique_id=1443506904]
+script = ExtResource("1_kwi2t")
 
 [node name="Shell" type="Sprite2D" parent="." unique_id=1326917978]
 

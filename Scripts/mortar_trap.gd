@@ -16,7 +16,7 @@ var flying: bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	activate(Vector2(100, 500), Vector2(1000, 500), 2.0)
+	pass
 
 
 func _process(delta: float) -> void:

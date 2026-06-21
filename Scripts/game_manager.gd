@@ -1,6 +1,6 @@
 extends Node2D
 
-const ENERGY_GAIN_PER_BALL = 10
+@export var energy_gain_per_ball: int = 10
 # Seats driven by a remote agent. The human plays directly on the keyboard, so
 # only agent seats need wiring: add a name here to add an agent (1 agent for now).
 const AGENT_SEATS: Array[String] = ["Agent1"]
@@ -42,6 +42,10 @@ func _ready() -> void:
 
 	_spawn_agents()
 
+	var mortar_trap = MORTAR_SCENE.instantiate()
+	add_child(mortar_trap)
+	mortar_trap.activate(Vector2(-250, 100), Vector2(1, 0.2), 1.0)
+
 
 func _spawn_agents() -> void:
 	for seat_name: String in AGENT_SEATS:
@@ -66,7 +70,7 @@ func on_player_hit(damage: int) -> void:
 func _on_energyball_collected() -> void:
 	energy_ball_count += 1
 	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
-	NetworkManager.request_add_energy(ENERGY_GAIN_PER_BALL, "energy_ball")
+	NetworkManager.request_add_energy(energy_gain_per_ball, "energy_ball")
 
 
 func _player_become_invincible() -> void:
