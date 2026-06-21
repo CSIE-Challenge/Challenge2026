@@ -13,6 +13,7 @@ const AGENT_SEATS: Array[String] = ["Agent1"]
 @export var shotgun_trap_scene := preload("res://Scenes/shotgun_trap.tscn")
 @export var energy_balls_label: Label
 @export var energy_bar_label: Label
+@export var opponent_energy_bar_label: Label
 @export var energy_increase_period: int
 @export var energy_ball_spawn_period: int
 @export var player_invincibility_time: float
@@ -31,9 +32,11 @@ func _ready() -> void:
 	GlobalSignal.player_hit.connect(on_player_hit)
 	GlobalSignal.energyball_collected.connect(_on_energyball_collected)
 	player_invincibility_timer.timeout.connect(_on_player_invincibility_timer_timeout)
+	NetworkManager.energy_changed.connect(_on_network_energy_changed)
 	health_label.text = "Health: %d" % player.max_health
 	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
-	energy_bar_label.text = "Energy Bar: %d" % energy_amount
+	_update_energy_label()
+	_update_opponent_energy_label(0, 0)
 	energy_increase_timer.wait_time = energy_increase_period
 
 	var shotgun_trap = shotgun_trap_scene.instantiate()
@@ -74,8 +77,7 @@ func on_player_hit(damage: int) -> void:
 func _on_energyball_collected() -> void:
 	energy_ball_count += 1
 	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
-	energy_amount += ENERGY_GAIN_PER_BALL
-	energy_bar_label.text = "Energy Bar: %d" % energy_amount
+	NetworkManager.request_add_energy(ENERGY_GAIN_PER_BALL, "energy_ball")
 
 
 func _player_become_invincible() -> void:
@@ -90,5 +92,24 @@ func _on_player_invincibility_timer_timeout() -> void:
 
 
 func _on_energy_increase_timer_timeout() -> void:
-	energy_amount += 1
-	energy_bar_label.text = "Energy Bar: %d" % energy_amount
+	NetworkManager.request_add_energy(1, "passive_regeneration")
+
+
+func _on_network_energy_changed(peer_id: int, energy: int) -> void:
+	if peer_id == multiplayer.get_unique_id():
+		energy_amount = energy
+		_update_energy_label()
+		return
+
+	_update_opponent_energy_label(peer_id, energy)
+
+
+func _update_energy_label() -> void:
+	energy_bar_label.text = "My Energy: %d" % energy_amount
+
+
+func _update_opponent_energy_label(peer_id: int, energy: int) -> void:
+	if peer_id == 0:
+		opponent_energy_bar_label.text = "Opponent Energy: waiting"
+		return
+	opponent_energy_bar_label.text = "Opponent Energy (%d): %d" % [peer_id, energy]

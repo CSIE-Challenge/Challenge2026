@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://blesmlfba01ny" path="res://Scenes/trap_icefloor.tscn" id="3_1qnfl"]
 [ext_resource type="PackedScene" uid="uid://d0xq1elehua3l" path="res://Scenes/electric_ring.tscn" id="5_r8bcl"]
 [ext_resource type="PackedScene" uid="uid://bn2r2n5iik0jg" path="res://Scenes/conveyor.tscn" id="7_1qnfl"]
+[ext_resource type="Script" path="res://Scripts/energy_spend_test.gd" id="8_energy_test"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wbxth"]
 size = Vector2(135, 135)
@@ -28,12 +29,14 @@ shake_magnitude = 8.0
 [node name="ShakeTimer" type="Timer" parent="GameCamera" unique_id=931548460]
 
 [node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "camera", "health_label", "energy_balls_label", "energy_bar_label")]
+[node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "health_label", "energy_balls_label", "energy_bar_label", "opponent_energy_bar_label")]
 script = ExtResource("1_kwrm5")
 player = NodePath("../Stage/Player")
 camera = NodePath("../GameCamera")
 health_label = NodePath("../Stage/HealthLabel")
 energy_balls_label = NodePath("../HUD/EnergyBallsLabel")
 energy_bar_label = NodePath("../HUD/EnergyBarLabel")
+opponent_energy_bar_label = NodePath("../HUD/OpponentEnergyBarLabel")
 energy_increase_period = 1
 energy_ball_spawn_period = 1
 player_invincibility_time = 1.0
@@ -42,6 +45,8 @@ player_invincibility_time = 1.0
 autostart = true
 
 [node name="PlayerInvincibilityTimer" type="Timer" parent="GameManager" unique_id=1398851901]
+[node name="EnergySpendTest" type="Node" parent="GameManager"]
+script = ExtResource("8_energy_test")
 
 [node name="Stage" type="Node2D" parent="." unique_id=1447728601]
 position = Vector2(576, 324)
@@ -156,6 +161,14 @@ offset_top = 56.0
 offset_right = 241.0
 offset_bottom = 90.0
 theme_override_font_sizes/font_size = 24
-text = "Energy Bar: 0"
+text = "My Energy: 0"
+
+[node name="OpponentEnergyBarLabel" type="Label" parent="HUD"]
+offset_left = 21.0
+offset_top = 96.0
+offset_right = 421.0
+offset_bottom = 130.0
+theme_override_font_sizes/font_size = 24
+text = "Opponent Energy: waiting"
 
 [connection signal="timeout" from="GameManager/EnergyIncreaseTimer" to="GameManager" method="_on_energy_increase_timer_timeout"]

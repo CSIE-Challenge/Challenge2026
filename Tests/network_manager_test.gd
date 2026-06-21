@@ -4,7 +4,12 @@ const NetworkManagerScript = preload("res://Scripts/network_manager.gd")
 
 
 func _init() -> void:
+	_run_tests.call_deferred()
+
+
+func _run_tests() -> void:
 	var network_manager = NetworkManagerScript.new()
+	root.add_child(network_manager)
 
 	_assert(network_manager.can_accept_more_clients(0), "server should accept first client")
 	_assert(network_manager.can_accept_more_clients(1), "server should accept second client")
@@ -25,8 +30,27 @@ func _init() -> void:
 	_assert_eq(network_manager.get_server_port(["--port", "8888"]), 8888)
 	_assert_eq(network_manager.get_server_port(["--port=9999"]), 9999)
 
+	var peer_id: int = network_manager.multiplayer.get_unique_id()
+	var rejected_reasons: Array[String] = []
+	network_manager.energy_rejected.connect(
+		func(_rejected_peer_id: int, reason: String) -> void: rejected_reasons.append(reason)
+	)
+
+	network_manager.request_add_energy(10, "test_ball")
+	_assert_eq(network_manager.get_energy(peer_id), 10, "energy should increase")
+	network_manager.request_add_energy(200, "test_cap")
+	_assert_eq(network_manager.get_energy(peer_id), 100, "energy should be capped")
+	_assert(network_manager._server_spend_energy(peer_id, 30, "test_trap"), "spend should pass")
+	_assert_eq(network_manager.get_energy(peer_id), 70, "energy should decrease")
+	_assert(
+		not network_manager._server_spend_energy(peer_id, 80, "test_rejection"),
+		"overspending should fail"
+	)
+	_assert_eq(network_manager.get_energy(peer_id), 70, "rejected spend should preserve energy")
+	_assert_eq(rejected_reasons.size(), 1, "rejected spend should emit once")
+
 	print("NetworkManager tests passed")
-	network_manager.free()
+	network_manager.queue_free()
 	quit(0)
 
 
