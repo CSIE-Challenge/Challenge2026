@@ -15,6 +15,10 @@ func _init() -> void:
 
 
 func _start_test() -> void:
+	var api_server := root.get_node_or_null("ApiServer")
+	if api_server != null and api_server.tcp_server.is_listening():
+		api_server.tcp_server.stop()
+
 	network_manager = root.get_node("NetworkManager")
 	role = _find_arg_value(OS.get_cmdline_user_args(), "--test-role")
 	if role not in ["server", "add", "observe"]:

@@ -27,8 +27,7 @@ shake_magnitude = 8.0
 
 [node name="ShakeTimer" type="Timer" parent="GameCamera" unique_id=931548460]
 
-[node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "camera", "health_label", "energy_balls_label", "energy_bar_label")]
-[node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "health_label", "energy_balls_label", "energy_bar_label", "opponent_energy_bar_label")]
+[node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "camera", "health_label", "energy_balls_label", "energy_bar_label", "opponent_energy_bar_label")]
 script = ExtResource("1_kwrm5")
 player = NodePath("../Stage/Player")
 camera = NodePath("../GameCamera")
@@ -44,8 +43,6 @@ player_invincibility_time = 1.0
 autostart = true
 
 [node name="PlayerInvincibilityTimer" type="Timer" parent="GameManager" unique_id=1398851901]
-[node name="EnergySpendTest" type="Node" parent="GameManager"]
-script = ExtResource("8_energy_test")
 
 [node name="Stage" type="Node2D" parent="." unique_id=1447728601]
 position = Vector2(576, 324)
