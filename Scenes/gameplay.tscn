@@ -9,7 +9,6 @@
 [ext_resource type="PackedScene" uid="uid://blesmlfba01ny" path="res://Scenes/trap_icefloor.tscn" id="3_1qnfl"]
 [ext_resource type="PackedScene" uid="uid://d0xq1elehua3l" path="res://Scenes/electric_ring.tscn" id="5_r8bcl"]
 [ext_resource type="PackedScene" uid="uid://bn2r2n5iik0jg" path="res://Scenes/conveyor.tscn" id="7_1qnfl"]
-[ext_resource type="Script" path="res://Scripts/energy_spend_test.gd" id="8_energy_test"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wbxth"]
 size = Vector2(135, 135)
