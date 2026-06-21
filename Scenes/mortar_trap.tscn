@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://c02snjd44u3q4"]
+
+[node name="MortarTrap" type="Node2D" unique_id=1443506904]
+
+[node name="Shell" type="Sprite2D" parent="." unique_id=1326917978]
+
+[node name="Shadow" type="Sprite2D" parent="." unique_id=1302802765]
