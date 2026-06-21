@@ -51,3 +51,5 @@ func _on_body_entered(body: Node2D) -> void:
 
 		# 4. 圓點生成後，本體即可安全銷毀
 		queue_free()
+	if body.is_in_group("walls"):
+		queue_free()

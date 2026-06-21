@@ -27,7 +27,7 @@ func die():
 	if not can_move:  # 防止重複觸發死亡
 		return
 	can_move = false
-	$CollisionShape2D.disabled = true
+	$CollisionShape2D.set_deferred("disabled", true)
 
 	var die_tween: Tween = create_tween().set_parallel(true)
 	die_tween.tween_property(body_sprite, "modulate:a", 0.0, 0.2)
@@ -37,6 +37,7 @@ func die():
 	cpu_particle.emitting = true
 
 	await get_tree().create_timer(cpu_particle.lifetime).timeout
+	SceneTransition.transition_to("res://Scenes/hidden_game.tscn")
 	queue_free()
 
 

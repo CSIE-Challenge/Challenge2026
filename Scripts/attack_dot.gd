@@ -114,6 +114,7 @@ func _create_slash_effect(hit_pos: Vector2) -> void:
 
 	# 使用 Tween 進行動畫 (將 Tween 繫結在 self 上，此時 self 尚未銷毀，可以安全運作)
 	var tween = create_tween()
+	boss_node.deal_damage(1)
 
 	# 階段一：兩條線同步從長度 0 快速延伸到目標長度
 	(
