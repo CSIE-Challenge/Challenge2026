@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://k7t2jgtcpypv" path="res://Scripts/mortar_trap.gd" id="1_kwi2t"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_rqlhk"]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_rqlhk"]
+
 [node name="MortarTrap" type="Node2D" unique_id=1443506904]
 script = ExtResource("1_kwi2t")
 
@@ -16,3 +18,8 @@ scale = Vector2(0.2, 0.2)
 texture = ExtResource("2_rqlhk")
 
 [node name="Explosion" type="AnimatedSprite2D" parent="." unique_id=1323467545]
+
+[node name="ExplosionArea" type="Area2D" parent="." unique_id=265339939]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ExplosionArea" unique_id=1411914560]
+shape = SubResource("CircleShape2D_rqlhk")

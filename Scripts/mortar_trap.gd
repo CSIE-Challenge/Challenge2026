@@ -1,7 +1,7 @@
 extends Node2D
 
 @export var max_height: float = 300.0
-@export var gravity: float = 300.0
+@export var gravity: float = 200.0
 @export var test_player: CharacterBody2D
 @export var explosion_max_radius: float = 100.0
 @export var explosion_expand_speed: float = 400.0
@@ -23,12 +23,15 @@ var explosion_radius: float = 0.0
 @onready var shell: Sprite2D = $Shell
 @onready var shadow: Sprite2D = $Shadow
 @onready var explosion: AnimatedSprite2D = $Explosion
+@onready var explosion_area: Area2D = $ExplosionArea
+@onready var explosion_shape: CollisionShape2D = $ExplosionArea/CollisionShape2D
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	explosion.visible = false
 	explosion.animation_finished.connect(_on_explosion_finished)
+
 	shell.z_index = 1
 	shadow.z_index = 0
 
@@ -52,6 +55,13 @@ func _process(delta: float) -> void:
 		if explosion_radius >= explosion_max_radius:
 			queue_free()
 
+		#print(explosion_area.global_position)
+		#print(explosion_shape.shape.radius)
+		#print(end_pos)
+		for body in explosion_area.get_overlapping_bodies():
+			if body.name == "Player":
+				GlobalSignal.player_hit.emit(damage)
+
 		queue_redraw()
 
 
@@ -70,6 +80,7 @@ func activate(
 	elapsed = 0.0
 	flying = true
 	exploding = false
+	explosion_area.monitoring = false
 
 	shell.global_position = start_pos
 	shadow.global_position = start_pos
@@ -79,6 +90,7 @@ func activate(
 
 
 func _on_explosion_finished():
+	explosion_area.monitoring = false
 	queue_free()
 
 
@@ -88,19 +100,16 @@ func explode() -> void:
 	shell.visible = false
 	shadow.visible = false
 
-	explosion.global_position = end_pos
+	var circle := explosion_shape.shape as CircleShape2D
+	circle.radius = explosion_max_radius
+	explosion_area.monitoring = true
+
 	explosion.visible = true
 	exploding = true
 	explosion_radius = 0.0
 
 	global_position = end_pos
-
-	if player == null:
-		player = test_player
-	var dist = player.global_position.distance_to(end_pos)
-
-	if dist <= explosion_max_radius:
-		GlobalSignal.player_hit.emit(damage)
+	# explosion.play()
 
 
 func _draw():
