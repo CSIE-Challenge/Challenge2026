@@ -14,3 +14,5 @@ texture = ExtResource("2_rqlhk")
 modulate = Color(0, 0, 0, 1)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("2_rqlhk")
+
+[node name="Explosion" type="AnimatedSprite2D" parent="." unique_id=1323467545]
