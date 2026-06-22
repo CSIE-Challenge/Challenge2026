@@ -107,6 +107,15 @@ texture = ExtResource("1_hf1ha")
 
 [node name="Player" type="CharacterBody2D" parent="SubViewport/Stage" unique_id=1716138881]
 position = Vector2(35, 35)
+=======
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stage/Walls/DownWall" unique_id=1079799114]
+shape = SubResource("RectangleShape2D_wbxth")
+
+[node name="Sprite2D" type="Sprite2D" parent="Stage/Walls/DownWall" unique_id=564104628]
+texture = ExtResource("1_hf1ha")
+
+[node name="Player" type="CharacterBody2D" parent="Stage" unique_id=377293463]
+>>>>>>> 7e1cbcb (feat: finished physics for mortar)
 collision_mask = 2
 motion_mode = 1
 script = ExtResource("2_m34ki")
@@ -128,6 +137,9 @@ texture = ExtResource("2_wbxth")
 
 [node name="BodySprite" type="Sprite2D" parent="SubViewport/Stage/Player" unique_id=842198229]
 z_index = 20
+=======
+[node name="BodySprite" type="Sprite2D" parent="Stage/Player" unique_id=1473244478]
+>>>>>>> 7e1cbcb (feat: finished physics for mortar)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("2_wbxth")
 

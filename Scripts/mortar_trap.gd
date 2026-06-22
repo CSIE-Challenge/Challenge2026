@@ -1,9 +1,11 @@
 extends Node2D
 
 @export var max_height: float = 300.0
+@export var gravity: float = 1000.0
 
 var start_pos: Vector2
 var end_pos: Vector2
+var velocity: Vector2
 
 var air_time: float = 2.0
 var elapsed: float = 0.0
@@ -16,7 +18,8 @@ var flying: bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass
+	shell.z_index = 1
+	shadow.z_index = 0
 
 
 func _process(delta: float) -> void:
@@ -25,17 +28,13 @@ func _process(delta: float) -> void:
 
 	elapsed += delta
 
-	var t = elapsed / air_time
-	t = clamp(t, 0.0, 1.0)
-	var ground_pos = start_pos.lerp(end_pos, t)
+	velocity.y += gravity * delta
 
-	shadow.global_position = ground_pos
+	shell.global_position += velocity * delta
 
-	var height = 4.0 * max_height * t * (1.0 - t)
+	shadow.global_position = Vector2(shell.global_position.x, end_pos.y)
 
-	shell.global_position = ground_pos + Vector2(0, -height)
-
-	if t >= 1.0:
+	if elapsed >= air_time:
 		flying = false
 		print("BOOM")
 
@@ -48,3 +47,9 @@ func activate(initial_position: Vector2, final_position: Vector2, flight_time: f
 
 	elapsed = 0.0
 	flying = true
+
+	shell.global_position = start_pos
+	shadow.global_position = start_pos
+	velocity.x = (end_pos.x - start_pos.x) / air_time
+
+	velocity.y = (end_pos.y - start_pos.y - 0.5 * gravity * air_time * air_time) / air_time
