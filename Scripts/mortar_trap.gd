@@ -55,7 +55,13 @@ func _process(delta: float) -> void:
 		queue_redraw()
 
 
-func activate(initial_position: Vector2, final_position: Vector2, flight_time: float) -> void:
+func activate(
+	initial_position: Vector2,
+	final_position: Vector2,
+	flight_time: float,
+	target_player: CharacterBody2D
+) -> void:
+	player = target_player
 	start_pos = initial_position
 	end_pos = final_position
 
@@ -93,11 +99,9 @@ func explode() -> void:
 	if player == null:
 		player = test_player
 	var dist = player.global_position.distance_to(end_pos)
-	print(player.global_position, dist)
 
 	if dist <= explosion_max_radius:
 		GlobalSignal.player_hit.emit(damage)
-		print("damage!")
 
 
 func _draw():
