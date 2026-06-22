@@ -27,7 +27,6 @@ var explosion_radius: float = 0.0
 @onready var explosion_shape: CollisionShape2D = $ExplosionArea/CollisionShape2D
 
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	explosion.visible = false
 	explosion.animation_finished.connect(_on_explosion_finished)
@@ -55,9 +54,6 @@ func _process(delta: float) -> void:
 		if explosion_radius >= explosion_max_radius:
 			queue_free()
 
-		#print(explosion_area.global_position)
-		#print(explosion_shape.shape.radius)
-		#print(end_pos)
 		for body in explosion_area.get_overlapping_bodies():
 			if body.name == "Player":
 				GlobalSignal.player_hit.emit(damage)
@@ -69,9 +65,7 @@ func activate(
 	initial_position: Vector2,
 	final_position: Vector2,
 	flight_time: float,
-	target_player: CharacterBody2D
 ) -> void:
-	player = target_player
 	start_pos = initial_position
 	end_pos = final_position
 

@@ -44,7 +44,7 @@ func _ready() -> void:
 
 	var mortar_trap = MORTAR_SCENE.instantiate()
 	add_child(mortar_trap)
-	mortar_trap.activate(Vector2(300, 300), Vector2(500, 300), 2.0, player)
+	mortar_trap.activate(Vector2(300, 300), Vector2(500, 300), 2.0)
 
 
 func _spawn_agents() -> void:
