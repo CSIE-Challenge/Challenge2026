@@ -1,0 +1,10 @@
+WARNING: res://Scenes/spreading_ripples.tscn:3 - ext_resource, invalid UID: uid://di3cgj2615ogj - using text path instead: res://Scripts/spreading_ripples.gd
+   at: load (scene/resources/resource_format_text.cpp:500)
+WARNING: res://Scenes/spreading_ripples.tscn:4 - ext_resource, invalid UID: uid://vcxnx51iemdf - using text path instead: res://Shaders/spreading_ripples_warning.gdshader
+   at: load (scene/resources/resource_format_text.cpp:500)
+WARNING: res://Scenes/shotgun_trap.tscn:3 - ext_resource, invalid UID: uid://bqb32q0kwnlqg - using text path instead: res://Scripts/shotgun_trap.gd
+   at: load (scene/resources/resource_format_text.cpp:500)
+SCRIPT ERROR: Assertion failed.
+   at: APIServer._ready (res://Scripts/api_server/api_server.gd:22)
+   GDScript backtrace (most recent call first):
+       [0] _ready (res://Scripts/api_server/api_server.gd:22)

@@ -3,6 +3,11 @@ extends Node2D
 const ATTACK_SWORD_SCENE = preload("res://Scenes/attack_sword.tscn")
 const FALLING_NOTE_SCENE = preload("res://Scenes/falling_note.tscn")
 
+const ROCKET_WARNING_SCENE = preload("res://Scenes/rocket_warning.tscn")
+const HOMING_ROCKET_SCENE = preload("res://Scenes/homing_rocket.tscn")
+
+const BOOMERANG_SCENE = preload("res://Scenes/boomerang.tscn")
+
 # 記錄 Boss 的初始待機位置，以便招式施展後歸位
 var original_position: Vector2
 var is_attacking: bool = false
@@ -43,28 +48,46 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
 		match event.keycode:
 			KEY_1:
-				print("觸發招式一：縮小場地")
 				rhythm_attack()
 			KEY_2:
-				print("觸發招式二：跳躍壓擊")
-				jump_slam_attack()
+				emit_rocket()
 			KEY_3:
-				print("觸發招式三：橫向掃擊")
-				sweep_attack()
+				emit_boomerang(1)
 			KEY_4:
-				print("觸發測試招式：環形飛劍攻擊")
 				test_sword_attack()
+			KEY_5:
+				emit_boomerang(2)
+			KEY_6:
+				print("測試招式：一排橫掃迴旋鏢 (模式一)")
+				emit_boomerang(1)
+			KEY_7:
+				print("測試招式：邊緣隨機狙擊迴旋鏢 (模式二)")
+				emit_boomerang(2)
+			KEY_8:
+				print("測試招式：四角十字交叉迴旋鏢 (模式三)")
+				emit_boomerang(3)
+			KEY_9:
+				print("測試招式：圓形向心收縮迴旋鏢 (模式四)")
+				emit_boomerang(4)
+			KEY_0:
+				print("測試招式：左右交替蛇形狙擊 (模式五)")
+				emit_boomerang(5)
 
 
 func rand_attack():
 	while true:
 		if not is_attacking:
-			var rand_val = randi_range(0, 1)
+			var rand_val = randi_range(0, 5)
 			match rand_val:
 				0:
 					rhythm_attack()
 				1:
 					test_sword_attack()
+				2:
+					emit_rocket()
+				3:
+					var rand_val2 = randi_range(1, 5)
+					emit_boomerang(rand_val2)
 		await get_tree().create_timer(0.5).timeout
 		while is_attacking:
 			await get_tree().create_timer(0.1).timeout
@@ -148,81 +171,164 @@ func rhythm_attack() -> void:
 	is_attacking = false
 
 
-# ==================== 招式二：跳躍壓擊 (Jump Slam Attack) ====================
-# Boss 向上飛出螢幕，鎖定玩家的 X 軸，接著從天而降砸向玩家，隨後回到原位。
-func jump_slam_attack() -> void:
+func emit_rocket() -> void:
 	if not player:
 		return
 	is_attacking = true
 
-	var tween = create_tween()
+	var walls = get_node("../Walls")
+	if walls:
+		walls.tween_box(Vector2(500, 500), Vector2(0, -100), 1.0)
 
-	# 1. 躍起：往上飛出螢幕外 (-600 像素)
-	(
-		tween
-		. tween_property(self, "position", position + Vector2(0, -600), 0.4)
-		. set_trans(Tween.TRANS_CUBIC)
-		. set_ease(Tween.EASE_IN)
-	)
-
-	# 2. 鎖定：在空中隱形移動到玩家正上方，稍微停頓
-	var target_x = player.position.x
-	tween.tween_callback(func(): position = Vector2(target_x, original_position.y - 600))
-	tween.tween_interval(0.25)
-
-	# 3. 下砸：快速砸向地面的玩家位置
-	var target_y = player.position.y
-	(
-		tween
-		. tween_property(self, "position", Vector2(target_x, target_y), 0.25)
-		. set_trans(Tween.TRANS_BOUNCE)
-		. set_ease(Tween.EASE_OUT)
-	)
-
-	# 4. 震地停頓
-	tween.tween_interval(0.4)
-
-	# 5. 歸位：飛回原本待機位置
-	(
-		tween
-		. tween_property(self, "position", original_position, 0.6)
-		. set_trans(Tween.TRANS_SINE)
-		. set_ease(Tween.EASE_IN_OUT)
-	)
-
-	await tween.finished
+	for i in range(4):
+		spawn_homing_rocket(randf_range(0, PI * 2), 200.0, 65.0, 1.5, 0.8)
+		await get_tree().create_timer(0.5).timeout
+	await get_tree().create_timer(3).timeout
+	if walls:
+		walls.reset_box(0.7)
 	is_attacking = false
 
 
-# ==================== 招式三：橫向掃擊 (Sweep Attack) ====================
-# Boss 移動到螢幕最左側外，然後平行橫掃到最右側外，最後回到原位。
-func sweep_attack() -> void:
+# 🌟 迴旋鏢招式管理器 (共 5 種精緻的彈幕幾何模式) 感謝偉大的gemini
+func emit_boomerang(mode: int) -> void:
+	if not is_instance_valid(player):
+		return
+
 	is_attacking = true
+	var walls = get_node_or_null("../Walls")
+	if not walls:
+		is_attacking = false
+		return
 
-	var tween = create_tween()
-	# 假設戰鬥邊界大約在 -250 到 250 之間
-	var left_start = Vector2(-350, original_position.y)
-	var right_end = Vector2(350, original_position.y)
+	var half = walls.current_half_size
+	var center = walls.position
 
-	# 1. 退場：移動到左側外準備
-	tween.tween_property(self, "position", left_start, 0.4).set_trans(Tween.TRANS_CUBIC).set_ease(
-		Tween.EASE_OUT
-	)
+	if mode == 1:
+		# 🌀 【模式一：右側一排橫掃】
+		# 均勻生成在右側牆外 60 像素處，向左飛越整個場地至左牆外，隨後折返飛回右側
+		var count = 5
+		var spawn_x = center.x + half.x + 60.0  # 🌟 推到右牆外側 60 像素
+		var start_y = center.y - half.y + 35.0
+		var end_y = center.y + half.y - 35.0
 
-	# 2. 橫掃：從左至右快速滑過螢幕
-	tween.tween_property(self, "position", right_end, 0.8).set_trans(Tween.TRANS_QUAD).set_ease(
-		Tween.EASE_IN_OUT
-	)
+		for i in range(count):
+			var spawn_y = start_y + (end_y - start_y) * (float(i) / (count - 1))
+			var spawn_pos = Vector2(spawn_x, spawn_y)
 
-	# 3. 歸位：從右側游回原本中心點
-	(
-		tween
-		. tween_property(self, "position", original_position, 0.5)
-		. set_trans(Tween.TRANS_CUBIC)
-		. set_ease(Tween.EASE_OUT)
-	)
+			# 飛行長度為：場地寬度 + 120 像素，確保能穿牆飛到左側外再折返
+			spawn_boomerang(
+				spawn_pos, Vector2(2.0, 2.0), 15.0, 0.6, 300.0, Vector2.LEFT, half.x * 2.0 + 120.0
+			)
+			await get_tree().create_timer(0.2).timeout
 
-	await tween.finished
+		await get_tree().create_timer(2.6).timeout
+
+	elif mode == 2:
+		# 🎯 【模式二：邊緣隨機狙擊】
+		# 每隔 0.8 秒，在場地外圍四面牆的外側 60 像素隨機選點生成，瞄準玩家當前位置射擊，共 8 個
+		var total_count = 8
+
+		for w in range(total_count):
+			if not is_instance_valid(player) or boss_hp <= 0:
+				break
+
+			var side = randi_range(0, 3)  # 0=上, 1=下, 2=左, 3=右
+			var spawn_pos = Vector2.ZERO
+			match side:
+				0:  # 上牆外側 60 像素
+					spawn_pos = (
+						center + Vector2(randf_range(-half.x + 30, half.x - 30), -half.y - 60)
+					)
+				1:  # 下牆外側 60 像素
+					spawn_pos = (
+						center + Vector2(randf_range(-half.x + 30, half.x - 30), half.y + 60)
+					)
+				2:  # 左牆外側 60 像素
+					spawn_pos = (
+						center + Vector2(-half.x - 60, randf_range(-half.y + 30, half.y - 30))
+					)
+				3:  # 右牆外側 60 像素
+					spawn_pos = (
+						center + Vector2(half.x + 60, randf_range(-half.y + 30, half.y - 30))
+					)
+
+			var target_dir = (player.position - spawn_pos).normalized()
+
+			# 飛距 550 像素確保能完全貫穿場地至另一側外
+			spawn_boomerang(spawn_pos, Vector2(2.0, 2.0), 18.0, 0.5, 250.0, target_dir, 550.0)
+			await get_tree().create_timer(0.8).timeout
+
+		await get_tree().create_timer(2.2).timeout
+
+	elif mode == 3:
+		# ⚔️ 【新模式三：四角狙擊交匯】 (全新動態鎖定)
+		# 同時在四個角落的牆外 60 像素生成 4 顆迴旋鏢
+		# 它們的發射方向全部鎖定「發射當下玩家的位置」，在其交點附近懸停，隨後折返
+		var player_target = player.position  # 鎖定當前玩家的座標
+		var corners = [
+			Vector2(-half.x - 60, -half.y - 60),  # 左上
+			Vector2(half.x + 60, -half.y - 60),  # 右上
+			Vector2(-half.x - 60, half.y + 60),  # 左下
+			Vector2(half.x + 60, half.y + 60)  # 右下
+		]
+
+		for i in range(4):
+			var spawn_pos = center + corners[i]
+			var dir = (player_target - spawn_pos).normalized()
+			# 飛行距離：剛好是到玩家位置的距離 + 40 像素 (確保穿透交點)
+			var dist = spawn_pos.distance_to(player_target) + 40.0
+
+			spawn_boomerang(spawn_pos, Vector2(1.05, 1.05), 16.0, 0.65, 380.0, dir, dist)
+
+		# 等待飛完並回收
+		await get_tree().create_timer(2.6).timeout
+
+	elif mode == 4:
+		# 🌀 【模式四：八方收縮圓形網】 (全新設計)
+		# 在場地外圍大圓（半徑為最大半寬高+90像素）上，均勻分佈生成 8 顆迴旋鏢
+		# 同時朝向場地中心合攏，在中心點聚集成一個旋轉圓環（絞肉機），隨後再向外折返散開
+		var count = 8
+		var radius = max(half.x, half.y) + 90.0  # 確保完全在牆外外側
+
+		for i in range(count):
+			var angle = (PI * 2.0 / count) * i
+			var dir = Vector2.from_angle(angle)
+			var spawn_pos = center + dir * radius
+
+			# 方向指向中心，即 -dir
+			var to_center_dir = -dir
+
+			# 飛行距離剛好為半徑，使它們在中心點聚攏成圓環
+			spawn_boomerang(spawn_pos, Vector2(1.0, 1.0), 18.0, 0.8, 320.0, to_center_dir, radius)
+
+		await get_tree().create_timer(2.8).timeout
+
+	elif mode == 5:
+		# 🌀 【新模式五：加特林螺旋風車】 (全新高頻螺旋)
+		# 均勻在場外圓周上，每隔 0.16 秒順時針發射一顆指向場地中心的迴旋鏢，共 8 顆
+		# 這會形成一條美麗的順時針螺旋向心收縮軌跡，在流光粒子下會像巨型旋轉風車一樣切割場地
+		var count = 16
+		var radius = max(half.x, half.y) + 90.0  # 確保完全在牆外
+
+		for i in range(count):
+			if not is_instance_valid(player) or boss_hp <= 0:
+				break
+
+			# 順時針計算生成角度與發射方向
+			var angle = (PI * 2.0 / count) * i
+			var spawn_dir = Vector2.from_angle(angle)
+			var spawn_pos = center + spawn_dir * radius
+			var to_center_dir = -spawn_dir
+
+			# 發射狙擊
+			var b_scale = Vector2(0.95, 0.95)
+			spawn_boomerang(spawn_pos, b_scale, 18.0, 0.5, 350.0, to_center_dir, radius)
+
+			# 高頻率極速連射
+			await get_tree().create_timer(0.16).timeout
+
+		await get_tree().create_timer(2.2).timeout
+
 	is_attacking = false
 
 
@@ -398,3 +504,61 @@ func test_sword_attack() -> void:
 	# 等待飛劍全部飛完並銷毀（約等待 1.0 秒 + 飛行時間 600/550 ≈ 1.1 秒 + 淡出 0.1 秒）
 	await get_tree().create_timer(2.4).timeout
 	is_attacking = false
+
+
+func spawn_homing_rocket(
+	angle: float,
+	init_speed: float,
+	explosion_radius: float,
+	explosion_duration: float,
+	warning_duration: float = 0.8,
+	custom_rocket_accel: float = 220.0
+) -> void:
+	var center_pos = Vector2(0, 100)
+	var radius = 320.0
+
+	if has_node("../Walls"):
+		var walls = get_node("../Walls")
+		center_pos = walls.position  # 🌟 局部座標
+		radius = max(walls.current_half_size.x, walls.current_half_size.y) + 120.0
+
+	var dir = Vector2.from_angle(angle)
+	var spawn_pos = center_pos + dir * radius  # 🌟 計算局部發射座標
+
+	# 1. 生成警告區域 (先 init 設定 position，後 add_child)
+	var warning = ROCKET_WARNING_SCENE.instantiate()
+	warning.init(spawn_pos, warning_duration)
+	get_parent().add_child(warning)
+
+	# 等待警告期結束
+	await get_tree().create_timer(warning_duration).timeout
+
+	# 安全性檢查
+	if not is_instance_valid(player) or boss_hp <= 0:
+		return
+
+	# 2. 實例化火箭 (先 init 設定 position，後 add_child)
+	var rocket = HOMING_ROCKET_SCENE.instantiate()
+	rocket.acceleration = custom_rocket_accel
+	rocket.init(spawn_pos, init_speed, explosion_radius, explosion_duration, player, damage_field)
+	get_parent().add_child(rocket)
+
+
+#
+func spawn_boomerang(
+	pos: Vector2,
+	init_scale: Vector2,
+	init_spin_velocity: float,
+	wait_time: float,
+	speed: float,
+	direction: Vector2,
+	init_range: float
+) -> void:
+	if not is_instance_valid(damage_field):
+		return
+
+	var boomerang = BOOMERANG_SCENE.instantiate()
+
+	# 🌟 先 init 傳入局部座標，後 add_child 載入到 damage_field
+	boomerang.init(pos, init_scale, init_spin_velocity, wait_time, speed, direction, init_range)
+	damage_field.add_child(boomerang)

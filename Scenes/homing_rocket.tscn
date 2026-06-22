@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://driyc1sc8jfal"]
+
+[ext_resource type="Script" uid="uid://djcdm6qw8rbnq" path="res://Scripts/homing_rocket.gd" id="1_fqq41"]
+[ext_resource type="Texture2D" uid="uid://dle4xt8upfg42" path="res://Shapes/Square.svg" id="1_jqli4"]
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_fqq41"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ybk2y"]
+
+[sub_resource type="Curve" id="Curve_l0typ"]
+_limits = [0.0, 5.0, 0.0, 1.0]
+_data = [Vector2(0, 2.5819306), 0.0, 0.0, 0, 0, Vector2(1, 5), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_qdqf6"]
+colors = PackedColorArray(1, 0, 0, 1, 1, 1, 0, 0)
+
+[node name="homing_rocket" type="Area2D" unique_id=186843866]
+collision_mask = 3
+script = ExtResource("1_fqq41")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=841553649]
+shape = SubResource("CircleShape2D_ybk2y")
+
+[node name="bodySprite" type="Sprite2D" parent="." unique_id=1712004041]
+modulate = Color(1, 0.43026784, 0.23595455, 1)
+position = Vector2(-9, 0)
+scale = Vector2(0.13333334, 0.10370372)
+texture = ExtResource("1_jqli4")
+
+[node name="headSprite" type="Sprite2D" parent="." unique_id=903893280]
+modulate = Color(1, 0.43137255, 0.23529412, 1)
+position = Vector2(0, 1.1920929e-07)
+scale = Vector2(0.1443299, 0.10309279)
+texture = ExtResource("2_fqq41")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="." unique_id=238758100]
+position = Vector2(-15, 0)
+amount = 15
+lifetime = 0.3
+direction = Vector2(-1, 0)
+spread = 15.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 80.0
+initial_velocity_max = 150.0
+scale_amount_min = 2.0
+scale_amount_max = 4.0
+scale_amount_curve = SubResource("Curve_l0typ")
+color_ramp = SubResource("Gradient_qdqf6")

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bk0s4eibd087b"]
 
-[ext_resource type="Script" uid="uid://c2etmmsys4rr1" path="res://Scenes/attack_sword.gd" id="1_0bsta"]
+[ext_resource type="Script" uid="uid://c2etmmsys4rr1" path="res://Scripts/attack_sword.gd" id="1_0bsta"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="1_w4s6t"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_0bsta"]

@@ -14,6 +14,7 @@ var attack_ball_scene = preload("res://Scenes/attack_ball.tscn")
 func _ready() -> void:
 	walls.tween_box(Vector2(400, 400), Vector2(0, 20), 1.0)
 	boss.boss_appear_animation()
+	await get_tree().create_timer(1.0).timeout
 	boss.rand_attack()
 
 

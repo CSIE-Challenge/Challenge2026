@@ -1,0 +1,34 @@
+[gd_scene format=3 uid="uid://bpyvepnmpsxqy"]
+
+[ext_resource type="Script" uid="uid://bu1xnjcu2kjnn" path="res://Scripts/rocket_explosion.gd" id="1_78rlg"]
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="1_qywif"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_78rlg"]
+radius = 67.74216
+
+[sub_resource type="Gradient" id="Gradient_3pcxf"]
+offsets = PackedFloat32Array(0, 0.1352459, 1)
+colors = PackedColorArray(1, 0, 0, 1, 1, 0.45775273, 0, 0.95300007, 1, 0.5281222, 0, 0.79600006)
+
+[node name="rocket_explosion" type="CollisionShape2D" unique_id=556988654]
+shape = SubResource("CircleShape2D_78rlg")
+script = ExtResource("1_78rlg")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=275787331]
+modulate = Color(1, 0.6326547, 0.20906562, 1)
+texture = ExtResource("1_qywif")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="." unique_id=1401400260]
+emitting = false
+amount = 30
+lifetime = 0.5
+one_shot = true
+explosiveness = 1.0
+direction = Vector2(0, 0)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 100.0
+initial_velocity_max = 250.0
+scale_amount_min = 100.0
+scale_amount_max = 100.0
+color_ramp = SubResource("Gradient_3pcxf")
