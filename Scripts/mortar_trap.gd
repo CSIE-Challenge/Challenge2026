@@ -1,7 +1,7 @@
 extends Node2D
 
 @export var max_height: float = 300.0
-@export var gravity: float = 500.0
+@export var gravity: float = 300.0
 @export var test_player: CharacterBody2D
 @export var explosion_max_radius: float = 100.0
 @export var explosion_expand_speed: float = 400.0
@@ -69,7 +69,6 @@ func activate(
 
 	elapsed = 0.0
 	flying = true
-	print("HI")
 	exploding = false
 
 	shell.global_position = start_pos
