@@ -36,19 +36,8 @@ func _ready() -> void:
 	_update_opponent_energy_label(0, 0)
 	energy_increase_timer.wait_time = energy_increase_period
 
-	var ShotgunTrapScene = preload("res://Scenes/traps/trap10-shotgun.tscn")
-	var shotgun_trap = ShotgunTrapScene.instantiate()
-	add_child(shotgun_trap)
-	shotgun_trap.activate(
-		Vector2(-250, 100) + Vector2(576, 324), Vector2(1, 0.2), Vector2(1, 0), Vector2(1, -0.2)
-	)
 	energy_increase_timer.wait_time = energy_ball_spawn_period
 	player_invincible = false
-
-	var SpreadingRipplesScene = preload("res://Scenes/traps/trap7-spreading_ripples.tscn")
-	var ripple_trap = SpreadingRipplesScene.instantiate()
-	add_child(ripple_trap)
-	ripple_trap.activate(Vector2(300, 300), 150.0)
 
 	_spawn_agents()
 
