@@ -1,0 +1,54 @@
+{
+	"trap1-mine":{
+		"path": "res://Scenes/mine_trap.tscn",
+		"cooldown_times": 3.0,
+		"damage": 1,
+		"energy_costs": 10.0,
+		"arming_time": 3.0
+	},
+	"trap2-electric_ring":{
+		"path": "res://Scenes/electric_ring.tscn",
+		"cooldown_times": 3.0,
+		"damage": 2,
+		"energy_costs": 20.0,
+		"standard_radius": 54.0,
+		"player_radius": 13.5,
+		"stay_time": 1.8,
+		"ring_thickness": 0.03
+	},
+	"trap3-tracing_bullet":{
+		"path": "res://Scenes/tracing_bullet.tscn",
+		"cooldown_times": 3.0,
+		"damage": 3,
+		"energy_costs": 30.0,
+		"max_turn_rate": 2.0
+	},
+	"trap4-conveyor_floor":{
+		"path": "res://Scenes/conveyor.tscn",
+		"cooldown_times": 3.0,
+		"damage": 4,
+		"energy_costs": 40.0,
+		"direction": [0, -1]
+	},
+	"trap5-ice_floor":{
+		"path": "res://Scenes/trap_icefloor.tscn",
+		"cooldown_times": 3.0,
+		"damage": 5,
+		"energy_costs": 50.0
+	},
+	"trap7-spreading_ripple":{
+		"path": "res://Scenes/spreading_ripples.tscn",
+		"cooldown_times": 3.0,
+		"damage": 10,
+		"energy_costs": 70.0,
+		"warning_time": 1.5,
+		"max_radius": 1000.0,
+		"ring_thickness": 10.0
+	},
+	"trap10-shotgun":{
+		"path": "res://Scenes/shotgun_trap.tscn",
+		"cooldown_times": 3.0,
+		"damage": 10,
+		"energy_costs": 100.0,
+	}
+}
