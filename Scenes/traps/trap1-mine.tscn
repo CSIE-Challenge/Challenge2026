@@ -1,22 +1,31 @@
 [gd_scene format=3 uid="uid://cnaanuabg2p08"]
 
-[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="1_jo334"]
-[ext_resource type="Script" uid="uid://c3wedrfqpagbc" path="res://Scripts/traps/trap1-mine.gd" id="1_lts3b"]
+[ext_resource type="Script" uid="uid://c3wedrfqpagbc" path="res://Scripts/mine_trap.gd" id="1_lts3b"]
+[ext_resource type="Shader" uid="uid://c332srcs8mico" path="res://Shaders/banana_mine.gdshader" id="2_5q35q"]
+[ext_resource type="Texture2D" uid="uid://bpdkcuawn3dcc" path="res://Shapes/banana.svg" id="3_5q35q"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bao78"]
+shader = ExtResource("2_5q35q")
+shader_parameter/time = 0.0
+shader_parameter/radar_color = Color(0.99215686, 0.654902, 0.37254903, 0.6666667)
+shader_parameter/radar_mul = 1.0
+shader_parameter/radar_speed = 0.40000001574012
+shader_parameter/tail_length = 1.0
+shader_parameter/division_lines = 3.0
+shader_parameter/progress = 1.0
+shader_parameter/bg_brightness = 0.30000001425
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5q35q"]
-radius = 68.06615
+radius = 31.0
 
 [node name="MineTrap" type="Node2D" unique_id=1887909814]
 script = ExtResource("1_lts3b")
 
-[node name="MineBody" type="Sprite2D" parent="." unique_id=775120694]
-scale = Vector2(0.1, 0.1)
-texture = ExtResource("1_jo334")
-
-[node name="MineRange" type="Sprite2D" parent="." unique_id=99312446]
-modulate = Color(0.81960785, 1, 1, 1)
+[node name="MineBody" type="Sprite2D" parent="." unique_id=99312446]
 z_index = -1
-texture = ExtResource("1_jo334")
+material = SubResource("ShaderMaterial_bao78")
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("3_5q35q")
 
 [node name="ExplosionArea" type="Area2D" parent="." unique_id=1132755755]
 

@@ -5,6 +5,7 @@ extends Node2D
 
 var is_armed := false
 var player_just_landed := false
+var animation_time = 0
 var _data: Dictionary = Global.trap_data["trap1-mine"]
 
 @onready var mine_body: Sprite2D = $MineBody
@@ -23,13 +24,15 @@ static func initialize(pos: Vector2) -> Trap1Mine:
 func start_arming_sequence() -> void:
 	var tween = create_tween()
 
-	# Transition the mine body's color to Red over our arming_time duration
-	tween.tween_property(mine_body, "modulate", Color.RED, arming_time)
+	mine_body.material.set_shader_parameter("progress", 0.0)
+	mine_body.material.set_shader_parameter("radar_mul", 0.0)
+	tween.tween_property(mine_body.material, "shader_parameter/progress", 1.0, arming_time)
 	tween.tween_callback(on_arming_complete)
 
 
 func on_arming_complete() -> void:
 	is_armed = true
+	mine_body.material.set_shader_parameter("radar_mul", 1.0)
 
 	# Check if the player is already standing inside the hitbox when arming finishes
 	for body in explosion_area.get_overlapping_bodies():
@@ -77,3 +80,8 @@ func explode() -> void:
 func disarm() -> void:
 	print("Player disarmed the mine trap!")
 	queue_free()
+
+
+func _physics_process(delta: float) -> void:
+	animation_time += delta
+	mine_body.material.set_shader_parameter("time", animation_time)
