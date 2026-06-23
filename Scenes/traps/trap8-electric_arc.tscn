@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://byrx45fu4n4yw"]
 
-[ext_resource type="Script" uid="uid://b0f85v5r0om86" path="res://Scripts/electric_arc.gd" id="1_fbvbf"]
+[ext_resource type="Script" uid="uid://b0f85v5r0om86" path="res://Scripts/traps/trap8-electric_arc.gd" id="1_fbvbf"]
 [ext_resource type="Texture2D" uid="uid://dle4xt8upfg42" path="res://Shapes/Square.svg" id="2_2iv3o"]
 
 [node name="electric_arc" type="Node2D" unique_id=238955290]
