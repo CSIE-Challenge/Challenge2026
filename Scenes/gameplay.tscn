@@ -6,9 +6,9 @@
 [ext_resource type="PackedScene" uid="uid://c8igbkqxla1gy" path="res://Scenes/energy_ball.tscn" id="2_ap8xm"]
 [ext_resource type="Script" uid="uid://bdl6qti40jt4x" path="res://Scripts/player.gd" id="2_m34ki"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_wbxth"]
-[ext_resource type="PackedScene" uid="uid://blesmlfba01ny" path="res://Scenes/trap_icefloor.tscn" id="3_1qnfl"]
-[ext_resource type="PackedScene" uid="uid://d0xq1elehua3l" path="res://Scenes/electric_ring.tscn" id="5_r8bcl"]
-[ext_resource type="PackedScene" uid="uid://bn2r2n5iik0jg" path="res://Scenes/conveyor.tscn" id="7_1qnfl"]
+[ext_resource type="PackedScene" uid="uid://blesmlfba01ny" path="res://Scenes/traps/trap5-icefloor.tscn" id="3_1qnfl"]
+[ext_resource type="PackedScene" uid="uid://d0xq1elehua3l" path="res://Scenes/traps/trap2-electric_ring.tscn" id="5_r8bcl"]
+[ext_resource type="PackedScene" uid="uid://bn2r2n5iik0jg" path="res://Scenes/traps/trap4-conveyor.tscn" id="7_1qnfl"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_puebw"]
 viewport_path = NodePath("SubViewport")

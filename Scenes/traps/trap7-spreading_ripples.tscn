@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://c6uwokkyxaxs4"]
 
-[ext_resource type="Script" uid="uid://qo426cr5dnpx" path="res://Scripts/spreading_ripples.gd" id="1_us4h7"]
+[ext_resource type="Script" uid="uid://qo426cr5dnpx" path="res://Scripts/traps/trap7-spreading_ripples.gd" id="1_us4h7"]
 [ext_resource type="Shader" uid="uid://cuc2q8v6rfecm" path="res://Shaders/spreading_ripples_warning.gdshader" id="2_2fqos"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_8v4sb"]
 

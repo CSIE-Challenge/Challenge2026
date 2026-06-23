@@ -1,7 +1,5 @@
 extends Node2D
 
-const MINE_TRAP_SCENE = preload("res://Scenes/mine_trap.tscn")
-const SPREADING_RIPPLES_SCENE = preload("res://Scenes/spreading_ripples.tscn")
 const ENERGY_GAIN_PER_BALL = 10
 # Seats driven by a remote agent. The human plays directly on the keyboard, so
 # only agent seats need wiring: add a name here to add an agent (1 agent for now).
@@ -10,7 +8,6 @@ const AGENT_SEATS: Array[String] = ["Agent1"]
 @export var player: CharacterBody2D
 @export var camera: Camera2D
 @export var health_label: Label
-@export var shotgun_trap_scene := preload("res://Scenes/shotgun_trap.tscn")
 @export var energy_balls_label: Label
 @export var energy_bar_label: Label
 @export var opponent_energy_bar_label: Label
@@ -39,16 +36,18 @@ func _ready() -> void:
 	_update_opponent_energy_label(0, 0)
 	energy_increase_timer.wait_time = energy_increase_period
 
-	var shotgun_trap = shotgun_trap_scene.instantiate()
-	stage.add_child(shotgun_trap)
+	var ShotgunTrapScene = preload("res://Scenes/traps/trap10-shotgun.tscn")
+	var shotgun_trap = ShotgunTrapScene.instantiate()
+	add_child(shotgun_trap)
 	shotgun_trap.activate(
 		Vector2(-250, 100) + Vector2(576, 324), Vector2(1, 0.2), Vector2(1, 0), Vector2(1, -0.2)
 	)
 	energy_increase_timer.wait_time = energy_ball_spawn_period
 	player_invincible = false
 
-	var ripple_trap = SPREADING_RIPPLES_SCENE.instantiate()
-	stage.add_child(ripple_trap)
+	var SpreadingRipplesScene = preload("res://Scenes/traps/trap7-spreading_ripples.tscn")
+	var ripple_trap = SpreadingRipplesScene.instantiate()
+	add_child(ripple_trap)
 	ripple_trap.activate(Vector2(300, 300), 150.0)
 
 	_spawn_agents()

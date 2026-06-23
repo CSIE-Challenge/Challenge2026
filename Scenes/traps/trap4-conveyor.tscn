@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bn2r2n5iik0jg"]
 
-[ext_resource type="Script" uid="uid://b8jegvbjhjdha" path="res://Scripts/conveyor.gd" id="1_d7757"]
+[ext_resource type="Script" uid="uid://b8jegvbjhjdha" path="res://Scripts/traps/trap4-conveyor.gd" id="1_d7757"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k3tq1"]
 size = Vector2(100, 100)

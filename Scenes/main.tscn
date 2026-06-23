@@ -1,10 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://djbv2ryrcr3pl"]
+[gd_scene format=3 uid="uid://djbv2ryrcr3pl"]
 
 [ext_resource type="PackedScene" uid="uid://bjm2jsv5qry5v" path="res://Scenes/gameplay.tscn" id="1_jjgbg"]
-[ext_resource type="Script" path="res://Scripts/main.gd" id="1_lmvpv"]
+[ext_resource type="Script" uid="uid://dhxxk2mbbbfoa" path="res://Scripts/main.gd" id="1_lmvpv"]
 
 [node name="Main" type="Node2D" unique_id=1214856468]
-position = Vector2(2, 0)
 script = ExtResource("1_lmvpv")
 
 [node name="CurrentScene" type="Node2D" parent="." unique_id=121520446]

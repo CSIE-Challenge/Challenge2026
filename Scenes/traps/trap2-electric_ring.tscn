@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://d0xq1elehua3l"]
 
-[ext_resource type="Script" uid="uid://uwavhdwaxpfs" path="res://Scripts/electric_ring.gd" id="1_y6cpx"]
+[ext_resource type="Script" uid="uid://uwavhdwaxpfs" path="res://Scripts/traps/trap2-electric_ring.gd" id="1_y6cpx"]
 [ext_resource type="Shader" uid="uid://c6hxnripyxqd0" path="res://Shaders/electric_ring_process.gdshader" id="2_ihe33"]
 [ext_resource type="Texture2D" uid="uid://dle4xt8upfg42" path="res://Shapes/Square.svg" id="3_wkdym"]
 [ext_resource type="Shader" uid="uid://yjv8qhkxvdoe" path="res://Shaders/electric_ring.gdshader" id="4_5q1fu"]
-[ext_resource type="Script" uid="uid://cwxus418k0lsv" path="res://Scripts/electring_debug_draw.gd" id="5_kegsf"]
+[ext_resource type="Script" uid="uid://cwxus418k0lsv" path="res://Scripts/traps/trap2-electring_debug_draw.gd" id="5_v85j5"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1qnfl"]
 shader = ExtResource("2_ihe33")
@@ -146,7 +146,7 @@ texture = ExtResource("3_wkdym")
 
 [node name="DrawTest" type="Node2D" parent="." unique_id=701246999]
 visible = false
-script = ExtResource("5_kegsf")
+script = ExtResource("5_v85j5")
 ring_radius = 54.0
 player_radius = 13.5
 

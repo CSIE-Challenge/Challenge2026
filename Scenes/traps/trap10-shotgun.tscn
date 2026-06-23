@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://crmi87tdk5kb5"]
 
-[ext_resource type="Script" uid="uid://cgyg8jq3g472r" path="res://Scripts/shotgun_trap.gd" id="1_oluei"]
+[ext_resource type="Script" uid="uid://cgyg8jq3g472r" path="res://Scripts/traps/trap10-shotgun.gd" id="1_oluei"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_wov31"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_oluei"]
