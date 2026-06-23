@@ -7,8 +7,6 @@ var is_armed := false
 var isjumping_2_frame_ago := false
 var isjumping_1_frame_ago := false
 var animation_time = 0
-var _data: Dictionary = Global.trap_data["trap1-mine"]
-
 @onready var mine_body: Sprite2D = $MineBody
 @onready var explosion_area: Area2D = $ExplosionArea
 

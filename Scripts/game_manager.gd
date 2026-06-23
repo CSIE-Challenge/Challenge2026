@@ -146,6 +146,7 @@ func _on_trap_approved(request: Dictionary, energy_cost: float) -> void:
 		" cost=",
 		energy_cost
 	)
+	_spawn_trap_from_request(request)
 
 
 func _on_trap_rejected(request: Dictionary, reason: String) -> void:
@@ -159,6 +160,61 @@ func _on_trap_rejected(request: Dictionary, reason: String) -> void:
 		" reason=",
 		reason
 	)
+
+
+# gdlint: disable=max-returns
+func _spawn_trap_from_request(request: Dictionary) -> void:
+	var trap_id: String = request["trap_id"]
+	var params: Dictionary = request["params"]
+
+	match trap_id:
+		"mine":
+			if not params.has("position"):
+				push_error("Missing position for mine trap")
+				return
+			Trap1Mine.initialize(params["position"])
+		"electric_ring":
+			if not (params.has("delay_time") and params.has("radius")):
+				push_error("Missing delay_time or radius for electric_ring trap")
+				return
+			Trap2ElectricRing.initialize(params["delay_time"], params["radius"])
+		"tracing_bullet":
+			if not (params.has("position") and params.has("direction") and params.has("speed")):
+				push_error("Missing position/direction/speed for tracing_bullet trap")
+				return
+			Trap3TracingBullet.initialize(
+				params["position"], params["direction"], params["speed"]
+			)
+		"conveyor":
+			if not (params.has("position") and params.has("direction")):
+				push_error("Missing position or direction for conveyor trap")
+				return
+			Trap4Conveyor.initialize(params["position"], params["direction"])
+		"icefloor":
+			if not params.has("position"):
+				push_error("Missing position for icefloor trap")
+				return
+			Trap5IceFloor.initialize(params["position"])
+		"spreading_ripples":
+			if not (params.has("position") and params.has("expand_rate")):
+				push_error("Missing position or expand_rate for spreading_ripples trap")
+				return
+			Trap7SpreadingRipples.initialize(params["position"], params["expand_rate"])
+		"shotgun":
+			if not (
+				params.has("position")
+				and params.has("dir1")
+				and params.has("dir2")
+				and params.has("dir3")
+			):
+				push_error("Missing position or shoot directions for shotgun trap")
+				return
+			Trap10Shotgun.initialize(
+				params["position"], params["dir1"], params["dir2"], params["dir3"]
+			)
+		_:
+			push_error("Unsupported trap id in approved request: %s" % trap_id)
+# gdlint: enable=max-returns
 
 
 func _run_agent_action_debug_test() -> void:
