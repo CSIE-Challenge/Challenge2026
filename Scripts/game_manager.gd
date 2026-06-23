@@ -229,7 +229,6 @@ func _spawn_trap_from_request(request: Dictionary) -> void:
 			)
 		_:
 			push_error("Unsupported trap id in approved request: %s" % trap_id)
-
 	# gdlint: enable=max-returns
 
 
