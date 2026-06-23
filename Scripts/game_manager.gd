@@ -64,6 +64,10 @@ func _spawn_agents() -> void:
 
 
 # tests/examples/Api usage of Agent Action Service/Team Status Service/Trap Request Scheduler
+func get_agent_action_service() -> AgentActionService:
+	return agent_action_service
+
+
 func _connect_team_status_signals() -> void:
 	team_status_service.energy_changed.connect(_on_team_energy_changed)
 	team_status_service.health_changed.connect(_on_team_health_changed)

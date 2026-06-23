@@ -24,6 +24,7 @@ func _ready() -> void:
 func _register_commands() -> void:
 	register_command("ping", _cmd_ping)
 	register_command("get_energy", _cmd_get_energy)
+	register_command("request_trap", _cmd_request_trap)
 
 
 func register_command(cmd_name: String, handler: Callable) -> void:
@@ -37,6 +38,97 @@ func _cmd_ping(_args: Dictionary) -> Dictionary:
 
 func _cmd_get_energy(_args: Dictionary) -> Dictionary:
 	return ApiServer.ok(game.energy_amount)
+
+
+func _cmd_request_trap(args: Dictionary) -> Dictionary:
+	if game == null:
+		return (
+			ApiServer
+			. ok(
+				{
+					"ok": false,
+					"stage": "rejected",
+					"request_id": -1,
+					"team_id": -1,
+					"trap_id": "",
+					"reason": "game_not_assigned",
+				}
+			)
+		)
+
+	if not game.has_method("get_agent_action_service"):
+		return (
+			ApiServer
+			. ok(
+				{
+					"ok": false,
+					"stage": "rejected",
+					"request_id": -1,
+					"team_id": -1,
+					"trap_id": "",
+					"reason": "agent_action_service_not_available",
+				}
+			)
+		)
+
+	if not args.has("team_id"):
+		return (
+			ApiServer
+			. ok(
+				{
+					"ok": false,
+					"stage": "rejected",
+					"request_id": -1,
+					"team_id": -1,
+					"trap_id": str(args.get("trap_id", "")),
+					"reason": "missing_team_id",
+				}
+			)
+		)
+
+	if not args.has("trap_id"):
+		return (
+			ApiServer
+			. ok(
+				{
+					"ok": false,
+					"stage": "rejected",
+					"request_id": -1,
+					"team_id": int(args.get("team_id", -1)),
+					"trap_id": "",
+					"reason": "missing_trap_id",
+				}
+			)
+		)
+
+	var team_id := int(args["team_id"])
+	var trap_id := str(args["trap_id"])
+
+	var params: Dictionary = {}
+	var raw_params: Variant = args.get("params", {})
+	if typeof(raw_params) == TYPE_DICTIONARY:
+		params = raw_params
+	else:
+		return (
+			ApiServer
+			. ok(
+				{
+					"ok": false,
+					"stage": "rejected",
+					"request_id": -1,
+					"team_id": team_id,
+					"trap_id": trap_id,
+					"reason": "invalid_params",
+				}
+			)
+		)
+
+	var agent_action_service: AgentActionService = game.get_agent_action_service()
+	var result: Dictionary = agent_action_service.submit_trap_request_result(
+		team_id, trap_id, params
+	)
+
+	return ApiServer.ok(result)
 
 
 #endregion

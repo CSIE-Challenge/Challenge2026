@@ -80,3 +80,19 @@ class GameClientBase:
     def get_energy(self) -> int:
         """Read the current energy amount from the game."""
         return self._call(protocol.Cmd.GET_ENERGY)
+
+    def request_trap(
+        self,
+        team_id: int,
+        trap_id: int,
+        params: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        """Request to place a trap."""
+        return self._call(
+            protocol.Cmd.REQUEST_TRAP,
+            {
+                "team_id": team_id,
+                "trap_id": trap_id,
+                "params": params or {},
+            },
+        )

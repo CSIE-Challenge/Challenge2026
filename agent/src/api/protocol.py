@@ -18,6 +18,7 @@ class Cmd:
 
     PING = "ping"
     GET_ENERGY = "get_energy"
+    REQUEST_TRAP = "request_trap"
 
 
 class Status:

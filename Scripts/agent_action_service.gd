@@ -39,6 +39,7 @@ func _connect_scheduler_signal_once() -> void:
 
 
 # gdlint: disable=max-returns
+# For Game Manager tests
 func submit_trap_request(team_id: int, trap_id: String, params: Dictionary = {}) -> int:
 	var rejected_request := _make_request(-1, team_id, trap_id, params)
 
@@ -78,6 +79,50 @@ func submit_trap_request(team_id: int, trap_id: String, params: Dictionary = {})
 	trap_request_submitted.emit(submitted_request)
 
 	return request_id
+
+
+# For Python API Server Calling
+func submit_trap_request_result(
+	team_id: int, trap_id: String, params: Dictionary = {}
+) -> Dictionary:
+	var rejected_request := _make_request(-1, team_id, trap_id, params)
+
+	if team_status_service == null:
+		trap_request_rejected.emit(rejected_request, "team_status_service_not_assigned")
+		return _make_submit_result(false, -1, team_id, trap_id, "team_status_service_not_assigned")
+
+	if trap_request_scheduler == null:
+		trap_request_rejected.emit(rejected_request, "trap_request_scheduler_not_assigned")
+		return _make_submit_result(
+			false, -1, team_id, trap_id, "trap_request_scheduler_not_assigned"
+		)
+
+	if not _is_known_trap(trap_id):
+		trap_request_rejected.emit(rejected_request, "unknown_trap")
+		return _make_submit_result(false, -1, team_id, trap_id, "unknown_trap")
+
+	if _is_trap_on_cooldown(team_id, trap_id):
+		trap_request_rejected.emit(rejected_request, "cooldown_active")
+		return _make_submit_result(false, -1, team_id, trap_id, "cooldown_active")
+
+	if not _has_enough_energy(team_id, trap_id):
+		trap_request_rejected.emit(rejected_request, "insufficient_energy")
+		return _make_submit_result(false, -1, team_id, trap_id, "insufficient_energy")
+
+	if not trap_request_scheduler.can_accept_request(team_id):
+		trap_request_rejected.emit(rejected_request, "scheduler_cannot_accept_request")
+		return _make_submit_result(false, -1, team_id, trap_id, "scheduler_cannot_accept_request")
+
+	var request_id := trap_request_scheduler.submit_request(team_id, trap_id, params)
+
+	if request_id == -1:
+		trap_request_rejected.emit(rejected_request, "scheduler_submit_failed")
+		return _make_submit_result(false, -1, team_id, trap_id, "scheduler_submit_failed")
+
+	var submitted_request := _make_request(request_id, team_id, trap_id, params)
+	trap_request_submitted.emit(submitted_request)
+
+	return _make_submit_result(true, request_id, team_id, trap_id, "")
 
 
 # gdlint: enable=max-returns
@@ -180,4 +225,17 @@ func _make_request(
 		"trap_id": trap_id,
 		"params": params,
 		"submit_time": Time.get_ticks_msec()
+	}
+
+
+func _make_submit_result(
+	ok: bool, request_id: int, team_id: int, trap_id: String, reason: String
+) -> Dictionary:
+	return {
+		"ok": ok,
+		"stage": "queued" if ok else "rejected",
+		"request_id": request_id,
+		"team_id": team_id,
+		"trap_id": trap_id,
+		"reason": reason,
 	}
