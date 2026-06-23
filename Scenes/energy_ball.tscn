@@ -2,19 +2,32 @@
 
 [ext_resource type="Texture2D" uid="uid://ccpptk271po31" path="res://Shapes/EnergyBall.png" id="1_1p6wn"]
 [ext_resource type="Script" uid="uid://b2hcgppnib8qb" path="res://Scripts/energy_ball.gd" id="1_q5f0i"]
+[ext_resource type="Shader" uid="uid://b3d8yiio35suo" path="res://Shaders/coconut_energy_ball.gdshader" id="2_qyutt"]
+[ext_resource type="Texture2D" uid="uid://btsxhipyrvldu" path="res://Shapes/coconut.svg" id="3_p1bqb"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mxt0i"]
+shader = ExtResource("2_qyutt")
+shader_parameter/outline_color = Color(0, 0, 0, 1)
+shader_parameter/outline_width = 25.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1p6wn"]
-radius = 12.0
+radius = 18.0
 
-[node name="EnergyBall" type="Area2D"]
+[node name="EnergyBall" type="Area2D" unique_id=1960388759]
 collision_layer = 4
-collision_mask = 1
 script = ExtResource("1_q5f0i")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="Coconut" type="Sprite2D" parent="." unique_id=1695717793]
+material = SubResource("ShaderMaterial_mxt0i")
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("3_p1bqb")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=422150219]
+visible = false
 shape = SubResource("CircleShape2D_1p6wn")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1918263754]
+visible = false
 texture_filter = 1
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("1_1p6wn")

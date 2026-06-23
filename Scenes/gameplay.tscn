@@ -50,6 +50,8 @@ position = Vector2(576, 324)
 [node name="EnergyBall" parent="Stage" unique_id=1714624484 node_paths=PackedStringArray("player_node") instance=ExtResource("2_ap8xm")]
 z_index = 15
 player_node = NodePath("../Player")
+coconut_flicker_speed = 0.2
+coconut_rotate_amplitude = 0.5
 
 [node name="Walls" type="Node2D" parent="Stage" unique_id=57048490]
 
@@ -159,7 +161,7 @@ offset_bottom = 90.0
 theme_override_font_sizes/font_size = 24
 text = "My Energy: 0"
 
-[node name="OpponentEnergyBarLabel" type="Label" parent="HUD"]
+[node name="OpponentEnergyBarLabel" type="Label" parent="HUD" unique_id=1022826057]
 offset_left = 21.0
 offset_top = 96.0
 offset_right = 421.0
