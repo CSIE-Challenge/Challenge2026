@@ -74,8 +74,8 @@ func _jump_process(delta: float):
 
 func _invincible_flicker() -> void:
 	if (
-		Engine.get_frames_drawn() % invincibility_flicker_period
-		< (invincibility_flicker_period / 2)
+		(Engine.get_frames_drawn() % invincibility_flicker_period) * 2
+		< invincibility_flicker_period
 	):
 		modulate.a = 0.2
 	else:

@@ -200,13 +200,13 @@ func _on_server_disconnected() -> void:
 
 ## Searches [param args] for a named argument and returns its value.
 ## Supports both [code]--key value[/code] and [code]--key=value[/code] formats.
-func _find_arg_value(args: Array, name: String) -> String:
+func _find_arg_value(args: Array, arg_name: String) -> String:
 	for i in args.size():
 		var arg := str(args[i])
-		if arg == name and i + 1 < args.size():
+		if arg == arg_name and i + 1 < args.size():
 			return str(args[i + 1])
-		if arg.begins_with("%s=" % name):
-			return arg.substr(name.length() + 1)
+		if arg.begins_with("%s=" % arg_name):
+			return arg.substr(arg_name.length() + 1)
 
 	return ""
 
