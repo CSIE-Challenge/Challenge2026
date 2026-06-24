@@ -36,6 +36,10 @@ func _ready() -> void:
 	_connect_multiplayer_signals()
 	_start_from_command_line(OS.get_cmdline_user_args())
 
+	if multiplayer.is_server():
+		var collector: Node = load("res://Scripts/state_collector.gd").new()
+		add_child(collector)
+
 
 ## Creates an ENet server on [param port] and hands it to the multiplayer system.
 ## Emits [signal server_started] on success, [signal server_start_failed] on error.
