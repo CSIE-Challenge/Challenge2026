@@ -24,7 +24,7 @@ var rng := RandomNumberGenerator.new()
 var player_invincible := false
 
 @onready var player_invincibility_timer = $PlayerInvincibilityTimer
-
+@onready var stage = $"../SubViewport/Stage"
 @onready var energy_increase_timer = $EnergyIncreaseTimer
 
 
@@ -40,7 +40,7 @@ func _ready() -> void:
 	energy_increase_timer.wait_time = energy_increase_period
 
 	var shotgun_trap = shotgun_trap_scene.instantiate()
-	add_child(shotgun_trap)
+	stage.add_child(shotgun_trap)
 	shotgun_trap.activate(
 		Vector2(-250, 100) + Vector2(576, 324), Vector2(1, 0.2), Vector2(1, 0), Vector2(1, -0.2)
 	)
@@ -48,7 +48,7 @@ func _ready() -> void:
 	player_invincible = false
 
 	var ripple_trap = SPREADING_RIPPLES_SCENE.instantiate()
-	add_child(ripple_trap)
+	stage.add_child(ripple_trap)
 	ripple_trap.activate(Vector2(300, 300), 150.0)
 
 	_spawn_agents()

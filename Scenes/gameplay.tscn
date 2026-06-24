@@ -10,6 +10,9 @@
 [ext_resource type="PackedScene" uid="uid://d0xq1elehua3l" path="res://Scenes/electric_ring.tscn" id="5_r8bcl"]
 [ext_resource type="PackedScene" uid="uid://bn2r2n5iik0jg" path="res://Scenes/conveyor.tscn" id="7_1qnfl"]
 
+[sub_resource type="ViewportTexture" id="ViewportTexture_puebw"]
+viewport_path = NodePath("SubViewport")
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wbxth"]
 size = Vector2(135, 135)
 
@@ -18,8 +21,9 @@ radius = 13.5
 
 [node name="Gameplay" type="Node2D" unique_id=678551049]
 
-[node name="GameCamera" type="Camera2D" parent="." unique_id=2130819700]
+[node name="GameCamera" type="Camera2D" parent="." unique_id=1177813420]
 offset = Vector2(576, 324)
+limit_enabled = false
 script = ExtResource("1_puebw")
 screen_center = Vector2(576, 324)
 shake_time = 0.1
@@ -27,84 +31,90 @@ shake_magnitude = 8.0
 
 [node name="ShakeTimer" type="Timer" parent="GameCamera" unique_id=931548460]
 
-[node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "camera", "health_label", "energy_balls_label", "energy_bar_label", "opponent_energy_bar_label")]
-script = ExtResource("1_kwrm5")
-player = NodePath("../Stage/Player")
-camera = NodePath("../GameCamera")
-health_label = NodePath("../Stage/HealthLabel")
-energy_balls_label = NodePath("../HUD/EnergyBallsLabel")
-energy_bar_label = NodePath("../HUD/EnergyBarLabel")
-opponent_energy_bar_label = NodePath("../HUD/OpponentEnergyBarLabel")
-energy_increase_period = 1
-energy_ball_spawn_period = 1
-player_invincibility_time = 1.0
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1771516457]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1152.0
+offset_bottom = 648.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("ViewportTexture_puebw")
+expand_mode = 1
 
-[node name="EnergyIncreaseTimer" type="Timer" parent="GameManager" unique_id=1538767547]
-autostart = true
+[node name="SubViewport" type="SubViewport" parent="." unique_id=117532480]
+size = Vector2i(320, 180)
+size_2d_override = Vector2i(1152, 648)
+size_2d_override_stretch = true
 
-[node name="PlayerInvincibilityTimer" type="Timer" parent="GameManager" unique_id=1398851901]
-
-[node name="Stage" type="Node2D" parent="." unique_id=1447728601]
+[node name="Stage" type="Node2D" parent="SubViewport" unique_id=1447728601]
 position = Vector2(576, 324)
 
-[node name="EnergyBall" parent="Stage" unique_id=1714624484 node_paths=PackedStringArray("player_node") instance=ExtResource("2_ap8xm")]
+[node name="EnergyBall" parent="SubViewport/Stage" unique_id=1714624484 node_paths=PackedStringArray("player_node") instance=ExtResource("2_ap8xm")]
 z_index = 15
 player_node = NodePath("../Player")
 coconut_flicker_speed = 0.2
 coconut_rotate_amplitude = 0.5
 
-[node name="Walls" type="Node2D" parent="Stage" unique_id=57048490]
+[node name="Walls" type="Node2D" parent="SubViewport/Stage" unique_id=57048490]
 
-[node name="RightWall" type="StaticBody2D" parent="Stage/Walls" unique_id=1255417381]
+[node name="RightWall" type="StaticBody2D" parent="SubViewport/Stage/Walls" unique_id=1255417381]
 position = Vector2(250, 0)
 scale = Vector2(0.1, 3.6)
 collision_layer = 2
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Stage/Walls/RightWall" unique_id=1803080551]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewport/Stage/Walls/RightWall" unique_id=1803080551]
 shape = SubResource("RectangleShape2D_wbxth")
 
-[node name="Sprite2D" type="Sprite2D" parent="Stage/Walls/RightWall" unique_id=979194276]
+[node name="Sprite2D" type="Sprite2D" parent="SubViewport/Stage/Walls/RightWall" unique_id=979194276]
 texture = ExtResource("1_hf1ha")
 
-[node name="LeftWall" type="StaticBody2D" parent="Stage/Walls" unique_id=1969114939]
+[node name="LeftWall" type="StaticBody2D" parent="SubViewport/Stage/Walls" unique_id=1969114939]
 position = Vector2(-250, 0)
 scale = Vector2(0.1, 3.6)
 collision_layer = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Stage/Walls/LeftWall" unique_id=1997183767]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewport/Stage/Walls/LeftWall" unique_id=1997183767]
 shape = SubResource("RectangleShape2D_wbxth")
 
-[node name="Sprite2D" type="Sprite2D" parent="Stage/Walls/LeftWall" unique_id=837949586]
+[node name="Sprite2D" type="Sprite2D" parent="SubViewport/Stage/Walls/LeftWall" unique_id=837949586]
 texture = ExtResource("1_hf1ha")
 
-[node name="UpWall" type="StaticBody2D" parent="Stage/Walls" unique_id=2111640790]
+[node name="UpWall" type="StaticBody2D" parent="SubViewport/Stage/Walls" unique_id=2111640790]
 position = Vector2(0, 250)
 rotation = 1.5707964
 scale = Vector2(0.1, 3.6)
 collision_layer = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Stage/Walls/UpWall" unique_id=1965035757]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewport/Stage/Walls/UpWall" unique_id=1965035757]
 shape = SubResource("RectangleShape2D_wbxth")
 
-[node name="Sprite2D" type="Sprite2D" parent="Stage/Walls/UpWall" unique_id=861871332]
+[node name="Sprite2D" type="Sprite2D" parent="SubViewport/Stage/Walls/UpWall" unique_id=861871332]
 texture = ExtResource("1_hf1ha")
 
-[node name="DownWall" type="StaticBody2D" parent="Stage/Walls" unique_id=1774773014]
+[node name="DownWall" type="StaticBody2D" parent="SubViewport/Stage/Walls" unique_id=1774773014]
 position = Vector2(0, -250)
 rotation = 1.5707964
 scale = Vector2(0.1, 3.6)
 collision_layer = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Stage/Walls/DownWall" unique_id=1515972845]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewport/Stage/Walls/DownWall" unique_id=1515972845]
 shape = SubResource("RectangleShape2D_wbxth")
 
-[node name="Sprite2D" type="Sprite2D" parent="Stage/Walls/DownWall" unique_id=1985772243]
+[node name="Sprite2D" type="Sprite2D" parent="SubViewport/Stage/Walls/DownWall" unique_id=1985772243]
 texture = ExtResource("1_hf1ha")
 
-[node name="IceFloor" parent="Stage" unique_id=1192991918 instance=ExtResource("3_1qnfl")]
+[node name="IceFloor" parent="SubViewport/Stage" unique_id=1192991918 instance=ExtResource("3_1qnfl")]
 
-[node name="Player" type="CharacterBody2D" parent="Stage" unique_id=1716138881]
+[node name="ElectricRing" parent="SubViewport/Stage" unique_id=1133403726 node_paths=PackedStringArray("test_player") instance=ExtResource("5_r8bcl")]
+test_player = NodePath("../Player")
+
+[node name="Conveyor" parent="SubViewport/Stage" unique_id=745938423 instance=ExtResource("7_1qnfl")]
+z_index = -10
+position = Vector2(-152, -212)
+
+[node name="Player" type="CharacterBody2D" parent="SubViewport/Stage" unique_id=1716138881]
 position = Vector2(35, 35)
 collision_mask = 2
 motion_mode = 1
@@ -116,32 +126,36 @@ jump_fall_multiplier = 1.5
 max_health = 100.0
 invincibility_flicker_period = 8
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Stage/Player" unique_id=1018866415]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewport/Stage/Player" unique_id=1018866415]
 shape = SubResource("CircleShape2D_wbxth")
 
-[node name="ShadowSprite" type="Sprite2D" parent="Stage/Player" unique_id=1936819812]
+[node name="ShadowSprite" type="Sprite2D" parent="SubViewport/Stage/Player" unique_id=1936819812]
 modulate = Color(0, 0, 0, 1)
 z_index = 18
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("2_wbxth")
 
-[node name="BodySprite" type="Sprite2D" parent="Stage/Player" unique_id=842198229]
+[node name="BodySprite" type="Sprite2D" parent="SubViewport/Stage/Player" unique_id=842198229]
 z_index = 20
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("2_wbxth")
 
-[node name="ElectricRing" parent="Stage" unique_id=1133403726 node_paths=PackedStringArray("test_player") instance=ExtResource("5_r8bcl")]
-test_player = NodePath("../Player")
+[node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "camera", "health_label", "energy_balls_label", "energy_bar_label", "opponent_energy_bar_label")]
+script = ExtResource("1_kwrm5")
+player = NodePath("../SubViewport/Stage/Player")
+camera = NodePath("../GameCamera")
+health_label = NodePath("../HUD/HealthLabel")
+energy_balls_label = NodePath("../HUD/EnergyBallsLabel")
+energy_bar_label = NodePath("../HUD/EnergyBarLabel")
+opponent_energy_bar_label = NodePath("../HUD/OpponentEnergyBarLabel")
+energy_increase_period = 1
+energy_ball_spawn_period = 1
+player_invincibility_time = 1.0
 
-[node name="HealthLabel" type="Label" parent="Stage" unique_id=1134340444]
-offset_left = -236.0
-offset_top = -236.0
-offset_right = -196.0
-offset_bottom = -213.0
+[node name="EnergyIncreaseTimer" type="Timer" parent="GameManager" unique_id=1538767547]
+autostart = true
 
-[node name="Conveyor" parent="Stage" unique_id=745938423 instance=ExtResource("7_1qnfl")]
-z_index = -10
-position = Vector2(-152, -212)
+[node name="PlayerInvincibilityTimer" type="Timer" parent="GameManager" unique_id=1398851901]
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=2039367638]
 
@@ -161,12 +175,18 @@ offset_bottom = 90.0
 theme_override_font_sizes/font_size = 24
 text = "My Energy: 0"
 
-[node name="OpponentEnergyBarLabel" type="Label" parent="HUD" unique_id=1022826057]
+[node name="OpponentEnergyBarLabel" type="Label" parent="HUD" unique_id=1711022355]
 offset_left = 21.0
 offset_top = 96.0
 offset_right = 421.0
 offset_bottom = 130.0
 theme_override_font_sizes/font_size = 24
 text = "Opponent Energy: waiting"
+
+[node name="HealthLabel" type="Label" parent="HUD" unique_id=1134340444]
+offset_left = 340.0
+offset_top = 88.0
+offset_right = 380.0
+offset_bottom = 111.0
 
 [connection signal="timeout" from="GameManager/EnergyIncreaseTimer" to="GameManager" method="_on_energy_increase_timer_timeout"]

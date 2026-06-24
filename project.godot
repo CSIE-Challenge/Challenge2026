@@ -27,7 +27,8 @@ NetworkManager="*res://Scripts/network_manager.gd"
 
 [display]
 
-window/stretch/mode="canvas_items"
+window/size/window_width_override=1152
+window/size/window_height_override=648
 
 [input]
 
@@ -61,3 +62,7 @@ jump={
 
 2d_physics/layer_1="player"
 2d_physics/layer_2="wall"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
