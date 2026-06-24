@@ -45,10 +45,11 @@ autostart = true
 
 [node name="PlayerInvincibilityTimer" type="Timer" parent="GameManager" unique_id=1398851901]
 
-[node name="BroadcastStateSender" type="Node" parent="GameManager" node_paths=PackedStringArray("game_manager", "player")]
+[node name="BroadcastStateSender" type="Node" parent="GameManager" node_paths=PackedStringArray("game_manager", "player", "energy_ball")]
 script = ExtResource("10_broadcast_sender")
 game_manager = NodePath("..")
 player = NodePath("../../Stage/Player")
+energy_ball = NodePath("../../Stage/EnergyBall")
 
 [node name="Stage" type="Node2D" parent="." unique_id=1447728601]
 position = Vector2(576, 324)

@@ -14,7 +14,10 @@ func _enter_tree() -> void:
 			remove_child(spectator_current_scene)
 			spectator_current_scene.queue_free()
 
-		add_child(BROADCAST_VIEW_SCENE.instantiate())
+		var broadcast_view := BROADCAST_VIEW_SCENE.instantiate()
+		add_child(broadcast_view)
+		if broadcast_view is Control:
+			broadcast_view.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		return
 
 	if startup_mode != "server":
