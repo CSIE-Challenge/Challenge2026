@@ -20,6 +20,11 @@ class Cmd:
     GET_ENERGY = "get_energy"
     REQUEST_TRAP = "request_trap"
 
+    GET_TEAM_STATUS = "get_team_status"
+    GET_TEAM_ENERGY = "get_team_energy"
+    GET_TEAM_HEALTH = "get_team_health"
+    REQUEST_HEAL = "request_heal"
+
 
 class Status:
     """Response status field values."""

@@ -96,3 +96,40 @@ class GameClientBase:
                 "params": params or {},
             },
         )
+
+    def get_team_status(self, team_id: int = 0) -> dict[str, Any]:
+        """Read full status for one team."""
+        return self._call(
+            protocol.Cmd.GET_TEAM_STATUS,
+            {"team_id": team_id},
+        )
+
+    def get_team_energy(self, team_id: int = 0) -> dict[str, Any]:
+        """Read one team's current/max energy."""
+        return self._call(
+            protocol.Cmd.GET_TEAM_ENERGY,
+            {"team_id": team_id},
+        )
+
+    def get_team_health(self, team_id: int = 0) -> dict[str, Any]:
+        """Read one team's current/max health and mode."""
+        return self._call(
+            protocol.Cmd.GET_TEAM_HEALTH,
+            {"team_id": team_id},
+        )
+
+    def request_heal(
+        self,
+        team_id: int,
+        heal_amount: float,
+        energy_cost: float,
+    ) -> dict[str, Any]:
+        """Request an energy-costed heal action for one team."""
+        return self._call(
+            protocol.Cmd.REQUEST_HEAL,
+            {
+                "team_id": team_id,
+                "heal_amount": heal_amount,
+                "energy_cost": energy_cost,
+            },
+        )

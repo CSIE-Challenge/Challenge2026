@@ -68,6 +68,10 @@ func get_agent_action_service() -> AgentActionService:
 	return agent_action_service
 
 
+func get_team_status_service() -> TeamStatusService:
+	return team_status_service
+
+
 func _connect_team_status_signals() -> void:
 	team_status_service.energy_changed.connect(_on_team_energy_changed)
 	team_status_service.health_changed.connect(_on_team_health_changed)

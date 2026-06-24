@@ -26,9 +26,92 @@ func _register_commands() -> void:
 	register_command("get_energy", _cmd_get_energy)
 	register_command("request_trap", _cmd_request_trap)
 
+	register_command("get_team_status", _cmd_get_team_status)
+	register_command("get_team_energy", _cmd_get_team_energy)
+	register_command("get_team_health", _cmd_get_team_health)
+	register_command("request_heal", _cmd_request_heal)
+
 
 func register_command(cmd_name: String, handler: Callable) -> void:
 	_command_handlers[cmd_name] = handler
+
+
+#helpers
+func _get_team_status_service() -> TeamStatusService:
+	if game == null:
+		return null
+
+	if not game.has_method("get_team_status_service"):
+		return null
+
+	return game.get_team_status_service()
+
+
+func _is_number(value: Variant) -> bool:
+	return typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT
+
+
+func _read_team_id(args: Dictionary) -> Dictionary:
+	if not args.has("team_id"):
+		return {
+			"ok": false,
+			"team_id": -1,
+			"reason": "missing_team_id",
+		}
+
+	var raw_team_id: Variant = args["team_id"]
+
+	if not _is_number(raw_team_id):
+		return {
+			"ok": false,
+			"team_id": -1,
+			"reason": "invalid_team_id",
+		}
+
+	return {
+		"ok": true,
+		"team_id": int(raw_team_id),
+		"reason": "",
+	}
+
+
+func _read_float_arg(
+	args: Dictionary, key: String, missing_reason: String, invalid_reason: String
+) -> Dictionary:
+	if not args.has(key):
+		return {
+			"ok": false,
+			"value": 0.0,
+			"reason": missing_reason,
+		}
+
+	var raw_value: Variant = args[key]
+
+	if not _is_number(raw_value):
+		return {
+			"ok": false,
+			"value": 0.0,
+			"reason": invalid_reason,
+		}
+
+	return {
+		"ok": true,
+		"value": float(raw_value),
+		"reason": "",
+	}
+
+
+func _make_team_api_error(team_id: int, reason: String) -> Dictionary:
+	return (
+		ApiServer
+		. ok(
+			{
+				"ok": false,
+				"team_id": team_id,
+				"reason": reason,
+			}
+		)
+	)
 
 
 #region Command handlers
@@ -129,6 +212,68 @@ func _cmd_request_trap(args: Dictionary) -> Dictionary:
 	)
 
 	return ApiServer.ok(result)
+
+
+func _cmd_get_team_status(args: Dictionary) -> Dictionary:
+	var team_read := _read_team_id(args)
+	if not team_read["ok"]:
+		return _make_team_api_error(team_read["team_id"], team_read["reason"])
+
+	var service := _get_team_status_service()
+	if service == null:
+		return _make_team_api_error(team_read["team_id"], "team_status_service_not_available")
+
+	return ApiServer.ok(service.get_team_status_api(team_read["team_id"]))
+
+
+func _cmd_get_team_energy(args: Dictionary) -> Dictionary:
+	var team_read := _read_team_id(args)
+	if not team_read["ok"]:
+		return _make_team_api_error(team_read["team_id"], team_read["reason"])
+
+	var service := _get_team_status_service()
+	if service == null:
+		return _make_team_api_error(team_read["team_id"], "team_status_service_not_available")
+
+	return ApiServer.ok(service.get_team_energy_api(team_read["team_id"]))
+
+
+func _cmd_get_team_health(args: Dictionary) -> Dictionary:
+	var team_read := _read_team_id(args)
+	if not team_read["ok"]:
+		return _make_team_api_error(team_read["team_id"], team_read["reason"])
+
+	var service := _get_team_status_service()
+	if service == null:
+		return _make_team_api_error(team_read["team_id"], "team_status_service_not_available")
+
+	return ApiServer.ok(service.get_team_health_api(team_read["team_id"]))
+
+
+func _cmd_request_heal(args: Dictionary) -> Dictionary:
+	var team_read := _read_team_id(args)
+	if not team_read["ok"]:
+		return _make_team_api_error(team_read["team_id"], team_read["reason"])
+
+	var heal_read := _read_float_arg(
+		args, "heal_amount", "missing_heal_amount", "invalid_heal_amount"
+	)
+	if not heal_read["ok"]:
+		return _make_team_api_error(team_read["team_id"], heal_read["reason"])
+
+	var cost_read := _read_float_arg(
+		args, "energy_cost", "missing_energy_cost", "invalid_energy_cost"
+	)
+	if not cost_read["ok"]:
+		return _make_team_api_error(team_read["team_id"], cost_read["reason"])
+
+	var service := _get_team_status_service()
+	if service == null:
+		return _make_team_api_error(team_read["team_id"], "team_status_service_not_available")
+
+	return ApiServer.ok(
+		service.request_heal_api(team_read["team_id"], heal_read["value"], cost_read["value"])
+	)
 
 
 #endregion

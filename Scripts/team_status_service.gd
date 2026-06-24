@@ -197,3 +197,141 @@ func is_team_in_lifesteal(team_id: int) -> bool:
 		return false
 
 	return team_status[team_id]["mode"] == MODE_LIFESTEAL
+
+
+# ----------------------------------------------------------------------
+# API result helpers
+# These functions are additive wrappers for GameAgent/API calls only.
+# They do not replace the existing gameplay methods.
+# ----------------------------------------------------------------------
+
+
+func get_team_status_api(team_id: int) -> Dictionary:
+	if not has_team(team_id):
+		return {
+			"ok": false,
+			"team_id": team_id,
+			"reason": "unknown_team_id",
+		}
+
+	var team: Dictionary = team_status[team_id]
+
+	return {
+		"ok": true,
+		"team_id": team_id,
+		"health": team["health"],
+		"max_health": team["max_health"],
+		"energy": team["energy"],
+		"max_energy": team["max_energy"],
+		"energy_regen_rate": team["energy_regen_rate"],
+		"energy_regen_multiplier": team["energy_regen_multiplier"],
+		"mode": team["mode"],
+		"heal_uses_left": team["heal_uses_left"],
+		"is_eliminated": team["is_eliminated"],
+		"reason": "",
+	}
+
+
+func get_team_energy_api(team_id: int) -> Dictionary:
+	if not has_team(team_id):
+		return {
+			"ok": false,
+			"team_id": team_id,
+			"energy": 0.0,
+			"max_energy": 0.0,
+			"reason": "unknown_team_id",
+		}
+
+	var team: Dictionary = team_status[team_id]
+
+	return {
+		"ok": true,
+		"team_id": team_id,
+		"energy": team["energy"],
+		"max_energy": team["max_energy"],
+		"reason": "",
+	}
+
+
+func get_team_health_api(team_id: int) -> Dictionary:
+	if not has_team(team_id):
+		return {
+			"ok": false,
+			"team_id": team_id,
+			"health": 0.0,
+			"max_health": 0.0,
+			"mode": "",
+			"reason": "unknown_team_id",
+		}
+
+	var team: Dictionary = team_status[team_id]
+
+	return {
+		"ok": true,
+		"team_id": team_id,
+		"health": team["health"],
+		"max_health": team["max_health"],
+		"mode": team["mode"],
+		"reason": "",
+	}
+
+
+# gdlint: disable=max-returns
+func request_heal_api(team_id: int, heal_amount: float, energy_cost: float) -> Dictionary:
+	if not has_team(team_id):
+		return _make_heal_api_result(false, team_id, "unknown_team_id")
+
+	if heal_amount <= 0.0:
+		return _make_heal_api_result(false, team_id, "invalid_heal_amount")
+
+	if energy_cost < 0.0:
+		return _make_heal_api_result(false, team_id, "invalid_energy_cost")
+
+	var team: Dictionary = team_status[team_id]
+
+	if team["mode"] == MODE_LIFESTEAL:
+		return _make_heal_api_result(false, team_id, "lifesteal_mode_cannot_heal")
+
+	if team["heal_uses_left"] <= 0:
+		return _make_heal_api_result(false, team_id, "no_heal_uses_left")
+
+	if team["energy"] < energy_cost:
+		return _make_heal_api_result(false, team_id, "insufficient_energy")
+
+	var ok := try_heal_team(team_id, heal_amount, energy_cost)
+	if not ok:
+		return _make_heal_api_result(false, team_id, "heal_failed")
+
+	return _make_heal_api_result(true, team_id, "")  # gdlint: ignore=max-returns
+
+
+# gdlint: enable=max-returns
+
+
+func _make_heal_api_result(ok: bool, team_id: int, reason: String) -> Dictionary:
+	if not has_team(team_id):
+		return {
+			"ok": ok,
+			"team_id": team_id,
+			"health": 0.0,
+			"max_health": 0.0,
+			"energy": 0.0,
+			"max_energy": 0.0,
+			"mode": "",
+			"heal_uses_left": 0,
+			"reason": reason,
+		}
+
+	var team: Dictionary = team_status[team_id]
+
+	return {
+		"ok": ok,
+		"team_id": team_id,
+		"health": team["health"],
+		"max_health": team["max_health"],
+		"energy": team["energy"],
+		"max_energy": team["max_energy"],
+		"mode": team["mode"],
+		"heal_uses_left": team["heal_uses_left"],
+		"reason": reason,
+	}
