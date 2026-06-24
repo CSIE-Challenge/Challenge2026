@@ -182,9 +182,7 @@ func _spawn_trap_from_request(request: Dictionary) -> void:
 			if not (params.has("position") and params.has("direction") and params.has("speed")):
 				push_error("Missing position/direction/speed for tracing_bullet trap")
 				return
-			Trap3TracingBullet.initialize(
-				params["position"], params["direction"], params["speed"]
-			)
+			Trap3TracingBullet.initialize(params["position"], params["direction"], params["speed"])
 		"conveyor":
 			if not (params.has("position") and params.has("direction")):
 				push_error("Missing position or direction for conveyor trap")
@@ -214,6 +212,8 @@ func _spawn_trap_from_request(request: Dictionary) -> void:
 			)
 		_:
 			push_error("Unsupported trap id in approved request: %s" % trap_id)
+
+
 # gdlint: enable=max-returns
 
 
