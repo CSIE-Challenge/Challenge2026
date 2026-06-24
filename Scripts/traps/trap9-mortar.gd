@@ -1,3 +1,4 @@
+class_name Trap9Mortar
 extends Node2D
 
 @export var max_height: float = 300.0
@@ -20,11 +21,20 @@ var flying: bool = false
 var exploding: bool = false
 var explosion_radius: float = 0.0
 
+var _data = Global.trap_data["trap9-mortar"]
+
 @onready var shell: Sprite2D = $Shell
 @onready var shadow: Sprite2D = $Shadow
 @onready var explosion: AnimatedSprite2D = $Explosion
 @onready var explosion_area: Area2D = $ExplosionArea
 @onready var explosion_shape: CollisionShape2D = $ExplosionArea/CollisionShape2D
+
+
+static func initialize(start_pos: Vector2, end_pos: Vector2, air_time: float) -> Trap9Mortar:
+	var trap := preload("res://Scenes/traps/trap9-mortar.tscn").instantiate()
+	Global.stage.add_child(trap)
+	trap.activate(start_pos, end_pos, air_time)
+	return trap
 
 
 func _ready() -> void:
@@ -41,9 +51,9 @@ func _process(delta: float) -> void:
 
 		velocity.y += gravity * delta
 
-		shell.global_position += velocity * delta
+		shell.position += velocity * delta
 
-		shadow.global_position = Vector2(shell.global_position.x, end_pos.y)
+		shadow.position = Vector2(shell.position.x, end_pos.y)
 
 		if elapsed >= air_time:
 			explode()
@@ -56,7 +66,7 @@ func _process(delta: float) -> void:
 
 		for body in explosion_area.get_overlapping_bodies():
 			if body.name == "Player":
-				GlobalSignal.player_hit.emit(damage)
+				Global.player_hit.emit(damage)
 
 		queue_redraw()
 
@@ -76,8 +86,8 @@ func activate(
 	exploding = false
 	explosion_area.monitoring = false
 
-	shell.global_position = start_pos
-	shadow.global_position = start_pos
+	shell.position = start_pos
+	shadow.position = start_pos
 	velocity.x = (end_pos.x - start_pos.x) / air_time
 
 	velocity.y = (end_pos.y - start_pos.y - 0.5 * gravity * air_time * air_time) / air_time
@@ -102,7 +112,7 @@ func explode() -> void:
 	exploding = true
 	explosion_radius = 0.0
 
-	global_position = end_pos
+	position = end_pos
 	# explosion.play()
 
 

@@ -148,7 +148,7 @@ autostart = true
 
 [node name="PlayerInvincibilityTimer" type="Timer" parent="GameManager" unique_id=1398851901]
 
-[node name="HealthLabel" type="Label" parent="Stage" unique_id=1134340444]
+[node name="Stage#HealthLabel" type="Label" parent="." unique_id=1134340444]
 offset_left = -236.0
 offset_top = -236.0
 offset_right = -196.0
@@ -180,7 +180,7 @@ offset_bottom = 130.0
 theme_override_font_sizes/font_size = 24
 text = "Opponent Energy: waiting"
 
-[node name="HealthLabel" type="Label" parent="HUD" unique_id=1134340444]
+[node name="HealthLabel" type="Label" parent="HUD" unique_id=2026114508]
 offset_left = 340.0
 offset_top = 88.0
 offset_right = 380.0

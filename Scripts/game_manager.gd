@@ -1,6 +1,5 @@
 extends Node2D
 
-@export var energy_gain_per_ball: int = 10
 # Seats driven by a remote agent. The human plays directly on the keyboard, so
 # only agent seats need wiring: add a name here to add an agent (1 agent for now).
 const AGENT_SEATS: Array[String] = ["Agent1"]
@@ -14,6 +13,7 @@ const AGENT_SEATS: Array[String] = ["Agent1"]
 @export var energy_increase_period: int
 @export var energy_ball_spawn_period: int
 @export var player_invincibility_time: float
+@export var energy_gain_per_ball: int = 10
 
 var energy_ball_count := 0
 var energy_amount := 0
@@ -21,7 +21,6 @@ var rng := RandomNumberGenerator.new()
 var player_invincible := false
 
 @onready var player_invincibility_timer = $PlayerInvincibilityTimer
-@onready var stage = $"../SubViewport/Stage"
 @onready var energy_increase_timer = $EnergyIncreaseTimer
 
 
@@ -41,10 +40,6 @@ func _ready() -> void:
 	player_invincible = false
 
 	_spawn_agents()
-
-	var mortar_trap = MORTAR_SCENE.instantiate()
-	add_child(mortar_trap)
-	mortar_trap.activate(Vector2(300, 300), Vector2(500, 300), 2.0)
 
 
 func _spawn_agents() -> void:
