@@ -42,7 +42,7 @@ def test_request_trap_reaches_approved_via_scheduler(
     }
 
 
-def test_request_trap_accepts_numeric_id_and_resolves_to_official_name(
+def test_request_trap_accepts_numeric_id_and_converts_to_canonical(
     client: GameClientBase,
 ) -> None:
     init_result = client._call(

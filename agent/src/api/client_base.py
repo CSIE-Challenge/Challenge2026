@@ -18,9 +18,9 @@ _TRAP_ID_BY_NUMBER: dict[int, str] = {
     4: "conveyor",
     5: "icefloor",
     6: "scanline",
-    7: "spreading_ripples",
     8: "electric_arc",
     9: "mortar",
+    7: "spreading_ripples",
     10: "shotgun",
 }
 
