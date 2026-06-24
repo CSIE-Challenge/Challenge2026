@@ -44,9 +44,7 @@ func activate(spawn_position: Vector2, expand_rate: float) -> void:
 
 
 func deactivate() -> void:
-	visible = false
-	monitoring = false
-	collision_shape.radius = 0.0
+	queue_free()
 
 
 func _start_ripple_expansion() -> void:

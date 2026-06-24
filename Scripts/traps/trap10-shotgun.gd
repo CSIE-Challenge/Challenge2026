@@ -76,10 +76,7 @@ func activate(pos: Vector2, dir1: Vector2, dir2: Vector2, dir3: Vector2) -> void
 
 
 func deactivate():
-	visible = false
-	firing = false
-	aiming = false
-	set_physics_process(false)
+	queue_free()
 
 
 func _physics_process(delta: float) -> void:

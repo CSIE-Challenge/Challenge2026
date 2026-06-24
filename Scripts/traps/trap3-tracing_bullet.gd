@@ -42,10 +42,7 @@ func activate(
 
 
 func deactivate():
-	active = false
-	visible = false
-	set_physics_process(false)
-	velocity = Vector2.ZERO
+	queue_free()
 
 
 func _physics_process(delta):

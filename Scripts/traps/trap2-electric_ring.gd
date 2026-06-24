@@ -70,10 +70,7 @@ func spawn(set_radius: float, delay_time: float, target_player: CharacterBody2D)
 
 
 func _die():
-	died = true
-	electric_on = false
-	warning_sprite.visible = false
-	ring_sprite.visible = false
+	queue_free()
 
 
 func _detect_player():
