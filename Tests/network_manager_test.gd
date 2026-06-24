@@ -25,6 +25,11 @@ func _run_tests() -> void:
 		"client",
 		"--connect should start client mode"
 	)
+	_assert_eq(
+		network_manager.get_startup_mode(["--spectator", "--connect", "127.0.0.1"]),
+		"spectator",
+		"--spectator should start spectator mode"
+	)
 	_assert_eq(network_manager.get_server_address(["--connect", "127.0.0.1"]), "127.0.0.1")
 	_assert_eq(network_manager.get_server_address(["--connect=192.168.1.10"]), "192.168.1.10")
 	_assert_eq(network_manager.get_server_port(["--port", "8888"]), 8888)

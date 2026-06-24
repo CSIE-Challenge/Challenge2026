@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://blesmlfba01ny" path="res://Scenes/trap_icefloor.tscn" id="3_1qnfl"]
 [ext_resource type="PackedScene" uid="uid://d0xq1elehua3l" path="res://Scenes/electric_ring.tscn" id="5_r8bcl"]
 [ext_resource type="PackedScene" uid="uid://bn2r2n5iik0jg" path="res://Scenes/conveyor.tscn" id="7_1qnfl"]
+[ext_resource type="Script" path="res://Scripts/broadcast_state_sender.gd" id="10_broadcast_sender"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wbxth"]
 size = Vector2(135, 135)
@@ -43,6 +44,11 @@ player_invincibility_time = 1.0
 autostart = true
 
 [node name="PlayerInvincibilityTimer" type="Timer" parent="GameManager" unique_id=1398851901]
+
+[node name="BroadcastStateSender" type="Node" parent="GameManager" node_paths=PackedStringArray("game_manager", "player")]
+script = ExtResource("10_broadcast_sender")
+game_manager = NodePath("..")
+player = NodePath("../../Stage/Player")
 
 [node name="Stage" type="Node2D" parent="." unique_id=1447728601]
 position = Vector2(576, 324)

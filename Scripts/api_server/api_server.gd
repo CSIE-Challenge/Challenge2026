@@ -18,8 +18,16 @@ func _init() -> void:
 
 
 func _ready() -> void:
+	var args := OS.get_cmdline_user_args()
+	if args.has("--server") or args.has("--spectator"):
+		print("[API Server] Disabled for network-only role")
+		return
+
 	var server_listen_ret = listen()
-	assert(server_listen_ret == OK)
+	if server_listen_ret != OK:
+		push_warning("[API Server] Failed to listen to port: %d" % port)
+		return
+
 	print("[API Server] Listening to port: ", port)
 
 

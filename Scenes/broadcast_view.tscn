@@ -1,0 +1,35 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://Scripts/broadcast_view.gd" id="1_broadcast_view"]
+[ext_resource type="Script" path="res://Scripts/broadcast_panel.gd" id="2_broadcast_panel"]
+
+[node name="BroadcastView" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_broadcast_view")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LeftPanel" type="Control" parent="HBoxContainer"]
+custom_minimum_size = Vector2(576, 648)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("2_broadcast_panel")
+
+[node name="RightPanel" type="Control" parent="HBoxContainer"]
+custom_minimum_size = Vector2(576, 648)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("2_broadcast_panel")

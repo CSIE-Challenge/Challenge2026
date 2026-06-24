@@ -1,7 +1,8 @@
 ## Autoload singleton that manages all ENet networking for this game.
 ## Supports up to two simultaneous clients connected to a single server.
-## Can be started as a server ([code]--server[/code]) or client
-## ([code]--connect <address>[/code]) via command-line arguments.
+## Can be started as a server ([code]--server[/code]), player client
+## ([code]--connect <address>[/code]), or spectator client
+## ([code]--spectator --connect <address>[/code]) via command-line arguments.
 ## Exposes signals for all connection lifecycle events.
 extends Node
 
@@ -17,14 +18,20 @@ signal server_disconnected
 signal room_full(peer_id: int)
 signal energy_changed(peer_id: int, energy: int)
 signal energy_rejected(peer_id: int, reason: String)
+signal broadcast_state_changed(peer_id: int, state: Dictionary)
 
 const MAX_ENERGY := 100
 const DEFAULT_PORT := 7777
 const DEFAULT_SERVER_ADDRESS := "127.0.0.1"
-const MAX_CLIENTS := 2
+const MAX_PLAYERS := 2
+const MAX_SPECTATORS := 1
+const MAX_CLIENTS := MAX_PLAYERS + MAX_SPECTATORS
 
 var connected_peer_ids: Array[int] = []
+var spectator_peer_ids: Array[int] = []
 var energy_by_peer_id: Dictionary = {}
+var broadcast_state_by_peer_id: Dictionary = {}
+var local_role := "player"
 
 
 ## Called on startup. Connects multiplayer signals and handles command-line launch.
@@ -46,7 +53,9 @@ func start_server(port := DEFAULT_PORT) -> Error:
 
 	multiplayer.multiplayer_peer = peer
 	connected_peer_ids.clear()
+	spectator_peer_ids.clear()
 	energy_by_peer_id.clear()
+	broadcast_state_by_peer_id.clear()
 	server_started.emit(port)
 	print("Network server started on UDP port %d, max clients: %d" % [port, MAX_CLIENTS])
 	return OK
@@ -76,18 +85,22 @@ func stop_network() -> void:
 
 	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
 	connected_peer_ids.clear()
+	spectator_peer_ids.clear()
 	energy_by_peer_id.clear()
+	broadcast_state_by_peer_id.clear()
 
 
 ## Returns true if the server can accept more clients based on [param connected_client_count].
 func can_accept_more_clients(connected_client_count: int) -> bool:
-	return connected_client_count < MAX_CLIENTS
+	return connected_client_count < MAX_PLAYERS
 
 
 ## Reads [param args] and returns the startup mode: "server", "client", or "offline".
 func get_startup_mode(args: Array) -> String:
 	if args.has("--server"):
 		return "server"
+	if args.has("--spectator"):
+		return "spectator"
 	if _find_arg_value(args, "--connect") != "":
 		return "client"
 	return "offline"
@@ -124,6 +137,24 @@ func get_energy(peer_id: int) -> int:
 	return int(energy_by_peer_id.get(peer_id, 0))
 
 
+## Sets this client role before connecting. Supported values are "player" and "spectator".
+func set_local_role(role: String) -> void:
+	if role == "spectator":
+		local_role = role
+	else:
+		local_role = "player"
+
+
+## Sends the latest local gameplay snapshot to the server for broadcast rendering.
+func request_update_broadcast_state(state: Dictionary) -> void:
+	if multiplayer.multiplayer_peer.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED:
+		return
+	if multiplayer.is_server():
+		return
+
+	rpc_id(1, "_server_update_broadcast_state", state)
+
+
 ## Parses command-line [param args] and starts the appropriate network mode automatically.
 func _start_from_command_line(args: Array) -> void:
 	var mode := get_startup_mode(args)
@@ -131,7 +162,8 @@ func _start_from_command_line(args: Array) -> void:
 
 	if mode == "server":
 		start_server(port)
-	elif mode == "client":
+	elif mode == "client" or mode == "spectator":
+		set_local_role("spectator" if mode == "spectator" else "player")
 		join_server(get_server_address(args), port)
 
 
@@ -156,34 +188,24 @@ func _on_peer_connected(peer_id: int) -> void:
 		player_connected.emit(peer_id)
 		return
 
-	if not can_accept_more_clients(connected_peer_ids.size()):
-		room_full.emit(peer_id)
-		multiplayer.multiplayer_peer.disconnect_peer(peer_id)
-		print("Rejected peer %d because the room is full" % peer_id)
-		return
-
-	if not connected_peer_ids.has(peer_id):
-		connected_peer_ids.append(peer_id)
-	energy_by_peer_id[peer_id] = 0
-	_broadcast_energy(peer_id, 0)
-	_sync_energy_to_peer(peer_id)
-
-	player_connected.emit(peer_id)
-	print("Peer connected: %d (%d/%d)" % [peer_id, connected_peer_ids.size(), MAX_CLIENTS])
+	print("Peer connected: %d, waiting for role registration" % peer_id)
 
 
 ## Removes a disconnected peer from the tracked list and emits [signal player_disconnected].
 func _on_peer_disconnected(peer_id: int) -> void:
 	connected_peer_ids.erase(peer_id)
+	spectator_peer_ids.erase(peer_id)
 	energy_by_peer_id.erase(peer_id)
+	broadcast_state_by_peer_id.erase(peer_id)
 	player_disconnected.emit(peer_id)
 	print("Peer disconnected: %d" % peer_id)
 
 
 ## Called when this client successfully connects to a server.
 func _on_connected_to_server() -> void:
+	rpc_id(1, "_server_register_role", local_role)
 	connection_succeeded.emit()
-	print("Connected to server as peer %d" % multiplayer.get_unique_id())
+	print("Connected to server as peer %d role=%s" % [multiplayer.get_unique_id(), local_role])
 
 
 ## Called when this client fails to connect to a server.
@@ -236,6 +258,19 @@ func request_spend_energy(amount: int, reason := "") -> void:
 
 
 @rpc("any_peer", "call_remote", "reliable")
+func _server_register_role(role: String) -> void:
+	if not multiplayer.is_server():
+		return
+
+	var sender_id := multiplayer.get_remote_sender_id()
+	if role == "spectator":
+		_register_spectator(sender_id)
+		return
+
+	_register_player(sender_id)
+
+
+@rpc("any_peer", "call_remote", "reliable")
 func _server_request_add_energy(amount: int, reason := "") -> void:
 	if not multiplayer.is_server():
 		return
@@ -257,11 +292,66 @@ func _server_request_spend_energy(amount: int, reason := "") -> void:
 	_server_spend_energy(sender_id, amount, reason)
 
 
+@rpc("any_peer", "call_remote", "unreliable_ordered")
+func _server_update_broadcast_state(state: Dictionary) -> void:
+	if not multiplayer.is_server():
+		return
+
+	var sender_id := multiplayer.get_remote_sender_id()
+	if not connected_peer_ids.has(sender_id):
+		return
+
+	broadcast_state_by_peer_id[sender_id] = state
+	broadcast_state_changed.emit(sender_id, state)
+	for spectator_id in spectator_peer_ids:
+		_client_update_broadcast_state.rpc_id(spectator_id, sender_id, state)
+
+
+func _register_player(peer_id: int) -> void:
+	if connected_peer_ids.has(peer_id):
+		return
+	if not can_accept_more_clients(connected_peer_ids.size()):
+		room_full.emit(peer_id)
+		multiplayer.multiplayer_peer.disconnect_peer(peer_id)
+		print("Rejected player peer %d because the room is full" % peer_id)
+		return
+
+	connected_peer_ids.append(peer_id)
+	energy_by_peer_id[peer_id] = 0
+	_broadcast_energy(peer_id, 0)
+	_sync_energy_to_peer(peer_id)
+
+	player_connected.emit(peer_id)
+	print("Player registered: %d (%d/%d)" % [peer_id, connected_peer_ids.size(), MAX_PLAYERS])
+
+
+func _register_spectator(peer_id: int) -> void:
+	if spectator_peer_ids.has(peer_id):
+		return
+	if spectator_peer_ids.size() >= MAX_SPECTATORS:
+		room_full.emit(peer_id)
+		multiplayer.multiplayer_peer.disconnect_peer(peer_id)
+		print("Rejected spectator peer %d because the room is full" % peer_id)
+		return
+
+	spectator_peer_ids.append(peer_id)
+	_sync_energy_to_peer(peer_id)
+	_sync_broadcast_state_to_spectator(peer_id)
+	print("Spectator registered: %d (%d/%d)" % [peer_id, spectator_peer_ids.size(), MAX_SPECTATORS])
+
+
 func _sync_energy_to_peer(target_peer_id: int) -> void:
 	for peer_id in energy_by_peer_id:
 		if peer_id == target_peer_id:
 			continue
 		_client_set_energy.rpc_id(target_peer_id, peer_id, get_energy(peer_id))
+
+
+func _sync_broadcast_state_to_spectator(target_peer_id: int) -> void:
+	for peer_id in broadcast_state_by_peer_id:
+		_client_update_broadcast_state.rpc_id(
+			target_peer_id, peer_id, broadcast_state_by_peer_id[peer_id]
+		)
 
 
 func _server_reject_energy(peer_id: int, reason: String) -> void:
@@ -329,3 +419,9 @@ func _client_set_energy(peer_id: int, energy: int) -> void:
 	energy_by_peer_id[peer_id] = energy
 	energy_changed.emit(peer_id, energy)
 	print("Energy update peer=%d energy=%d" % [peer_id, energy])
+
+
+@rpc("authority", "call_remote", "unreliable_ordered")
+func _client_update_broadcast_state(peer_id: int, state: Dictionary) -> void:
+	broadcast_state_by_peer_id[peer_id] = state
+	broadcast_state_changed.emit(peer_id, state)
