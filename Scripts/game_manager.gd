@@ -232,6 +232,7 @@ func _spawn_trap_from_request(request: Dictionary) -> void:
 	# gdlint: enable=max-returns
 
 
+
 func _run_agent_action_debug_test() -> void:
 	print("=== AgentActionService + TeamStatusService Debug Test Start ===")
 
