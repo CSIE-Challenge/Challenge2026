@@ -17,6 +17,8 @@ signal server_disconnected
 signal room_full(peer_id: int)
 signal energy_changed(peer_id: int, energy: int)
 signal energy_rejected(peer_id: int, reason: String)
+signal demo_connected(peer_id: int)
+signal demo_disconnected
 
 const MAX_ENERGY := 100
 const DEFAULT_PORT := 7777
@@ -180,6 +182,11 @@ func _on_peer_connected(peer_id: int) -> void:
 func _on_peer_disconnected(peer_id: int) -> void:
 	connected_peer_ids.erase(peer_id)
 	energy_by_peer_id.erase(peer_id)
+	_client_states.erase(peer_id)
+
+	if peer_id == demo_peer_id:
+		_unregister_demo()
+
 	player_disconnected.emit(peer_id)
 	print("Peer disconnected: %d" % peer_id)
 
@@ -355,3 +362,69 @@ func _server_receive_state(state: Dictionary) -> void:
 		return
 
 	_store_client_state(sender_id, state)
+
+
+## Public: attempt to register [param peer_id] as the demo spectator.
+## Returns true on success. Rejects if a demo is already connected.
+func _register_demo(peer_id: int) -> bool:
+	if demo_peer_id != -1:
+		return false
+
+	demo_peer_id = peer_id
+	demo_connected.emit(peer_id)
+	print("[Demo] Demo registered as peer %d" % peer_id)
+	return true
+
+
+## Public: unregister the current demo spectator. Safe to call when no demo.
+func _unregister_demo() -> void:
+	if demo_peer_id == -1:
+		return
+
+	var old_peer := demo_peer_id
+	demo_peer_id = -1
+	_client_states.clear()
+	demo_disconnected.emit()
+	print("[Demo] Demo disconnected (was peer %d)" % old_peer)
+
+
+## RPC: a peer identifies itself as the demo spectator.
+## Guarded: server-only. Rejects via disconnect if a demo is already registered.
+@rpc("any_peer", "reliable")
+func _server_identify_as_demo() -> void:
+	if not multiplayer.is_server():
+		return
+
+	var sender_id := multiplayer.get_remote_sender_id()
+	if not _register_demo(sender_id):
+		print("[Demo] Rejected duplicate demo from peer %d" % sender_id)
+		multiplayer.multiplayer_peer.disconnect_peer(sender_id)
+
+
+## Public: build the combined state dictionary for the demo.
+## Iterates all stored client states and packages them with a server tick.
+func _build_demo_state() -> Dictionary:
+	var screens: Array[Dictionary] = []
+	for peer_id in _client_states:
+		screens.append(_client_states[peer_id])
+
+	return {
+		"tick": Engine.get_physics_frames(),
+		"screens": screens,
+	}
+
+
+## Public: push the current combined client state to the demo peer.
+## No-op when no demo is connected.
+func _push_state_to_demo() -> void:
+	if demo_peer_id == -1:
+		return
+
+	var combined := _build_demo_state()
+	rpc_id(demo_peer_id, "_demo_receive_state", combined)
+
+
+## RPC stub: receiver on the demo side. Overridden by the demo client.
+@rpc("authority", "unreliable_ordered")
+func _demo_receive_state(_combined: Dictionary) -> void:
+	pass
