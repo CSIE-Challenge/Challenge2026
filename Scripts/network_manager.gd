@@ -25,6 +25,8 @@ const MAX_CLIENTS := 3
 
 var connected_peer_ids: Array[int] = []
 var energy_by_peer_id: Dictionary = {}
+var demo_peer_id: int = -1  # -1 when no demo is connected
+var _client_states: Dictionary = {}  # peer_id → state snapshot Dictionary
 
 
 ## Called on startup. Connects multiplayer signals and handles command-line launch.
@@ -47,6 +49,7 @@ func start_server(port := DEFAULT_PORT) -> Error:
 	multiplayer.multiplayer_peer = peer
 	connected_peer_ids.clear()
 	energy_by_peer_id.clear()
+	_client_states.clear()
 	server_started.emit(port)
 	print("Network server started on UDP port %d, max clients: %d" % [port, MAX_CLIENTS])
 	return OK
@@ -77,6 +80,7 @@ func stop_network() -> void:
 	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
 	connected_peer_ids.clear()
 	energy_by_peer_id.clear()
+	_client_states.clear()
 
 
 ## Returns true if the server can accept more clients based on [param connected_client_count].
@@ -329,3 +333,25 @@ func _client_set_energy(peer_id: int, energy: int) -> void:
 	energy_by_peer_id[peer_id] = energy
 	energy_changed.emit(peer_id, energy)
 	print("Energy update peer=%d energy=%d" % [peer_id, energy])
+
+
+## Public: store a state snapshot for [param peer_id].
+## Only stores state for peers that are currently in [member connected_peer_ids].
+func _store_client_state(peer_id: int, state: Dictionary) -> void:
+	if not connected_peer_ids.has(peer_id):
+		return
+	_client_states[peer_id] = state
+
+
+## RPC: receive a state snapshot from a game client.
+## Guards: server-only, ignores demo, validates sender is a connected peer.
+@rpc("any_peer", "unreliable_ordered")
+func _server_receive_state(state: Dictionary) -> void:
+	if not multiplayer.is_server():
+		return
+
+	var sender_id := multiplayer.get_remote_sender_id()
+	if sender_id == demo_peer_id:
+		return
+
+	_store_client_state(sender_id, state)
