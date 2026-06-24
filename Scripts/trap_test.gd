@@ -27,6 +27,7 @@ func _input(event: InputEvent):
 					Vector2(-250, 100), Vector2(1, 0.2), Vector2(1, 0), Vector2(1, -0.2)
 				)
 
+
 func _random_pos() -> Vector2:
 	var bounds = Global.stage.stage_bounds
 	return bounds.position + Vector2(randf_range(0, bounds.size.x), randf_range(0, bounds.size.y))

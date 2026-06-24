@@ -21,6 +21,7 @@ var _data = Global.trap_data["trap8-electric_arc"]
 @onready var end_point_sprite: Sprite2D = $end_point/sprite
 @onready var arc: Line2D = $arc
 
+
 static func initialize(start_pos: Vector2, end_pos: Vector2) -> Trap8ElectricArc:
 	var trap := preload("res://Scenes/traps/trap8-electric_arc.tscn").instantiate()
 	Global.stage.add_child(trap)
@@ -114,9 +115,15 @@ func _detect_player() -> void:
 	var vector_start_to_end = end_point.global_position - start_point.global_position
 	var vector_start_to_player = player.global_position - start_point.global_position
 	var vector_end_to_player = player.global_position - end_point.global_position
-	var dist = abs((vector_start_to_end.cross(vector_start_to_player)) / vector_start_to_end.length())
+	var dist = abs(
+		(vector_start_to_end.cross(vector_start_to_player)) / vector_start_to_end.length()
+	)
 	if (
-		(dist <= player_radius + arc_width and vector_start_to_player.dot(vector_start_to_end) >= 0 and vector_end_to_player.dot(-vector_start_to_end) >= 0)
+		(
+			dist <= player_radius + arc_width
+			and vector_start_to_player.dot(vector_start_to_end) >= 0
+			and vector_end_to_player.dot(-vector_start_to_end) >= 0
+		)
 		or vector_start_to_player.length() <= player_radius + points_radius
 		or vector_end_to_player.length() <= player_radius + points_radius
 	):
