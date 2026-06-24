@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://c8igbkqxla1gy" path="res://Scenes/energy_ball.tscn" id="2_ap8xm"]
 [ext_resource type="Script" uid="uid://bdl6qti40jt4x" path="res://Scripts/player.gd" id="2_m34ki"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_wbxth"]
+[ext_resource type="Script" uid="uid://cuxjrdxtrso0m" path="res://Scripts/stage.gd" id="3_1qnfl"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_puebw"]
 viewport_path = NodePath("SubViewport")
@@ -46,6 +47,8 @@ size_2d_override_stretch = true
 
 [node name="Stage" type="Node2D" parent="SubViewport" unique_id=1447728601]
 position = Vector2(576, 324)
+script = ExtResource("3_1qnfl")
+stage_bounds = Rect2(-220, -220, 440, 440)
 
 [node name="EnergyBall" parent="SubViewport/Stage" unique_id=1714624484 node_paths=PackedStringArray("player_node") instance=ExtResource("2_ap8xm")]
 z_index = 15

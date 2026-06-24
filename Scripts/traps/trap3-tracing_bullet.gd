@@ -1,3 +1,4 @@
+class_name Trap3TracingBullet
 extends CharacterBody2D
 
 const PLAYER_COLLISION_LAYER := 1
@@ -9,6 +10,14 @@ var target: Node2D = null
 var speed := 0.0
 var active := false
 var tracing := true
+var _data: Dictionary = Global.trap_data["trap3-tracing_bullet"]
+
+
+static func initialize(pos: Vector2, dir: Vector2, speed: float) -> Trap3TracingBullet:
+	var trap := preload("res://Scenes/traps/trap3-tracing_bullet.tscn").instantiate()
+	Global.stage.add_child(trap)
+	trap.activate(pos, dir, speed, Global.game_manager.player)
+	return trap
 
 
 func _ready() -> void:
@@ -20,7 +29,7 @@ func _ready() -> void:
 func activate(
 	spawn_position: Vector2, initial_direction: Vector2, new_speed: float, new_target: Node2D
 ):
-	global_position = spawn_position
+	position = spawn_position
 	rotation = initial_direction.angle()
 
 	speed = new_speed
@@ -61,7 +70,7 @@ func _physics_process(delta):
 		var collider := collision.get_collider()
 
 		if collider == target:
-			GlobalSignal.player_hit.emit(67)
+			Global.player_hit.emit(67)
 			deactivate()
 		elif (collider.collision_layer & WALL_COLLISION_LAYER) != 0:
 			deactivate()

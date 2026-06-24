@@ -1,3 +1,4 @@
+class_name Trap7SpreadingRipples
 extends Area2D
 
 @export var warning_time: float = 1.5
@@ -7,10 +8,18 @@ extends Area2D
 
 var current_expand_rate: float = 10.0
 var is_expanding: bool = false
+var _data: Dictionary = Global.trap_data["trap7-spreading_ripples"]
 
 @onready var warning_sprite: Sprite2D = $WarningSprite
 @onready var ripple_sprite: Sprite2D = $RippleSprite
 @onready var collision_shape: CircleShape2D = $CollisionShape2D.shape
+
+
+static func initialize(pos: Vector2, expand_rate: float) -> Trap7SpreadingRipples:
+	var trap := preload("res://Scenes/traps/trap7-spreading_ripples.tscn").instantiate()
+	Global.stage.add_child(trap)
+	trap.activate(pos, expand_rate)
+	return trap
 
 
 func _ready() -> void:
@@ -21,7 +30,7 @@ func _ready() -> void:
 
 
 func activate(spawn_position: Vector2, expand_rate: float) -> void:
-	global_position = spawn_position
+	position = spawn_position
 	current_expand_rate = expand_rate
 	visible = true
 	monitoring = false
@@ -30,8 +39,7 @@ func activate(spawn_position: Vector2, expand_rate: float) -> void:
 	ripple_sprite.visible = false
 	ripple_sprite.scale = Vector2.ZERO
 
-	var timer = get_tree().create_timer(warning_time)
-	await timer.timeout
+	await get_tree().create_timer(warning_time).timeout
 	_start_ripple_expansion()
 
 
@@ -52,10 +60,10 @@ func _process(delta: float) -> void:
 	if is_expanding and monitoring:
 		collision_shape.radius += current_expand_rate * delta
 		for body in get_overlapping_bodies():
-			if body.name == "Player":
+			if body == Global.game_manager.player:
 				var distance = global_position.distance_to(body.global_position)
 				if abs(distance - collision_shape.radius) <= (ring_thickness / 2):
-					GlobalSignal.player_hit.emit(damage)
+					Global.player_hit.emit(damage)
 
 		if collision_shape.radius >= max_radius:
 			is_expanding = false

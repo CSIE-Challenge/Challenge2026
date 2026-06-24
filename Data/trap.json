@@ -30,13 +30,13 @@
 		"energy_costs": 40.0,
 		"direction": [0, -1]
 	},
-	"trap5-ice_floor":{
+	"trap5-icefloor":{
 		"path": "res://Scenes/trap_icefloor.tscn",
 		"cooldown_times": 3.0,
 		"damage": 5,
 		"energy_costs": 50.0
 	},
-	"trap7-spreading_ripple":{
+	"trap7-spreading_ripples":{
 		"path": "res://Scenes/spreading_ripples.tscn",
 		"cooldown_times": 3.0,
 		"damage": 10,
@@ -49,6 +49,6 @@
 		"path": "res://Scenes/shotgun_trap.tscn",
 		"cooldown_times": 3.0,
 		"damage": 10,
-		"energy_costs": 100.0,
+		"energy_costs": 100.0
 	}
 }

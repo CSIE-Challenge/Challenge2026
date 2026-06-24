@@ -19,11 +19,11 @@ func _ready() -> void:
 
 
 func _on_body_entered(body: Node2D) -> void:
-	if not visible or body.name != "Player":
+	if not visible or body != player_node:
 		return
 
 	visible = false
-	GlobalSignal.energyball_collected.emit()
+	Global.energyball_collected.emit()
 
 	_respawn_energy_ball()
 

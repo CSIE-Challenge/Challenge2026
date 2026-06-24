@@ -1,8 +1,6 @@
 class_name Player
 extends CharacterBody2D
 
-signal player_landed(player_node: Node2D)  #This is used for the mines, trap no.1
-
 @export var acceleration: float = 100
 @export var move_speed: float
 @export var jump_velocity: float

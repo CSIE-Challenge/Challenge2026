@@ -1,3 +1,4 @@
+class_name Trap2ElectricRing
 extends Node2D
 @export var standard_radius: float  #sprite的scale為1時，場景中實際的電圈半徑
 @export var player_radius: float
@@ -11,9 +12,17 @@ var fill_speed: float
 var electric_on: bool
 var current_stay_time
 var died: bool
+var _data: Dictionary = Global.trap_data["trap2-electric_ring"]
 @onready var ring_sprite = $ElectricRing
 @onready var warning_sprite = $ElectricRingWarning
 @onready var animation = $AnimationPlayer
+
+
+static func initialize(time: float, radius: float) -> Trap2ElectricRing:
+	var trap := preload("res://Scenes/traps/trap2-electric_ring.tscn").instantiate()
+	Global.stage.add_child(trap)
+	trap.spawn(radius, time, Global.game_manager.player)
+	return trap
 
 
 func _ready():
@@ -27,7 +36,7 @@ func _physics_process(delta: float) -> void:
 		return
 	if not electric_on:
 		current_fill += fill_speed * delta
-		position = player.position
+		global_position = player.global_position
 		warning_sprite.material.set_shader_parameter("fill", current_fill)
 		if current_fill >= 1.0:
 			electric_on = true
@@ -70,10 +79,10 @@ func _die():
 func _detect_player():
 	if player.isjumping:
 		return
-	var dist = player.position.distance_to(position)
+	var dist = player.global_position.distance_to(global_position)
 	if dist < radius:
 		if dist + player_radius >= radius:
-			GlobalSignal.player_hit.emit(randi_range(0, 10))
+			Global.player_hit.emit(randi_range(0, 10))
 	else:
 		if dist - player_radius <= radius:
-			GlobalSignal.player_hit.emit(randi_range(0, 10))
+			Global.player_hit.emit(randi_range(0, 10))

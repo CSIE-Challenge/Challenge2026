@@ -26,8 +26,9 @@ var player_invincible := false
 
 
 func _ready() -> void:
-	GlobalSignal.player_hit.connect(on_player_hit)
-	GlobalSignal.energyball_collected.connect(_on_energyball_collected)
+	Global.player_hit.connect(on_player_hit)
+	Global.energyball_collected.connect(_on_energyball_collected)
+	Global.game_manager = self
 	player_invincibility_timer.timeout.connect(_on_player_invincibility_timer_timeout)
 	NetworkManager.energy_changed.connect(_on_network_energy_changed)
 	health_label.text = "Health: %d" % player.max_health
