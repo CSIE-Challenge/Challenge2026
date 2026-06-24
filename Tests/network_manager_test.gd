@@ -13,7 +13,8 @@ func _run_tests() -> void:
 
 	_assert(network_manager.can_accept_more_clients(0), "server should accept first client")
 	_assert(network_manager.can_accept_more_clients(1), "server should accept second client")
-	_assert(not network_manager.can_accept_more_clients(2), "server should reject third client")
+	_assert(network_manager.can_accept_more_clients(2), "server should accept third client")
+	_assert(not network_manager.can_accept_more_clients(3), "server should reject fourth client")
 
 	_assert_eq(
 		network_manager.get_startup_mode(["--server"]),

@@ -21,7 +21,7 @@ signal energy_rejected(peer_id: int, reason: String)
 const MAX_ENERGY := 100
 const DEFAULT_PORT := 7777
 const DEFAULT_SERVER_ADDRESS := "127.0.0.1"
-const MAX_CLIENTS := 2
+const MAX_CLIENTS := 3
 
 var connected_peer_ids: Array[int] = []
 var energy_by_peer_id: Dictionary = {}
