@@ -9,9 +9,25 @@ signal trap_rejected(request: Dictionary, reason: String)
 var team_status_service: TeamStatusService
 var trap_request_scheduler: TrapRequestScheduler
 
-var trap_energy_costs := {"mine": 10.0, "shotgun": 40.0, "electric_ring": 30.0}
+var trap_energy_costs := {
+	"mine": 10.0,
+	"electric_ring": 20.0,
+	"tracing_bullet": 30.0,
+	"conveyor": 40.0,
+	"icefloor": 50.0,
+	"spreading_ripples": 70.0,
+	"shotgun": 100.0,
+}
 
-var trap_cooldown_times := {"mine": 2.0, "shotgun": 5.0, "electric_ring": 3.0}
+var trap_cooldown_times := {
+	"mine": 2.0,
+	"electric_ring": 3.0,
+	"tracing_bullet": 3.0,
+	"conveyor": 3.0,
+	"icefloor": 3.0,
+	"spreading_ripples": 3.0,
+	"shotgun": 5.0,
+}
 
 # trap_cooldowns[team_id][trap_id] = remaining_seconds
 var trap_cooldowns: Dictionary = {}
@@ -123,6 +139,8 @@ func submit_trap_request_result(
 	trap_request_submitted.emit(submitted_request)
 
 	return _make_submit_result(true, request_id, team_id, trap_id, "")
+
+
 # gdlint: enable=max-returns
 
 
@@ -224,6 +242,8 @@ func _make_request(
 		"params": params,
 		"submit_time": Time.get_ticks_msec()
 	}
+
+
 func _make_submit_result(
 	ok: bool, request_id: int, team_id: int, trap_id: String, reason: String
 ) -> Dictionary:

@@ -11,6 +11,26 @@ from .transport import Transport
 
 T = TypeVar("T")
 
+_TRAP_ID_BY_NUMBER: dict[int, str] = {
+    1: "mine",
+    2: "electric_ring",
+    3: "tracing_bullet",
+    4: "conveyor",
+    5: "icefloor",
+    7: "spreading_ripples",
+    10: "shotgun",
+}
+
+_KNOWN_TRAP_IDS: set[str] = {
+    "mine",
+    "electric_ring",
+    "tracing_bullet",
+    "conveyor",
+    "icefloor",
+    "spreading_ripples",
+    "shotgun",
+}
+
 
 class ApiError(Exception):
     def __init__(self, code: int) -> None:
@@ -22,6 +42,27 @@ def _unwrap(response: dict) -> Any:
     if response.get("status") == protocol.Status.ERROR:
         raise ApiError(response.get("code", protocol.Code.ILLFORMED))
     return response.get("data")
+
+
+def _normalize_trap_id(trap_id: int | str) -> str:
+    if isinstance(trap_id, bool):
+        raise TypeError("trap_id must be int or str")
+
+    if isinstance(trap_id, int):
+        canonical = _TRAP_ID_BY_NUMBER.get(trap_id)
+        if canonical is None:
+            raise ValueError(f"unsupported numeric trap_id: {trap_id}")
+        return canonical
+
+    if isinstance(trap_id, str):
+        if trap_id in _KNOWN_TRAP_IDS:
+            return trap_id
+        if trap_id.isdigit():
+            canonical = _TRAP_ID_BY_NUMBER.get(int(trap_id))
+            if canonical is not None:
+                return canonical
+
+    raise TypeError(f"unsupported trap_id: {trap_id!r}")
 
 
 class GameClientBase:
@@ -84,10 +125,14 @@ class GameClientBase:
     def request_trap(
         self,
         team_id: int,
-        trap_id: int,
+        trap_id: int | str,
         params: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
-        """Request to place a trap."""
+        """Request to place a trap.
+
+        Vector parameters should be sent as ``[x, y]`` arrays in JSON payloads.
+        """
+        trap_id = _normalize_trap_id(trap_id)
         return self._call(
             protocol.Cmd.REQUEST_TRAP,
             {

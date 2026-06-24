@@ -21,8 +21,6 @@ var flying: bool = false
 var exploding: bool = false
 var explosion_radius: float = 0.0
 
-var _data = Global.trap_data["trap9-mortar"]
-
 @onready var shell: Sprite2D = $Shell
 @onready var shadow: Sprite2D = $Shadow
 @onready var explosion: AnimatedSprite2D = $Explosion

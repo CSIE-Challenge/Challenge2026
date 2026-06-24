@@ -14,7 +14,6 @@ var directions: Array[Vector2] = []
 var hit_spawn_wall: Array[bool]
 var aiming: bool = false
 var firing: bool = false
-var _data: Dictionary = Global.trap_data["trap10-shotgun"]
 @onready var timer: Timer = $Timer
 @onready var lines_container: Node2D = $AimingLines
 @onready var lines: Array = [$AimingLines/Line1, $AimingLines/Line2, $AimingLines/Line3]

@@ -12,7 +12,6 @@ var fill_speed: float
 var electric_on: bool
 var current_stay_time
 var died: bool
-var _data: Dictionary = Global.trap_data["trap2-electric_ring"]
 @onready var ring_sprite = $ElectricRing
 @onready var warning_sprite = $ElectricRingWarning
 @onready var animation = $AnimationPlayer

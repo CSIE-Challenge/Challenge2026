@@ -12,7 +12,7 @@ var white_ripple_thickness: float = 0.0
 var time := 0.0
 var is_expanding: bool = false
 var collision_shape: CircleShape2D
-var _data: Dictionary = Global.trap_data["trap7-spreading_ripples"]
+var _data: Dictionary = {}
 
 @onready var warning_sprite: Sprite2D = $WarningSprite
 @onready var ripple_sprite: Sprite2D = $RippleSprite

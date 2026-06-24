@@ -12,7 +12,6 @@ const TRAP_COLLISION_LAYER := 4
 var target: Node2D = null
 var speed := 0.0
 var tracing := true
-var _data: Dictionary = Global.trap_data["trap3-tracing_bullet"]
 
 @onready var feather_effect = $FeatherEffect
 
