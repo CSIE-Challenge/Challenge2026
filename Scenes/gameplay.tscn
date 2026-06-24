@@ -43,7 +43,7 @@ texture = SubResource("ViewportTexture_puebw")
 expand_mode = 1
 
 [node name="SubViewport" type="SubViewport" parent="." unique_id=117532480]
-size = Vector2i(320, 180)
+size = Vector2i(480, 270)
 size_2d_override = Vector2i(1152, 648)
 size_2d_override_stretch = true
 
