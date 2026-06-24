@@ -27,7 +27,7 @@ func _process(_delta: float) -> void:
 
 func _on_body_entered(_body: Node2D) -> void:
 	print("player touched trap lines")
-	GlobalSignal.player_hit.emit(randi_range(0, 10))
+	Global.player_hit.emit(randi_range(0, 10))
 	#line_alive = false
 	#visible = false
 

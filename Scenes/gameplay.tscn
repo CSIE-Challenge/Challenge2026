@@ -6,7 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://c8igbkqxla1gy" path="res://Scenes/energy_ball.tscn" id="2_ap8xm"]
 [ext_resource type="Script" uid="uid://bdl6qti40jt4x" path="res://Scripts/player.gd" id="2_m34ki"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_wbxth"]
-<<<<<<< HEAD
 [ext_resource type="Script" uid="uid://cuxjrdxtrso0m" path="res://Scripts/stage.gd" id="3_1qnfl"]
 [ext_resource type="PackedScene" uid="uid://blesmlfba01ny" path="res://Scenes/traps/trap5-icefloor.tscn" id="4_1qnfl"]
 [ext_resource type="PackedScene" uid="uid://d0xq1elehua3l" path="res://Scenes/traps/trap2-electric_ring.tscn" id="5_r8bcl"]
@@ -17,13 +16,6 @@
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_puebw"]
 viewport_path = NodePath("SubViewport")
-=======
-[ext_resource type="PackedScene" uid="uid://blesmlfba01ny" path="res://Scenes/trap_icefloor.tscn" id="3_1qnfl"]
-[ext_resource type="PackedScene" uid="uid://d0xq1elehua3l" path="res://Scenes/electric_ring.tscn" id="5_r8bcl"]
-[ext_resource type="PackedScene" uid="uid://bn2r2n5iik0jg" path="res://Scenes/conveyor.tscn" id="7_1qnfl"]
-[ext_resource type="PackedScene" uid="uid://doj5imvqfusp2" path="res://Scenes/trap_lines.tscn" id="10_5h7oy"]
-[ext_resource type="Script" uid="uid://by7877ag2m6ms" path="res://Scenes/trap_lines.gd" id="11_ltefv"]
->>>>>>> 3364d7c (feat: add line trap)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wbxth"]
 size = Vector2(135, 135)
@@ -180,17 +172,6 @@ offset_top = -236.0
 offset_right = -196.0
 offset_bottom = -213.0
 
-<<<<<<< HEAD
-=======
-[node name="Conveyor" parent="Stage" unique_id=745938423 instance=ExtResource("7_1qnfl")]
-z_index = -10
-position = Vector2(-152, -212)
-
-[node name="TrapLines" parent="Stage" unique_id=1716757865 instance=ExtResource("10_5h7oy")]
-position = Vector2(-1, 2)
-script = ExtResource("11_ltefv")
-
->>>>>>> 3364d7c (feat: add line trap)
 [node name="HUD" type="CanvasLayer" parent="." unique_id=2039367638]
 
 [node name="EnergyBallsLabel" type="Label" parent="HUD" unique_id=312988717]
@@ -209,11 +190,7 @@ offset_bottom = 90.0
 theme_override_font_sizes/font_size = 24
 text = "My Energy: 0"
 
-<<<<<<< HEAD
 [node name="OpponentEnergyBarLabel" type="Label" parent="HUD" unique_id=1246113594]
-=======
-[node name="OpponentEnergyBarLabel" type="Label" parent="HUD" unique_id=1904239057]
->>>>>>> 3364d7c (feat: add line trap)
 offset_left = 21.0
 offset_top = 96.0
 offset_right = 421.0
@@ -233,5 +210,4 @@ script = ExtResource("8_urrcd")
 [node name="AgentActionService" type="Node" parent="." unique_id=1603690011]
 script = ExtResource("9_puebw")
 
-[connection signal="timeout" from="GameManager/EnergyIncreaseTimer" to="GameManager" method="_on_energy_increase_timer_timeout"]
 [connection signal="timeout" from="GameManager/EnergyIncreaseTimer" to="GameManager" method="_on_energy_increase_timer_timeout"]
