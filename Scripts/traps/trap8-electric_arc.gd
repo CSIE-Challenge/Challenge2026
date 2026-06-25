@@ -14,6 +14,7 @@ var points_scale: Vector2
 var points_assigned_scale: Vector2
 var arc_assigned_width: float
 var arc_on: bool
+var _data = Global.trap_data["trap8-electric_arc"]
 
 @onready var player: CharacterBody2D = $"../Player"
 @onready var start_point: Node2D = $start_point
@@ -26,7 +27,7 @@ var arc_on: bool
 static func initialize(start_pos: Vector2, end_pos: Vector2) -> Trap8ElectricArc:
 	var trap := preload("res://Scenes/traps/trap8-electric_arc.tscn").instantiate()
 	Global.stage.add_child(trap)
-	trap.spawn(start_pos, end_pos, trap.delay_time, trap.duration_time)
+	trap.spawn(start_pos, end_pos)
 	return trap
 
 
