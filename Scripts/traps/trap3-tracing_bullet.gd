@@ -33,13 +33,9 @@ func _ready() -> void:
 	set_physics_process(true)
 
 
-func _destroy() -> void:
-	queue_free()
-
-
 func _physics_process(delta):
 	if target == null:
-		_destroy()
+		queue_free()
 		return
 
 	if tracing:
@@ -57,9 +53,9 @@ func _physics_process(delta):
 
 		if collider == target:
 			Global.player_hit.emit(67)
-			_destroy()
+			queue_free()
 		elif (collider.collision_layer & WALL_COLLISION_LAYER) != 0:
-			_destroy()
+			queue_free()
 
 
 func turn_toward_target(delta):
