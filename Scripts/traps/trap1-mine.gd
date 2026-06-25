@@ -11,6 +11,7 @@ var is_armed := false
 var isjumping_2_frame_ago := false
 var isjumping_1_frame_ago := false
 var animation_time = 0
+
 @onready var mine_body: Sprite2D = $MineBody
 @onready var explosion_area: Area2D = $ExplosionArea
 
@@ -54,9 +55,6 @@ func disarm() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	animation_time += delta
-	mine_body.material.set_shader_parameter("time", animation_time)
-
 	var player = Global.game_manager.player
 	if is_armed and explosion_area.overlaps_body(player):
 		if isjumping_2_frame_ago and not player.isjumping:

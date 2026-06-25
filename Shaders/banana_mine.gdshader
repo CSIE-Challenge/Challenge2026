@@ -1,7 +1,5 @@
 shader_type canvas_item;
 
-uniform float time;
-
 uniform vec4 radar_color : source_color = vec4(0.0, 1.0, 0.0, 1.0);
 uniform float radar_mul : hint_range(0.0, 1.0) = 1.0;
 uniform float radar_speed : hint_range(0.1, 1.0) = 0.2;
@@ -18,7 +16,7 @@ void fragment() {
     // calculate angle delta from position
     // (starts from top, clockwise)
     float angle = fract(atan(uv.y, uv.x) / TAU + 1.25);
-    float current = fract(time * radar_speed);
+    float current = fract(TIME * radar_speed);
     float angle_diff = fract(current - angle + 1.);
     
     // sweep
