@@ -1,18 +1,91 @@
 [gd_scene format=3 uid="uid://bmd5f51xmki4l"]
 
 [ext_resource type="Script" uid="uid://lu6b56ud55qw" path="res://Scripts/traps/trap3-tracing_bullet.gd" id="1_uwr5t"]
-[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_a2phm"]
+[ext_resource type="Texture2D" uid="uid://b5v6w6ngu1pfs" path="res://Shapes/Seagull/seagull_1.svg" id="3_njlgp"]
+[ext_resource type="Texture2D" uid="uid://3i0ndflw4dk0" path="res://Shapes/Seagull/seagull_2.svg" id="4_s34uc"]
+[ext_resource type="Texture2D" uid="uid://lxwo4n1swa1c" path="res://Shapes/Seagull/seagull_3.svg" id="5_3ko3v"]
+[ext_resource type="Texture2D" uid="uid://beqway58ycb5d" path="res://Shapes/Seagull/seagull_4.svg" id="6_w7crh"]
+[ext_resource type="Texture2D" uid="uid://bu10wmmm55xa4" path="res://Shapes/Seagull/seagull_5.svg" id="7_epjbo"]
+[ext_resource type="Texture2D" uid="uid://bhp4ck5346ba5" path="res://Shapes/Seagull/seagull_6.svg" id="8_6k4re"]
+[ext_resource type="Texture2D" uid="uid://f5ertr28h6kq" path="res://Shapes/feather.svg" id="8_njlgp"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_br684"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_njlgp"]
+size = Vector2(12.335, 31.215)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_i0wcx"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_njlgp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_s34uc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_3ko3v")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_w7crh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_epjbo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_6k4re")
+}],
+"loop": true,
+"name": &"default",
+"speed": 12.0
+}]
+
+[sub_resource type="Curve" id="Curve_s34uc"]
+_data = [Vector2(0.00826446, 0.98457885), 0.0, -0.88632834, 0, 0, Vector2(0.98622584, 0.007908225), -4.4782953, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_3ko3v"]
+curve = SubResource("Curve_s34uc")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_w7crh"]
+particle_flag_disable_z = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 1.0
+emission_ring_radius = 5.0
+emission_ring_inner_radius = 5.0
+emission_ring_cone_angle = 90.0
+angle_min = -720.0
+angle_max = 720.0
+angular_velocity_min = -288.03
+angular_velocity_max = 228.66998
+radial_velocity_min = 99.99998
+radial_velocity_max = 169.99997
+gravity = Vector3(0, 0, 0)
+linear_accel_min = -2.2351742e-06
+linear_accel_max = -2.2351742e-06
+radial_accel_min = -150.0
+radial_accel_max = -150.0
+scale_min = 0.01
+scale_max = 0.02
+scale_curve = SubResource("CurveTexture_3ko3v")
 
 [node name="TracingBullet" type="CharacterBody2D" unique_id=1605080651]
 script = ExtResource("1_uwr5t")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=302945391]
-modulate = Color(1, 0.16470589, 0.15294118, 1)
-position = Vector2(-7.6293945e-06, -7.6293945e-06)
-scale = Vector2(0.15463917, 0.15463917)
-texture = ExtResource("2_a2phm")
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=153259014]
-shape = SubResource("CircleShape2D_br684")
+position = Vector2(1.505, 0)
+shape = SubResource("RectangleShape2D_njlgp")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=520801098]
+rotation = 1.5707964
+scale = Vector2(0.05, 0.07)
+sprite_frames = SubResource("SpriteFrames_i0wcx")
+autoplay = "default"
+frame_progress = 0.2636138
+
+[node name="FeatherEffect" type="GPUParticles2D" parent="." unique_id=1778232538]
+emitting = false
+texture = ExtResource("8_njlgp")
+lifetime = 0.6
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_w7crh")

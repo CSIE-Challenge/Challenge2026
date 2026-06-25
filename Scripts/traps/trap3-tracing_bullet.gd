@@ -14,6 +14,8 @@ var speed := 0.0
 var tracing := true
 var _data: Dictionary = Global.trap_data["trap3-tracing_bullet"]
 
+@onready var feather_effect = $FeatherEffect
+
 
 static func initialize(pos: Vector2, dir: Vector2, speed: float) -> Trap3TracingBullet:
 	var trap := preload("res://Scenes/traps/trap3-tracing_bullet.tscn").instantiate()
