@@ -1,5 +1,7 @@
 extends Control
 
+const MENU_SCENE_PATH = "res://Scenes/menu.tscn"
+
 var attack_ball_scene = preload("res://Scenes/attack_ball.tscn")
 
 @onready var walls: Node2D = $Panel/Stage/Walls
@@ -21,6 +23,11 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
 	pass
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
+		get_tree().change_scene_to_file(MENU_SCENE_PATH)
 
 
 func _random_generate_attack_ball():
