@@ -5,7 +5,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wwt1h"]
 size = Vector2(1920, 29)
 
-[node name="TrapLines" type="Area2D" unique_id=2049827693]
+[node name="Scanline" type="Area2D" unique_id=2049827693]
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=829123046]
 clip_contents = true

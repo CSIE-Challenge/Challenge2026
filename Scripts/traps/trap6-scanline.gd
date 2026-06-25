@@ -1,3 +1,4 @@
+class_name Trap6Scanline
 extends Area2D
 
 @export var line_dir = PI / 180 * 15
@@ -7,6 +8,14 @@ var line_pos = Vector2(0, 0) - velocity * 500
 
 @onready var visual_line = $ColorRect/Sprite2D
 @onready var collision_shape = $CollisionShape2D
+
+
+static func initialize(dir: Vector2, speed: float) -> Trap6Scanline:
+	var trap := preload("res://Scenes/traps/trap6-scanline.tscn").instantiate()
+	Global.stage.add_child(trap)
+	# TODO: Set initial position and direction
+	velocity = dir.normalized() * speed
+	return trap
 
 
 # Called when the node enters the scene tree for the first time.
