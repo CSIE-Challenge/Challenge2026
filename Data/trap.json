@@ -1,13 +1,13 @@
 {
 	"trap1-mine":{
-		"path": "res://Scenes/traps/mine_trap.tscn",
+		"path": "res://Scenes/traps/trap1-mine.tscn",
 		"cooldown_times": 3.0,
 		"damage": 1,
 		"energy_costs": 10.0,
 		"arming_time": 3.0
 	},
 	"trap2-electric_ring":{
-		"path": "res://Scenes/traps/electric_ring.tscn",
+		"path": "res://Scenes/traps/trap2-electric_ring.tscn",
 		"cooldown_times": 3.0,
 		"damage": 2,
 		"energy_costs": 20.0,
@@ -17,7 +17,7 @@
 		"ring_thickness": 0.03
 	},
 	"trap3-tracing_bullet":{
-		"path": "res://Scenes/traps/tracing_bullet.tscn",
+		"path": "res://Scenes/traps/trap3-tracing_bullet.tscn",
 		"cooldown_times": 3.0,
 		"damage": 3,
 		"energy_costs": 30.0,
@@ -26,7 +26,7 @@
 		"min_speed": 100.0
 	},
 	"trap4-conveyor_floor":{
-		"path": "res://Scenes/traps/conveyor.tscn",
+		"path": "res://Scenes/traps/trap4-conveyor.tscn",
 		"cooldown_times": 3.0,
 		"damage": 4,
 		"energy_costs": 40.0,
@@ -34,14 +34,17 @@
 		"lifetime": 5.0
 	},
 	"trap5-icefloor":{
-		"path": "res://Scenes/traps/trap_icefloor.tscn",
+		"path": "res://Scenes/traps/trap5-icefloor.tscn",
 		"cooldown_times": 3.0,
 		"damage": 5,
 		"energy_costs": 50.0,
 		"lifetime": 5.0
 	},
+	"trap6-scanline":{
+		"path": "res://Scenes/traps/trap6-scanline.tscn"
+	},
 	"trap7-spreading_ripples":{
-		"path": "res://Scenes/traps/spreading_ripples.tscn",
+		"path": "res://Scenes/traps/trap7-spreading_ripples.tscn",
 		"cooldown_times": 3.0,
 		"damage": 10,
 		"energy_costs": 70.0,
@@ -50,7 +53,7 @@
 		"ring_thickness": 10.0
 	},
 	"trap8-electric_arc":{
-		"path": "res://Scenes/traps/electric_arc.tscn",
+		"path": "res://Scenes/traps/trap8-electric_arc.tscn",
 		"cooldown_times": 3.0,
 		"damage": 8,
 		"energy_costs": 80.0,
@@ -64,7 +67,7 @@
 		"duration_time": 100
 	},
 	"trap9-mortar":{
-		"path": "res://Scenes/traps/mortar_trap.tscn",
+		"path": "res://Scenes/traps/trap9-mortar.tscn",
 		"cooldown_times": 3.0,
 		"damage": 20,
 		"energy_costs": 90.0,
@@ -74,7 +77,7 @@
 		"explosion_expand_speed": 400.0
 	},
 	"trap10-shotgun":{
-		"path": "res://Scenes/traps/shotgun_trap.tscn",
+		"path": "res://Scenes/traps/trap10-shotgun.tscn",
 		"cooldown_times": 3.0,
 		"damage": 5.0,
 		"energy_costs": 100.0,
