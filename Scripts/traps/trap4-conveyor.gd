@@ -19,7 +19,6 @@ func _ready() -> void:
 	await get_tree().create_timer(lifetime).timeout
 	_destroy_trap()
 
-
 func _destroy_trap() -> void:
 	if not is_inside_tree():
 		return
@@ -28,8 +27,7 @@ func _destroy_trap() -> void:
 		if body == Global.game_manager.player and body is CharacterBody2D:
 			body.external_velocity -= speed * direction
 			print("trap timeout: remove player conveyor force")
-
-	queue_free()
+			queue_free()
 
 
 func _on_body_entered(body: Node2D) -> void:
