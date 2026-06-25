@@ -39,10 +39,10 @@
 		"damage": 5,
 		"energy_costs": 50.0,
 		"lifetime": 5.0
-	},
-	"trap6-scanline":{
-		"path": "res://Scenes/traps/trap6-scanline.tscn"
-	},
+		},
+		"trap6-scanline":{
+			"path": "res://Scenes/traps/trap6-scanline.tscn"
+		},
 	"trap7-spreading_ripples":{
 		"path": "res://Scenes/traps/trap7-spreading_ripples.tscn",
 		"cooldown_times": 3.0,
@@ -53,7 +53,7 @@
 		"ring_thickness": 10.0
 	},
 	"trap8-electric_arc":{
-		"path": "res://Scenes/traps/trap8-electric_arc.tscn",
+			"path": "res://Scenes/traps/trap8-electric_arc.tscn",
 		"cooldown_times": 3.0,
 		"damage": 8,
 		"energy_costs": 80.0,
@@ -67,7 +67,7 @@
 		"duration_time": 100
 	},
 	"trap9-mortar":{
-		"path": "res://Scenes/traps/trap9-mortar.tscn",
+			"path": "res://Scenes/traps/trap9-mortar.tscn",
 		"cooldown_times": 3.0,
 		"damage": 20,
 		"energy_costs": 90.0,
