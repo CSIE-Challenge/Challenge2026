@@ -18,7 +18,7 @@ func _input(event: InputEvent):
 			KEY_5:
 				Trap5IceFloor.initialize(_random_pos())
 			KEY_6:
-				var angle = randf_range(0, PI * 26)
+				var angle = randf_range(0, PI * 2)
 				Trap6Scanline.initialize(Vector2(cos(angle), sin(angle)), 100)
 			KEY_7:
 				Trap7SpreadingRipples.initialize(Vector2(300, 300), 150.0)
