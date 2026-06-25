@@ -1,5 +1,6 @@
 extends Node2D
 
+#const RESULT_SCREEN_TEST_DELAY := 10.0
 # Seats driven by a remote agent. The human plays directly on the keyboard, so
 # only agent seats need wiring: add a name here to add an agent (1 agent for now).
 const AGENT_SEATS: Array[String] = ["Agent1"]
@@ -10,6 +11,7 @@ const AGENT_SEATS: Array[String] = ["Agent1"]
 @export var energy_balls_label: Label
 @export var energy_bar_label: Label
 @export var opponent_energy_bar_label: Label
+@export var result_screen: ResultScreen
 @export var energy_increase_period: int
 @export var energy_ball_spawn_period: int
 @export var player_invincibility_time: float
@@ -17,8 +19,11 @@ const AGENT_SEATS: Array[String] = ["Agent1"]
 
 var energy_ball_count := 0
 var energy_amount := 0
+var total_energy_spent := 0
 var rng := RandomNumberGenerator.new()
 var player_invincible := false
+var game_over := false
+var survival_started_msec := 0
 
 @onready var player_invincibility_timer = $PlayerInvincibilityTimer
 @onready var energy_increase_timer = $EnergyIncreaseTimer
@@ -29,6 +34,7 @@ var player_invincible := false
 
 
 func _ready() -> void:
+	survival_started_msec = Time.get_ticks_msec()
 	Global.player_hit.connect(on_player_hit)
 	Global.energyball_collected.connect(_on_energyball_collected)
 	Global.game_manager = self
@@ -49,6 +55,8 @@ func _ready() -> void:
 	player_invincible = false
 
 	_begin_agents()
+
+	#_show_test_result_after_delay()
 
 
 func _begin_agents() -> void:
@@ -259,7 +267,7 @@ func _spawn_trap_from_request(request: Dictionary) -> void:
 
 
 func on_player_hit(damage: int) -> void:
-	if player_invincible:
+	if game_over or player_invincible:
 		return
 	_player_become_invincible()
 	print("玩家受到了", damage, "點傷害")
@@ -267,7 +275,39 @@ func on_player_hit(damage: int) -> void:
 	player.health = max(player.health - damage, 0.0)
 	health_label.text = "Health: %d" % player.health
 	if player.health <= 0.0:
-		print("玩家死掉了！")
+		finish_game()
+
+
+#func _show_test_result_after_delay() -> void:
+	#await get_tree().create_timer(RESULT_SCREEN_TEST_DELAY).timeout
+	#finish_game()
+
+
+func finish_game(authoritative_stats: Dictionary = {}) -> void:
+	if game_over:
+		return
+	game_over = true
+	energy_increase_timer.stop()
+	player_invincibility_timer.stop()
+	player.set_physics_process(false)
+	player.collision_layer = 0
+	player.collision_mask = 0
+
+	var survival_time := (Time.get_ticks_msec() - survival_started_msec) / 1000.0
+	(
+		result_screen
+		. show_results(
+			{
+				"energy_spent": authoritative_stats.get("energy_spent", total_energy_spent),
+				"energy_balls": energy_ball_count,
+				"jump_count": player.jump_count,
+				"distance_traveled": player.distance_traveled,
+				"survival_time": survival_time,
+				"remaining_health": player.health,
+				"trap_count": authoritative_stats.get("trap_count", 0),
+			}
+		)
+	)
 
 
 func _on_energyball_collected() -> void:
@@ -293,6 +333,8 @@ func _on_energy_increase_timer_timeout() -> void:
 
 func _on_network_energy_changed(peer_id: int, energy: int) -> void:
 	if peer_id == multiplayer.get_unique_id():
+		if energy < energy_amount:
+			total_energy_spent += energy_amount - energy
 		energy_amount = energy
 		_update_energy_label()
 		return

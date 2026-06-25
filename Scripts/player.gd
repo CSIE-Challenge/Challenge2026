@@ -15,6 +15,8 @@ var current_jump_velocity: float
 var current_sprite_y: float
 var external_velocity: Vector2 = Vector2.ZERO
 var isinvincible := false
+var jump_count := 0
+var distance_traveled := 0.0
 
 @onready var body_sprite = $BodySprite
 
@@ -35,6 +37,7 @@ func _physics_process(delta: float) -> void:
 
 
 func move(dir: Vector2, speed: float, delta: float):
+	var previous_position := global_position
 	var target_velocity = dir * speed
 	var effective_acc = acceleration if not isjumping else 100.
 	var weight = 1.0 - exp(-effective_acc * delta)
@@ -45,12 +48,14 @@ func move(dir: Vector2, speed: float, delta: float):
 	velocity += external_velocity
 	move_and_slide()
 	velocity -= external_velocity
+	distance_traveled += previous_position.distance_to(global_position)
 
 
 func _jump():
 	if isjumping:
 		return
 	isjumping = true
+	jump_count += 1
 	current_jump_velocity = jump_velocity
 	current_sprite_y = 0
 	_jump_invisiblility_toggle(true)
