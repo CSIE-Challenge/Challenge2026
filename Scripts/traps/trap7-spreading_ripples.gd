@@ -8,7 +8,7 @@ extends Area2D
 @export var white_ripple_oscil_freq: float
 
 var current_expand_rate: float = 10.0
-var white_ripple_thickness: float = 0.0
+var white_ripple_thickness: float
 var time := 0.0
 var is_expanding: bool = false
 var collision_shape: CircleShape2D
