@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cls1oc75bj13y"
-path="res://.godot/imported/trap_lines.png-fcabba12cbdc0fdcb0df6e3fb3688f22.ctex"
+uid="uid://bqkyfc3ijytil"
+path="res://.godot/imported/ScanLine.png-973d74f2fce1cde9d2d5cadd8c9cfe97.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Shapes/trap_lines.png"
-dest_files=["res://.godot/imported/trap_lines.png-fcabba12cbdc0fdcb0df6e3fb3688f22.ctex"]
+source_file="res://Shapes/ScanLine.png"
+dest_files=["res://.godot/imported/ScanLine.png-973d74f2fce1cde9d2d5cadd8c9cfe97.ctex"]
 
 [params]
 
