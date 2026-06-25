@@ -4,7 +4,8 @@ extends Node2D
 @export var arming_time: float = 3.0  # How long it takes to turn completely red
 
 var is_armed := false
-var player_just_landed := false
+var isjumping_2_frame_ago := false
+var isjumping_1_frame_ago := false
 var animation_time = 0
 var _data: Dictionary = Global.trap_data["trap1-mine"]
 
@@ -16,7 +17,6 @@ static func initialize(pos: Vector2) -> Trap1Mine:
 	var trap := preload("res://Scenes/traps/trap1-mine.tscn").instantiate()
 	Global.stage.add_child(trap)
 	trap.position = pos
-	trap.explosion_area.body_entered.connect(trap.on_body_entered)
 	trap.start_arming_sequence()
 	return trap
 
@@ -35,40 +35,9 @@ func on_arming_complete() -> void:
 	mine_body.material.set_shader_parameter("radar_mul", 1.0)
 
 	# Check if the player is already standing inside the hitbox when arming finishes
-	for body in explosion_area.get_overlapping_bodies():
-		if body != Global.game_manager.player:
-			if player_just_landed:
-				explode()
-				return
-			else:
-				disarm()
-				return
-
-
-func on_body_entered(body: Node2D) -> void:
-	if not is_armed:
-		return
-
-	# Catches players walking in AFTER the mine is already armed, or landing in it
-	if body == Global.game_manager.player:
-		if player_just_landed:
-			explode()
-			return
-		else:
-			disarm()
-			return
-
-
-# TODO: How to trigger this function? Or player_just_landed will always be false.
-func on_player_landed(body: Node2D) -> void:
-	if not is_armed:
-		return
-	player_just_landed = true
-	await get_tree().physics_frame
-	await get_tree().physics_frame
-	if explosion_area.overlaps_body(body):
-		explode()
-	player_just_landed = false
+	var player = Global.game_manager.player
+	if explosion_area.overlaps_body(player) and not player.isjumping:
+		disarm()
 
 
 func explode() -> void:
@@ -85,3 +54,13 @@ func disarm() -> void:
 func _physics_process(delta: float) -> void:
 	animation_time += delta
 	mine_body.material.set_shader_parameter("time", animation_time)
+
+	var player = Global.game_manager.player
+	if is_armed and explosion_area.overlaps_body(player):
+		if isjumping_2_frame_ago and not player.isjumping:
+			explode()
+		elif not player.isjumping:
+			disarm()
+
+	isjumping_2_frame_ago = isjumping_1_frame_ago
+	isjumping_1_frame_ago = player.isjumping
