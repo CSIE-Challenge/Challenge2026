@@ -15,6 +15,8 @@ var tracing := true
 
 @onready var feather_effect = $FeatherEffect
 
+@onready var feather_effect = $FeatherEffect
+
 
 static func initialize(pos: Vector2, dir: Vector2, speed: float) -> Trap3TracingBullet:
 	var trap := preload("res://Scenes/traps/trap3-tracing_bullet.tscn").instantiate()
