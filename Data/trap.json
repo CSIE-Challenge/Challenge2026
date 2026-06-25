@@ -28,13 +28,15 @@
 		"cooldown_times": 3.0,
 		"damage": 4,
 		"energy_costs": 40.0,
-		"direction": [0, -1]
+		"speed": 100,
+		"lifetime": 5.0
 	},
 	"trap5-icefloor":{
 		"path": "res://Scenes/traps/trap_icefloor.tscn",
 		"cooldown_times": 3.0,
 		"damage": 5,
-		"energy_costs": 50.0
+		"energy_costs": 50.0,
+		"lifetime": 5.0
 	},
 	"trap7-spreading_ripples":{
 		"path": "res://Scenes/traps/spreading_ripples.tscn",
@@ -46,15 +48,36 @@
 		"ring_thickness": 10.0
 	},
 	"trap8-electric_arc":{
-		"path": "res://Scenes/traps/electric_arc.tscn"
+		"path": "res://Scenes/traps/electric_arc.tscn",
+		"cooldown_times": 3.0,
+		"damage": 8,
+		"energy_costs": 80.0,
+		"points_radius": 10,
+		"points_default_scale": [0.15, 0.15],
+		"points_revolution_speed": 8,
+		"arc_width": 5.0,
+		"scaling_rate": 10,
+		"player_radius": 5,
+		"delay_time": 2.0,
+		"duration_time": 100
 	},
 	"trap9-mortar":{
-		"path": "res://Scenes/traps/mortar_trap.tscn"
+		"path": "res://Scenes/traps/mortar_trap.tscn",
+		"cooldown_times": 3.0,
+		"damage": 20,
+		"energy_costs": 90.0,
+		"max_height": 300.0,
+		"gravity": 200.0,
+		"explosion_max_radius": 100.0,
+		"explosion_expand_speed": 400.0
 	},
 	"trap10-shotgun":{
 		"path": "res://Scenes/traps/shotgun_trap.tscn",
 		"cooldown_times": 3.0,
-		"damage": 10,
-		"energy_costs": 100.0
+		"damage": 5.0,
+		"energy_costs": 100.0,
+		"bullet_speed": 700.0,
+		"aiing_time": 1.5,
+		"aiming_line_color": [0.937, 0.373, 0.285]
 	}
 }
