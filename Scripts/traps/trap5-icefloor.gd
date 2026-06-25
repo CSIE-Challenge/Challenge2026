@@ -11,11 +11,15 @@ var damage = TrapData.new().data["trap5-icefloor"]["damage"]
 var energy_costs = TrapData.new().data["trap5-icefloor"]["energy_costs"]
 var lifetime = TrapData.new().data["trap5-icefloor"]["lifetime"]
 
+@onready var cream_sprite: Sprite2D = $Cream
+@onready var cone_sprite: Sprite2D = $Cone
+
 
 static func initialize(pos: Vector2) -> Trap5IceFloor:
 	var trap := preload("res://Scenes/traps/trap5-icefloor.tscn").instantiate()
 	Global.stage.add_child(trap)
 	trap.position = pos
+	trap.start_animation()
 	return trap
 
 
@@ -34,6 +38,16 @@ func _destroy_trap() -> void:
 			print("icefloor disappear")
 
 	queue_free()
+
+
+func start_animation() -> void:
+	var tween = create_tween().set_parallel(true)
+	tween.set_trans(Tween.TRANS_EXPO)
+	tween.set_ease(Tween.EASE_OUT)
+
+	tween.tween_property(cone_sprite, "rotation_degrees", -11, 0.18).as_relative()
+	tween.tween_property(cone_sprite, "position", Vector2(-2, 3), 0.18).as_relative()
+	tween.tween_property(cream_sprite.material, "shader_parameter/progress", 1.0, 0.67)
 
 
 func _on_body_entered(body: Node2D) -> void:
