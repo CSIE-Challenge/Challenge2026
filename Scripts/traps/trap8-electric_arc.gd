@@ -7,6 +7,8 @@ extends Node2D
 @export var arc_width: float = 5.0
 @export var scaling_rate: float = 10
 @export var player_radius: float = 5
+@export var delay_time: float = 2.0
+@export var duration_time: float = 100
 
 var points_scale: Vector2
 var points_assigned_scale: Vector2
@@ -25,7 +27,7 @@ var _data = Global.trap_data["trap8-electric_arc"]
 static func initialize(start_pos: Vector2, end_pos: Vector2) -> Trap8ElectricArc:
 	var trap := preload("res://Scenes/traps/trap8-electric_arc.tscn").instantiate()
 	Global.stage.add_child(trap)
-	trap.spawn(start_pos, end_pos, 2.0, 100)
+	trap.spawn(start_pos, end_pos)
 	return trap
 
 
@@ -92,6 +94,7 @@ func spawn(
 	arc_on = false
 	await get_tree().create_timer(0.5).timeout
 	_visible_set(0)
+	queue_free()
 
 
 func _visible_set(mode: int) -> void:
