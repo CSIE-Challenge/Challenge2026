@@ -8,7 +8,7 @@ extends Node2D
 @export var scaling_rate: float = 10
 @export var player_radius: float = 5
 @export var delay_time: float = 2.0
-@export var duration_time: float = 5
+@export var duration_time: float = 100
 
 var points_scale: Vector2
 var points_assigned_scale: Vector2
@@ -26,7 +26,7 @@ var arc_on: bool
 static func initialize(start_pos: Vector2, end_pos: Vector2) -> Trap8ElectricArc:
 	var trap := preload("res://Scenes/traps/trap8-electric_arc.tscn").instantiate()
 	Global.stage.add_child(trap)
-	trap.spawn(start_pos, end_pos)
+	trap.spawn(start_pos, end_pos, trap.delay_time, trap.duration_time)
 	return trap
 
 
@@ -69,7 +69,9 @@ func _scaling(delta: float) -> void:
 	arc.width += (arc_assigned_width - arc.width) * scaling_rate * delta
 
 
-func spawn(start_position: Vector2, end_position: Vector2) -> void:
+func spawn(
+	start_position: Vector2, end_position: Vector2, delay_time: float, duration_time: float
+) -> void:
 	start_point.position = start_position
 	end_point.position = end_position
 	arc.set_point_position(0, start_position)

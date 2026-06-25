@@ -15,6 +15,7 @@ static func initialize(pos: Vector2, dir: Vector2) -> Trap4Conveyor:
 
 
 func _ready() -> void:
+	# Trap should expire after the configured lifetime.
 	await get_tree().create_timer(lifetime).timeout
 	_destroy_trap()
 
@@ -26,7 +27,7 @@ func _destroy_trap() -> void:
 	for body in get_overlapping_bodies():
 		if body == Global.game_manager.player and body is CharacterBody2D:
 			body.external_velocity -= speed * direction
-			print("陷阱超時消失，強制解除玩家的履帶效果")
+			print("trap timeout: remove player conveyor force")
 
 	queue_free()
 
