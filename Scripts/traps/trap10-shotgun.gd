@@ -36,13 +36,6 @@ func _ready() -> void:
 	hit_spawn_wall.resize(3)
 	hit_spawn_wall.fill(false)
 
-	# testing
-	var pos = Vector2(250, 250)
-	var dir1 = Vector2(1, 1)
-	var dir2 = Vector2(1, -3)
-	var dir3 = Vector2(1, 0)
-	activate(pos, dir1, dir2, dir3)
-
 
 func activate(pos: Vector2, dir1: Vector2, dir2: Vector2, dir3: Vector2) -> void:
 	position = pos
@@ -50,7 +43,7 @@ func activate(pos: Vector2, dir1: Vector2, dir2: Vector2, dir3: Vector2) -> void
 	lines_container.visible = true
 	# initialize aiming lines and bullets
 	for i in range(3):
-		var intersect = _calculate_aiming_line_end_point(position, directions[i])
+		var intersect = _calculate_aiming_line_end_point(global_position, directions[i])
 		var local_intersect = to_local(intersect)
 		var line = lines[i]
 		line.clear_points()
