@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import asyncio
+import os
 import threading
 from collections.abc import Coroutine
 from typing import Any, TypeVar
+from urllib.parse import urlparse
 
 from . import protocol
 from .rpc import RpcClient
@@ -74,12 +76,24 @@ def _normalize_trap_id(trap_id: int | str) -> str:
 class GameClientBase:
     def __init__(self, token: str, host: str = "127.0.0.1", port: int = 7749) -> None:
         self._token = token
+        self.host = host
+        self.port = port
         self._transport = Transport(host, port)
         self._rpc: RpcClient | None = None
         self._loop = asyncio.new_event_loop()
         self._thread = threading.Thread(
             target=self._run_loop, name="api-event-loop", daemon=True
         )
+
+    @classmethod
+    def from_env(cls) -> GameClientBase:
+        """Build a client from CHALLENGE_WS_URL + CHALLENGE_TOKEN (launcher-set env)."""
+        url = os.environ.get("CHALLENGE_WS_URL", "ws://127.0.0.1:7749")
+        token = os.environ.get("CHALLENGE_TOKEN")
+        if not token:
+            raise RuntimeError("CHALLENGE_TOKEN is not set")
+        parsed = urlparse(url)
+        return cls(token, host=parsed.hostname or "127.0.0.1", port=parsed.port or 7749)
 
     # --- async loop plumbing -------------------------------------------------
 
