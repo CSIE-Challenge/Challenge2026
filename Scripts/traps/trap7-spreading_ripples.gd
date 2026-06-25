@@ -5,14 +5,18 @@ extends Area2D
 @export var max_radius: float = 1000.0
 @export var damage: int = 10
 @export var ring_thickness: float = 10.0
+@export var white_ripple_oscil_freq: float
 
 var current_expand_rate: float = 10.0
 var is_expanding: bool = false
 var _data: Dictionary = Global.trap_data["trap7-spreading_ripples"]
+var white_ripple_thickness: float
+var time := 0.0
 
 @onready var warning_sprite: Sprite2D = $WarningSprite
 @onready var ripple_sprite: Sprite2D = $RippleSprite
 @onready var collision_shape: CircleShape2D = $CollisionShape2D.shape
+@onready var water_particle = $WaterParticles
 
 
 static func initialize(pos: Vector2, expand_rate: float) -> Trap7SpreadingRipples:
@@ -52,6 +56,7 @@ func _start_ripple_expansion() -> void:
 	ripple_sprite.visible = true
 	monitoring = true
 	is_expanding = true
+	water_particle.emitting = true
 
 
 func _process(delta: float) -> void:
@@ -66,7 +71,14 @@ func _process(delta: float) -> void:
 		if collision_shape.radius >= max_radius:
 			is_expanding = false
 			deactivate()
+	time += delta
+	white_ripple_thickness = (
+		0.8 * (ring_thickness + sin(time * white_ripple_oscil_freq) * ring_thickness * 0.2)
+	)
 	queue_redraw()
+	water_particle.amount_ratio = collision_shape.radius / 40
+	water_particle.process_material.emission_ring_radius = collision_shape.radius
+	water_particle.process_material.emission_ring_inner_radius = collision_shape.radius
 
 
 func _draw():
@@ -76,7 +88,17 @@ func _draw():
 		0,
 		PI * 2,
 		120,
-		Color(0.74, 0.3, 0.3),
+		Color(0.338, 0.419, 0.836, 1.0),
 		ring_thickness,
+		true
+	)
+	draw_arc(
+		Vector2.ZERO,
+		collision_shape.radius + white_ripple_thickness,
+		0,
+		PI * 2,
+		120,
+		Color(1.0, 1.0, 1.0, 1.0),
+		white_ripple_thickness,
 		true
 	)
