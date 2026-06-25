@@ -8,6 +8,9 @@ const HOMING_ROCKET_SCENE = preload("res://Scenes/homing_rocket.tscn")
 
 const BOOMERANG_SCENE = preload("res://Scenes/boomerang.tscn")
 
+const LASER_TRAP_SCENE = preload("res://Scenes/laser_trap.tscn")
+const BOUNCING_SAW_SCENE = preload("res://Scenes/bouncing_saw.tscn")
+
 # 記錄 Boss 的初始待機位置，以便招式施展後歸位
 var original_position: Vector2
 var is_attacking: bool = false
@@ -56,28 +59,19 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_4:
 				test_sword_attack()
 			KEY_5:
-				emit_boomerang(2)
+				squeeze_attack()
 			KEY_6:
-				print("測試招式：一排橫掃迴旋鏢 (模式一)")
-				emit_boomerang(1)
+				pong_attack()
 			KEY_7:
-				print("測試招式：邊緣隨機狙擊迴旋鏢 (模式二)")
-				emit_boomerang(2)
+				road_attack()
 			KEY_8:
-				print("測試招式：四角十字交叉迴旋鏢 (模式三)")
-				emit_boomerang(3)
-			KEY_9:
-				print("測試招式：圓形向心收縮迴旋鏢 (模式四)")
-				emit_boomerang(4)
-			KEY_0:
-				print("測試招式：左右交替蛇形狙擊 (模式五)")
-				emit_boomerang(5)
+				test_laser_attack()
 
 
 func rand_attack():
 	while true:
 		if not is_attacking:
-			var rand_val = randi_range(0, 5)
+			var rand_val = randi_range(0, 8)
 			match rand_val:
 				0:
 					rhythm_attack()
@@ -88,6 +82,14 @@ func rand_attack():
 				3:
 					var rand_val2 = randi_range(1, 5)
 					emit_boomerang(rand_val2)
+				4:
+					squeeze_attack()
+				5:
+					test_laser_attack()
+				6:
+					pong_attack()
+				7:
+					road_attack()
 		await get_tree().create_timer(0.5).timeout
 		while is_attacking:
 			await get_tree().create_timer(0.1).timeout
@@ -332,6 +334,278 @@ func emit_boomerang(mode: int) -> void:
 	is_attacking = false
 
 
+func test_laser_attack() -> void:
+	is_attacking = true
+	var walls = get_node_or_null("../Walls")
+	if not walls:
+		is_attacking = false
+		return
+
+	var half = walls.current_half_size
+	var center = walls.position
+
+	# 計算貫穿場地邊界的四個端點
+	var left_pt = center + Vector2(-half.x + 20.0, 0.0)
+	var right_pt = center + Vector2(half.x - 20.0, 0.0)
+	var top_pt = center + Vector2(0.0, -half.y + 20.0)
+	var bottom_pt = center + Vector2(0.0, half.y - 20.0)
+
+	for times in range(5):
+		var bias = randf_range(-80.0, 80.0)
+		for interval in [100.0, 0.0, -100.0]:
+			spawn_laser_trap(
+				left_pt - Vector2(0.0, interval + bias),
+				right_pt - Vector2(0.0, interval + bias),
+				0.5,
+				0.3,
+				30.0
+			)
+			spawn_laser_trap(
+				top_pt - Vector2(interval + bias, 0.0),
+				bottom_pt - Vector2(interval + bias, 0.0),
+				0.5,
+				0.3,
+				30.0
+			)
+		await get_tree().create_timer(1.0).timeout
+	# 1. 發射橫向與縱向的十字雷射：起點, 終點, 預警 1.0 秒, 發射維持 0.8 秒, 寬度 30 像素
+	# spawn_laser_trap(left_pt, right_pt, 1.0, 0.8, 30.0)
+	# spawn_laser_trap(top_pt, bottom_pt, 1.0, 0.8, 30.0)
+
+	# 等待預警 + 發射 + 淡出
+	await get_tree().create_timer(2.2).timeout
+	is_attacking = false
+
+
+# 🌟 擠壓雷射攻擊 (優化版)：極速壓縮後立刻在 0.5 秒內還原，同時雷射由外側生成，推進並覆蓋 80% 場地
+func squeeze_attack() -> void:
+	if not is_instance_valid(player):
+		if has_node("../coconut"):
+			player = get_node("../coconut")
+		else:
+			print("未能在場上找到有效的玩家椰子，中斷招式")
+			return
+	is_attacking = true
+
+	# 窄條尺寸參數
+	var target_height = 45.0
+	var target_width = 400.0
+	var walls = get_node("../Walls")
+
+	if not walls:
+		is_attacking = false
+		return
+
+	# 原場地極限幾何邊界
+	var original_min_y = -220.0
+	var original_max_y = 180.0
+	var original_min_x = -200.0
+	var original_max_x = 200.0
+	var center_y = -20.0
+	var center_x = 0.0
+
+	# 0=重力向上(壓在上邊), 1=重力向下(壓在下邊), 2=重力向左(壓在左邊), 3=重力向右(壓在右邊)
+	var mode = randi_range(0, 3)
+
+	var wall_size = Vector2.ZERO
+	var wall_pos = Vector2.ZERO
+
+	match mode:
+		0:  # 逼玩家往上
+			wall_size = Vector2(target_width, target_height)
+			wall_pos = Vector2(0, original_min_y + target_height / 2.0)
+		1:  # 逼玩家往下
+			wall_size = Vector2(target_width, target_height)
+			wall_pos = Vector2(0, original_max_y - target_height / 2.0)
+		2:  # 逼玩家往左
+			wall_size = Vector2(target_height, target_width)
+			wall_pos = Vector2(original_min_x + target_height / 2.0, center_y)
+		3:  # 逼玩家往右
+			wall_size = Vector2(target_height, target_width)
+			wall_pos = Vector2(original_max_x - target_height / 2.0, center_y)
+
+	# 1. 重力下砸：極速壓縮牆壁 (0.1 秒)
+	walls.tween_box(wall_size, wall_pos, 0.1)
+	await get_tree().create_timer(0.12).timeout
+
+	# 🌟 2. 拍實後，牆壁立刻在 0.5 秒內平滑彈回還原
+	walls.reset_box(0.5)
+
+	# 🌟 3. 雷射陣列參數設定
+	var laser_count = 10  # 【修改】數量減半為 10 條，減輕引擎瞬間運算負擔
+	var spawn_interval = 0.07  # 維持間隔 0.01 秒
+	var fire_interval = 0.1  # 維持間隔 0.02 秒
+
+	# 第一條雷射開始爆炸的基準時間 (即最後一條預警線出現的時間)
+	var t0 = float(laser_count - 1) * spawn_interval
+
+	var fire_time = 0.25
+	var laser_w = 30.0  # 【建議調整】因為數量減半，所以稍微加寬雷射以維持覆蓋率
+
+	var arena_width = original_max_x - original_min_x  # 原場地寬度 400.0
+	var arena_height = original_max_y - original_min_y  # 原場地高度 400.0
+	var cover_ratio = 0.8  # 覆蓋 80%
+
+	var last_warn_time = 0.0
+
+	for i in range(laser_count):
+		if boss_hp <= 0 or not is_instance_valid(player):
+			break
+
+		var start_pt = Vector2.ZERO
+		var end_pt = Vector2.ZERO
+
+		# 根據模式，計算雷射推進 80% 場地的座標
+		match mode:
+			0:  # 重力向上：向下推進 80% 場地
+				var start_y = original_min_y - 20.0
+				var target_y = original_min_y + (arena_height * cover_ratio)
+				var curr_y = start_y + (target_y - start_y) * (float(i) / (laser_count - 1))
+				start_pt = Vector2(original_min_x - 50.0, curr_y)
+				end_pt = Vector2(original_max_x + 50.0, curr_y)
+
+			1:  # 重力向下：向上推進 80% 場地
+				var start_y = original_max_y + 20.0
+				var target_y = original_max_y - (arena_height * cover_ratio)
+				var curr_y = start_y - (start_y - target_y) * (float(i) / (laser_count - 1))
+				start_pt = Vector2(original_min_x - 50.0, curr_y)
+				end_pt = Vector2(original_max_x + 50.0, curr_y)
+
+			2:  # 重力向左：向右推進 80% 場地
+				var start_x = original_min_x - 20.0
+				var target_x = original_min_x + (arena_width * cover_ratio)
+				var curr_x = start_x + (target_x - start_x) * (float(i) / (laser_count - 1))
+				start_pt = Vector2(curr_x, original_min_y - 50.0)
+				end_pt = Vector2(curr_x, original_max_y + 50.0)
+
+			3:  # 重力向右：向左推進 80% 場地
+				var start_x = original_max_x + 20.0
+				var target_x = original_max_x - (arena_width * cover_ratio)
+				var curr_x = start_x - (start_x - target_x) * (float(i) / (laser_count - 1))
+				start_pt = Vector2(curr_x, original_min_y - 50.0)
+				end_pt = Vector2(curr_x, original_max_y + 50.0)
+
+		# 【精準數學計算】動態計算每條雷射的預警時間
+		# 預警時間 = 基準引爆時間 + 每條的額外引爆延遲 - 它自身較早生成的時間
+		var current_warn_time = t0 + float(i) * (fire_interval - spawn_interval)
+		last_warn_time = current_warn_time
+
+		# 發射雷射
+		spawn_laser_trap(start_pt, end_pt, current_warn_time, fire_time, laser_w)
+
+		# 控制「生成預警線」的極快間隔
+		await get_tree().create_timer(spawn_interval).timeout
+
+	# 4. 等待最後一發雷射發射與淡出結束
+	await get_tree().create_timer(last_warn_time + fire_time + 0.15).timeout
+
+	is_attacking = false
+
+
+# 🪚 死亡彈珠台：場地比例動態變化版
+func pong_attack() -> void:
+	if not is_instance_valid(player):
+		return
+	is_attacking = true
+	var walls = get_node_or_null("../Walls")
+	if not walls:
+		is_attacking = false
+		return
+
+	# 1. 初始設定場地大小 (設定為一個正方形，讓後續的長寬變化更明顯)
+	var arena_half = Vector2(200, 200)
+	if "dynamic_base_half" in walls:
+		walls.dynamic_base_half = arena_half  # 覆寫為這招的初始比例
+
+	walls.tween_box(arena_half * 2.0, Vector2(0, -20), 0.5)
+	await get_tree().create_timer(0.6).timeout
+
+	var saw_count = 1
+	for i in range(saw_count):
+		if boss_hp <= 0 or not is_instance_valid(player):
+			break
+
+		var saw = BOUNCING_SAW_SCENE.instantiate()
+		var spawn_pos = walls.global_position
+		var dir_x = randf_range(0.4, 1.0) * (1 if randf() > 0.5 else -1)
+		var dir_y = randf_range(0.4, 1.0) * (1 if randf() > 0.5 else -1)
+		var dir = Vector2(dir_x, dir_y).normalized()
+
+		# 初始化 (不再傳入 arena_half)
+		saw.init(spawn_pos, dir, 400.0, 8.0)
+		damage_field.add_child(saw)
+
+		saw.global_position = spawn_pos
+
+		await get_tree().create_timer(0.4).timeout
+
+	await get_tree().create_timer(8.2).timeout
+
+	walls.reset_box(0.6)
+	await get_tree().create_timer(0.8).timeout
+	is_attacking = false
+
+
+func road_attack() -> void:
+	is_attacking = true
+	var walls = get_node_or_null("../Walls")
+	if not walls:
+		is_attacking = false
+		return
+
+	var half = walls.current_half_size
+	var center = walls.position
+
+	var left_pt = center + Vector2(-half.x + 20.0, 0.0)
+	var right_pt = center + Vector2(half.x - 20.0, 0.0)
+	var top_pt = center + Vector2(0.0, -half.y + 20.0)
+	var bottom_pt = center + Vector2(0.0, half.y - 20.0)
+	var width = 100.0
+	var amp = 120.0
+
+	spawn_laser_trap(
+		left_pt - Vector2(0.0, width / 2), right_pt - Vector2(0.0, width / 2), 0.5, 0.3, 30.0
+	)
+	spawn_laser_trap(
+		left_pt + Vector2(0.0, width / 2), right_pt + Vector2(0.0, width / 2), 0.5, 0.3, 30.0
+	)
+
+	walls.tween_box(Vector2(45.0, 400), walls.position, 5.0)
+
+	for i in range(10):
+		spawn_straight_arrow(left_pt + Vector2(-50.0, width / 2), Vector2.RIGHT, 500.0, 1.0)
+		spawn_straight_arrow(left_pt + Vector2(-50.0, -width / 2), Vector2.RIGHT, 500.0, 1.0)
+		await get_tree().create_timer(0.1).timeout
+	for i in range(30):
+		spawn_straight_arrow(
+			left_pt + Vector2(-50.0, width / 2 + sin(i * PI / 15.0) * amp),
+			Vector2.RIGHT,
+			500.0,
+			1.0
+		)
+		spawn_straight_arrow(
+			left_pt + Vector2(-50.0, -width / 2 + sin(i * PI / 15.0) * amp),
+			Vector2.RIGHT,
+			500.0,
+			1.0
+		)
+		await get_tree().create_timer(0.1).timeout
+	for i in range(30):
+		spawn_straight_arrow(
+			right_pt + Vector2(50.0, width / 2 + sin(i * PI / 15.0) * amp), Vector2.LEFT, 500.0, 1.0
+		)
+		spawn_straight_arrow(
+			right_pt + Vector2(50.0, -width / 2 + sin(i * PI / 15.0) * amp),
+			Vector2.LEFT,
+			500.0,
+			1.0
+		)
+		await get_tree().create_timer(0.1).timeout
+
+	walls.reset_box(2.0)
+	is_attacking = false
+
+
 # by gemini
 func boss_appear_animation():
 	if not boss or not boss_circle or not boss_square:
@@ -489,6 +763,23 @@ func spawn_arrow(radius: float, angle: float, speed: float, wait: float) -> void
 	sword.init(start_pos, target_pos, speed, wait)
 
 
+func spawn_straight_arrow(pos: Vector2, dir: Vector2, speed: float, wait: float) -> void:
+	var center_pos = Vector2(0, 100)
+	if has_node("../Walls"):
+		center_pos = get_node("../Walls").position
+
+	dir = dir.normalized()
+
+	var start_pos = pos
+	var target_pos = pos + dir * absf(center_pos.x - pos.x) * 2
+
+	# 4. 實例化飛劍並將其生成在靜止的 damage_field 底下
+	var sword = ATTACK_SWORD_SCENE.instantiate()
+	damage_field.add_child(sword)
+
+	sword.init(start_pos, target_pos, speed, wait)
+
+
 # 測試用的環形飛劍攻擊招式
 func test_sword_attack() -> void:
 	is_attacking = true
@@ -562,3 +853,17 @@ func spawn_boomerang(
 	# 🌟 先 init 傳入局部座標，後 add_child 載入到 damage_field
 	boomerang.init(pos, init_scale, init_spin_velocity, wait_time, speed, direction, init_range)
 	damage_field.add_child(boomerang)
+
+
+# 在起點 start_pos 與終點 end_pos 之間發射一條雷射陷阱
+func spawn_laser_trap(
+	start_p: Vector2, end_p: Vector2, wait_time: float, fire_time: float, custom_width: float = 24.0
+) -> void:
+	if not is_instance_valid(damage_field):
+		return
+
+	var laser = LASER_TRAP_SCENE.instantiate()
+
+	# 🌟 先 init 傳入局部座標，後 add_child 加入傷害區
+	laser.init(start_p, end_p, wait_time, fire_time, custom_width)
+	damage_field.add_child(laser)
