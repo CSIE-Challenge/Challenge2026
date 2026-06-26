@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dhnylsmjruf8q"]
 
-[ext_resource type="Script" uid="uid://r4yy8iieu22m" path="res://Scripts/menu/laser_trap.gd" id="1_l1eo0"]
+[ext_resource type="Script" uid="uid://bk2ksjtxr7702" path="res://Scripts/menu/laser_trap.gd" id="1_l1eo0"]
 [ext_resource type="Shader" uid="uid://bf8jqno4wclyh" path="res://Shaders/laser_beam.gdshader" id="2_63u3e"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jebpk"]

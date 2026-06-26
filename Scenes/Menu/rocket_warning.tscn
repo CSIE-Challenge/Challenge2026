@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://coibxbp8o7ax0"]
 
-[ext_resource type="Script" uid="uid://cms0tvitgxkj7" path="res://Scripts/menu/rocket_warning.gd" id="1_k011g"]
+[ext_resource type="Script" uid="uid://oks8udgjut1x" path="res://Scripts/menu/rocket_warning.gd" id="1_k011g"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_s10by"]
 
 [node name="rocket_warning" type="Node2D" unique_id=1030739022]

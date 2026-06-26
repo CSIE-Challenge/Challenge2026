@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://dr7u7lt2gd2oa"]
 
-[ext_resource type="Script" uid="uid://4yhcryfq35n7" path="res://Scripts/menu/hidden_game_controller.gd" id="1_ebyp3"]
+[ext_resource type="Script" uid="uid://cn2xkgu54d28e" path="res://Scripts/menu/hidden_game_controller.gd" id="1_ebyp3"]
 [ext_resource type="Texture2D" uid="uid://dle4xt8upfg42" path="res://Shapes/Square.svg" id="1_tfqsm"]
-[ext_resource type="Script" uid="uid://c2saqsv8nauva" path="res://Scripts/menu/coconut_controller.gd" id="2_ebyp3"]
-[ext_resource type="Script" uid="uid://xj4papr5yo7" path="res://Scripts/menu/walls_controller.gd" id="2_qncmu"]
+[ext_resource type="Script" uid="uid://55q1cmku2arh" path="res://Scripts/menu/coconut_controller.gd" id="2_ebyp3"]
+[ext_resource type="Script" uid="uid://dv55d1s0ldngo" path="res://Scripts/menu/walls_controller.gd" id="2_qncmu"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="3_pger8"]
-[ext_resource type="Script" uid="uid://dmyyttuaerqgk" path="res://Scripts/menu/boss_controller.gd" id="5_pger8"]
+[ext_resource type="Script" uid="uid://b1vu1u854wu0d" path="res://Scripts/menu/boss_controller.gd" id="5_pger8"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qncmu"]
 size = Vector2(135, 135)
