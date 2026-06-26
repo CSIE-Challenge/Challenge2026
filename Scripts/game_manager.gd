@@ -48,7 +48,6 @@ func _ready() -> void:
 	energy_increase_timer.wait_time = energy_ball_spawn_period
 	player_invincible = false
 
-
 	_begin_agents()
 
 
