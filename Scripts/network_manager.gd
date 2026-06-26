@@ -138,6 +138,7 @@ func get_energy(peer_id: int) -> int:
 func _start_from_command_line(args: Array) -> void:
 	var mode := get_startup_mode(args)
 	var port := get_server_port(args)
+	print("[NetworkManager] startup mode=%s port=%d args=%s" % [mode, port, args])
 
 	if mode == "server":
 		start_server(port)
@@ -352,6 +353,17 @@ func _store_client_state(peer_id: int, state: Dictionary) -> void:
 	if not connected_peer_ids.has(peer_id):
 		return
 	_client_states[peer_id] = state
+	print(
+		(
+			"[Server] stored state from peer %d | tick=%d | traps=%d | balls=%d"
+			% [
+				peer_id,
+				state.get("tick", -1),
+				(state.get("traps", []) as Array).size(),
+				(state.get("energy_balls", []) as Array).size(),
+			]
+		)
+	)
 
 
 ## RPC: receive a state snapshot from a game client.

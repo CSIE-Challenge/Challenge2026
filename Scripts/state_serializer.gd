@@ -14,9 +14,11 @@ const PUSH_INTERVAL := 1.0 / 30.0
 var _timer: Timer
 var _trap_id_counter: int = 0
 var _trap_id_map: Dictionary = {}  # {Node: int}
+var _push_count: int = 0
 
 
 func _ready() -> void:
+	print("[StateSerializer] _ready() — game_manager=%s stage=%s" % [game_manager, stage])
 	_timer = Timer.new()
 	_timer.name = "StatePushTimer"
 	_timer.wait_time = PUSH_INTERVAL
@@ -31,8 +33,25 @@ func _push_state() -> void:
 	var peer := multiplayer.multiplayer_peer
 	if not peer or peer is OfflineMultiplayerPeer:
 		return
+	# Guard: connection must be fully established (get_unique_id not ready yet)
+	if peer.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED:
+		return
 	var state := _collect_state()
-	rpc_id(1, "_server_receive_state", state)
+	NetworkManager.rpc_id(1, "_server_receive_state", state)
+	_push_count += 1
+	if _push_count % 30 == 1:
+		print(
+			(
+				"[StateSerializer] pushed state #%d | tick=%d | peer=%d | pos=(%.0f,%.0f)"
+				% [
+					_push_count,
+					state["tick"],
+					state["peer_id"],
+					state["player"].get("position", Vector2.ZERO).x,
+					state["player"].get("position", Vector2.ZERO).y,
+				]
+			)
+		)
 
 
 ## Assembles the complete state dictionary for this client.
