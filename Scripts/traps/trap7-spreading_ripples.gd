@@ -11,11 +11,11 @@ var current_expand_rate: float = 10.0
 var white_ripple_thickness: float = 0.0
 var time := 0.0
 var is_expanding: bool = false
+var collision_shape: CircleShape2D
 var _data: Dictionary = Global.trap_data["trap7-spreading_ripples"]
 
 @onready var warning_sprite: Sprite2D = $WarningSprite
 @onready var ripple_sprite: Sprite2D = $RippleSprite
-@onready var collision_shape: CircleShape2D = $CollisionShape2D.shape
 @onready var water_particle = $WaterParticles
 
 
@@ -30,6 +30,8 @@ func _ready() -> void:
 	visible = false
 	monitoring = false
 	warning_sprite.position = Vector2.ZERO
+	$CollisionShape2D.shape = $CollisionShape2D.shape.duplicate()
+	collision_shape = $CollisionShape2D.shape
 	collision_shape.radius = 0.0
 
 
