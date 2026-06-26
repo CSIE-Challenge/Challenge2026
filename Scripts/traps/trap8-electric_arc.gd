@@ -8,7 +8,7 @@ extends Node2D
 @export var scaling_rate: float = 10
 @export var player_radius: float = 5
 @export var delay_time: float = 2.0
-@export var duration_time: float = 100
+@export var duration_time: float = 5
 
 var points_scale: Vector2
 var points_assigned_scale: Vector2
@@ -69,9 +69,7 @@ func _scaling(delta: float) -> void:
 	arc.width += (arc_assigned_width - arc.width) * scaling_rate * delta
 
 
-func spawn(
-	start_position: Vector2, end_position: Vector2, delay_time: float, duration_time: float
-) -> void:
+func spawn(start_position: Vector2, end_position: Vector2) -> void:
 	start_point.position = start_position
 	end_point.position = end_position
 	arc.set_point_position(0, start_position)
