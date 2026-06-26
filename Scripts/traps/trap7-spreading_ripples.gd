@@ -8,10 +8,10 @@ extends Area2D
 @export var white_ripple_oscil_freq: float
 
 var current_expand_rate: float = 10.0
+var white_ripple_thickness: float = 0.0
+var time := 0.0
 var is_expanding: bool = false
 var _data: Dictionary = Global.trap_data["trap7-spreading_ripples"]
-var white_ripple_thickness: float
-var time := 0.0
 
 @onready var warning_sprite: Sprite2D = $WarningSprite
 @onready var ripple_sprite: Sprite2D = $RippleSprite
