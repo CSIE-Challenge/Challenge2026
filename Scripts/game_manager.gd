@@ -10,7 +10,6 @@ const AGENT_SEATS: Array[String] = ["Agent1"]
 @export var energy_balls_label: Label
 @export var energy_bar_label: Label
 @export var opponent_energy_bar_label: Label
-@export var run_agent_action_debug_test := false
 @export var energy_increase_period: int
 @export var energy_ball_spawn_period: int
 @export var player_invincibility_time: float
@@ -43,9 +42,6 @@ func _ready() -> void:
 	_connect_agent_action_signals()
 
 	agent_action_service.setup_services(team_status_service, trap_request_scheduler)
-
-	if run_agent_action_debug_test:
-		_run_agent_action_debug_test()
 
 	energy_increase_timer.wait_time = energy_increase_period
 
@@ -230,52 +226,6 @@ func _spawn_trap_from_request(request: Dictionary) -> void:
 		_:
 			push_error("Unsupported trap id in approved request: %s" % trap_id)
 	# gdlint: enable=max-returns
-
-
-func _run_agent_action_debug_test() -> void:
-	print("=== AgentActionService + TeamStatusService Debug Test Start ===")
-
-	team_status_service.initialize_teams([0, 1])
-	trap_request_scheduler.initialize_teams([0, 1])
-
-	print("--- give team 0 enough energy, team 1 low energy ---")
-	team_status_service.add_energy(0, 100.0)
-	team_status_service.add_energy(1, 5.0)
-
-	print("--- submit valid mine: should enter queue, not spend yet ---")
-	agent_action_service.submit_trap_request(0, "mine", {"position": Vector2(100, 200)})
-
-	print("--- process tick 1: mine should approve, spend energy, start cooldown ---")
-	trap_request_scheduler.process_requests()
-
-	print("--- submit same mine during cooldown: should reject before queue ---")
-	agent_action_service.submit_trap_request(0, "mine", {"position": Vector2(200, 200)})
-
-	print("--- submit unknown trap: should reject before queue ---")
-	agent_action_service.submit_trap_request(0, "unknown_trap", {})
-
-	print("--- submit insufficient energy trap from team 1: should reject before queue ---")
-	agent_action_service.submit_trap_request(1, "shotgun", {})
-
-	print("--- health/mode test: damage team 0 below zero ---")
-	team_status_service.damage_team(0, 999.0)
-
-	print("--- heal test: should fail because team 0 is in lifesteal mode ---")
-	team_status_service.try_heal_team(0, 1.0, 10.0)
-
-	print("--- queue full / multiple request test ---")
-	agent_action_service.submit_trap_request(0, "electric_ring", {"radius": 80.0})
-	agent_action_service.submit_trap_request(0, "shotgun", {})
-	agent_action_service.submit_trap_request(0, "electric_ring", {"radius": 100.0})
-	# should reject if max_queue_size_per_team = 3
-	agent_action_service.submit_trap_request(0, "shotgun", {})
-
-	print("--- process remaining queued requests ---")
-	trap_request_scheduler.process_requests()
-	trap_request_scheduler.process_requests()
-	trap_request_scheduler.process_requests()
-
-	print("=== AgentActionService + TeamStatusService Debug Test End ===")
 
 
 #----------------------------------------------------------------------

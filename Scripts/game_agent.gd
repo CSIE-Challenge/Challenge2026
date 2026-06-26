@@ -23,8 +23,8 @@ const TRAP_PARAM_DEFINITIONS := {
 	},
 	"electric_ring":
 	{
+		"delay_time": {"type": "float", "required": true},
 		"radius": {"type": "float", "required": true},
-		"delay_time": {"type": "float", "required": false, "default": 1.0},
 	},
 	"tracing_bullet":
 	{
