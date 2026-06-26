@@ -164,54 +164,54 @@ func _spawn_trap_from_request(request: Dictionary) -> void:
 	var params: Dictionary = request["params"]
 
 	match trap_id:
-		"mine":
+		"trap1-mine":
 			if not params.has("position"):
 				push_error("Missing position for mine trap")
 				return
 			Trap1Mine.initialize(params["position"])
-		"electric_ring":
+		"trap2-electric_ring":
 			if not (params.has("delay_time") and params.has("radius")):
 				push_error("Missing delay_time or radius for electric_ring trap")
 				return
 			Trap2ElectricRing.initialize(params["delay_time"], params["radius"])
-		"tracing_bullet":
+		"trap3-tracing_bullet":
 			if not (params.has("position") and params.has("direction") and params.has("speed")):
 				push_error("Missing position/direction/speed for tracing_bullet trap")
 				return
 			Trap3TracingBullet.initialize(params["position"], params["direction"], params["speed"])
-		"conveyor":
+		"trap4-conveyor":
 			if not (params.has("position") and params.has("direction")):
 				push_error("Missing position or direction for conveyor trap")
 				return
 			Trap4Conveyor.initialize(params["position"], params["direction"])
-		"icefloor":
+		"trap5-icefloor":
 			if not params.has("position"):
 				push_error("Missing position for icefloor trap")
 				return
 			Trap5IceFloor.initialize(params["position"])
-		"scanline":
+		"trap6-scanline":
 			if not params.has("direction"):
 				push_error("Missing direction for scanline trap")
 				return
 			Trap6Scanline.initialize(params["direction"], params.get("speed", 5.0))
-		"electric_arc":
+		"trap8-electric_arc":
 			if not (params.has("start_position") and params.has("end_position")):
 				push_error("Missing start_position or end_position for electric_arc trap")
 				return
 			Trap8ElectricArc.initialize(params["start_position"], params["end_position"])
-		"mortar":
+		"trap9-mortar":
 			if not (params.has("start_position") and params.has("end_position")):
 				push_error("Missing start_position or end_position for mortar trap")
 				return
 			Trap9Mortar.initialize(
 				params["start_position"], params["end_position"], params.get("air_time", 2.0)
 			)
-		"spreading_ripples":
+		"trap7-spreading_ripples":
 			if not (params.has("position") and params.has("expand_rate")):
 				push_error("Missing position or expand_rate for spreading_ripples trap")
 				return
 			Trap7SpreadingRipples.initialize(params["position"], params["expand_rate"])
-		"shotgun":
+		"trap10-shotgun":
 			if not (
 				params.has("position")
 				and params.has("dir1")

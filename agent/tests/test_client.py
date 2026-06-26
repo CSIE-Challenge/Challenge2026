@@ -22,11 +22,11 @@ def test_unwrap_raises_apierror_on_error() -> None:
 
 
 def test_normalize_trap_id_accepts_number_or_string() -> None:
-    assert _normalize_trap_id(1) == "mine"
-    assert _normalize_trap_id(9) == "mortar"
-    assert _normalize_trap_id("mine") == "mine"
-    assert _normalize_trap_id("scanline") == "scanline"
-    assert _normalize_trap_id("10") == "shotgun"
+    assert _normalize_trap_id(1) == "trap1-mine"
+    assert _normalize_trap_id(9) == "trap9-mortar"
+    assert _normalize_trap_id("trap1-mine") == "trap1-mine"
+    assert _normalize_trap_id("trap6-scanline") == "trap6-scanline"
+    assert _normalize_trap_id("10") == "trap10-shotgun"
 
 
 def test_normalize_trap_id_rejects_unknown_inputs() -> None:
@@ -40,4 +40,5 @@ def test_normalize_trap_id_rejects_unknown_inputs() -> None:
         _normalize_trap_id([])
 
     with pytest.raises(TypeError):
-        _normalize_trap_id("trap8-electric_arc")
+        # Bare legacy names (without the trapN- prefix) are no longer valid.
+        _normalize_trap_id("electric_arc")

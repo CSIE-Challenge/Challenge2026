@@ -10,29 +10,29 @@ var team_status_service: TeamStatusService
 var trap_request_scheduler: TrapRequestScheduler
 
 var trap_energy_costs := {
-	"mine": 10.0,
-	"electric_ring": 20.0,
-	"tracing_bullet": 30.0,
-	"conveyor": 40.0,
-	"icefloor": 50.0,
-	"scanline": 60.0,
-	"spreading_ripples": 70.0,
-	"electric_arc": 80.0,
-	"mortar": 90.0,
-	"shotgun": 100.0,
+	"trap1-mine": 10.0,
+	"trap2-electric_ring": 20.0,
+	"trap3-tracing_bullet": 30.0,
+	"trap4-conveyor": 40.0,
+	"trap5-icefloor": 50.0,
+	"trap6-scanline": 60.0,
+	"trap7-spreading_ripples": 70.0,
+	"trap8-electric_arc": 80.0,
+	"trap9-mortar": 90.0,
+	"trap10-shotgun": 100.0,
 }
 
 var trap_cooldown_times := {
-	"mine": 2.0,
-	"electric_ring": 3.0,
-	"tracing_bullet": 3.0,
-	"conveyor": 3.0,
-	"icefloor": 3.0,
-	"scanline": 3.0,
-	"spreading_ripples": 3.0,
-	"electric_arc": 3.0,
-	"mortar": 3.0,
-	"shotgun": 5.0,
+	"trap1-mine": 2.0,
+	"trap2-electric_ring": 3.0,
+	"trap3-tracing_bullet": 3.0,
+	"trap4-conveyor": 3.0,
+	"trap5-icefloor": 3.0,
+	"trap6-scanline": 3.0,
+	"trap7-spreading_ripples": 3.0,
+	"trap8-electric_arc": 3.0,
+	"trap9-mortar": 3.0,
+	"trap10-shotgun": 5.0,
 }
 
 # trap_cooldowns[team_id][trap_id] = remaining_seconds

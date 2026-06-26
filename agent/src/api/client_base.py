@@ -12,29 +12,29 @@ from .transport import Transport
 T = TypeVar("T")
 
 _TRAP_ID_BY_NUMBER: dict[int, str] = {
-    1: "mine",
-    2: "electric_ring",
-    3: "tracing_bullet",
-    4: "conveyor",
-    5: "icefloor",
-    6: "scanline",
-    8: "electric_arc",
-    9: "mortar",
-    7: "spreading_ripples",
-    10: "shotgun",
+    1: "trap1-mine",
+    2: "trap2-electric_ring",
+    3: "trap3-tracing_bullet",
+    4: "trap4-conveyor",
+    5: "trap5-icefloor",
+    6: "trap6-scanline",
+    8: "trap8-electric_arc",
+    9: "trap9-mortar",
+    7: "trap7-spreading_ripples",
+    10: "trap10-shotgun",
 }
 
 _KNOWN_TRAP_IDS: set[str] = {
-    "mine",
-    "electric_ring",
-    "tracing_bullet",
-    "conveyor",
-    "icefloor",
-    "scanline",
-    "electric_arc",
-    "mortar",
-    "spreading_ripples",
-    "shotgun",
+    "trap1-mine",
+    "trap2-electric_ring",
+    "trap3-tracing_bullet",
+    "trap4-conveyor",
+    "trap5-icefloor",
+    "trap6-scanline",
+    "trap8-electric_arc",
+    "trap9-mortar",
+    "trap7-spreading_ripples",
+    "trap10-shotgun",
 }
 
 

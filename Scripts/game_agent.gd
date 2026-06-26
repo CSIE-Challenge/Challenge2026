@@ -2,37 +2,19 @@ class_name GameAgent
 extends Node
 
 const TRAP_PARAM_DEFINITIONS := {
-	"mine": {"position": {"type": "vector2", "required": true}},
-	"electric_arc":
-	{
-		"start_position": {"type": "vector2", "required": true},
-		"end_position": {"type": "vector2", "required": true},
-	},
-	"mortar":
-	{
-		"start_position": {"type": "vector2", "required": true},
-		"end_position": {"type": "vector2", "required": true},
-		"air_time": {"type": "float", "required": false, "default": 2.0},
-	},
-	"shotgun":
-	{
-		"position": {"type": "vector2", "required": true},
-		"dir1": {"type": "vector2", "required": true},
-		"dir2": {"type": "vector2", "required": true},
-		"dir3": {"type": "vector2", "required": true},
-	},
-	"electric_ring":
+	"trap1-mine": {"position": {"type": "vector2", "required": true}},
+	"trap2-electric_ring":
 	{
 		"delay_time": {"type": "float", "required": true},
 		"radius": {"type": "float", "required": true},
 	},
-	"tracing_bullet":
+	"trap3-tracing_bullet":
 	{
 		"position": {"type": "vector2", "required": true},
 		"direction": {"type": "vector2", "required": true},
 		"speed": {"type": "float", "required": true},
 	},
-	"conveyor":
+	"trap4-conveyor":
 	{
 		"position": {"type": "vector2", "required": true},
 		"direction":
@@ -42,19 +24,37 @@ const TRAP_PARAM_DEFINITIONS := {
 			"default": Vector2.UP,
 		},
 	},
-	"scanline":
+	"trap5-icefloor":
+	{
+		"position": {"type": "vector2", "required": true},
+	},
+	"trap6-scanline":
 	{
 		"direction": {"type": "vector2", "required": true},
 		"speed": {"type": "float", "required": false, "default": 5.0},
 	},
-	"icefloor":
-	{
-		"position": {"type": "vector2", "required": true},
-	},
-	"spreading_ripples":
+	"trap7-spreading_ripples":
 	{
 		"position": {"type": "vector2", "required": true},
 		"expand_rate": {"type": "float", "required": false, "default": 10.0},
+	},
+	"trap8-electric_arc":
+	{
+		"start_position": {"type": "vector2", "required": true},
+		"end_position": {"type": "vector2", "required": true},
+	},
+	"trap9-mortar":
+	{
+		"start_position": {"type": "vector2", "required": true},
+		"end_position": {"type": "vector2", "required": true},
+		"air_time": {"type": "float", "required": false, "default": 2.0},
+	},
+	"trap10-shotgun":
+	{
+		"position": {"type": "vector2", "required": true},
+		"dir1": {"type": "vector2", "required": true},
+		"dir2": {"type": "vector2", "required": true},
+		"dir3": {"type": "vector2", "required": true},
 	},
 }
 

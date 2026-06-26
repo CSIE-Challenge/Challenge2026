@@ -19,14 +19,14 @@ def test_request_trap_reaches_approved_via_scheduler(
     )
     assert init_result == {"ok": True, "team_ids": [0]}
 
-    queue_result = client.request_trap(0, "mine", {"position": [120.0, 80.0]})
+    queue_result = client.request_trap(0, "trap1-mine", {"position": [120.0, 80.0]})
     assert queue_result == {
         "ok": True,
         "reason": "",
         "request_id": 0,
         "stage": "queued",
         "team_id": 0,
-        "trap_id": "mine",
+        "trap_id": "trap1-mine",
     }
 
     process_result = client._call(protocol.Cmd.PROCESS_TRAP_REQUESTS, {})
@@ -53,7 +53,7 @@ def test_request_trap_accepts_numeric_id_and_converts_to_canonical(
 
     queue_result = client.request_trap(1, 1, {"position": [90.0, 60.0]})
     assert queue_result["ok"] is True
-    assert queue_result["trap_id"] == "mine"
+    assert queue_result["trap_id"] == "trap1-mine"
     assert queue_result["stage"] == "queued"
 
     process_result = client._call(protocol.Cmd.PROCESS_TRAP_REQUESTS, {})
@@ -71,7 +71,7 @@ def test_request_trap_supports_new_trap_refactors(
 
     electric_arc_result = client.request_trap(
         0,
-        "electric_arc",
+        "trap8-electric_arc",
         {
             "start_position": [100.0, 100.0],
             "end_position": [200.0, 100.0],
@@ -83,7 +83,7 @@ def test_request_trap_supports_new_trap_refactors(
         "request_id": 0,
         "stage": "queued",
         "team_id": 0,
-        "trap_id": "electric_arc",
+        "trap_id": "trap8-electric_arc",
     }
 
     assert client._call(protocol.Cmd.PROCESS_TRAP_REQUESTS, {}) == {"ok": True}
@@ -93,7 +93,7 @@ def test_request_trap_supports_new_trap_refactors(
 
     scanline_result = client.request_trap(
         1,
-        "scanline",
+        "trap6-scanline",
         {
             "direction": [0.0, -1.0],
         },
@@ -104,7 +104,7 @@ def test_request_trap_supports_new_trap_refactors(
         "request_id": 1,
         "stage": "queued",
         "team_id": 1,
-        "trap_id": "scanline",
+        "trap_id": "trap6-scanline",
     }
 
     assert client._call(protocol.Cmd.PROCESS_TRAP_REQUESTS, {}) == {"ok": True}
@@ -127,7 +127,7 @@ def test_request_trap_supports_new_trap_refactors(
         "request_id": 2,
         "stage": "queued",
         "team_id": 2,
-        "trap_id": "mortar",
+        "trap_id": "trap9-mortar",
     }
 
     process_result = client._call(protocol.Cmd.PROCESS_TRAP_REQUESTS, {})
