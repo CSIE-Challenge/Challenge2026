@@ -20,6 +20,8 @@ var _data: Dictionary = Global.trap_data["trap10-shotgun"]
 @onready var lines: Array = [$AimingLines/Line1, $AimingLines/Line2, $AimingLines/Line3]
 @onready var bullets_container: Node2D = $Bullets
 @onready var bullets: Array[Area2D] = [$Bullets/Bullet1, $Bullets/Bullet2, $Bullets/Bullet3]
+@onready var baskets_animation = $"Baskets/MoveBasket/AnimationPlayer"
+@onready var baskets = $Baskets
 
 
 static func initialize(pos: Vector2, dir1: Vector2, dir2: Vector2, dir3: Vector2) -> Trap10Shotgun:
@@ -39,6 +41,9 @@ func _ready() -> void:
 
 func activate(pos: Vector2, dir1: Vector2, dir2: Vector2, dir3: Vector2) -> void:
 	position = pos
+	baskets_animation.play("ready")
+	var average_angle = (dir1.angle() + dir2.angle() + dir3.angle()) / 3.0
+	baskets.rotation = average_angle
 	directions = [dir1.normalized(), dir2.normalized(), dir3.normalized()]
 	lines_container.visible = true
 	# initialize aiming lines and bullets
@@ -94,10 +99,18 @@ func _on_aiming_timeout() -> void:
 	lines_container.visible = false
 	firing = true
 	bullets_container.visible = true
+	baskets_animation.play("fire")
 	set_physics_process(true)
 
 
 func _on_bullet_body_entered(body: Node2D, bullet_node: Area2D) -> void:
+	var effect = bullet_node.get_node("JuiceEffect") as GPUParticles2D
+	if effect and firing:
+		effect.reparent(Global.stage)
+		if not effect.finished.is_connected(effect.queue_free):
+			effect.finished.connect(effect.queue_free)
+		effect.emitting = true
+
 	if body == Global.game_manager.player:
 		Global.player_hit.emit(damage)
 		bullet_node.visible = false

@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://cwxus418k0lsv" path="res://Scripts/traps/trap2-electring_debug_draw.gd" id="5_v85j5"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1qnfl"]
+resource_local_to_scene = true
 shader = ExtResource("2_ihe33")
 shader_parameter/radius = 0.4
 shader_parameter/thickness = 0.02
@@ -15,6 +16,7 @@ shader_parameter/ring_warning_color_nfill = Color(0.43211025, 0.43211025, 0.4321
 shader_parameter/ring_warning_color_fill = Color(0.6517693, 0.65176934, 0.6517693, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rlidi"]
+resource_local_to_scene = true
 shader = ExtResource("4_5q1fu")
 shader_parameter/radius = 0.4
 shader_parameter/thickness = 0.02
