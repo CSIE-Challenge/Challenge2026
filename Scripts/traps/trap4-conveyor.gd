@@ -18,7 +18,6 @@ func _ready() -> void:
 	# Trap should expire after the configured lifetime.
 	await get_tree().create_timer(lifetime).timeout
 	_destroy_trap()
-
 func _destroy_trap() -> void:
 	if not is_inside_tree():
 		return
