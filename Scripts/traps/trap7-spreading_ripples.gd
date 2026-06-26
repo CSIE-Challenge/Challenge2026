@@ -78,7 +78,7 @@ func _process(delta: float) -> void:
 		0.8 * (ring_thickness + sin(time * white_ripple_oscil_freq) * ring_thickness * 0.2)
 	)
 	queue_redraw()
-	water_particle.amount_ratio = collision_shape.radius / 40
+	water_particle.amount_ratio = collision_shape.radius / max_radius * 1.2
 	water_particle.process_material.emission_ring_radius = collision_shape.radius
 	water_particle.process_material.emission_ring_inner_radius = collision_shape.radius
 

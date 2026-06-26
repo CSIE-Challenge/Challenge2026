@@ -22,6 +22,7 @@ point_count = 2
 curve = SubResource("Curve_msq6u")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_msq6u"]
+resource_local_to_scene = true
 particle_flag_disable_z = true
 emission_shape = 6
 emission_ring_axis = Vector3(0, 0, 1)
@@ -42,6 +43,7 @@ scale_curve = SubResource("CurveTexture_2fqos")
 collision_layer = 4
 collision_mask = 3
 script = ExtResource("1_us4h7")
+max_radius = 1500.0
 white_ripple_oscil_freq = 10.0
 
 [node name="WarningSprite" type="Sprite2D" parent="." unique_id=1575762953]
@@ -58,6 +60,6 @@ shape = SubResource("CircleShape2D_2fqos")
 [node name="WaterParticles" type="GPUParticles2D" parent="." unique_id=918310142]
 z_index = -1
 emitting = false
-amount = 100
+amount = 1000
 texture = ExtResource("2_8v4sb")
 process_material = SubResource("ParticleProcessMaterial_msq6u")

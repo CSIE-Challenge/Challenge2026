@@ -54,7 +54,9 @@ func _physics_process(delta):
 
 	if collision:
 		var collider := collision.get_collider()
-
+		feather_effect.emitting = true
+		feather_effect.finished.connect(feather_effect.queue_free)
+		feather_effect.reparent(Global.stage)
 		if collider == target:
 			Global.player_hit.emit(67)
 			_destroy()
