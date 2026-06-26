@@ -193,6 +193,23 @@ func _spawn_trap_from_request(request: Dictionary) -> void:
 				push_error("Missing position for icefloor trap")
 				return
 			Trap5IceFloor.initialize(params["position"])
+		"scanline":
+			if not params.has("direction"):
+				push_error("Missing direction for scanline trap")
+				return
+			Trap6Scanline.initialize(params["direction"], params.get("speed", 5.0))
+		"electric_arc":
+			if not (params.has("start_position") and params.has("end_position")):
+				push_error("Missing start_position or end_position for electric_arc trap")
+				return
+			Trap8ElectricArc.initialize(params["start_position"], params["end_position"])
+		"mortar":
+			if not (params.has("start_position") and params.has("end_position")):
+				push_error("Missing start_position or end_position for mortar trap")
+				return
+			Trap9Mortar.initialize(
+				params["start_position"], params["end_position"], params.get("air_time", 2.0)
+			)
 		"spreading_ripples":
 			if not (params.has("position") and params.has("expand_rate")):
 				push_error("Missing position or expand_rate for spreading_ripples trap")

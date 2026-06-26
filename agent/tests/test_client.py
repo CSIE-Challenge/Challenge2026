@@ -23,7 +23,9 @@ def test_unwrap_raises_apierror_on_error() -> None:
 
 def test_normalize_trap_id_accepts_number_or_string() -> None:
     assert _normalize_trap_id(1) == "mine"
+    assert _normalize_trap_id(9) == "mortar"
     assert _normalize_trap_id("mine") == "mine"
+    assert _normalize_trap_id("scanline") == "scanline"
     assert _normalize_trap_id("10") == "shotgun"
 
 
@@ -32,7 +34,10 @@ def test_normalize_trap_id_rejects_unknown_inputs() -> None:
         _normalize_trap_id(99)
 
     with pytest.raises(TypeError):
-        _normalize_trap_id("trap1-mine")
+        _normalize_trap_id({})
 
     with pytest.raises(TypeError):
         _normalize_trap_id([])
+
+    with pytest.raises(TypeError):
+        _normalize_trap_id("trap8-electric_arc")

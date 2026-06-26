@@ -15,7 +15,10 @@ var trap_energy_costs := {
 	"tracing_bullet": 30.0,
 	"conveyor": 40.0,
 	"icefloor": 50.0,
+	"scanline": 60.0,
 	"spreading_ripples": 70.0,
+	"electric_arc": 80.0,
+	"mortar": 90.0,
 	"shotgun": 100.0,
 }
 
@@ -25,7 +28,10 @@ var trap_cooldown_times := {
 	"tracing_bullet": 3.0,
 	"conveyor": 3.0,
 	"icefloor": 3.0,
+	"scanline": 3.0,
 	"spreading_ripples": 3.0,
+	"electric_arc": 3.0,
+	"mortar": 3.0,
 	"shotgun": 5.0,
 }
 

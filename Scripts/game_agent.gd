@@ -3,6 +3,17 @@ extends Node
 
 const TRAP_PARAM_DEFINITIONS := {
 	"mine": {"position": {"type": "vector2", "required": true}},
+	"electric_arc":
+	{
+		"start_position": {"type": "vector2", "required": true},
+		"end_position": {"type": "vector2", "required": true},
+	},
+	"mortar":
+	{
+		"start_position": {"type": "vector2", "required": true},
+		"end_position": {"type": "vector2", "required": true},
+		"air_time": {"type": "float", "required": false, "default": 2.0},
+	},
 	"shotgun":
 	{
 		"position": {"type": "vector2", "required": true},
@@ -30,6 +41,11 @@ const TRAP_PARAM_DEFINITIONS := {
 			"required": false,
 			"default": Vector2.UP,
 		},
+	},
+	"scanline":
+	{
+		"direction": {"type": "vector2", "required": true},
+		"speed": {"type": "float", "required": false, "default": 5.0},
 	},
 	"icefloor":
 	{
@@ -150,7 +166,7 @@ func _read_trap_id(args: Dictionary) -> Dictionary:
 			"reason": "invalid_trap_id_type",
 		}
 
-	var trap_id := str(raw_trap_id)
+	var trap_id: String = str(raw_trap_id)
 	if not TRAP_PARAM_DEFINITIONS.has(trap_id):
 		return {
 			"ok": false,
