@@ -22,6 +22,52 @@ point_count = 3
 offsets = PackedFloat32Array(0, 0.39344263, 1)
 colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0)
 
+[sub_resource type="Shader" id="Shader_edgefade"]
+code = "shader_type canvas_item;
+void fragment() {
+    float alpha = smoothstep(0.0, 0.2, UV.y) * smoothstep(1.0, 0.8, UV.y);
+    COLOR.a *= alpha;
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_edgefade"]
+shader = SubResource("Shader_edgefade")
+
+[sub_resource type="SystemFont" id="SystemFont_golden"]
+font_names = PackedStringArray("Impact", "Arial Black", "Sans-Serif")
+font_italic = true
+font_weight = 900
+
+[sub_resource type="LabelSettings" id="LabelSettings_golden"]
+font = SubResource("SystemFont_golden")
+font_size = 120
+font_color = Color(1, 0.843137, 0, 1)
+outline_size = 15
+outline_color = Color(0.4, 0.2, 0, 1)
+shadow_size = 10
+shadow_color = Color(0, 0, 0, 0.8)
+shadow_offset = Vector2(8, 8)
+
+[sub_resource type="Shader" id="Shader_shine"]
+code = "shader_type canvas_item;
+uniform float shine_progress : hint_range(0.0, 1.0) = 0.0;
+uniform float shine_size : hint_range(0.01, 1.0) = 0.1;
+uniform float shine_angle : hint_range(0.0, 89.9) = 45.0;
+
+void fragment() {
+    float rad = radians(shine_angle);
+    float v = UV.x * cos(rad) + (1.0 - UV.y) * sin(rad);
+    float max_v = cos(rad) + sin(rad);
+    float progress = shine_progress * (max_v + shine_size * 2.0) - shine_size;
+    float shine = step(v, progress + shine_size / 2.0) - step(v, progress - shine_size / 2.0);
+    COLOR = vec4(1.0, 1.0, 1.0, shine * 0.8);
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_shine"]
+shader = SubResource("Shader_shine")
+shader_parameter/shine_progress = 0.0
+shader_parameter/shine_size = 0.1
+shader_parameter/shine_angle = 45.0
+
 [node name="hidden_game" type="Control" unique_id=18491525]
 layout_mode = 3
 anchors_preset = 15
@@ -161,6 +207,75 @@ offset_bottom = 42.0
 grow_horizontal = 2
 value = 50.0
 show_percentage = false
+
+[node name="CompleteScreen" type="Control" parent="CanvasLayer" unique_id=1621534484]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/CompleteScreen" unique_id=96376795]
+material = SubResource("ShaderMaterial_edgefade")
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -150.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.784314)
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="CanvasLayer/CompleteScreen" unique_id=1104575055]
+position = Vector2(576, 324)
+emitting = false
+amount = 100
+lifetime = 2.0
+emission_shape = 3
+emission_rect_extents = Vector2(400, 100)
+direction = Vector2(0, -1)
+spread = 10.0
+gravity = Vector2(0, -50)
+initial_velocity_min = 50.0
+initial_velocity_max = 150.0
+scale_amount_min = 2.0
+scale_amount_max = 5.0
+color = Color(1, 0.843137, 0, 1)
+
+[node name="Label" type="Label" parent="CanvasLayer/CompleteScreen" unique_id=1342254239]
+clip_children = 2
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -100.0
+offset_right = 400.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(400, 100)
+text = "Complete!"
+label_settings = SubResource("LabelSettings_golden")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ShineRect" type="ColorRect" parent="CanvasLayer/CompleteScreen/Label" unique_id=286089869]
+material = SubResource("ShaderMaterial_shine")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 
 [connection signal="body_entered" from="Panel/Stage/damagefield" to="Panel/Stage/coconut" method="_on_damagefield_body_entered"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

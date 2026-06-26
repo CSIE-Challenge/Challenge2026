@@ -1,7 +1,8 @@
 extends Node2D
 
 signal boss_hit
-
+signal boss_died_first_time
+signal boss_defeated
 const ATTACK_SWORD_SCENE = preload("res://Scenes/menu/attack_sword.tscn")
 const FALLING_NOTE_SCENE = preload("res://Scenes/menu/falling_note.tscn")
 
@@ -20,6 +21,9 @@ var is_attacking: bool = false
 # 紀路 Boss 血量
 var boss_hp: int
 var invincible: bool
+var phase: int = 1
+var is_dead: bool = false
+var current_attack_interrupted: bool = false
 
 @onready var boss = self
 @onready var boss_circle = $Sprites/circle
@@ -74,6 +78,11 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func rand_attack():
 	while true:
+		if is_dead:
+			break
+
+		current_attack_interrupted = false
+
 		if not is_attacking:
 			var rand_val = randi_range(0, 8)
 			match rand_val:
@@ -94,9 +103,9 @@ func rand_attack():
 					pong_attack()
 				7:
 					road_attack()
-		await get_tree().create_timer(0.5).timeout
+		await interruptible_wait(0.5)
 		while is_attacking:
-			await get_tree().create_timer(0.1).timeout
+			await interruptible_wait(0.1)
 
 
 func rhythm_attack() -> void:
@@ -118,7 +127,8 @@ func rhythm_attack() -> void:
 		walls.tween_box(Vector2(target_width, target_height), Vector2(0, target_y), 1.0)
 
 	# 等待牆壁收縮與平移完成
-	await get_tree().create_timer(1.2).timeout
+	if await interruptible_wait(1.2):
+		return
 
 	# 2. 開始降落落鍵 (發射 15 波，每波間隔 0.35 秒，節奏緊湊)
 	var waves = 15
@@ -163,16 +173,19 @@ func rhythm_attack() -> void:
 		)
 
 		# 每波下落的間隔時間為 0.35 秒
-		await get_tree().create_timer(0.35).timeout
+		if await interruptible_wait(0.35):
+			return
 
 	# 等待最後一波落鍵降落與紅色殘影完全消失
-	await get_tree().create_timer(1.8).timeout
+	if await interruptible_wait(1.8):
+		return
 
 	# 3. 招式結束，將牆壁還原到原本的大小與位置
 	if walls:
 		walls.reset_box(0.7)
 
-	await get_tree().create_timer(0.8).timeout
+	if await interruptible_wait(0.8):
+		return
 	is_attacking = false
 
 
@@ -187,10 +200,14 @@ func emit_rocket() -> void:
 
 	for i in range(4):
 		spawn_homing_rocket(randf_range(0, PI * 2), 200.0, 65.0, 1.5, 0.8)
-		await get_tree().create_timer(0.5).timeout
-	await get_tree().create_timer(3).timeout
+		if await interruptible_wait(0.5):
+			return
+	if await interruptible_wait(3):
+		return
 	if walls:
 		walls.reset_box(0.7)
+	if await interruptible_wait(1.0):
+		return
 	is_attacking = false
 
 
@@ -224,9 +241,11 @@ func emit_boomerang(mode: int) -> void:
 			spawn_boomerang(
 				spawn_pos, Vector2(2.0, 2.0), 15.0, 0.6, 300.0, Vector2.LEFT, half.x * 2.0 + 120.0
 			)
-			await get_tree().create_timer(0.2).timeout
+			if await interruptible_wait(0.2):
+				return
 
-		await get_tree().create_timer(2.6).timeout
+		if await interruptible_wait(2.6):
+			return
 
 	elif mode == 2:
 		# 🎯 【模式二：邊緣隨機狙擊】
@@ -261,9 +280,11 @@ func emit_boomerang(mode: int) -> void:
 
 			# 飛距 550 像素確保能完全貫穿場地至另一側外
 			spawn_boomerang(spawn_pos, Vector2(2.0, 2.0), 18.0, 0.5, 250.0, target_dir, 550.0)
-			await get_tree().create_timer(0.8).timeout
+			if await interruptible_wait(0.8):
+				return
 
-		await get_tree().create_timer(2.2).timeout
+		if await interruptible_wait(2.2):
+			return
 
 	elif mode == 3:
 		# ⚔️ 【新模式三：四角狙擊交匯】 (全新動態鎖定)
@@ -286,7 +307,8 @@ func emit_boomerang(mode: int) -> void:
 			spawn_boomerang(spawn_pos, Vector2(1.05, 1.05), 16.0, 0.65, 380.0, dir, dist)
 
 		# 等待飛完並回收
-		await get_tree().create_timer(2.6).timeout
+		if await interruptible_wait(2.6):
+			return
 
 	elif mode == 4:
 		# 🌀 【模式四：八方收縮圓形網】 (全新設計)
@@ -306,7 +328,8 @@ func emit_boomerang(mode: int) -> void:
 			# 飛行距離剛好為半徑，使它們在中心點聚攏成圓環
 			spawn_boomerang(spawn_pos, Vector2(1.0, 1.0), 18.0, 0.8, 320.0, to_center_dir, radius)
 
-		await get_tree().create_timer(2.8).timeout
+		if await interruptible_wait(2.8):
+			return
 
 	elif mode == 5:
 		# 🌀 【新模式五：加特林螺旋風車】 (全新高頻螺旋)
@@ -330,9 +353,11 @@ func emit_boomerang(mode: int) -> void:
 			spawn_boomerang(spawn_pos, b_scale, 18.0, 0.5, 350.0, to_center_dir, radius)
 
 			# 高頻率極速連射
-			await get_tree().create_timer(0.16).timeout
+			if await interruptible_wait(0.16):
+				return
 
-		await get_tree().create_timer(2.2).timeout
+		if await interruptible_wait(2.2):
+			return
 
 	is_attacking = false
 
@@ -370,13 +395,15 @@ func test_laser_attack() -> void:
 				0.3,
 				30.0
 			)
-		await get_tree().create_timer(1.0).timeout
+		if await interruptible_wait(1.0):
+			return
 	# 1. 發射橫向與縱向的十字雷射：起點, 終點, 預警 1.0 秒, 發射維持 0.8 秒, 寬度 30 像素
 	# spawn_laser_trap(left_pt, right_pt, 1.0, 0.8, 30.0)
 	# spawn_laser_trap(top_pt, bottom_pt, 1.0, 0.8, 30.0)
 
 	# 等待預警 + 發射 + 淡出
-	await get_tree().create_timer(2.2).timeout
+	if await interruptible_wait(1.8):
+		return
 	is_attacking = false
 
 
@@ -428,7 +455,8 @@ func squeeze_attack() -> void:
 
 	# 1. 重力下砸：極速壓縮牆壁 (0.1 秒)
 	walls.tween_box(wall_size, wall_pos, 0.1)
-	await get_tree().create_timer(0.12).timeout
+	if await interruptible_wait(0.12):
+		return
 
 	# 🌟 2. 拍實後，牆壁立刻在 0.5 秒內平滑彈回還原
 	walls.reset_box(0.5)
@@ -496,10 +524,12 @@ func squeeze_attack() -> void:
 		spawn_laser_trap(start_pt, end_pt, current_warn_time, fire_time, laser_w)
 
 		# 控制「生成預警線」的極快間隔
-		await get_tree().create_timer(spawn_interval).timeout
+		if await interruptible_wait(spawn_interval):
+			return
 
 	# 4. 等待最後一發雷射發射與淡出結束
-	await get_tree().create_timer(last_warn_time + fire_time + 0.15).timeout
+	if await interruptible_wait(last_warn_time + fire_time + 0.15):
+		return
 
 	is_attacking = false
 
@@ -520,7 +550,8 @@ func pong_attack() -> void:
 		walls.dynamic_base_half = arena_half  # 覆寫為這招的初始比例
 
 	walls.tween_box(arena_half * 2.0, Vector2(0, -20), 0.5)
-	await get_tree().create_timer(0.6).timeout
+	if await interruptible_wait(0.6):
+		return
 
 	var saw_count = 1
 	for i in range(saw_count):
@@ -539,12 +570,15 @@ func pong_attack() -> void:
 
 		saw.global_position = spawn_pos
 
-		await get_tree().create_timer(0.4).timeout
+		if await interruptible_wait(0.4):
+			return
 
-	await get_tree().create_timer(8.2).timeout
+	if await interruptible_wait(8.2):
+		return
 
 	walls.reset_box(0.6)
-	await get_tree().create_timer(0.8).timeout
+	if await interruptible_wait(0.8):
+		return
 	is_attacking = false
 
 
@@ -577,7 +611,8 @@ func road_attack() -> void:
 	for i in range(10):
 		spawn_straight_arrow(left_pt + Vector2(-50.0, width / 2), Vector2.RIGHT, 500.0, 1.0)
 		spawn_straight_arrow(left_pt + Vector2(-50.0, -width / 2), Vector2.RIGHT, 500.0, 1.0)
-		await get_tree().create_timer(0.1).timeout
+		if await interruptible_wait(0.1):
+			return
 	for i in range(30):
 		spawn_straight_arrow(
 			left_pt + Vector2(-50.0, width / 2 + sin(i * PI / 15.0) * amp),
@@ -591,7 +626,8 @@ func road_attack() -> void:
 			500.0,
 			1.0
 		)
-		await get_tree().create_timer(0.1).timeout
+		if await interruptible_wait(0.1):
+			return
 	for i in range(30):
 		spawn_straight_arrow(
 			right_pt + Vector2(50.0, width / 2 + sin(i * PI / 15.0) * amp), Vector2.LEFT, 500.0, 1.0
@@ -602,9 +638,12 @@ func road_attack() -> void:
 			500.0,
 			1.0
 		)
-		await get_tree().create_timer(0.1).timeout
+		if await interruptible_wait(0.1):
+			return
 
 	walls.reset_box(2.0)
+	if await interruptible_wait(2.0):
+		return
 	is_attacking = false
 
 
@@ -627,9 +666,11 @@ func sweeper_attack() -> void:
 			0.3,
 			60.0
 		)
-		await get_tree().create_timer(0.05).timeout
+		if await interruptible_wait(0.05):
+			return
 
-	await get_tree().create_timer(0.5).timeout
+	if await interruptible_wait(0.5):
+		return
 
 	for i in range(40):
 		spawn_laser_trap(
@@ -639,8 +680,11 @@ func sweeper_attack() -> void:
 			0.3,
 			60.0
 		)
-		await get_tree().create_timer(0.05).timeout
+		if await interruptible_wait(0.05):
+			return
 
+	if await interruptible_wait(1.0):
+		return
 	is_attacking = false
 
 
@@ -676,7 +720,8 @@ func sneak_attack() -> void:
 		50.0
 	)
 
-	await get_tree().create_timer(1.0).timeout
+	if await interruptible_wait(1.0):
+		return
 	is_attacking = false
 
 
@@ -803,10 +848,73 @@ func boss_appear_animation():
 	invincible = false
 
 
+func play_death_animation():
+	var death_tween = create_tween()
+	death_tween.set_parallel(true)
+
+	# 劇烈震動與變紅
+	var shake_duration = 3.0
+	var original_pos = position
+	sprites.modulate = Color(2, 0, 0, 1)  # 深紅色
+
+	for i in range(30):
+		var offset = Vector2(randf_range(-15, 15), randf_range(-15, 15))
+		death_tween.tween_property(self, "position", original_pos + offset, 0.1).set_delay(i * 0.1)
+
+	# 逐漸膨脹
+	death_tween.tween_property(sprites, "scale", Vector2(1.5, 1.5), shake_duration)
+
+	# 最後爆炸消失
+	death_tween.chain().tween_property(sprites, "scale", Vector2(2.5, 2.5), 0.2)
+	death_tween.parallel().tween_property(sprites, "modulate", Color(10, 0, 0, 0), 0.2)
+	death_tween.chain().tween_callback(func(): queue_free())
+
+
+func interruptible_wait(time: float) -> bool:
+	if not is_inside_tree():
+		return true
+	var t = get_tree().create_timer(time)
+	while t.time_left > 0:
+		if not is_inside_tree() or is_dead or current_attack_interrupted:
+			is_attacking = false
+			return true
+		await get_tree().process_frame
+	return false
+
+
 func deal_damage(damage: int):
-	if invincible or boss_hp <= 0:
+	if invincible or is_dead or boss_hp <= 0:
 		return
+
 	boss_hp -= damage
+	if boss_hp <= 0:
+		boss_hp = 0
+		boss_hp_bar.value = boss_hp
+		_play_hit_flash()
+
+		if phase == 1:
+			phase = 2
+			boss_hp = 100
+			boss_hp_bar.value = boss_hp
+
+			# 打斷並清除場上所有攻擊
+			current_attack_interrupted = true
+			for child in damage_field.get_children():
+				child.queue_free()
+
+			boss_died_first_time.emit()
+
+		elif phase == 2:
+			is_dead = true
+
+			# 打斷並清除場上所有攻擊
+			current_attack_interrupted = true
+			for child in damage_field.get_children():
+				child.queue_free()
+
+			boss_defeated.emit()
+		return
+
 	boss_hp_bar.value = boss_hp
 	boss_hit.emit()
 	_play_hit_flash()
@@ -864,11 +972,13 @@ func test_sword_attack() -> void:
 	var sword_count = 30
 	for i in range(sword_count):
 		var angle = (PI * 0.8 / sword_count) * i + dir
-		await get_tree().create_timer(0.01).timeout
+		if await interruptible_wait(0.01):
+			return
 		spawn_arrow(300.0, angle, 1000.0, 1.0 - i * 0.015)
 
 	# 等待飛劍全部飛完並銷毀（約等待 1.0 秒 + 飛行時間 600/550 ≈ 1.1 秒 + 淡出 0.1 秒）
-	await get_tree().create_timer(2.4).timeout
+	if await interruptible_wait(2.4):
+		return
 	is_attacking = false
 
 
@@ -897,7 +1007,8 @@ func spawn_homing_rocket(
 	get_parent().add_child(warning)
 
 	# 等待警告期結束
-	await get_tree().create_timer(warning_duration).timeout
+	if await interruptible_wait(warning_duration):
+		return
 
 	# 安全性檢查
 	if not is_instance_valid(player) or boss_hp <= 0:

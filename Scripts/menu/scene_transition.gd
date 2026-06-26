@@ -3,6 +3,7 @@ extends CanvasLayer
 @onready var shader_rect = $ShaderRect
 @onready var top_bar = $TopBar
 @onready var bottom_bar = $BottomBar
+@onready var fade_rect = $FadeRect
 
 
 func _ready() -> void:
@@ -12,6 +13,53 @@ func _ready() -> void:
 	top_bar.anchor_top = 0.0
 	bottom_bar.anchor_top = 1.0
 	bottom_bar.anchor_bottom = 1.0
+	fade_rect.color.a = 0.0
+
+
+func transition_to_fade(target_scene: String) -> void:
+	fade_rect.color.a = 0.0
+	var tween = create_tween()
+	# 淡出至黑幕
+	tween.tween_property(fade_rect, "color:a", 1.0, 1.0)
+	# 切換場景
+	tween.tween_callback(func(): get_tree().change_scene_to_file(target_scene))
+	# 等待載入
+	tween.tween_interval(0.1)
+	# 淡入畫面
+	tween.tween_property(fade_rect, "color:a", 0.0, 1.0)
+
+
+func transition_shop(target_scene: String) -> void:
+	top_bar.anchor_bottom = 0.0
+	bottom_bar.anchor_top = 1.0
+	shader_rect.hide()
+	var tween = create_tween()
+	# 商店專屬：鐵捲門般重重關上 (Bounce)
+	tween.tween_property(top_bar, "anchor_bottom", 0.5, 0.4).set_trans(Tween.TRANS_BOUNCE).set_ease(
+		Tween.EASE_OUT
+	)
+	(
+		tween
+		. parallel()
+		. tween_property(bottom_bar, "anchor_top", 0.5, 0.4)
+		. set_trans(Tween.TRANS_BOUNCE)
+		. set_ease(Tween.EASE_OUT)
+	)
+
+	tween.tween_callback(func(): get_tree().change_scene_to_file(target_scene))
+	tween.tween_interval(0.1)
+
+	# 快速拉開
+	tween.tween_property(top_bar, "anchor_bottom", 0.0, 0.3).set_trans(Tween.TRANS_EXPO).set_ease(
+		Tween.EASE_OUT
+	)
+	(
+		tween
+		. parallel()
+		. tween_property(bottom_bar, "anchor_top", 1.0, 0.3)
+		. set_trans(Tween.TRANS_EXPO)
+		. set_ease(Tween.EASE_OUT)
+	)
 
 
 func transition_to(target_scene: String) -> void:

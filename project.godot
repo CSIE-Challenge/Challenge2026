@@ -27,6 +27,7 @@ SceneTransition="*uid://c0ld3cep1ugxl"
 Dialogue="*res://Scenes/menu/dialogue.tscn"
 Global="*res://Scripts/global.gd"
 Audio="*uid://bxj6outuppaq0"
+PlayerData="*res://Scripts/menu/player_data.gd"
 
 [display]
 

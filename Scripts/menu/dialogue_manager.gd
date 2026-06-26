@@ -17,6 +17,7 @@ var wait_timer: SceneTreeTimer = null
 var selected_choice_index: int = 0
 var choices_fully_appeared: bool = false
 var choice_labels: Array[RichTextLabel] = []
+var is_disabled: bool = false
 
 @onready var dialogue_box = $Control/DialogueBox
 @onready var rich_text_label = $Control/DialogueBox/MarginContainer/RichTextLabel
@@ -57,6 +58,8 @@ func _input(event):
 
 
 func start_dialogue(texts: Array[String], choices: Array[String] = []):
+	if is_disabled:
+		return
 	dialogue_queue = texts.duplicate()
 	current_choices = choices.duplicate()
 	dialogue_box.show()

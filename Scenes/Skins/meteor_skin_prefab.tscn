@@ -1,0 +1,68 @@
+[gd_scene format=3 uid="uid://meteorskin"]
+
+[ext_resource type="Script" uid="uid://b3lo1iay87j4s" path="res://Scenes/Skins/meteor_skin_prefab.gd" id="1_meteor"]
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_circle"]
+
+[sub_resource type="Curve" id="Curve_meteor_trail"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_meteor"]
+colors = PackedColorArray(0, 0, 0, 0, 0.6, 0.9, 1, 1)
+
+[sub_resource type="Curve" id="Curve_meteor_particles"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_particles"]
+colors = PackedColorArray(0.6, 0.9, 1, 1, 0.1, 0.3, 0.8, 0)
+
+[node name="MeteorSkinPrefab" type="Node2D" unique_id=1736585090]
+script = ExtResource("1_meteor")
+
+[node name="Line2D" type="Line2D" parent="." unique_id=879721011]
+top_level = true
+width = 40.0
+width_curve = SubResource("Curve_meteor_trail")
+gradient = SubResource("Gradient_meteor")
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+antialiased = true
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1667551771]
+modulate = Color(0.6, 0.9, 1, 1)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_circle")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="." unique_id=116743951]
+emitting = false
+amount = 20
+texture = ExtResource("2_circle")
+lifetime = 0.5
+emission_shape = 1
+emission_sphere_radius = 15.0
+gravity = Vector2(0, 0)
+scale_amount_min = 0.02
+scale_amount_max = 0.06
+scale_amount_curve = SubResource("Curve_meteor_particles")
+color_ramp = SubResource("Gradient_particles")
+
+[node name="DeathParticles" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 100
+texture = ExtResource("2_circle")
+lifetime = 1.0
+one_shot = true
+explosiveness = 1.0
+randomness = 0.5
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 200.0
+initial_velocity_max = 500.0
+damping_min = 50.0
+damping_max = 100.0
+scale_amount_min = 0.02
+scale_amount_max = 0.1
+scale_amount_curve = SubResource("Curve_meteor_particles")
+color_ramp = SubResource("Gradient_particles")

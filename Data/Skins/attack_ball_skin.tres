@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://bep02mfrrx5jn"]
+
+[ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_hk7d5"]
+[ext_resource type="PackedScene" uid="uid://dyuygpnsh58vn" path="res://Scenes/menu/skins/skin_attack_ball.tscn" id="2_hmjhp"]
+
+[resource]
+script = ExtResource("1_hk7d5")
+true_name = "異界行星"
+skin_prefab = ExtResource("2_hmjhp")
+metadata/_custom_type_script = "uid://c6vuqckcyjdey"

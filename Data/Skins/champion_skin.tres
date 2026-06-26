@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://ditimx24fjdob"]
+
+[ext_resource type="Texture2D" uid="uid://dle4xt8upfg42" path="res://Shapes/Square.svg" id="1_q3mce"]
+[ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_skindata"]
+[ext_resource type="PackedScene" uid="uid://championskin" path="res://Scenes/Skins/champion_skin_prefab.tscn" id="2_prefab"]
+
+[resource]
+script = ExtResource("1_skindata")
+skin_id = "champion_skin"
+true_name = "冠軍王者"
+price = 400
+preview_texture = ExtResource("1_q3mce")
+skin_prefab = ExtResource("2_prefab")

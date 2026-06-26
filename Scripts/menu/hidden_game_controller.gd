@@ -43,6 +43,8 @@ func _on_dialogue_event(event_name: String):
 func wait_or_die(time: float) -> bool:
 	var t = 0.0
 	while t < time and not is_aborted:
+		if not is_inside_tree():
+			return true
 		await get_tree().process_frame
 		if is_player_dead or is_aborted:
 			return true
@@ -52,13 +54,16 @@ func wait_or_die(time: float) -> bool:
 
 func wait_for_boss_attack_or_die() -> bool:
 	while boss.is_attacking and not is_aborted:
-		await get_tree().process_frame
-		if is_player_dead:
+		if not is_inside_tree():
 			return true
-	return is_player_dead
+		await get_tree().process_frame
+		if is_player_dead or is_aborted:
+			return true
+	return is_player_dead or is_aborted
 
 
 func run_hidden_game_sequence() -> void:
+	Dialogue.is_disabled = false
 	timer.stop()
 	walls.tween_box(Vector2(400, 400), Vector2(0, 20), 1.0)
 	boss.boss_appear_animation()
@@ -90,7 +95,7 @@ func _run_phase_1() -> bool:
 
 	for i in range(3):
 		boss.test_sword_attack()
-		if await wait_or_die(1.0):
+		if await wait_or_die(1.5):
 			break
 
 	if not is_player_dead:
@@ -219,6 +224,8 @@ func _run_phase_4() -> bool:
 
 	# 卡住流程，直到玩家拿球砸到 boss (HP減少)，或是玩家中途死掉
 	while boss.boss_hp >= initial_hp:
+		if not is_inside_tree():
+			return false
 		await get_tree().process_frame
 		if is_player_dead:
 			break
@@ -250,16 +257,93 @@ func _run_phase_4() -> bool:
 
 	# 最後進入隨機模式
 	# 隨機生成能量球開啟
-	timer.wait_time = 5.0
+	timer.wait_time = 1.0
 	timer.start()
+
+	# 綁定第一階段死亡對話
+	boss.boss_died_first_time.connect(
+		func():
+			if Dialogue.current_state != Dialogue.State.IDLE:
+				Dialogue.interrupt_dialogue()
+			Dialogue.start_dialogue(["[color=red][wave]我真的生氣了！<speed=0.1>[/wave][/color]"])
+	)
+
 	boss.rand_attack()
 
-	# 持續監控，如果在隨機模式中死亡則重置
-	while not is_player_dead:
+	# 持續監控，如果在隨機模式中死亡則重置，如果 Boss 死亡則進行最終演出
+	while not is_player_dead and not boss.is_dead:
+		if not is_inside_tree():
+			return false
 		await get_tree().process_frame
 
-	SceneTransition.transition_to(HIDDEN_SCENE_PATH)
-	return true
+	if is_player_dead:
+		SceneTransition.transition_to(HIDDEN_SCENE_PATH)
+		return true
+
+	if boss.is_dead:
+		if Dialogue.current_state != Dialogue.State.IDLE:
+			Dialogue.interrupt_dialogue()
+		Dialogue.start_dialogue(["我竟然落敗了......<wait=3.0>"])
+		await Dialogue.dialogue_finished
+
+		# 解鎖成就皮膚：黃金傳說
+		if not PlayerData.has_skin("golden_skin"):
+			PlayerData.unlocked_skins.append("golden_skin")
+			PlayerData.save_data()
+			PlayerData.skin_unlocked.emit("golden_skin")
+			print("已解鎖隱藏皮膚：黃金傳說！")
+
+		# 播放死亡動畫
+		boss.play_death_animation()
+
+		# 等待死亡動畫完成 (約3.4秒)
+		await get_tree().create_timer(3.5).timeout
+
+		# 顯示 Complete!
+		var complete_screen = $CanvasLayer/CompleteScreen
+		complete_screen.show()
+		var cr = complete_screen.get_node("ColorRect")
+		var lbl = complete_screen.get_node("Label")
+		var particles = complete_screen.get_node("CPUParticles2D")
+
+		particles.emitting = true
+
+		cr.modulate = Color(1, 1, 1, 0)
+		lbl.scale = Vector2(0, 0)
+		lbl.modulate = Color(2, 2, 2, 1)  # 高光亮起
+		lbl.get_node("ShineRect").material.set_shader_parameter("shine_progress", 0.0)
+
+		var tw = create_tween()
+		tw.set_parallel(true)
+		tw.tween_property(cr, "modulate", Color(1, 1, 1, 1), 0.5)
+		tw.tween_property(lbl, "scale", Vector2(1, 1), 0.8).set_trans(Tween.TRANS_ELASTIC).set_ease(
+			Tween.EASE_OUT
+		)
+		tw.tween_property(lbl, "modulate", Color(1, 1, 1, 1), 1.0)
+
+		var tw_shine = create_tween()
+		tw_shine.tween_interval(0.8)
+		tw_shine.tween_property(
+			lbl.get_node("ShineRect").material, "shader_parameter/shine_progress", 1.0, 1.5
+		)
+
+		# 強制顯示 5 秒
+		await get_tree().create_timer(5.0).timeout
+
+		# 五秒後，等待玩家按下空白鍵或確認鍵
+		while true:
+			if not is_inside_tree():
+				return false
+			await get_tree().process_frame
+			if Input.is_action_just_pressed("ui_accept") or Input.is_action_just_pressed("jump"):
+				break
+
+		# 玩家按下後，呼叫 SceneTransition 的淡出轉場回主選單
+		Dialogue.is_disabled = true
+		SceneTransition.transition_to_fade(MENU_SCENE_PATH)
+		return true
+
+	return false
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -269,13 +353,16 @@ func _process(_delta: float) -> void:
 
 # Exit scene
 func _unhandled_input(event: InputEvent) -> void:
+	if is_aborted:
+		return
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
 		is_aborted = true
 		if Dialogue.current_state != Dialogue.State.IDLE:
 			Dialogue.interrupt_dialogue()
+		Dialogue.is_disabled = true
 		Dialogue.dialogue_box.hide()
 		Dialogue.dialogue_queue.clear()
-		SceneTransition.transition_to(MENU_SCENE_PATH)
+		SceneTransition.transition_to_fade(MENU_SCENE_PATH)
 
 
 func _random_generate_attack_ball():

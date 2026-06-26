@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://cd5q6s00e4r2j"]
+
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="1_k663x"]
+[ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_skindata"]
+[ext_resource type="PackedScene" uid="uid://defaultskin" path="res://Scenes/Skins/default_skin_prefab.tscn" id="2_prefab"]
+
+[resource]
+script = ExtResource("1_skindata")
+skin_id = "default_skin"
+true_name = "經典小球"
+price = 0
+preview_texture = ExtResource("1_k663x")
+skin_prefab = ExtResource("2_prefab")

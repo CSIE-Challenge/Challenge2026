@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://dyuygpnsh58vn"]
+
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="1_cgfrr"]
+[ext_resource type="Script" uid="uid://dpuh1xvjjuadx" path="res://Scripts/menu/skins/skin_attack_ball.gd" id="1_uiu2b"]
+
+[sub_resource type="Curve" id="Curve_uiu2b"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_n788i"]
+offsets = PackedFloat32Array(0, 0.8770492, 1)
+colors = PackedColorArray(0, 1, 0, 1, 0.69411767, 1, 0.69411767, 0.76862746, 1, 1, 1, 0)
+
+[node name="skin_attack_ball" type="Node2D" unique_id=1202125674]
+script = ExtResource("1_uiu2b")
+
+[node name="Sprite2D2" type="Sprite2D" parent="." unique_id=1027478600]
+modulate = Color(0.7598514, 1, 0, 1)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_cgfrr")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=45577646]
+modulate = Color(0, 1, 0, 1)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_cgfrr")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="." unique_id=1068147715]
+amount = 5
+texture = ExtResource("1_cgfrr")
+lifetime = 1.5
+emission_shape = 1
+emission_sphere_radius = 40.0
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 1.5
+initial_velocity_max = 3.0
+scale_amount_min = 0.02
+scale_amount_max = 0.06
+scale_amount_curve = SubResource("Curve_uiu2b")
+color_ramp = SubResource("Gradient_n788i")
