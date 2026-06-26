@@ -65,7 +65,7 @@ func _process(delta: float) -> void:
 			queue_free()
 
 		for body in explosion_area.get_overlapping_bodies():
-			if body.name == "Player":
+			if body == Global.game_manager.player:
 				Global.player_hit.emit(damage)
 
 		queue_redraw()
