@@ -204,13 +204,10 @@ offset_top = 88.0
 offset_right = 380.0
 offset_bottom = 111.0
 
-<<<<<<< HEAD
 [node name="TrapRequestScheduler" type="Node" parent="." unique_id=578271909]
 script = ExtResource("8_urrcd")
 
 [node name="AgentActionService" type="Node" parent="." unique_id=1603690011]
 script = ExtResource("9_puebw")
 
-[connection signal="timeout" from="GameManager/EnergyIncreaseTimer" to="GameManager" method="_on_energy_increase_timer_timeout"]
-=======
 [connection signal="timeout" from="GameManager/EnergyIncreaseTimer" to="GameManager" method="_on_energy_increase_timer_timeout"]

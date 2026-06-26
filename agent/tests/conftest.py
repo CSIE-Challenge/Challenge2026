@@ -25,6 +25,26 @@ _TOKEN_RE = re.compile(r"token: ([0-9a-f]{8})")
 _BOOT_TIMEOUT_SEC = 30.0
 
 
+def _startup_scene() -> str | None:
+    # Keep default behavior the same as original local runs unless explicitly
+    # set for this integration-test harness.
+    # Set GODOT_TEST_SCENE to force a specific startup scene.
+    # For API integration tests that require GameAgent token output, use:
+    #   GODOT_TEST_SCENE=res://Scenes/main.tscn
+    return os.environ.get("GODOT_TEST_SCENE")
+
+
+def _build_godot_cmd(godot_bin: str, is_import: bool = False) -> list[str]:
+    cmd: list[str] = [godot_bin, "--headless"]
+    if is_import:
+        cmd.append("--import")
+    cmd.extend(["--path", str(REPO_ROOT)])
+    scene = _startup_scene()
+    if scene:
+        cmd.append(scene)
+    return cmd
+
+
 def _find_godot() -> str | None:
     for candidate in (os.environ.get("GODOT_BIN"), "godot", "~/godot"):
         if candidate:
@@ -53,7 +73,7 @@ def _server_token() -> Iterator[str]:
         pytest.skip("Godot binary not found (set GODOT_BIN to run behaviour tests)")
     # Import pass first so class_name scripts resolve on a fresh checkout.
     subprocess.run(
-        [godot, "--headless", "--import", "--path", str(REPO_ROOT)],
+        _build_godot_cmd(godot, is_import=True),
         capture_output=True,
         timeout=_BOOT_TIMEOUT_SEC,
         check=False,
@@ -63,7 +83,7 @@ def _server_token() -> Iterator[str]:
     log_path = Path(name)
     log = log_path.open("w")
     proc = subprocess.Popen(
-        [godot, "--headless", "--path", str(REPO_ROOT)],
+        _build_godot_cmd(godot),
         stdout=log,
         stderr=subprocess.STDOUT,
     )

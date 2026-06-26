@@ -2,7 +2,9 @@ class_name Trap5IceFloor
 extends Area2D
 
 @export var lifetime: float = 5.0
-var _data: Dictionary = Global.trap_data["trap5-icefloor"]
+var _data: Dictionary = {}
+
+
 static func initialize(pos: Vector2) -> Trap5IceFloor:
 	var trap := preload("res://Scenes/traps/trap5-icefloor.tscn").instantiate()
 	Global.stage.add_child(trap)

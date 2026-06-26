@@ -9,7 +9,7 @@ var line_alive := 1
 var velocity := Vector2(0, 0)
 var speed := 5
 var line_pos := Vector2(0, 0)
-var _data: Dictionary = Global.trap_data["trap6-scanline"]
+var _data: Dictionary = {}
 
 @onready var visual_line = $ColorRect/Sprite2D
 @onready var collision_shape = $CollisionShape2D
