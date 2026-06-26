@@ -13,6 +13,7 @@ var lifetime = TrapData.new().data["trap5-icefloor"]["lifetime"]
 
 @onready var cream_sprite: Sprite2D = $Cream
 @onready var cone_sprite: Sprite2D = $Cone
+@onready var splash: GPUParticles2D = $SplashParticle
 
 
 static func initialize(pos: Vector2) -> Trap5IceFloor:
@@ -41,13 +42,15 @@ func _destroy_trap() -> void:
 
 
 func start_animation() -> void:
-	var tween = create_tween().set_parallel(true)
-	tween.set_trans(Tween.TRANS_EXPO)
-	tween.set_ease(Tween.EASE_OUT)
+	var tween = create_tween()
 
-	tween.tween_property(cone_sprite, "rotation_degrees", -11, 0.18).as_relative()
-	tween.tween_property(cone_sprite, "position", Vector2(-2, 3), 0.18).as_relative()
-	tween.tween_property(cream_sprite.material, "shader_parameter/progress", 1.0, 0.67)
+	tween.tween_interval(0.4)
+	(
+		tween
+		. tween_property(cream_sprite.material, "shader_parameter/progress", 1.0, 1.6)
+		. set_trans(Tween.TRANS_EXPO)
+		. set_ease(Tween.EASE_OUT)
+	)
 
 
 func _on_body_entered(body: Node2D) -> void:

@@ -3,14 +3,16 @@
 [ext_resource type="Script" uid="uid://cnnpbfnww61wx" path="res://Scripts/traps/trap5-icefloor.gd" id="1_j7spk"]
 [ext_resource type="Texture2D" uid="uid://cjui4iumcv3o5" path="res://Shapes/spilled_cream.svg" id="2_33xs4"]
 [ext_resource type="Shader" uid="uid://c0rnb5vdrn2if" path="res://Shaders/icecream_reveal.gdshader" id="2_rvr82"]
-[ext_resource type="Texture2D" uid="uid://c1qh564w4drt4" path="res://Shapes/cone.svg" id="3_rvr82"]
+[ext_resource type="Texture2D" uid="uid://ciws7u4hujaue" path="res://Shapes/ice_cream.svg" id="4_rvr82"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rkeu5"]
 shader = ExtResource("2_rvr82")
 shader_parameter/progress = 0.0
 shader_parameter/reveal_center = Vector2(0.885, 0.335)
-shader_parameter/liquid_intensity = 0.1
-shader_parameter/liquid_scale = 20.0
+shader_parameter/liquid_intensity = 0.030000001425
+shader_parameter/liquid_scale = 13.559000596552501
+shader_parameter/outline_color = Color(1, 0.8509804, 0.654902, 1)
+shader_parameter/outline_width = 2.18
 
 [node name="IceFloor" type="Area2D" unique_id=1192991918]
 script = ExtResource("1_j7spk")
@@ -26,9 +28,8 @@ scale = Vector2(1.1640625, 1.1640624)
 texture = ExtResource("2_33xs4")
 
 [node name="Cone" type="Sprite2D" parent="." unique_id=1268785805]
-position = Vector2(79.56, -34.985)
-rotation = 4.6513023
-texture = ExtResource("3_rvr82")
+position = Vector2(67, -36)
+texture = ExtResource("4_rvr82")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=897093263]
 polygon = PackedVector2Array(-67.5, -67.5, -67.5, 67.5, 67.5, 67.5, 67.5, -67.5)

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c1qh564w4drt4"
-path="res://.godot/imported/cone.svg-8a229ae44b4dcc0d80d2fabd67551172.ctex"
+uid="uid://ciws7u4hujaue"
+path="res://.godot/imported/ice_cream.svg-0dbfd8c187cd734af777d3f17ac22abf.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Shapes/cone.svg"
-dest_files=["res://.godot/imported/cone.svg-8a229ae44b4dcc0d80d2fabd67551172.ctex"]
+source_file="res://Shapes/ice_cream.svg"
+dest_files=["res://.godot/imported/ice_cream.svg-0dbfd8c187cd734af777d3f17ac22abf.ctex"]
 
 [params]
 

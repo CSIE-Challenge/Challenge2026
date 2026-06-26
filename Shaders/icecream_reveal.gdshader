@@ -5,6 +5,9 @@ uniform vec2 reveal_center = vec2(0.5, 0.5);
 uniform float liquid_intensity : hint_range(0.0, 0.5) = 0.1;
 uniform float liquid_scale : hint_range(1.0, 50.0) = 20.0;
 
+uniform vec4 outline_color : source_color;
+uniform float outline_width;
+
 float noise(vec2 coord) {
 	return fract(sin(dot(coord, vec2(12.9898, 78.233))) * 43758.5453);
 }
@@ -40,6 +43,18 @@ void fragment() {
 
 	float warped_dist = dist + (squiggly_noise - 0.5) * active_distortion;
 	float alpha_mask = 1.0 - step(progress * max_radius, warped_dist);
-
+	
 	COLOR = vec4(tex_color.rgb, tex_color.a * alpha_mask);
+	
+	vec2 size = TEXTURE_PIXEL_SIZE * outline_width;
+	float alpha = tex_color.a;
+	alpha += texture(TEXTURE, distorted_uv + vec2(0.0, size.y)).a;  
+	alpha += texture(TEXTURE, distorted_uv - vec2(0.0, size.y)).a;  
+	alpha += texture(TEXTURE, distorted_uv - vec2(size.x, 0.0)).a;  
+	alpha += texture(TEXTURE, distorted_uv + vec2(size.x, 0.0)).a;  
+
+	vec4 final_color = mix(outline_color, tex_color, tex_color.a * alpha_mask);
+	final_color.a = clamp(alpha * alpha_mask, 0.0, 1.0);
+	
+	COLOR = final_color;
 }
