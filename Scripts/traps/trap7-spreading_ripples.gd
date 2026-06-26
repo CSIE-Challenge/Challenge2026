@@ -12,9 +12,8 @@ var white_ripple_thickness: float = 0.0
 var time := 0.0
 var is_expanding: bool = false
 var collision_shape: CircleShape2D
-
-	@onready var warning_sprite: Sprite2D = $WarningSprite
-	@onready var ripple_sprite: Sprite2D = $RippleSprite
+@onready var warning_sprite: Sprite2D = $WarningSprite
+@onready var ripple_sprite: Sprite2D = $RippleSprite
 @onready var water_particle = $WaterParticles
 
 
