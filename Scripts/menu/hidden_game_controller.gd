@@ -1,6 +1,6 @@
 extends Control
 
-const MENU_SCENE_PATH = "res://Scenes/menu/menu.tscn"
+const MENU_SCENE_PATH = "res://Scenes/menu.tscn"
 const HIDDEN_SCENE_PATH = "res://Scenes/menu/hidden_game.tscn"
 
 var attack_ball_scene = preload("res://Scenes/menu/attack_ball.tscn")
