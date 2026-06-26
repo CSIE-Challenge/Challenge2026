@@ -12,6 +12,7 @@ import importlib.util
 import os
 import socket
 import sys
+import threading
 import time
 from pathlib import Path
 from types import ModuleType
@@ -20,6 +21,7 @@ from api.client_base import GameClientBase
 
 _PORT_WAIT_SEC = 30.0
 _PROBE_INTERVAL_SEC = 0.3
+_HEARTBEAT_SEC = 2.0
 
 
 def _wait_for_port(host: str, port: int, timeout: float) -> None:
@@ -46,6 +48,20 @@ def _load_agent(path: Path) -> ModuleType:
     return module
 
 
+def _start_reaper(client: GameClientBase, stop: threading.Event) -> None:
+    """Reap the agent when the game goes away, whatever run() is doing."""
+
+    def _beat() -> None:
+        while not stop.wait(_HEARTBEAT_SEC):
+            try:
+                client.ping()
+            except Exception:
+                print("[runner] game unreachable; stopping agent", file=sys.stderr)
+                os._exit(0)
+
+    threading.Thread(target=_beat, name="conn-reaper", daemon=True).start()
+
+
 def _run_agent(client: GameClientBase, agent_path: Path) -> None:
     agent = _load_agent(agent_path)
     run = getattr(agent, "run", None)
@@ -66,9 +82,12 @@ def main() -> int:
     client = GameClientBase.from_env()
     _wait_for_port(client.host, client.port, _PORT_WAIT_SEC)
     client.connect()
+    stop = threading.Event()
+    _start_reaper(client, stop)
     try:
         _run_agent(client, _agent_path())
     finally:
+        stop.set()
         client.close()
     return 0
 

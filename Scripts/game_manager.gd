@@ -48,14 +48,42 @@ func _ready() -> void:
 	energy_increase_timer.wait_time = energy_ball_spawn_period
 	player_invincible = false
 
-	_spawn_agents()
+
+	_begin_agents()
 
 
-func _spawn_agents() -> void:
+func _begin_agents() -> void:
+	var bundle := ApiServer.cmdline_value("--agent-bundle")
+	if bundle == "":
+		_spawn_agents("", "")
+		return
+	var override := ApiServer.cmdline_value("--agent-file")
+	if override != "":
+		_spawn_agents(bundle, override)
+	else:
+		_prompt_agent_file(bundle)
+
+
+func _prompt_agent_file(bundle: String) -> void:
+	var dialog := FileDialog.new()
+	dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
+	dialog.access = FileDialog.ACCESS_FILESYSTEM
+	dialog.use_native_dialog = true
+	dialog.add_filter("*.py", "Python agent")
+	# Cancel falls back to the bundle's baked agent.py (empty agent_file).
+	dialog.file_selected.connect(func(path: String): _spawn_agents(bundle, path))
+	dialog.canceled.connect(func(): _spawn_agents(bundle, ""))
+	add_child(dialog)
+	dialog.popup_centered_ratio(0.6)
+
+
+func _spawn_agents(bundle: String, agent_file: String) -> void:
 	for seat_name: String in AGENT_SEATS:
 		var agent := GameAgent.new()
 		agent.name = seat_name
 		agent.game = self
+		agent.bundle_dir = bundle
+		agent.agent_file = agent_file
 		add_child(agent)
 
 

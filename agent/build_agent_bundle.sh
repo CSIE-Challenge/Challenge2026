@@ -92,7 +92,7 @@ if [[ -f "$AGENT_DIR/runner.py" ]]; then
 fi
 if [[ -f "$AGENT_DIR/agent.sample.py" ]]; then
   cp "$AGENT_DIR/agent.sample.py" "$BUNDLE_DIR/agent.py"
-  pkg "agent.py (from sample)"
+  pkg "agent.py"
 fi
 
 step "Zipping bundle"

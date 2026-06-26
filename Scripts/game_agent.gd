@@ -59,9 +59,14 @@ const TRAP_PARAM_DEFINITIONS := {
 }
 
 var game: Node2D
+# Set by game_manager before add_child. A non-empty bundle_dir means the game
+# owns the Python agent: this seat spawns it and reaps it on exit. Empty = manual
+# / console mode (just register the connection + print the token).
+var bundle_dir := ""
+var agent_file := ""
 var _conn: WebSocketConnection
 var _command_handlers: Dictionary[String, Callable] = {}
-# gdlint: disable=max-returns
+var _agent_pid := -1
 
 
 func _init() -> void:
@@ -76,6 +81,41 @@ func _ready() -> void:
 	print("[API Server] agent '%s' token: %s" % [name, _conn.get_token()])
 
 	_register_commands()
+
+	if bundle_dir != "":
+		_spawn_agent_process(_conn.get_token())
+
+
+## Launch the player's Python agent from the downloaded bundle.
+func _spawn_agent_process(token: String) -> void:
+	var python := _bundle_python()
+	var runner := bundle_dir + "/runner.py"
+	var libs := bundle_dir + "/libs"
+	if OS.has_feature("linux") or OS.has_feature("macos"):
+		OS.execute("chmod", ["+x", python])
+
+	OS.set_environment("PYTHONPATH", libs)
+	OS.set_environment("CHALLENGE_WS_URL", "ws://127.0.0.1:%d" % ApiServer.port)
+	OS.set_environment("CHALLENGE_TOKEN", token)
+	if agent_file != "":
+		OS.set_environment("CHALLENGE_AGENT_PATH", agent_file)
+	else:
+		OS.unset_environment("CHALLENGE_AGENT_PATH")
+
+	_agent_pid = OS.create_process(python, ["-s", runner])
+	print("[API Server] agent '%s' process pid: %d" % [name, _agent_pid])
+
+
+func _bundle_python() -> String:
+	if OS.has_feature("windows"):
+		return bundle_dir + "/python/python.exe"
+	return bundle_dir + "/python/bin/python3.11"
+
+
+func _exit_tree() -> void:
+	if _agent_pid >= 0 and OS.is_process_running(_agent_pid):
+		OS.kill(_agent_pid)
+		print("[API Server] agent '%s' process %d stopped" % [name, _agent_pid])
 
 
 # Add one line per new API.

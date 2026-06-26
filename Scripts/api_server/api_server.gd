@@ -18,9 +18,23 @@ func _init() -> void:
 
 
 func _ready() -> void:
-	var server_listen_ret = listen()
-	assert(server_listen_ret == OK)
+	for _attempt in 50:
+		if listen() == OK:
+			break
+		port = randi_range(20000, 60000)
+	assert(tcp_server.is_listening())
 	print("[API Server] Listening to port: ", port)
+
+
+static func cmdline_value(name: String) -> String:
+	var args := OS.get_cmdline_user_args()
+	for i in args.size():
+		var arg := str(args[i])
+		if arg == name and i + 1 < args.size():
+			return str(args[i + 1])
+		if arg.begins_with("%s=" % name):
+			return arg.substr(name.length() + 1)
+	return ""
 
 
 #endregion
