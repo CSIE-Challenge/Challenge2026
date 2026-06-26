@@ -1,6 +1,6 @@
 extends Area2D
 
-const ROCKET_EXPLOSION_SCENE = preload("res://Scenes/rocket_explosion.tscn")
+const ROCKET_EXPLOSION_SCENE = preload("res://Scenes/Menu/rocket_explosion.tscn")
 
 # 🚀 追蹤物理參數
 @export var acceleration: float = 440.0

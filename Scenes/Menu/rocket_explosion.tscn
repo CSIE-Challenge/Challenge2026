@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bpyvepnmpsxqy"]
 
-[ext_resource type="Script" uid="uid://bu1xnjcu2kjnn" path="res://Scripts/rocket_explosion.gd" id="1_78rlg"]
-[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="1_qywif"]
+[ext_resource type="Script" uid="uid://bu1xnjcu2kjnn" path="res://Scripts/Menu/rocket_explosion.gd" id="1_s1cxa"]
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_vvsfe"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_78rlg"]
 radius = 67.74216
@@ -12,11 +12,11 @@ colors = PackedColorArray(1, 0, 0, 1, 1, 0.45775273, 0, 0.95300007, 1, 0.5281222
 
 [node name="rocket_explosion" type="CollisionShape2D" unique_id=556988654]
 shape = SubResource("CircleShape2D_78rlg")
-script = ExtResource("1_78rlg")
+script = ExtResource("1_s1cxa")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=275787331]
 modulate = Color(1, 0.6326547, 0.20906562, 1)
-texture = ExtResource("1_qywif")
+texture = ExtResource("2_vvsfe")
 
 [node name="CPUParticles2D" type="CPUParticles2D" parent="." unique_id=1401400260]
 emitting = false

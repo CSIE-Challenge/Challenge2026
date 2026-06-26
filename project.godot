@@ -21,11 +21,13 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+GlobalSignal="*res://Scripts/global_signal.gd"
 ApiServer="*res://Scripts/api_server/api_server.gd"
 NetworkManager="*res://Scripts/network_manager.gd"
 SceneTransition="*uid://c0ld3cep1ugxl"
+Dialogue="*res://Scenes/Menu/dialogue.tscn"
+<<<<<<<HEADGlobal="*res://Scripts/global.gd"
 Global="*res://Scripts/global.gd"
-Dialogue="*res://Scenes/dialogue.tscn"
 
 [display]
 

@@ -1,15 +1,15 @@
 [gd_scene format=3 uid="uid://cbufrn1sieovt"]
 
-[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="1_ieoer"]
-[ext_resource type="Script" uid="uid://2j7uee2veh11" path="res://Scripts/bouncing_saw.gd" id="1_oljsi"]
+[ext_resource type="Script" uid="uid://2j7uee2veh11" path="res://Scripts/Menu/bouncing_saw.gd" id="1_2emh3"]
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_2560u"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_oljsi"]
 radius = 67.11929
 
 [node name="bouncing_saw" type="CollisionShape2D" unique_id=1973672367]
 shape = SubResource("CircleShape2D_oljsi")
-script = ExtResource("1_oljsi")
+script = ExtResource("1_2emh3")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1473387516]
 modulate = Color(1, 0, 0, 1)
-texture = ExtResource("1_ieoer")
+texture = ExtResource("2_2560u")

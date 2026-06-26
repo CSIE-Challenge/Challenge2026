@@ -23,7 +23,7 @@ func _on_quit_button_button_up() -> void:
 
 
 func _on_invisible_button_up() -> void:
-	SceneTransition.transition_to("res://Scenes/hidden_game.tscn")
+	SceneTransition.transition_to("res://Scenes/Menu/hidden_game.tscn")
 
 
 func _on_about_buttom_button_up() -> void:

@@ -1,8 +1,8 @@
 extends Control
 
-const MENU_SCENE_PATH = "res://Scenes/menu.tscn"
+const MENU_SCENE_PATH = "res://Scenes/Menu/menu.tscn"
 
-var attack_ball_scene = preload("res://Scenes/attack_ball.tscn")
+var attack_ball_scene = preload("res://Scenes/Menu/attack_ball.tscn")
 var is_player_dead: bool = false
 
 @onready var walls: Node2D = $Panel/Stage/Walls

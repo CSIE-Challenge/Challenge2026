@@ -1,6 +1,6 @@
 extends Node2D
 
-const NOTE_WARNING_AREA = preload("res://Scenes/note_warning_area.tscn")
+const NOTE_WARNING_AREA = preload("res://Scenes/Menu/note_warning_area.tscn")
 
 var start_y: float = -200.0
 var target_y: float = 180.0  # 判定線的位置
