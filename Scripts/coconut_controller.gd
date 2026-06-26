@@ -1,7 +1,11 @@
 extends CharacterBody2D
 
+signal player_died
+@export var auto_restart: bool = true
+
 @export var move_speed: float = 300
 var can_move: bool = true
+var is_immutable = false
 @onready var body_sprite = $BodySprite
 @onready var shadow_sprite = $ShadowSprite
 
@@ -24,6 +28,9 @@ func move(dir: Vector2, speed: float):
 
 
 func die():
+	if is_immutable:
+		return
+
 	if not can_move:  # 防止重複觸發死亡
 		return
 	can_move = false
@@ -37,10 +44,19 @@ func die():
 	cpu_particle.emitting = true
 
 	await get_tree().create_timer(cpu_particle.lifetime).timeout
-	SceneTransition.transition_to("res://Scenes/hidden_game.tscn")
+	player_died.emit()
+	if auto_restart:
+		SceneTransition.transition_to("res://Scenes/hidden_game.tscn")
 	queue_free()
 
 
 func _on_damagefield_body_entered(body: Node2D) -> void:
 	if body == self:
 		die()
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo:
+		match event.keycode:
+			KEY_J:
+				is_immutable = !is_immutable

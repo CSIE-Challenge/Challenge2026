@@ -1,5 +1,7 @@
 extends Node2D
 
+signal boss_hit
+
 const ATTACK_SWORD_SCENE = preload("res://Scenes/attack_sword.tscn")
 const FALLING_NOTE_SCENE = preload("res://Scenes/falling_note.tscn")
 
@@ -66,6 +68,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				road_attack()
 			KEY_8:
 				test_laser_attack()
+			KEY_9:
+				sweeper_attack()
 
 
 func rand_attack():
@@ -100,7 +104,6 @@ func rhythm_attack() -> void:
 		if has_node("../coconut"):
 			player = get_node("../coconut")
 		else:
-			print("未能在場上找到有效的玩家椰子，中斷招式")
 			return
 
 	is_attacking = true
@@ -383,7 +386,6 @@ func squeeze_attack() -> void:
 		if has_node("../coconut"):
 			player = get_node("../coconut")
 		else:
-			print("未能在場上找到有效的玩家椰子，中斷招式")
 			return
 	is_attacking = true
 
@@ -606,6 +608,78 @@ func road_attack() -> void:
 	is_attacking = false
 
 
+func sweeper_attack() -> void:
+	is_attacking = true
+	var walls = get_node_or_null("../Walls")
+	if not walls:
+		is_attacking = false
+		return
+
+	var half = walls.current_half_size
+	var center = walls.position
+	var speed = PI / 20.0
+
+	for i in range(40):
+		spawn_laser_trap(
+			center + Vector2(cos(i * speed), sin(i * speed)) * half * 1.414,
+			center - Vector2(cos(i * speed), sin(i * speed)) * half * 1.414,
+			0.5,
+			0.3,
+			60.0
+		)
+		await get_tree().create_timer(0.05).timeout
+
+	await get_tree().create_timer(0.5).timeout
+
+	for i in range(40):
+		spawn_laser_trap(
+			center + Vector2(cos(-i * speed), sin(-i * speed)) * half * 1.414,
+			center - Vector2(cos(-i * speed), sin(-i * speed)) * half * 1.414,
+			0.5,
+			0.3,
+			60.0
+		)
+		await get_tree().create_timer(0.05).timeout
+
+	is_attacking = false
+
+
+func sneak_attack() -> void:
+	is_attacking = true
+	var walls = get_node_or_null("../Walls")
+	if not walls:
+		is_attacking = false
+		return
+
+	var half = walls.current_half_size
+	var center = walls.position
+
+	# 計算貫穿場地邊界的四個端點
+	var left_pt = center + Vector2(-half.x + 20.0, 0.0)
+	var right_pt = center + Vector2(half.x - 20.0, 0.0)
+	var top_pt = center + Vector2(0.0, -half.y + 20.0)
+	var bottom_pt = center + Vector2(0.0, half.y - 20.0)
+
+	spawn_laser_trap(
+		Vector2(player.position.x, top_pt.y),
+		Vector2(player.position.x, bottom_pt.y),
+		0.8,
+		0.7,
+		50.0
+	)
+
+	spawn_laser_trap(
+		Vector2(left_pt.x, player.position.y),
+		Vector2(right_pt.x, player.position.y),
+		0.8,
+		0.7,
+		50.0
+	)
+
+	await get_tree().create_timer(1.0).timeout
+	is_attacking = false
+
+
 # by gemini
 func boss_appear_animation():
 	if not boss or not boss_circle or not boss_square:
@@ -734,6 +808,7 @@ func deal_damage(damage: int):
 		return
 	boss_hp -= damage
 	boss_hp_bar.value = boss_hp
+	boss_hit.emit()
 	_play_hit_flash()
 
 

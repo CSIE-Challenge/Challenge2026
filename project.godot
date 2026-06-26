@@ -25,6 +25,7 @@ ApiServer="*res://Scripts/api_server/api_server.gd"
 NetworkManager="*res://Scripts/network_manager.gd"
 SceneTransition="*uid://c0ld3cep1ugxl"
 Global="*res://Scripts/global.gd"
+Dialogue="*res://Scenes/dialogue.tscn"
 
 [display]
 
