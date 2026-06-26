@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ciws7u4hujaue"
-path="res://.godot/imported/ice_cream.svg-0dbfd8c187cd734af777d3f17ac22abf.ctex"
+uid="uid://bg7lqkweutjas"
+path="res://.godot/imported/juice_spilled.svg-9e7966f12d00ef5038dbdad9c387bfd1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Shapes/ice_cream.svg"
-dest_files=["res://.godot/imported/ice_cream.svg-0dbfd8c187cd734af777d3f17ac22abf.ctex"]
+source_file="res://Shapes/juice_spilled.svg"
+dest_files=["res://.godot/imported/juice_spilled.svg-9e7966f12d00ef5038dbdad9c387bfd1.ctex"]
 
 [params]
 
