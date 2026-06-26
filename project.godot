@@ -15,16 +15,16 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="Challenge2026"
-run/main_scene="uid://djbv2ryrcr3pl"
+run/main_scene="uid://c8n4ortwop0"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
-Global="*res://Scripts/global.gd"
 ApiServer="*res://Scripts/api_server/api_server.gd"
 NetworkManager="*res://Scripts/network_manager.gd"
 SceneTransition="*uid://c0ld3cep1ugxl"
+Global="*res://Scripts/global.gd"
 
 [display]
 
