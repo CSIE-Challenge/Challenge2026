@@ -3,11 +3,12 @@
 [ext_resource type="Script" uid="uid://c3wedrfqpagbc" path="res://Scripts/traps/trap1-mine.gd" id="1_lts3b"]
 [ext_resource type="Shader" uid="uid://c332srcs8mico" path="res://Shaders/banana_mine.gdshader" id="2_5q35q"]
 [ext_resource type="Texture2D" uid="uid://bpdkcuawn3dcc" path="res://Shapes/banana.svg" id="3_5q35q"]
+[ext_resource type="Texture2D" uid="uid://c8wav4cyu2vsn" path="res://Shapes/smoke.svg" id="4_dme0h"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_bao78"]
 resource_local_to_scene = true
 shader = ExtResource("2_5q35q")
-shader_parameter/radar_color = Color(0.99215686, 0.654902, 0.37254903, 0.6666667)
+shader_parameter/radar_color = Color(1, 0.654902, 0.14901961, 0.43529412)
 shader_parameter/radar_mul = 1.0
 shader_parameter/radar_speed = 0.40000001574012
 shader_parameter/tail_length = 1.0
@@ -17,6 +18,34 @@ shader_parameter/bg_brightness = 0.30000001425
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5q35q"]
 radius = 31.0
+
+[sub_resource type="Gradient" id="Gradient_g1nsu"]
+offsets = PackedFloat32Array(0, 0.9875776)
+colors = PackedColorArray(1, 0.8753333, 0.78, 0.73333335, 0.95, 0.8477166, 0.7695, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_dme0h"]
+gradient = SubResource("Gradient_g1nsu")
+
+[sub_resource type="Curve" id="Curve_x741d"]
+_data = [Vector2(0, 0), 0.0, 5.322847, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_rv0bw"]
+curve = SubResource("Curve_x741d")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_a250w"]
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 50.0
+spread = 180.0
+initial_velocity_min = 10.0
+initial_velocity_max = 20.0
+gravity = Vector3(0, 0, 0)
+damping_min = 50.000004
+damping_max = 100.00001
+scale_min = 0.79999995
+scale_curve = SubResource("CurveTexture_rv0bw")
+color_ramp = SubResource("GradientTexture1D_dme0h")
 
 [node name="MineTrap" type="Node2D" unique_id=1887909814]
 script = ExtResource("1_lts3b")
@@ -30,4 +59,14 @@ texture = ExtResource("3_5q35q")
 [node name="ExplosionArea" type="Area2D" parent="." unique_id=1132755755]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ExplosionArea" unique_id=623879391]
+visible = false
 shape = SubResource("CircleShape2D_5q35q")
+
+[node name="ExplosionParticle" type="GPUParticles2D" parent="." unique_id=1226084622]
+emitting = false
+amount = 3
+texture = ExtResource("4_dme0h")
+lifetime = 0.2
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_a250w")

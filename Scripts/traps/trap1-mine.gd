@@ -13,6 +13,7 @@ var isjumping_1_frame_ago := false
 var animation_time = 0
 
 @onready var mine_body: Sprite2D = $MineBody
+@onready var explosion_particle: GPUParticles2D = $ExplosionParticle
 @onready var explosion_area: Area2D = $ExplosionArea
 
 
@@ -46,6 +47,8 @@ func on_arming_complete() -> void:
 func explode() -> void:
 	print("BOOM! Player landed on the mine trap!")
 	Global.player_hit.emit.call_deferred(damage)  #Replace this with the actual damage
+	explosion_particle.emitting = true
+	await get_tree().create_timer(explosion_particle.lifetime).timeout
 	queue_free()
 
 
