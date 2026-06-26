@@ -38,7 +38,6 @@ func _on_dialogue_event(event_name: String):
 		boss.sneak_attack()
 
 
-# 自訂的等待函式：給定秒數，但如果玩家死亡會立刻回傳 true 中斷等待
 func wait_or_die(time: float) -> bool:
 	var t = 0.0
 	while t < time:
@@ -49,7 +48,6 @@ func wait_or_die(time: float) -> bool:
 	return is_player_dead
 
 
-# 等待 boss 攻擊結束，如果玩家死亡立刻回傳 true 中斷等待
 func wait_for_boss_attack_or_die() -> bool:
 	while boss.is_attacking:
 		await get_tree().process_frame
@@ -58,7 +56,6 @@ func wait_for_boss_attack_or_die() -> bool:
 	return is_player_dead
 
 
-# 💡 隱藏關卡主流程
 func run_hidden_game_sequence() -> void:
 	timer.stop()
 	walls.tween_box(Vector2(400, 400), Vector2(0, 20), 1.0)
@@ -76,24 +73,19 @@ func run_hidden_game_sequence() -> void:
 
 
 func _run_phase_1() -> bool:
-	# 第一階段對話
 	Dialogue.start_dialogue(
 		["呃，你誰？<input>", "怎麼找到這裡的？<input>", "喔，嫌這個遊戲太簡單是吧。<input>", "那就別怪我不客氣了！<input>"]
 	)
 	await Dialogue.dialogue_finished
 
-	# 連續施放 3 次 test_sword_attack
-	for i in range(1):
+	for i in range(3):
 		boss.test_sword_attack()
-		# 每次施放間隔 1 秒，若玩家死亡則中斷
 		if await wait_or_die(1.0):
 			break
 
-	# 招式未完全結束，再等 1.5 秒以確保最後一次 test_sword_attack 徹底結束，避免殘留的 is_attacking = false 打斷後續流程
 	if not is_player_dead:
 		await wait_or_die(1.5)
 
-	# 檢查這段時間內是否死亡
 	if is_player_dead:
 		Dialogue.start_dialogue(["怎麼這就死了？"])
 		await Dialogue.dialogue_finished
@@ -104,20 +96,16 @@ func _run_phase_1() -> bool:
 
 
 func _run_phase_2() -> bool:
-	# 如果沒死，進行下一步對話
 	Dialogue.start_dialogue(
 		["哦？躲得不錯嘛。<input>", "但接下來這招，[wave]<speed=0.1>你還能如此從容嗎？<glitch=1>[/wave]"]
 	)
 	await Dialogue.dialogue_finished
 
-	# 輪流施放迴力鏢 (模式 1 到 5)
-	for mode in range(3, 4):
+	for mode in range(3, 6):
 		boss.emit_boomerang(mode)
-		# 等待單次模式結束或玩家死亡
 		if await wait_for_boss_attack_or_die():
 			break
 
-	# 檢查這段時間內是否死亡
 	if is_player_dead:
 		Dialogue.start_dialogue(["看來你不喜歡迴力鏢。"])
 		await Dialogue.dialogue_finished
@@ -167,8 +155,6 @@ func _run_phase_3() -> bool:
 	# 等待對話結束 (若玩家死亡會在此被打斷，is_player_dead 變為 true)
 	await Dialogue.dialogue_finished
 
-	# 如果玩家按太快跳過對話，偷襲招式可能還沒結束！
-	# 我們必須等待 boss.is_attacking 變回 false 才能判定生死
 	if boss.is_attacking:
 		await wait_for_boss_attack_or_die()
 
@@ -245,7 +231,7 @@ func _run_phase_4() -> bool:
 
 	# 最後進入隨機模式
 	# 隨機生成能量球開啟
-	timer.wait_time = 3.0
+	timer.wait_time = 5.0
 	timer.start()
 	boss.rand_attack()
 	return false
