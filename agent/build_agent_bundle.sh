@@ -24,12 +24,19 @@ cd "$AGENT_DIR"
 PY_VERSION="$(tr -d '[:space:]' < .python-version)"
 PY_MINOR="${PY_VERSION%.*}"
 
+# Label: `agent-<label>.zip`
+#   label           game asset suffix   bundle python
+#   linux-x86_64    linux.x86_64        python/bin/python3.11
+#   windows-x86_64  windows.exe         python/python.exe
+#   macos-aarch64   macos.zip           python/bin/python3.11
+#   macos-x86_64    macos.zip           python/bin/python3.11
 case "$(uname -s)-$(uname -m)" in
-  Linux-x86_64)   PLATFORM_LABEL="linux-x86_64" ;;
-  Linux-aarch64)  PLATFORM_LABEL="linux-aarch64" ;;
-  Darwin-arm64)   PLATFORM_LABEL="macos-aarch64" ;;
-  Darwin-x86_64)  PLATFORM_LABEL="macos-x86_64" ;;
-  *)              PLATFORM_LABEL="$(uname -s)-$(uname -m)" ;;
+  Linux-x86_64)                              PLATFORM_LABEL="linux-x86_64" ;;
+  Linux-aarch64)                             PLATFORM_LABEL="linux-aarch64" ;;
+  Darwin-arm64)                              PLATFORM_LABEL="macos-aarch64" ;;
+  Darwin-x86_64)                             PLATFORM_LABEL="macos-x86_64" ;;
+  MINGW*-x86_64|MSYS*-x86_64|CYGWIN*-x86_64) PLATFORM_LABEL="windows-x86_64" ;;
+  *) die "unsupported build host: $(uname -s)-$(uname -m)" ;;
 esac
 
 BUILD_DIR="$AGENT_DIR/build"
