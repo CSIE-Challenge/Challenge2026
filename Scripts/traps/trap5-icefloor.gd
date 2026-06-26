@@ -1,6 +1,7 @@
 class_name Trap5IceFloor
 extends Area2D
 
+
 static func initialize(pos: Vector2) -> Trap5IceFloor:
 	var trap := preload("res://Scenes/traps/trap5-icefloor.tscn").instantiate()
 	Global.stage.add_child(trap)
