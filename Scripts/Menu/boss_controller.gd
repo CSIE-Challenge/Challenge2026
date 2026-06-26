@@ -2,16 +2,16 @@ extends Node2D
 
 signal boss_hit
 
-const ATTACK_SWORD_SCENE = preload("res://Scenes/Menu/attack_sword.tscn")
-const FALLING_NOTE_SCENE = preload("res://Scenes/Menu/falling_note.tscn")
+const ATTACK_SWORD_SCENE = preload("res://Scenes/menu/attack_sword.tscn")
+const FALLING_NOTE_SCENE = preload("res://Scenes/menu/falling_note.tscn")
 
-const ROCKET_WARNING_SCENE = preload("res://Scenes/Menu/rocket_warning.tscn")
-const HOMING_ROCKET_SCENE = preload("res://Scenes/Menu/homing_rocket.tscn")
+const ROCKET_WARNING_SCENE = preload("res://Scenes/menu/rocket_warning.tscn")
+const HOMING_ROCKET_SCENE = preload("res://Scenes/menu/homing_rocket.tscn")
 
-const BOOMERANG_SCENE = preload("res://Scenes/Menu/boomerang.tscn")
+const BOOMERANG_SCENE = preload("res://Scenes/menu/boomerang.tscn")
 
-const LASER_TRAP_SCENE = preload("res://Scenes/Menu/laser_trap.tscn")
-const BOUNCING_SAW_SCENE = preload("res://Scenes/Menu/bouncing_saw.tscn")
+const LASER_TRAP_SCENE = preload("res://Scenes/menu/laser_trap.tscn")
+const BOUNCING_SAW_SCENE = preload("res://Scenes/menu/bouncing_saw.tscn")
 
 # 記錄 Boss 的初始待機位置，以便招式施展後歸位
 var original_position: Vector2

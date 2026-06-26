@@ -36,7 +36,7 @@ func _on_body_entered(body: Node2D) -> void:
 
 		# 3. 散出 15 個追蹤圓點
 		var dot_count = 15
-		var DotScene = preload("res://Scenes/Menu/attack_dot.tscn")  # 預載圓點場景
+		var DotScene = preload("res://Scenes/menu/attack_dot.tscn")  # 預載圓點場景
 
 		for i in range(dot_count):
 			var dot = DotScene.instantiate()

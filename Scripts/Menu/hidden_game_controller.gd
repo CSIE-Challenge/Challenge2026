@@ -1,8 +1,9 @@
 extends Control
 
-const MENU_SCENE_PATH = "res://Scenes/Menu/menu.tscn"
+const MENU_SCENE_PATH = "res://Scenes/menu/menu.tscn"
+const HIDDEN_SCENE_PATH = "res://Scenes/menu/hidden_game.tscn"
 
-var attack_ball_scene = preload("res://Scenes/Menu/attack_ball.tscn")
+var attack_ball_scene = preload("res://Scenes/menu/attack_ball.tscn")
 var is_player_dead: bool = false
 
 @onready var walls: Node2D = $Panel/Stage/Walls
@@ -89,7 +90,7 @@ func _run_phase_1() -> bool:
 	if is_player_dead:
 		Dialogue.start_dialogue(["怎麼這就死了？"])
 		await Dialogue.dialogue_finished
-		SceneTransition.transition_to("res://Scenes/hidden_game.tscn")
+		SceneTransition.transition_to(HIDDEN_SCENE_PATH)
 		return true
 
 	return false
@@ -109,7 +110,7 @@ func _run_phase_2() -> bool:
 	if is_player_dead:
 		Dialogue.start_dialogue(["看來你不喜歡迴力鏢。"])
 		await Dialogue.dialogue_finished
-		SceneTransition.transition_to("res://Scenes/hidden_game.tscn")
+		SceneTransition.transition_to(HIDDEN_SCENE_PATH)
 		return true
 
 	return false
@@ -134,7 +135,7 @@ func _run_phase_3() -> bool:
 	if is_player_dead:
 		Dialogue.start_dialogue(["哈！會追著你的就沒辦法了吧！"])
 		await Dialogue.dialogue_finished
-		SceneTransition.transition_to("res://Scenes/hidden_game.tscn")
+		SceneTransition.transition_to(HIDDEN_SCENE_PATH)
 		return true
 
 	# 沒死，進行談判選項
@@ -161,7 +162,7 @@ func _run_phase_3() -> bool:
 	if is_player_dead:
 		Dialogue.start_dialogue(["嘿嘿，誰說說話時不能攻擊的？"])
 		await Dialogue.dialogue_finished
-		SceneTransition.transition_to("res://Scenes/hidden_game.tscn")
+		SceneTransition.transition_to(HIDDEN_SCENE_PATH)
 		return true
 	else:
 		Dialogue.start_dialogue(["可惡，竟然閃過了我的偷襲。<input>", "那你更加留不得了，受死吧！"])
@@ -177,7 +178,7 @@ func _run_phase_4() -> bool:
 	if await wait_for_boss_attack_or_die():
 		Dialogue.start_dialogue(["原來你不玩pjsk啊。"])
 		await Dialogue.dialogue_finished
-		SceneTransition.transition_to("res://Scenes/hidden_game.tscn")
+		SceneTransition.transition_to(HIDDEN_SCENE_PATH)
 		return true
 
 	# 沒死，開始碎碎念
@@ -205,7 +206,7 @@ func _run_phase_4() -> bool:
 			break
 
 	if is_player_dead:
-		SceneTransition.transition_to("res://Scenes/hidden_game.tscn")
+		SceneTransition.transition_to(HIDDEN_SCENE_PATH)
 		return true
 
 	# 如果 boss 被打到，打斷當前的碎碎念對話
@@ -219,14 +220,14 @@ func _run_phase_4() -> bool:
 	# 發動雷射攻擊
 	boss.test_laser_attack()
 	if await wait_for_boss_attack_or_die():
-		SceneTransition.transition_to("res://Scenes/hidden_game.tscn")
+		SceneTransition.transition_to(HIDDEN_SCENE_PATH)
 		return true
 
 	# 連續發動 squeeze_attack 4 次
 	for i in range(4):
 		boss.squeeze_attack()
 		if await wait_for_boss_attack_or_die():
-			SceneTransition.transition_to("res://Scenes/hidden_game.tscn")
+			SceneTransition.transition_to(HIDDEN_SCENE_PATH)
 			return true
 
 	# 最後進入隨機模式
@@ -234,7 +235,13 @@ func _run_phase_4() -> bool:
 	timer.wait_time = 5.0
 	timer.start()
 	boss.rand_attack()
-	return false
+
+	# 持續監控，如果在隨機模式中死亡則重置
+	while not is_player_dead:
+		await get_tree().process_frame
+
+	SceneTransition.transition_to(HIDDEN_SCENE_PATH)
+	return true
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -1,13 +1,13 @@
 [gd_scene format=3 uid="uid://dhnylsmjruf8q"]
 
-[ext_resource type="Script" uid="uid://r4yy8iieu22m" path="res://Scripts/Menu/laser_trap.gd" id="1_1eus4"]
-[ext_resource type="Shader" uid="uid://bf8jqno4wclyh" path="res://Shaders/laser_beam.gdshader" id="2_yoi3t"]
+[ext_resource type="Script" uid="uid://r4yy8iieu22m" path="res://Scripts/menu/laser_trap.gd" id="1_l1eo0"]
+[ext_resource type="Shader" uid="uid://bf8jqno4wclyh" path="res://Shaders/laser_beam.gdshader" id="2_63u3e"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jebpk"]
 size = Vector2(20, 4)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_iqy8x"]
-shader = ExtResource("2_yoi3t")
+shader = ExtResource("2_63u3e")
 shader_parameter/noise_strength = 0.08
 shader_parameter/speed = 15.0
 shader_parameter/core_thickness = 0.06
@@ -19,7 +19,7 @@ colors = PackedColorArray(1, 1, 0.3055162, 1, 1, 0, 0, 1, 1, 1, 1, 0)
 
 [node name="laser_trap" type="CollisionShape2D" unique_id=434463931]
 shape = SubResource("RectangleShape2D_jebpk")
-script = ExtResource("1_1eus4")
+script = ExtResource("1_l1eo0")
 
 [node name="LaserLine" type="Line2D" parent="." unique_id=1208369474]
 material = SubResource("ShaderMaterial_iqy8x")

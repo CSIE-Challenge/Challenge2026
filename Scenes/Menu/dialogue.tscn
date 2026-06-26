@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://bpwk5r46wvk7h"]
 
-[ext_resource type="Script" uid="uid://c0rhgd6fx3ik2" path="res://Scripts/Menu/dialogue_manager.gd" id="1_k7yxn"]
-[ext_resource type="Shader" uid="uid://ds1ron0j77okp" path="res://Shaders/glitch_panel.gdshader" id="2_g1ykm"]
+[ext_resource type="Script" uid="uid://c0rhgd6fx3ik2" path="res://Scripts/menu/dialogue_manager.gd" id="1_tu2k3"]
+[ext_resource type="Shader" uid="uid://ds1ron0j77okp" path="res://Shaders/glitch_panel.gdshader" id="2_bptna"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_glitch"]
-shader = ExtResource("2_g1ykm")
+shader = ExtResource("2_bptna")
 shader_parameter/bg_color = Color(0, 0, 0, 0.8)
 shader_parameter/edge_softness = 0.15
 shader_parameter/glitch_intensity = 0.05
@@ -13,7 +13,7 @@ shader_parameter/glitch_active = 1.0
 
 [node name="Dialogue" type="CanvasLayer" unique_id=1248605408]
 layer = 100
-script = ExtResource("1_k7yxn")
+script = ExtResource("1_tu2k3")
 
 [node name="Control" type="Control" parent="." unique_id=407803331]
 layout_mode = 3

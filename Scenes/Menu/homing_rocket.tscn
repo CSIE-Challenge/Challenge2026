@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://driyc1sc8jfal"]
 
-[ext_resource type="Script" uid="uid://djcdm6qw8rbnq" path="res://Scripts/Menu/homing_rocket.gd" id="1_sl4q3"]
-[ext_resource type="Texture2D" uid="uid://dle4xt8upfg42" path="res://Shapes/Square.svg" id="2_0hprh"]
-[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="3_e4lv7"]
+[ext_resource type="Script" uid="uid://djcdm6qw8rbnq" path="res://Scripts/menu/homing_rocket.gd" id="1_w3u6q"]
+[ext_resource type="Texture2D" uid="uid://dle4xt8upfg42" path="res://Shapes/Square.svg" id="2_qcrsx"]
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="3_yfp1j"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ybk2y"]
 
@@ -16,7 +16,7 @@ colors = PackedColorArray(1, 0, 0, 1, 1, 1, 0, 0)
 
 [node name="homing_rocket" type="Area2D" unique_id=186843866]
 collision_mask = 3
-script = ExtResource("1_sl4q3")
+script = ExtResource("1_w3u6q")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=841553649]
 shape = SubResource("CircleShape2D_ybk2y")
@@ -25,13 +25,13 @@ shape = SubResource("CircleShape2D_ybk2y")
 modulate = Color(1, 0.43026784, 0.23595455, 1)
 position = Vector2(-9, 0)
 scale = Vector2(0.13333334, 0.10370372)
-texture = ExtResource("2_0hprh")
+texture = ExtResource("2_qcrsx")
 
 [node name="headSprite" type="Sprite2D" parent="." unique_id=903893280]
 modulate = Color(1, 0.43137255, 0.23529412, 1)
 position = Vector2(0, 1.1920929e-07)
 scale = Vector2(0.1443299, 0.10309279)
-texture = ExtResource("3_e4lv7")
+texture = ExtResource("3_yfp1j")
 
 [node name="CPUParticles2D" type="CPUParticles2D" parent="." unique_id=238758100]
 position = Vector2(-15, 0)

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://04c7qcn8jn2o"]
 
-[ext_resource type="Script" uid="uid://bsd5mdj7yf3tk" path="res://Scripts/Menu/boomerang.gd" id="1_hj4qp"]
-[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_5ep20"]
+[ext_resource type="Script" uid="uid://bsd5mdj7yf3tk" path="res://Scripts/menu/boomerang.gd" id="1_j4g3v"]
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_5yxm1"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_vesgf"]
 radius = 16.03122
@@ -16,17 +16,17 @@ colors = PackedColorArray(0.6651851, 1.2282239, 1.353256, 1, 0.71701837, 1.19289
 
 [node name="boomerang" type="CollisionShape2D" unique_id=1864219080]
 shape = SubResource("CircleShape2D_vesgf")
-script = ExtResource("1_hj4qp")
+script = ExtResource("1_j4g3v")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=442377397]
 position = Vector2(0, -10)
 scale = Vector2(0.1, 0.1)
-texture = ExtResource("2_5ep20")
+texture = ExtResource("2_5yxm1")
 
 [node name="Sprite2D2" type="Sprite2D" parent="." unique_id=1188067379]
 position = Vector2(0, 10)
 scale = Vector2(0.1, 0.1)
-texture = ExtResource("2_5ep20")
+texture = ExtResource("2_5yxm1")
 
 [node name="TrailParticles1" type="CPUParticles2D" parent="." unique_id=167251807]
 position = Vector2(0, 10)

@@ -11,7 +11,8 @@ var current_spin_speed: float = 0.0  # 用於動態自轉加速
 
 @onready var sprite = $Sprite2D
 @onready var sprite2 = $Sprite2D2
-@onready var particles = $CPUParticles2D
+@onready var particles = $TrailParticles1
+@onready var particles2 = $TrailParticles2
 
 
 func init(
@@ -38,6 +39,8 @@ func _ready() -> void:
 	modulate.a = 0.0
 
 	if particles:
+		particles.emitting = true
+	if particles2:
 		particles.emitting = true
 
 	# 計算目標點位置 (依方向與距離) 與 移動時間 (距離 / 速度)
