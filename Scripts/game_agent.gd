@@ -14,7 +14,6 @@ const TRAP_PARAM_DEFINITIONS := {
 		"end_position": {"type": "vector2", "required": true},
 		"air_time": {"type": "float", "required": false, "default": 2.0},
 	},
-
 	"shotgun":
 	{
 		"position": {"type": "vector2", "required": true},
@@ -48,7 +47,6 @@ const TRAP_PARAM_DEFINITIONS := {
 		"direction": {"type": "vector2", "required": true},
 		"speed": {"type": "float", "required": false, "default": 5.0},
 	},
-
 	"icefloor":
 	{
 		"position": {"type": "vector2", "required": true},
