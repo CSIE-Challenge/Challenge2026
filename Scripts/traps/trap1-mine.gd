@@ -10,7 +10,6 @@ var arming_time = TrapData.new().data["trap1-mine"]["arming_time"]
 var is_armed := false
 var isjumping_2_frame_ago := false
 var isjumping_1_frame_ago := false
-var animation_time = 0
 
 @onready var mine_body: Sprite2D = $MineBody
 @onready var explosion_particle: GPUParticles2D = $ExplosionParticle
@@ -47,8 +46,13 @@ func on_arming_complete() -> void:
 func explode() -> void:
 	print("BOOM! Player landed on the mine trap!")
 	Global.player_hit.emit.call_deferred(damage)  #Replace this with the actual damage
+
+	# explode animation
+	set_process(false)
+	set_physics_process(false)
 	explosion_particle.emitting = true
-	await get_tree().create_timer(explosion_particle.lifetime).timeout
+	await explosion_particle.finished
+
 	queue_free()
 
 
@@ -57,7 +61,7 @@ func disarm() -> void:
 	queue_free()
 
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	var player = Global.game_manager.player
 	if is_armed and explosion_area.overlaps_body(player):
 		if isjumping_2_frame_ago and not player.isjumping:
