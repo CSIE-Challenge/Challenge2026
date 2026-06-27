@@ -24,6 +24,8 @@ var invincible: bool
 var phase: int = 1
 var is_dead: bool = false
 var current_attack_interrupted: bool = false
+var difficulty: int = 2
+var is_paused: bool = false
 
 @onready var boss = self
 @onready var boss_circle = $Sprites/circle
@@ -76,39 +78,47 @@ func _unhandled_input(event: InputEvent) -> void:
 				sweeper_attack()
 
 
-func rand_attack():
-	while true:
+func rand_attack(new_difficulty: int = -1):
+	if new_difficulty != -1:
+		difficulty = new_difficulty
+
+	while is_inside_tree():
 		if is_dead:
 			break
 
 		current_attack_interrupted = false
 
-		if not is_attacking:
+		if not is_attacking and not is_paused:
 			var rand_val = randi_range(0, 8)
 			match rand_val:
 				0:
-					rhythm_attack()
+					await rhythm_attack(difficulty)
 				1:
-					test_sword_attack()
+					await test_sword_attack(difficulty)
 				2:
-					emit_rocket()
+					await emit_rocket(difficulty)
 				3:
-					var rand_val2 = randi_range(1, 5)
-					emit_boomerang(rand_val2)
+					var rand_val2 = randi_range(
+						DifficultyParams.BOOMERANG_MODE_RANGE_MIN,
+						DifficultyParams.BOOMERANG_MODE_RANGE_MAX
+					)
+					await emit_boomerang(rand_val2, difficulty)
 				4:
-					squeeze_attack()
+					await squeeze_attack(difficulty)
 				5:
-					test_laser_attack()
+					await test_laser_attack(difficulty)
 				6:
-					pong_attack()
+					await pong_attack(difficulty)
 				7:
-					road_attack()
-		await interruptible_wait(0.5)
-		while is_attacking:
-			await interruptible_wait(0.1)
+					await road_attack(difficulty)
+				8:
+					await sweeper_attack(difficulty)
+
+		var cooldown = DifficultyParams.get_val(DifficultyParams.ATTACK_COOLDOWN, difficulty)
+		await interruptible_wait(cooldown)
 
 
-func rhythm_attack() -> void:
+func rhythm_attack(difficulty: int = 3) -> void:
 	if not is_instance_valid(player):
 		if has_node("../coconut"):
 			player = get_node("../coconut")
@@ -119,8 +129,8 @@ func rhythm_attack() -> void:
 
 	var walls = get_node("../Walls")
 	var target_y = 180.0
-	var target_height = 45.0
-	var target_width = 800.0
+	var target_height = DifficultyParams.RHYTHM_TARGET_HEIGHT
+	var target_width = DifficultyParams.RHYTHM_TARGET_WIDTH
 
 	# 1. 壓縮牆壁到 400x45 的超扁平判定線長條，移動到 (0, 180) 的下方位置
 	if walls:
@@ -130,8 +140,7 @@ func rhythm_attack() -> void:
 	if await interruptible_wait(1.2):
 		return
 
-	# 2. 開始降落落鍵 (發射 15 波，每波間隔 0.35 秒，節奏緊湊)
-	var waves = 15
+	var waves = DifficultyParams.get_val(DifficultyParams.RHYTHM_WAVES, difficulty)
 	for w in range(waves):
 		# 如果 Boss 已經沒血了就停止攻擊
 		if boss_hp <= 0:
@@ -141,8 +150,9 @@ func rhythm_attack() -> void:
 		if not is_instance_valid(player):
 			break
 
-		# 隨機產生落鍵的寬度 (60 到 110 像素)
-		var width = randf_range(40.0, 200.0)
+		var note_min = DifficultyParams.get_val(DifficultyParams.RHYTHM_NOTE_MIN_WIDTH, difficulty)
+		var note_max = DifficultyParams.get_val(DifficultyParams.RHYTHM_NOTE_MAX_WIDTH, difficulty)
+		var width = randf_range(note_min, note_max)
 
 		# 隨機 X 軸落點 (確保落鍵的兩側邊緣不會超出 400 寬度的判定區範圍)
 		var limit_x = (target_width / 2.0) - (width / 2.0)
@@ -160,6 +170,8 @@ func rhythm_attack() -> void:
 		var note = FALLING_NOTE_SCENE.instantiate()
 		get_parent().add_child(note)
 
+		var fall_speed = DifficultyParams.get_val(DifficultyParams.RHYTHM_FALL_SPEED, difficulty)
+
 		# 初始化落鍵：目標世界X, 起點世界Y, 判定線世界Y, 中心點世界X, 寬度, 判定區高度, 速度 450.0, 玩家
 		note.init(
 			target_world_x,
@@ -168,12 +180,14 @@ func rhythm_attack() -> void:
 			center_world_x,
 			width,
 			target_height,
-			450.0,
+			fall_speed,
 			player
 		)
 
-		# 每波下落的間隔時間為 0.35 秒
-		if await interruptible_wait(0.35):
+		var wave_interval = DifficultyParams.get_val(
+			DifficultyParams.RHYTHM_WAVE_INTERVAL, difficulty
+		)
+		if await interruptible_wait(wave_interval):
 			return
 
 	# 等待最後一波落鍵降落與紅色殘影完全消失
@@ -189,18 +203,34 @@ func rhythm_attack() -> void:
 	is_attacking = false
 
 
-func emit_rocket() -> void:
+func emit_rocket(difficulty: int = 3) -> void:
 	if not player:
 		return
 	is_attacking = true
 
 	var walls = get_node("../Walls")
 	if walls:
-		walls.tween_box(Vector2(500, 500), Vector2(0, -100), 1.0)
+		walls.tween_box(
+			Vector2(DifficultyParams.ROCKET_WALL_SIZE, DifficultyParams.ROCKET_WALL_SIZE),
+			Vector2(0, -100),
+			1.0
+		)
 
-	for i in range(4):
-		spawn_homing_rocket(randf_range(0, PI * 2), 200.0, 65.0, 1.5, 0.8)
-		if await interruptible_wait(0.5):
+	var count = DifficultyParams.get_val(DifficultyParams.ROCKET_COUNT, difficulty)
+	for i in range(count):
+		var speed = DifficultyParams.get_val(DifficultyParams.ROCKET_INIT_SPEED, difficulty)
+		var radius = DifficultyParams.get_val(DifficultyParams.ROCKET_EXPLOSION_RADIUS, difficulty)
+		var duration = DifficultyParams.get_val(
+			DifficultyParams.ROCKET_EXPLOSION_DURATION, difficulty
+		)
+		spawn_homing_rocket(
+			randf_range(0, PI * 2),
+			speed,
+			radius,
+			duration,
+			DifficultyParams.ROCKET_WARNING_DURATION
+		)
+		if await interruptible_wait(DifficultyParams.ROCKET_SPAWN_INTERVAL):
 			return
 	if await interruptible_wait(3):
 		return
@@ -212,7 +242,7 @@ func emit_rocket() -> void:
 
 
 # 🌟 迴旋鏢招式管理器 (共 5 種精緻的彈幕幾何模式) 感謝偉大的gemini
-func emit_boomerang(mode: int) -> void:
+func emit_boomerang(mode: int, difficulty: int = 3) -> void:
 	if not is_instance_valid(player):
 		return
 
@@ -228,7 +258,8 @@ func emit_boomerang(mode: int) -> void:
 	if mode == 1:
 		# 🌀 【模式一：右側一排橫掃】
 		# 均勻生成在右側牆外 60 像素處，向左飛越整個場地至左牆外，隨後折返飛回右側
-		var count = 5
+		var count = DifficultyParams.get_val(DifficultyParams.BOOMERANG_M1_COUNT, difficulty)
+		var speed = DifficultyParams.BOOMERANG_M1_SPEED
 		var spawn_x = center.x + half.x + 60.0  # 🌟 推到右牆外側 60 像素
 		var start_y = center.y - half.y + 35.0
 		var end_y = center.y + half.y - 35.0
@@ -239,18 +270,22 @@ func emit_boomerang(mode: int) -> void:
 
 			# 飛行長度為：場地寬度 + 120 像素，確保能穿牆飛到左側外再折返
 			spawn_boomerang(
-				spawn_pos, Vector2(2.0, 2.0), 15.0, 0.6, 300.0, Vector2.LEFT, half.x * 2.0 + 120.0
+				spawn_pos, Vector2(2.0, 2.0), 15.0, 0.6, speed, Vector2.LEFT, half.x * 2.0 + 120.0
 			)
 			if await interruptible_wait(0.2):
 				return
 
-		if await interruptible_wait(2.6):
+		if await interruptible_wait(3.6):
 			return
 
 	elif mode == 2:
 		# 🎯 【模式二：邊緣隨機狙擊】
 		# 每隔 0.8 秒，在場地外圍四面牆的外側 60 像素隨機選點生成，瞄準玩家當前位置射擊，共 8 個
-		var total_count = 8
+		var total_count = DifficultyParams.BOOMERANG_M2_TOTAL_COUNT
+		var speed = DifficultyParams.get_val(DifficultyParams.BOOMERANG_M2_SPEED, difficulty)
+		var fire_interval = DifficultyParams.get_val(
+			DifficultyParams.BOOMERANG_M2_FIRE_INTERVAL, difficulty
+		)
 
 		for w in range(total_count):
 			if not is_instance_valid(player) or boss_hp <= 0:
@@ -279,8 +314,8 @@ func emit_boomerang(mode: int) -> void:
 			var target_dir = (player.position - spawn_pos).normalized()
 
 			# 飛距 550 像素確保能完全貫穿場地至另一側外
-			spawn_boomerang(spawn_pos, Vector2(2.0, 2.0), 18.0, 0.5, 250.0, target_dir, 550.0)
-			if await interruptible_wait(0.8):
+			spawn_boomerang(spawn_pos, Vector2(2.0, 2.0), 18.0, 0.5, speed, target_dir, 550.0)
+			if await interruptible_wait(fire_interval):
 				return
 
 		if await interruptible_wait(2.2):
@@ -290,6 +325,7 @@ func emit_boomerang(mode: int) -> void:
 		# ⚔️ 【新模式三：四角狙擊交匯】 (全新動態鎖定)
 		# 同時在四個角落的牆外 60 像素生成 4 顆迴旋鏢
 		# 它們的發射方向全部鎖定「發射當下玩家的位置」，在其交點附近懸停，隨後折返
+		var speed = DifficultyParams.get_val(DifficultyParams.BOOMERANG_M3_SPEED, difficulty)
 		var player_target = player.position  # 鎖定當前玩家的座標
 		var corners = [
 			Vector2(-half.x - 60, -half.y - 60),  # 左上
@@ -304,7 +340,7 @@ func emit_boomerang(mode: int) -> void:
 			# 飛行距離：剛好是到玩家位置的距離 + 40 像素 (確保穿透交點)
 			var dist = spawn_pos.distance_to(player_target) + 40.0
 
-			spawn_boomerang(spawn_pos, Vector2(1.05, 1.05), 16.0, 0.65, 380.0, dir, dist)
+			spawn_boomerang(spawn_pos, Vector2(1.05, 1.05), 16.0, 0.65, speed, dir, dist)
 
 		# 等待飛完並回收
 		if await interruptible_wait(2.6):
@@ -314,7 +350,8 @@ func emit_boomerang(mode: int) -> void:
 		# 🌀 【模式四：八方收縮圓形網】 (全新設計)
 		# 在場地外圍大圓（半徑為最大半寬高+90像素）上，均勻分佈生成 8 顆迴旋鏢
 		# 同時朝向場地中心合攏，在中心點聚集成一個旋轉圓環（絞肉機），隨後再向外折返散開
-		var count = 8
+		var count = DifficultyParams.get_val(DifficultyParams.BOOMERANG_M4_COUNT, difficulty)
+		var speed = DifficultyParams.get_val(DifficultyParams.BOOMERANG_M4_SPEED, difficulty)
 		var radius = max(half.x, half.y) + 90.0  # 確保完全在牆外外側
 
 		for i in range(count):
@@ -326,7 +363,7 @@ func emit_boomerang(mode: int) -> void:
 			var to_center_dir = -dir
 
 			# 飛行距離剛好為半徑，使它們在中心點聚攏成圓環
-			spawn_boomerang(spawn_pos, Vector2(1.0, 1.0), 18.0, 0.8, 320.0, to_center_dir, radius)
+			spawn_boomerang(spawn_pos, Vector2(1.0, 1.0), 18.0, 0.8, speed, to_center_dir, radius)
 
 		if await interruptible_wait(2.8):
 			return
@@ -335,7 +372,9 @@ func emit_boomerang(mode: int) -> void:
 		# 🌀 【新模式五：加特林螺旋風車】 (全新高頻螺旋)
 		# 均勻在場外圓周上，每隔 0.16 秒順時針發射一顆指向場地中心的迴旋鏢，共 8 顆
 		# 這會形成一條美麗的順時針螺旋向心收縮軌跡，在流光粒子下會像巨型旋轉風車一樣切割場地
-		var count = 16
+		var count = DifficultyParams.get_val(DifficultyParams.BOOMERANG_M5_COUNT, difficulty)
+		var speed = DifficultyParams.BOOMERANG_M5_SPEED
+		var fire_interval = DifficultyParams.BOOMERANG_M5_FIRE_INTERVAL
 		var radius = max(half.x, half.y) + 90.0  # 確保完全在牆外
 
 		for i in range(count):
@@ -350,10 +389,10 @@ func emit_boomerang(mode: int) -> void:
 
 			# 發射狙擊
 			var b_scale = Vector2(0.95, 0.95)
-			spawn_boomerang(spawn_pos, b_scale, 18.0, 0.5, 350.0, to_center_dir, radius)
+			spawn_boomerang(spawn_pos, b_scale, 18.0, 0.5, speed, to_center_dir, radius)
 
 			# 高頻率極速連射
-			if await interruptible_wait(0.16):
+			if await interruptible_wait(fire_interval):
 				return
 
 		if await interruptible_wait(2.2):
@@ -362,7 +401,7 @@ func emit_boomerang(mode: int) -> void:
 	is_attacking = false
 
 
-func test_laser_attack() -> void:
+func test_laser_attack(difficulty: int = 3) -> void:
 	is_attacking = true
 	var walls = get_node_or_null("../Walls")
 	if not walls:
@@ -378,37 +417,43 @@ func test_laser_attack() -> void:
 	var top_pt = center + Vector2(0.0, -half.y + 20.0)
 	var bottom_pt = center + Vector2(0.0, half.y - 20.0)
 
-	for times in range(5):
-		var bias = randf_range(-80.0, 80.0)
-		for interval in [100.0, 0.0, -100.0]:
+	var rounds = DifficultyParams.get_val(DifficultyParams.LASER_ROUNDS, difficulty)
+	var warn_time = DifficultyParams.get_val(DifficultyParams.LASER_WARN_TIME, difficulty)
+	var round_interval = DifficultyParams.get_val(DifficultyParams.LASER_ROUND_INTERVAL, difficulty)
+
+	for times in range(rounds):
+		var bias = randf_range(
+			-DifficultyParams.LASER_BIAS_RANGE, DifficultyParams.LASER_BIAS_RANGE
+		)
+		for interval in DifficultyParams.LASER_INTERVAL_OFFSETS:
 			spawn_laser_trap(
 				left_pt - Vector2(0.0, interval + bias),
 				right_pt - Vector2(0.0, interval + bias),
-				0.5,
-				0.3,
-				30.0
+				warn_time,
+				DifficultyParams.LASER_FIRE_TIME,
+				DifficultyParams.LASER_WIDTH
 			)
 			spawn_laser_trap(
 				top_pt - Vector2(interval + bias, 0.0),
 				bottom_pt - Vector2(interval + bias, 0.0),
-				0.5,
-				0.3,
-				30.0
+				warn_time,
+				DifficultyParams.LASER_FIRE_TIME,
+				DifficultyParams.LASER_WIDTH
 			)
-		if await interruptible_wait(1.0):
+		if await interruptible_wait(round_interval):
 			return
 	# 1. 發射橫向與縱向的十字雷射：起點, 終點, 預警 1.0 秒, 發射維持 0.8 秒, 寬度 30 像素
 	# spawn_laser_trap(left_pt, right_pt, 1.0, 0.8, 30.0)
 	# spawn_laser_trap(top_pt, bottom_pt, 1.0, 0.8, 30.0)
 
 	# 等待預警 + 發射 + 淡出
-	if await interruptible_wait(1.8):
+	if await interruptible_wait(0.8):
 		return
 	is_attacking = false
 
 
 # 🌟 擠壓雷射攻擊 (優化版)：極速壓縮後立刻在 0.5 秒內還原，同時雷射由外側生成，推進並覆蓋 80% 場地
-func squeeze_attack() -> void:
+func squeeze_attack(difficulty: int = 3) -> void:
 	if not is_instance_valid(player):
 		if has_node("../coconut"):
 			player = get_node("../coconut")
@@ -453,28 +498,29 @@ func squeeze_attack() -> void:
 			wall_size = Vector2(target_height, target_width)
 			wall_pos = Vector2(original_max_x - target_height / 2.0, center_y)
 
-	# 1. 重力下砸：極速壓縮牆壁 (0.1 秒)
-	walls.tween_box(wall_size, wall_pos, 0.1)
-	if await interruptible_wait(0.12):
+	# 1. 重力下砸：極速壓縮牆壁
+	var compress_time = DifficultyParams.get_val(DifficultyParams.SQUEEZE_COMPRESS_TIME, difficulty)
+	walls.tween_box(wall_size, wall_pos, compress_time)
+	if await interruptible_wait(compress_time + 0.02):
 		return
 
 	# 🌟 2. 拍實後，牆壁立刻在 0.5 秒內平滑彈回還原
 	walls.reset_box(0.5)
 
 	# 🌟 3. 雷射陣列參數設定
-	var laser_count = 10  # 【修改】數量減半為 10 條，減輕引擎瞬間運算負擔
-	var spawn_interval = 0.07  # 維持間隔 0.01 秒
-	var fire_interval = 0.1  # 維持間隔 0.02 秒
+	var laser_count = DifficultyParams.SQUEEZE_LASER_COUNT
+	var spawn_interval = DifficultyParams.SQUEEZE_SPAWN_INTERVAL
+	var fire_interval = DifficultyParams.get_val(DifficultyParams.SQUEEZE_FIRE_INTERVAL, difficulty)
 
 	# 第一條雷射開始爆炸的基準時間 (即最後一條預警線出現的時間)
 	var t0 = float(laser_count - 1) * spawn_interval
 
-	var fire_time = 0.25
-	var laser_w = 30.0  # 【建議調整】因為數量減半，所以稍微加寬雷射以維持覆蓋率
+	var fire_time = DifficultyParams.SQUEEZE_FIRE_TIME
+	var laser_w = DifficultyParams.SQUEEZE_LASER_WIDTH
 
 	var arena_width = original_max_x - original_min_x  # 原場地寬度 400.0
 	var arena_height = original_max_y - original_min_y  # 原場地高度 400.0
-	var cover_ratio = 0.8  # 覆蓋 80%
+	var cover_ratio = DifficultyParams.get_val(DifficultyParams.SQUEEZE_COVER_RATIO, difficulty)
 
 	var last_warn_time = 0.0
 
@@ -528,14 +574,14 @@ func squeeze_attack() -> void:
 			return
 
 	# 4. 等待最後一發雷射發射與淡出結束
-	if await interruptible_wait(last_warn_time + fire_time + 0.15):
+	if await interruptible_wait(last_warn_time + fire_time + 0.1):
 		return
 
 	is_attacking = false
 
 
 # 🪚 死亡彈珠台：場地比例動態變化版
-func pong_attack() -> void:
+func pong_attack(difficulty: int = 3) -> void:
 	if not is_instance_valid(player):
 		return
 	is_attacking = true
@@ -545,7 +591,7 @@ func pong_attack() -> void:
 		return
 
 	# 1. 初始設定場地大小 (設定為一個正方形，讓後續的長寬變化更明顯)
-	var arena_half = Vector2(200, 200)
+	var arena_half = DifficultyParams.PONG_ARENA_HALF
 	if "dynamic_base_half" in walls:
 		walls.dynamic_base_half = arena_half  # 覆寫為這招的初始比例
 
@@ -553,7 +599,7 @@ func pong_attack() -> void:
 	if await interruptible_wait(0.6):
 		return
 
-	var saw_count = 1
+	var saw_count = DifficultyParams.PONG_SAW_COUNT
 	for i in range(saw_count):
 		if boss_hp <= 0 or not is_instance_valid(player):
 			break
@@ -564,8 +610,10 @@ func pong_attack() -> void:
 		var dir_y = randf_range(0.4, 1.0) * (1 if randf() > 0.5 else -1)
 		var dir = Vector2(dir_x, dir_y).normalized()
 
-		# 初始化 (不再傳入 arena_half)
-		saw.init(spawn_pos, dir, 400.0, 8.0)
+		var speed = DifficultyParams.get_val(DifficultyParams.PONG_SAW_SPEED, difficulty)
+		var radius = DifficultyParams.get_val(DifficultyParams.PONG_SAW_RADIUS, difficulty)
+
+		saw.init(spawn_pos, dir, speed, radius)
 		damage_field.add_child(saw)
 
 		saw.global_position = spawn_pos
@@ -573,7 +621,8 @@ func pong_attack() -> void:
 		if await interruptible_wait(0.4):
 			return
 
-	if await interruptible_wait(8.2):
+	var duration = DifficultyParams.get_val(DifficultyParams.PONG_DURATION, difficulty)
+	if await interruptible_wait(duration):
 		return
 
 	walls.reset_box(0.6)
@@ -582,7 +631,7 @@ func pong_attack() -> void:
 	is_attacking = false
 
 
-func road_attack() -> void:
+func road_attack(difficulty: int = 3) -> void:
 	is_attacking = true
 	var walls = get_node_or_null("../Walls")
 	if not walls:
@@ -596,49 +645,59 @@ func road_attack() -> void:
 	var right_pt = center + Vector2(half.x - 20.0, 0.0)
 	var top_pt = center + Vector2(0.0, -half.y + 20.0)
 	var bottom_pt = center + Vector2(0.0, half.y - 20.0)
-	var width = 100.0
-	var amp = 120.0
+	var width = DifficultyParams.get_val(DifficultyParams.ROAD_WIDTH, difficulty)
+	var amp = DifficultyParams.ROAD_AMP
 
 	spawn_laser_trap(
-		left_pt - Vector2(0.0, width / 2), right_pt - Vector2(0.0, width / 2), 0.5, 0.3, 30.0
+		left_pt - Vector2(0.0, width / 2), right_pt - Vector2(0.0, width / 2), 1.0, 0.3, 30.0
 	)
 	spawn_laser_trap(
-		left_pt + Vector2(0.0, width / 2), right_pt + Vector2(0.0, width / 2), 0.5, 0.3, 30.0
+		left_pt + Vector2(0.0, width / 2), right_pt + Vector2(0.0, width / 2), 1.0, 0.3, 30.0
 	)
 
-	walls.tween_box(Vector2(45.0, 400), walls.position, 5.0)
+	walls.tween_box(
+		Vector2(DifficultyParams.ROAD_WALL_SHRINK_TARGET, 400),
+		walls.position,
+		DifficultyParams.ROAD_WALL_SHRINK_TIME
+	)
 
-	for i in range(10):
-		spawn_straight_arrow(left_pt + Vector2(-50.0, width / 2), Vector2.RIGHT, 500.0, 1.0)
-		spawn_straight_arrow(left_pt + Vector2(-50.0, -width / 2), Vector2.RIGHT, 500.0, 1.0)
-		if await interruptible_wait(0.1):
+	var arrow_speed = DifficultyParams.ROAD_ARROW_SPEED
+	var wave_interval = DifficultyParams.ROAD_WAVE_INTERVAL
+
+	for i in range(DifficultyParams.ROAD_STRAIGHT_WAVES):
+		spawn_straight_arrow(left_pt + Vector2(-50.0, width / 2), Vector2.RIGHT, arrow_speed, 1.0)
+		spawn_straight_arrow(left_pt + Vector2(-50.0, -width / 2), Vector2.RIGHT, arrow_speed, 1.0)
+		if await interruptible_wait(wave_interval):
 			return
-	for i in range(30):
+	for i in range(DifficultyParams.ROAD_SINE_WAVES):
 		spawn_straight_arrow(
 			left_pt + Vector2(-50.0, width / 2 + sin(i * PI / 15.0) * amp),
 			Vector2.RIGHT,
-			500.0,
+			arrow_speed,
 			1.0
 		)
 		spawn_straight_arrow(
 			left_pt + Vector2(-50.0, -width / 2 + sin(i * PI / 15.0) * amp),
 			Vector2.RIGHT,
-			500.0,
+			arrow_speed,
 			1.0
 		)
-		if await interruptible_wait(0.1):
+		if await interruptible_wait(wave_interval):
 			return
-	for i in range(30):
+	for i in range(DifficultyParams.ROAD_SINE_WAVES):
 		spawn_straight_arrow(
-			right_pt + Vector2(50.0, width / 2 + sin(i * PI / 15.0) * amp), Vector2.LEFT, 500.0, 1.0
+			right_pt + Vector2(50.0, width / 2 + sin(i * PI / 15.0) * amp),
+			Vector2.LEFT,
+			arrow_speed,
+			1.0
 		)
 		spawn_straight_arrow(
 			right_pt + Vector2(50.0, -width / 2 + sin(i * PI / 15.0) * amp),
 			Vector2.LEFT,
-			500.0,
+			arrow_speed,
 			1.0
 		)
-		if await interruptible_wait(0.1):
+		if await interruptible_wait(wave_interval):
 			return
 
 	walls.reset_box(2.0)
@@ -647,7 +706,7 @@ func road_attack() -> void:
 	is_attacking = false
 
 
-func sweeper_attack() -> void:
+func sweeper_attack(difficulty: int = 3) -> void:
 	is_attacking = true
 	var walls = get_node_or_null("../Walls")
 	if not walls:
@@ -656,31 +715,37 @@ func sweeper_attack() -> void:
 
 	var half = walls.current_half_size
 	var center = walls.position
-	var speed = PI / 20.0
 
-	for i in range(40):
+	var count = DifficultyParams.get_val(DifficultyParams.SWEEPER_COUNT, difficulty)
+	var speed = DifficultyParams.get_val(DifficultyParams.SWEEPER_SPEED, difficulty)
+	var warn = DifficultyParams.get_val(DifficultyParams.SWEEPER_WARN_TIME, difficulty)
+	var fire = DifficultyParams.get_val(DifficultyParams.SWEEPER_FIRE_TIME, difficulty)
+	var laser_width = DifficultyParams.get_val(DifficultyParams.SWEEPER_LASER_WIDTH, difficulty)
+	var interval = DifficultyParams.get_val(DifficultyParams.SWEEPER_FIRE_INTERVAL, difficulty)
+
+	for i in range(count):
 		spawn_laser_trap(
 			center + Vector2(cos(i * speed), sin(i * speed)) * half * 1.414,
 			center - Vector2(cos(i * speed), sin(i * speed)) * half * 1.414,
-			0.5,
-			0.3,
-			60.0
+			warn,
+			fire,
+			laser_width
 		)
-		if await interruptible_wait(0.05):
+		if await interruptible_wait(interval):
 			return
 
 	if await interruptible_wait(0.5):
 		return
 
-	for i in range(40):
+	for i in range(count):
 		spawn_laser_trap(
 			center + Vector2(cos(-i * speed), sin(-i * speed)) * half * 1.414,
 			center - Vector2(cos(-i * speed), sin(-i * speed)) * half * 1.414,
-			0.5,
-			0.3,
-			60.0
+			warn,
+			fire,
+			laser_width
 		)
-		if await interruptible_wait(0.05):
+		if await interruptible_wait(interval):
 			return
 
 	if await interruptible_wait(1.0):
@@ -882,6 +947,28 @@ func interruptible_wait(time: float) -> bool:
 	return false
 
 
+func _cleanup_attack() -> void:
+	current_attack_interrupted = true
+	is_attacking = false
+
+	if is_instance_valid(damage_field):
+		for child in damage_field.get_children():
+			child.queue_free()
+
+	var stage = get_parent()
+	if stage:
+		for child in stage.get_children():
+			var cname = child.name.to_lower()
+			if "note" in cname or "rocket" in cname or "warning" in cname:
+				child.queue_free()
+
+	var walls = get_node_or_null("../Walls")
+	if walls:
+		if "dynamic_base_half" in walls:
+			walls.dynamic_base_half = Vector2(200.0, 200.0)
+		walls.reset_box(0.0)
+
+
 func deal_damage(damage: int):
 	if invincible or is_dead or boss_hp <= 0:
 		return
@@ -894,13 +981,13 @@ func deal_damage(damage: int):
 
 		if phase == 1:
 			phase = 2
-			boss_hp = 100
+			boss_hp = 250
+			difficulty = 3
+			boss_hp_bar.max_value = 250
 			boss_hp_bar.value = boss_hp
 
 			# 打斷並清除場上所有攻擊
-			current_attack_interrupted = true
-			for child in damage_field.get_children():
-				child.queue_free()
+			_cleanup_attack()
 
 			boss_died_first_time.emit()
 
@@ -908,9 +995,7 @@ func deal_damage(damage: int):
 			is_dead = true
 
 			# 打斷並清除場上所有攻擊
-			current_attack_interrupted = true
-			for child in damage_field.get_children():
-				child.queue_free()
+			_cleanup_attack()
 
 			boss_defeated.emit()
 		return
@@ -964,17 +1049,26 @@ func spawn_straight_arrow(pos: Vector2, dir: Vector2, speed: float, wait: float)
 
 
 # 測試用的環形飛劍攻擊招式
-func test_sword_attack() -> void:
+func test_sword_attack(difficulty: int = 3) -> void:
 	is_attacking = true
 
 	# 同時在環形發射 8 把飛劍，生成在半徑 300 處，等待 1.0 秒後以速度 550 射向對角
 	var dir = PI * 2 * randf_range(0.0, 1.0)
-	var sword_count = 30
+	var sword_count = DifficultyParams.SWORD_COUNT
+	var arc_angle = DifficultyParams.get_val(DifficultyParams.SWORD_ARC_ANGLE, difficulty)
+	var sword_speed = DifficultyParams.get_val(DifficultyParams.SWORD_SPEED, difficulty)
+	var base_wait = DifficultyParams.get_val(DifficultyParams.SWORD_BASE_WAIT, difficulty)
+
 	for i in range(sword_count):
-		var angle = (PI * 0.8 / sword_count) * i + dir
+		var angle = (arc_angle / sword_count) * i + dir
 		if await interruptible_wait(0.01):
 			return
-		spawn_arrow(300.0, angle, 1000.0, 1.0 - i * 0.015)
+		spawn_arrow(
+			DifficultyParams.SWORD_SPAWN_RADIUS,
+			angle,
+			sword_speed,
+			base_wait - i * DifficultyParams.SWORD_WAIT_DECREASE
+		)
 
 	# 等待飛劍全部飛完並銷毀（約等待 1.0 秒 + 飛行時間 600/550 ≈ 1.1 秒 + 淡出 0.1 秒）
 	if await interruptible_wait(2.4):

@@ -8,6 +8,6 @@
 script = ExtResource("1_skindata")
 skin_id = "magma_skin"
 true_name = "熔岩火球"
-price = 1500
+price = 150
 preview_texture = ExtResource("1_circle")
 skin_prefab = ExtResource("2_prefab")

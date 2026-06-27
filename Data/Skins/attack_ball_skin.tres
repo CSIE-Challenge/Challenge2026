@@ -5,6 +5,7 @@
 
 [resource]
 script = ExtResource("1_hk7d5")
+skin_id = "attack_ball_skin"
 true_name = "異界行星"
 skin_prefab = ExtResource("2_hmjhp")
 metadata/_custom_type_script = "uid://c6vuqckcyjdey"

@@ -3,6 +3,8 @@ extends Control
 const MENU_SCENE_PATH = "res://Scenes/menu.tscn"
 const HIDDEN_SCENE_PATH = "res://Scenes/menu/hidden_game.tscn"
 
+@export var skip_to_fight: bool = false
+
 var attack_ball_scene = preload("res://Scenes/menu/attack_ball.tscn")
 var is_player_dead: bool = false
 var is_aborted: bool = false  # 是否已經在 change scene
@@ -19,13 +21,14 @@ var is_aborted: bool = false  # 是否已經在 change scene
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	if player:
-		player.auto_restart = false
 		player.player_died.connect(_on_player_died)
 
 	Dialogue.custom_event_triggered.connect(_on_dialogue_event)
 
 	# 隱藏關卡開始時，立刻執行情節序列
 	run_hidden_game_sequence()
+	# await get_tree().create_timer(1.0).timeout
+	# boss.rand_attack(5)
 
 
 func _on_player_died() -> void:
@@ -64,6 +67,7 @@ func wait_for_boss_attack_or_die() -> bool:
 
 func run_hidden_game_sequence() -> void:
 	Dialogue.is_disabled = false
+	player.auto_restart = false
 	timer.stop()
 	walls.tween_box(Vector2(400, 400), Vector2(0, 20), 1.0)
 	boss.boss_appear_animation()
@@ -74,14 +78,23 @@ func run_hidden_game_sequence() -> void:
 
 	await get_tree().create_timer(1.0).timeout
 
-	if await _run_phase_1() or is_aborted:
-		return
-	if await _run_phase_2() or is_aborted:
-		return
-	if await _run_phase_3() or is_aborted:
-		return
-	if await _run_phase_4() or is_aborted:
-		return
+	if skip_to_fight:
+		boss.invincible = false
+		boss.boss_hp = 100
+		boss.boss_hp_bar.value = boss.boss_hp
+		if await _run_phase_4_fight() or is_aborted:
+			return
+	else:
+		if await _run_phase_1() or is_aborted:
+			return
+		if await _run_phase_2() or is_aborted:
+			return
+		if await _run_phase_3() or is_aborted:
+			return
+		if await _run_phase_4_intro() or is_aborted:
+			return
+		if await _run_phase_4_fight() or is_aborted:
+			return
 
 
 func _run_phase_1() -> bool:
@@ -94,7 +107,7 @@ func _run_phase_1() -> bool:
 	await Dialogue.dialogue_finished
 
 	for i in range(3):
-		boss.test_sword_attack()
+		boss.test_sword_attack(2)
 		if await wait_or_die(1.5):
 			break
 
@@ -120,7 +133,7 @@ func _run_phase_2() -> bool:
 	await Dialogue.dialogue_finished
 
 	for mode in range(3, 6):
-		boss.emit_boomerang(mode)
+		boss.emit_boomerang(mode, 2)
 		if await wait_for_boss_attack_or_die():
 			break
 
@@ -191,12 +204,11 @@ func _run_phase_3() -> bool:
 	return false
 
 
-func _run_phase_4() -> bool:
+func _run_phase_4_intro() -> bool:
 	if is_aborted:
 		return true
-
 	# ----------------- 第三波流程 -----------------
-	boss.rhythm_attack()
+	boss.rhythm_attack(2)
 	# rhythm_attack 不會立刻結束，我們等待它執行完畢
 	if await wait_for_boss_attack_or_die():
 		Dialogue.start_dialogue(["原來你不玩pjsk啊。"])
@@ -238,26 +250,30 @@ func _run_phase_4() -> bool:
 	if Dialogue.current_state != Dialogue.State.IDLE:
 		Dialogue.interrupt_dialogue()
 
+	return false
+
+
+func _run_phase_4_fight() -> bool:
 	# 立刻開始新的對話
 	Dialogue.start_dialogue(["你...你竟然也偷襲我！<input>", "好啊，既然你不仁我不義，那麼戰個你死我活吧！<input>"])
 	await Dialogue.dialogue_finished
 
 	# 發動雷射攻擊
-	boss.test_laser_attack()
+	boss.test_laser_attack(2)
 	if await wait_for_boss_attack_or_die():
 		SceneTransition.transition_to(HIDDEN_SCENE_PATH)
 		return true
 
 	# 連續發動 squeeze_attack 4 次
 	for i in range(4):
-		boss.squeeze_attack()
+		boss.squeeze_attack(2)
 		if await wait_for_boss_attack_or_die():
 			SceneTransition.transition_to(HIDDEN_SCENE_PATH)
 			return true
 
 	# 最後進入隨機模式
 	# 隨機生成能量球開啟
-	timer.wait_time = 1.0
+	timer.wait_time = 5.0
 	timer.start()
 
 	# 綁定第一階段死亡對話
@@ -265,7 +281,19 @@ func _run_phase_4() -> bool:
 		func():
 			if Dialogue.current_state != Dialogue.State.IDLE:
 				Dialogue.interrupt_dialogue()
+
+			# 暫停 Boss 的攻擊
+			boss.is_paused = true
+			timer.stop()
+			# 確保場地 Box 回歸初始大小
+			walls.tween_box(Vector2(400, 400), Vector2(0, 20), 1.0)
+
 			Dialogue.start_dialogue(["[color=red][wave]我真的生氣了！<speed=0.1>[/wave][/color]"])
+
+			await Dialogue.dialogue_finished
+			# 對話結束後，允許 Boss 繼續攻擊
+			boss.is_paused = false
+			timer.start()
 	)
 
 	boss.rand_attack()
@@ -281,6 +309,7 @@ func _run_phase_4() -> bool:
 		return true
 
 	if boss.is_dead:
+		timer.stop()
 		if Dialogue.current_state != Dialogue.State.IDLE:
 			Dialogue.interrupt_dialogue()
 		Dialogue.start_dialogue(["我竟然落敗了......<wait=3.0>"])

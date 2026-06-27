@@ -30,8 +30,16 @@ func play_eat_ball():
 
 
 func play_jump():
-	pass
+	if tween:
+		tween.kill()
+	tween = create_tween()
+	tween.tween_property(sprite, "scale", Vector2(0.12, 0.28), 0.1)
+	tween.tween_property(sprite, "scale", Vector2(0.2, 0.2), 0.15)
 
 
 func play_land():
-	pass
+	if tween:
+		tween.kill()
+	tween = create_tween()
+	tween.tween_property(sprite, "scale", Vector2(0.28, 0.12), 0.1)
+	tween.tween_property(sprite, "scale", Vector2(0.2, 0.2), 0.15)

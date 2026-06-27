@@ -19,17 +19,18 @@ func init(
 	explosion_radius = radius
 	duration = exp_duration
 	player = player_node
-	position = pos  # 🌟 在 damage_field 下直接設定局部座標！
 
 
 func _ready() -> void:
+	global_position = explosion_pos
+
 	# 1. 複製並套用爆炸半徑至物理 CollisionShape2D
 	if shape:
 		shape = shape.duplicate()
 		shape.radius = explosion_radius
 
-	# 2. 根據半徑縮放視覺大小
-	var base_scale = (2.0 * explosion_radius) / 256.0
+	# 2. 根據編輯器預設比例 (半徑 67.74216 對應 scale 1.0) 來完美縮放視覺大小
+	var base_scale = explosion_radius / 67.74216
 	sprite.scale = Vector2.ZERO
 
 	# 3. 動態配置 CPUParticles2D 粒子，使粒子與半徑成正比且清晰可見
@@ -52,7 +53,7 @@ func _ready() -> void:
 
 	# 5. 🌟 距離檢測主動傷害 (使用局部座標判定，防物理引擎動態加載延遲)
 	if is_instance_valid(player):
-		var dist = position.distance_to(player.position)
+		var dist = global_position.distance_to(player.global_position)
 		if dist <= explosion_radius:
 			player.die()
 

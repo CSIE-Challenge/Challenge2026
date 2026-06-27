@@ -109,8 +109,13 @@ func transition_to(target_scene: String) -> void:
 	)
 
 	# ===== 階段三：完全遮黑後，於背景更換場景 =====
-	# 將 append_callback 改為 tween_callback
-	tween.tween_callback(func(): get_tree().change_scene_to_file(target_scene))
+	tween.tween_callback(
+		func():
+			if target_scene == "":
+				get_tree().reload_current_scene()
+			else:
+				get_tree().change_scene_to_file(target_scene)
+	)
 
 	# 讓新場景載入後有短暫時間載入資源
 	# 將 append_interval 改為 tween_interval

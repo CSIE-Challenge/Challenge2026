@@ -70,7 +70,7 @@ func die():
 
 	player_died.emit()
 	if auto_restart:
-		SceneTransition.transition_to("res://Scenes/hidden_game.tscn")
+		SceneTransition.transition_to("")
 	queue_free()
 
 

@@ -8,6 +8,9 @@
 [ext_resource type="Script" uid="uid://b1vu1u854wu0d" path="res://Scripts/menu/boss_controller.gd" id="5_pger8"]
 [ext_resource type="PackedScene" uid="uid://coibxbp8o7ax0" path="res://Scenes/menu/rocket_warning.tscn" id="7_i6agr"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wxxv2"]
+bg_color = Color(0.17880967, 0.17880964, 0.17880964, 1)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qncmu"]
 size = Vector2(135, 135)
 
@@ -21,6 +24,9 @@ point_count = 3
 [sub_resource type="Gradient" id="Gradient_pger8"]
 offsets = PackedFloat32Array(0, 0.39344263, 1)
 colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i6agr"]
+bg_color = Color(1, 0, 0, 1)
 
 [sub_resource type="Shader" id="Shader_edgefade"]
 code = "shader_type canvas_item;
@@ -84,6 +90,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_wxxv2")
 
 [node name="Stage" type="Node2D" parent="Panel" unique_id=1261095101]
 position = Vector2(576, 424)
@@ -114,7 +121,7 @@ scale = Vector2(0.099999994, 3.5999997)
 shape = SubResource("RectangleShape2D_qncmu")
 
 [node name="RightWallSprite" type="Sprite2D" parent="Panel/Stage/Walls/RightWallCollision" unique_id=40708392]
-modulate = Color(1, 1, 1, 0.2509804)
+modulate = Color(1, 1, 1, 0.8)
 scale = Vector2(0.99999994, 0.99999994)
 texture = ExtResource("1_tfqsm")
 
@@ -124,7 +131,7 @@ scale = Vector2(0.099999994, 3.5999997)
 shape = SubResource("RectangleShape2D_qncmu")
 
 [node name="LeftWallSprite" type="Sprite2D" parent="Panel/Stage/Walls/LeftWallCollision" unique_id=1792312663]
-modulate = Color(1, 1, 1, 0.2509804)
+modulate = Color(1, 1, 1, 0.8)
 scale = Vector2(0.99999994, 0.99999994)
 texture = ExtResource("1_tfqsm")
 
@@ -135,7 +142,7 @@ scale = Vector2(0.099999994, 3.5999997)
 shape = SubResource("RectangleShape2D_qncmu")
 
 [node name="UpWallSprite" type="Sprite2D" parent="Panel/Stage/Walls/UpWallCollision" unique_id=2064223693]
-modulate = Color(1, 1, 1, 0.2509804)
+modulate = Color(1, 1, 1, 0.8)
 scale = Vector2(0.99999994, 0.99999994)
 texture = ExtResource("1_tfqsm")
 
@@ -146,7 +153,7 @@ scale = Vector2(0.099999994, 3.5999997)
 shape = SubResource("RectangleShape2D_qncmu")
 
 [node name="DownWallSprite" type="Sprite2D" parent="Panel/Stage/Walls/DownWallCollision" unique_id=297151584]
-modulate = Color(1, 1, 1, 0.2509804)
+modulate = Color(1, 1, 1, 0.8)
 scale = Vector2(0.99999994, 0.99999994)
 texture = ExtResource("1_tfqsm")
 
@@ -205,6 +212,7 @@ offset_top = 15.0
 offset_right = 342.5
 offset_bottom = 42.0
 grow_horizontal = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_i6agr")
 value = 50.0
 show_percentage = false
 

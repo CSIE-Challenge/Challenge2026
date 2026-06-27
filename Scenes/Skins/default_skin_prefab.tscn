@@ -4,11 +4,12 @@
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_circle"]
 
 [sub_resource type="Curve" id="Curve_ebyp3"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
-point_count = 2
+_data = [Vector2(0.16312057, 1), 0.0, 0.0, 0, 0, Vector2(0.5283688, 0.5048715), -1.5645216, -1.5645216, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
 
 [sub_resource type="Gradient" id="Gradient_pger8"]
-colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+offsets = PackedFloat32Array(0, 0.39344263, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0)
 
 [node name="DefaultSkinPrefab" type="Node2D"]
 script = ExtResource("1_def")

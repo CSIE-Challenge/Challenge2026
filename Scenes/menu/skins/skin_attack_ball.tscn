@@ -25,15 +25,14 @@ scale = Vector2(0.2, 0.2)
 texture = ExtResource("1_cgfrr")
 
 [node name="CPUParticles2D" type="CPUParticles2D" parent="." unique_id=1068147715]
-amount = 5
 texture = ExtResource("1_cgfrr")
 lifetime = 1.5
 emission_shape = 1
 emission_sphere_radius = 40.0
 spread = 180.0
 gravity = Vector2(0, 0)
-initial_velocity_min = 1.5
-initial_velocity_max = 3.0
+initial_velocity_min = 2.0
+initial_velocity_max = 4.0
 scale_amount_min = 0.02
 scale_amount_max = 0.06
 scale_amount_curve = SubResource("Curve_uiu2b")

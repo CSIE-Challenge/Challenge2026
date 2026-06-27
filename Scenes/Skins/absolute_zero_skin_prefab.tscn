@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://bs0eroskin"]
+
+[ext_resource type="Script" path="res://Scenes/Skins/absolute_zero_skin_prefab.gd" id="1_abs"]
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_circle"]
+
+[node name="AbsoluteZeroSkinPrefab" type="Node2D"]
+script = ExtResource("1_abs")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.6, 0.9, 1.0, 0.7)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_circle")
+
+[node name="MistParticles" type="CPUParticles2D" parent="."]
+amount = 20
+lifetime = 1.0
+texture = ExtResource("2_circle")
+emission_shape = 1
+emission_sphere_radius = 25.0
+gravity = Vector2(0, 30)
+scale_amount_min = 0.01
+scale_amount_max = 0.03
+color = Color(0.8, 0.95, 1.0, 0.5)
+
+[node name="SnowParticles" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 30
+lifetime = 0.8
+one_shot = true
+explosiveness = 0.8
+emission_shape = 1
+emission_sphere_radius = 20.0
+direction = Vector2(0, 1)
+spread = 60.0
+gravity = Vector2(0, 50)
+initial_velocity_min = 50.0
+initial_velocity_max = 100.0
+scale_amount_min = 2.0
+scale_amount_max = 5.0
+color = Color(1, 1, 1, 0.8)
+
+[node name="SpikesContainer" type="Node2D" parent="."]
+position = Vector2(0, 25)
