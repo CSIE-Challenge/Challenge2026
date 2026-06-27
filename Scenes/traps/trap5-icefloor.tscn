@@ -31,8 +31,9 @@ scale = Vector2(1.25, 1.2499999)
 texture = ExtResource("3_rvr82")
 
 [node name="Cone" type="Sprite2D" parent="." unique_id=1268785805]
-position = Vector2(88, -56)
+position = Vector2(59.748108, -51.65354)
 rotation = -1.0471976
+scale = Vector2(0.7177081, 0.696274)
 texture = ExtResource("3_33xs4")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=897093263]

@@ -42,11 +42,11 @@ func _destroy_trap() -> void:
 
 func start_animation() -> void:
 	var tween = create_tween().set_parallel()
-	tween.set_trans(Tween.TRANS_CIRC)
+	tween.set_trans(Tween.TRANS_CUBIC)
 	tween.set_ease(Tween.EASE_OUT)
 
-	tween.tween_property(cone_sprite, "rotation_degrees", -125, 1.4)
-	tween.tween_property(cone_sprite, "self_modulate:a", 0, 0.2).set_delay(0.3).set_trans(
+	tween.tween_property(cone_sprite, "rotation_degrees", -125, 1.2)
+	tween.tween_property(cone_sprite, "self_modulate:a", 0, 0.4).set_delay(0.8).set_trans(
 		Tween.TRANS_LINEAR
 	)
 	tween.tween_property(cream_sprite.material, "shader_parameter/reveal_progress", 1.0, 1.6)
