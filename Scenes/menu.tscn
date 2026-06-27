@@ -2,6 +2,8 @@
 
 [ext_resource type="Script" uid="uid://b5d7uvxoarxp1" path="res://Scripts/menu/menu_manager.gd" id="1_1rerr"]
 
+[sub_resource type="ButtonGroup" id="ButtonGroup_mode"]
+
 [node name="Menu" type="Control" unique_id=1229865894]
 layout_mode = 3
 anchors_preset = 15
@@ -46,7 +48,7 @@ vertical_alignment = 1
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
-text = "start"
+text = "進入遊戲"
 
 [node name="AboutButtom" type="Button" parent="Panel/VBoxContainer" unique_id=2043309010]
 custom_minimum_size = Vector2(0, 80)
@@ -58,7 +60,7 @@ text = "about"
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
-text = "quit"
+text = "離開遊戲"
 
 [node name="invisible" type="Button" parent="Panel" unique_id=1778200500]
 layout_mode = 1
@@ -121,8 +123,82 @@ grow_horizontal = 0
 grow_vertical = 0
 text = "close"
 
+[node name="ModePanel" type="Panel" parent="Panel" unique_id=986957485]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 64.0
+offset_top = 55.0
+offset_right = -64.0
+offset_bottom = -55.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/ModePanel" unique_id=2064909190]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -200.0
+offset_right = 250.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Panel/ModePanel/VBoxContainer" unique_id=2132273028]
+custom_minimum_size = Vector2(0, 90)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 50
+bbcode_enabled = true
+text = "選擇模式"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ToggleRow" type="HBoxContainer" parent="Panel/ModePanel/VBoxContainer" unique_id=2090390773]
+custom_minimum_size = Vector2(0, 90)
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="SingleButton" type="Button" parent="Panel/ModePanel/VBoxContainer/ToggleRow" unique_id=2090390772]
+custom_minimum_size = Vector2(220, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_mode")
+text = "單人模式"
+
+[node name="DoubleButton" type="Button" parent="Panel/ModePanel/VBoxContainer/ToggleRow" unique_id=1829849739]
+custom_minimum_size = Vector2(220, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+toggle_mode = true
+button_group = SubResource("ButtonGroup_mode")
+text = "雙人模式"
+
+[node name="ConfirmButton" type="Button" parent="Panel/ModePanel/VBoxContainer" unique_id=1160019088]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "確定"
+
+[node name="ModeBackButton" type="Button" parent="Panel/ModePanel/VBoxContainer" unique_id=1160019087]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "返回"
+
 [connection signal="button_up" from="Panel/VBoxContainer/StartButton" to="." method="_on_start_button_button_up"]
 [connection signal="button_up" from="Panel/VBoxContainer/AboutButtom" to="." method="_on_about_buttom_button_up"]
 [connection signal="button_up" from="Panel/VBoxContainer/QuitButton" to="." method="_on_quit_button_button_up"]
 [connection signal="button_up" from="Panel/invisible" to="." method="_on_invisible_button_up"]
 [connection signal="button_up" from="Panel/AboutPanel/CloseButton" to="." method="_on_close_button_button_up"]
+[connection signal="button_up" from="Panel/ModePanel/VBoxContainer/ConfirmButton" to="." method="_on_confirm_button_up"]
+[connection signal="button_up" from="Panel/ModePanel/VBoxContainer/ModeBackButton" to="." method="_on_mode_back_button_up"]

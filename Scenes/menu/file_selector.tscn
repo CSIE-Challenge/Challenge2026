@@ -1,0 +1,82 @@
+[gd_scene format=3 uid="uid://dpb2k7n4xq8r1"]
+
+[ext_resource type="Script" uid="uid://d12302hng4qob" path="res://Scripts/menu/file_selector.gd" id="1_fsel"]
+
+[node name="FileSelector" type="Control" unique_id=657745238]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_fsel")
+
+[node name="Panel" type="Panel" parent="." unique_id=1040663082]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel" unique_id=586226807]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -350.0
+offset_top = -230.0
+offset_right = 350.0
+offset_bottom = 230.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 18
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Panel/VBoxContainer" unique_id=1495341892]
+custom_minimum_size = Vector2(0, 90)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 50
+bbcode_enabled = true
+text = "選擇 Agent"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SelectedFileLabel" type="Label" parent="Panel/VBoxContainer" unique_id=2112170224]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Default Agent"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="ChooseButton" type="Button" parent="Panel/VBoxContainer" unique_id=112334409]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+text = "選擇 .py 檔案…"
+
+[node name="DefaultButton" type="Button" parent="Panel/VBoxContainer" unique_id=2116977867]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+text = "使用預設 Agent"
+
+[node name="EnterGameButton" type="Button" parent="Panel/VBoxContainer" unique_id=1606200751]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "進入遊戲"
+
+[node name="BackButton" type="Button" parent="Panel/VBoxContainer" unique_id=531443659]
+custom_minimum_size = Vector2(0, 55)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "返回"
+
+[connection signal="button_up" from="Panel/VBoxContainer/ChooseButton" to="." method="_on_choose_button_up"]
+[connection signal="button_up" from="Panel/VBoxContainer/DefaultButton" to="." method="_on_default_button_up"]
+[connection signal="button_up" from="Panel/VBoxContainer/EnterGameButton" to="." method="_on_enter_game_button_up"]
+[connection signal="button_up" from="Panel/VBoxContainer/BackButton" to="." method="_on_back_button_up"]

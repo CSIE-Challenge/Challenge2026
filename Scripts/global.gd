@@ -7,7 +7,9 @@ signal energyball_collected
 
 var game_manager: Node2D
 var stage: Node2D
+var single_player: bool = false
 var trap_data: Dictionary
+var agent_file: String = ""
 var _trap_data_path: String = "res://Data/trap.json"
 
 
