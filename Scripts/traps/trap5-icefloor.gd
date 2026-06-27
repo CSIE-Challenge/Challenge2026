@@ -11,8 +11,8 @@ var damage = TrapData.new().data["trap5-icefloor"]["damage"]
 var energy_costs = TrapData.new().data["trap5-icefloor"]["energy_costs"]
 var lifetime = TrapData.new().data["trap5-icefloor"]["lifetime"]
 
-@onready var cream_sprite: Sprite2D = $Cream
-@onready var cone_sprite: Sprite2D = $Cone
+@onready var juice_sprite: Sprite2D = $SpilledJuice
+@onready var glass_sprite: Sprite2D = $JuiceGlass
 
 
 static func initialize(pos: Vector2) -> Trap5IceFloor:
@@ -45,11 +45,11 @@ func start_animation() -> void:
 	tween.set_trans(Tween.TRANS_CUBIC)
 	tween.set_ease(Tween.EASE_OUT)
 
-	tween.tween_property(cone_sprite, "rotation_degrees", -125, 1.2)
-	tween.tween_property(cone_sprite, "self_modulate:a", 0, 0.4).set_delay(0.8).set_trans(
+	tween.tween_property(glass_sprite, "rotation_degrees", -125, 1.2)
+	tween.tween_property(glass_sprite, "self_modulate:a", 0, 0.4).set_delay(0.8).set_trans(
 		Tween.TRANS_LINEAR
 	)
-	tween.tween_property(cream_sprite.material, "shader_parameter/reveal_progress", 1.0, 1.6)
+	tween.tween_property(juice_sprite.material, "shader_parameter/reveal_progress", 1.0, 1.6)
 
 
 func _on_body_entered(body: Node2D) -> void:
