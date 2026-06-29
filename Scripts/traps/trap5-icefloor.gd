@@ -8,8 +8,6 @@ static var _ice_overlap_count: Dictionary = {}
 
 @export var lifetime: float = 5.0
 
-var _data: Dictionary = Global.trap_data["trap5-icefloor"]
-
 
 static func initialize(pos: Vector2) -> Trap5IceFloor:
 	var trap := preload("res://Scenes/traps/trap5-icefloor.tscn").instantiate()

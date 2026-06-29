@@ -12,8 +12,7 @@ const AGENT_SEATS: Array[String] = ["Agent1"]
 @export var energy_bar_label: Label
 @export var opponent_energy_bar_label: Label
 @export var result_screen: ResultScreen
-@export var energy_increase_period: int
-@export var energy_ball_spawn_period: int
+@export var energy_increase_period: float
 @export var player_invincibility_time: float
 @export var energy_gain_per_ball: int = 10
 
@@ -51,7 +50,6 @@ func _ready() -> void:
 
 	energy_increase_timer.wait_time = energy_increase_period
 
-	energy_increase_timer.wait_time = energy_ball_spawn_period
 	player_invincible = false
 
 	_begin_agents()

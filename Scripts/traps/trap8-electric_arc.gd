@@ -14,7 +14,6 @@ var points_scale: Vector2
 var points_assigned_scale: Vector2
 var arc_assigned_width: float
 var arc_on: bool
-var _data: Dictionary = {}
 
 @onready var player: CharacterBody2D = $"../Player"
 @onready var start_point: Node2D = $StartPoint
