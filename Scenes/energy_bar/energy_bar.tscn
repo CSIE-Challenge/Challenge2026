@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://dukfpi8j30j5"]
+
+[ext_resource type="Script" uid="uid://dfja4wnnn1mv6" path="res://Scripts/energy_bar.gd" id="1_lviin"]
+
+[node name="energy_bar" type="Node2D" unique_id=339971714]
+position = Vector2(505, 572)
+script = ExtResource("1_lviin")

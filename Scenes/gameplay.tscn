@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://dkfqc5fwcbi7" path="res://Scripts/sand_tile_map.gd" id="4_jb71e"]
 [ext_resource type="PackedScene" path="res://Scenes/result_screen.tscn" id="8_result"]
 [ext_resource type="Texture2D" uid="uid://c1rj0im3pw7gd" path="res://Shapes/sand_background.png" id="8_rg35f"]
+[ext_resource type="PackedScene" uid="uid://dukfpi8j30j5" path="res://Scenes/energy_bar/energy_bar.tscn" id="8_ltefv"]
 [ext_resource type="Script" uid="uid://bs7ntuoxby0al" path="res://Scripts/trap_request_scheduler.gd" id="8_urrcd"]
 [ext_resource type="Script" uid="uid://c8r5j40yj4je7" path="res://Scripts/agent_action_service.gd" id="9_puebw"]
 [ext_resource type="Script" uid="uid://c8md8v3eeja45" path="res://Scripts/state_serializer.gd" id="4_ssg01"]
@@ -284,7 +285,11 @@ one_shot = true
 explosiveness = 1.0
 process_material = SubResource("ParticleProcessMaterial_5i20n")
 
+[node name="energy_bar" parent="SubViewport/Stage" unique_id=339971714 instance=ExtResource("8_ltefv")]
+position = Vector2(100, 100)
+
 [node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "camera", "health_label", "energy_balls_label", "energy_bar_label", "opponent_energy_bar_label", "result_screen")]
+
 script = ExtResource("1_kwrm5")
 player = NodePath("../SubViewport/Stage/Player")
 camera = NodePath("../GameCamera")
