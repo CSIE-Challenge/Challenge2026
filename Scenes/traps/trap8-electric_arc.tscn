@@ -1,24 +1,37 @@
 [gd_scene format=3 uid="uid://byrx45fu4n4yw"]
 
 [ext_resource type="Script" uid="uid://b0f85v5r0om86" path="res://Scripts/traps/trap8-electric_arc.gd" id="1_fbvbf"]
-[ext_resource type="Texture2D" uid="uid://dle4xt8upfg42" path="res://Shapes/Square.svg" id="2_2iv3o"]
+[ext_resource type="Shader" uid="uid://cltleml55th1d" path="res://Shaders/crack.gdshader" id="3_spckc"]
+[ext_resource type="Texture2D" uid="uid://wgi6fweb6vej" path="res://Shapes/crack.png" id="4_fuds7"]
+[ext_resource type="Texture2D" uid="uid://lqmr1p1lac6t" path="res://Shapes/trfcone.svg" id="5_fuds7"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nnf58"]
+resource_local_to_scene = true
+shader = ExtResource("3_spckc")
+shader_parameter/progress = 0.0
 
 [node name="ElectricArc" type="Node2D" unique_id=238955290]
 script = ExtResource("1_fbvbf")
 
-[node name="StartPoint" type="Node2D" parent="." unique_id=702459011]
+[node name="Crack" type="Sprite2D" parent="." unique_id=1970214108]
+material = SubResource("ShaderMaterial_nnf58")
+texture = ExtResource("4_fuds7")
+centered = false
+offset = Vector2(-129, -1)
 
-[node name="Sprite" type="Sprite2D" parent="StartPoint" unique_id=1833154600]
-modulate = Color(0.52485186, 0.256445, 0.31414282, 1)
-scale = Vector2(0.1, 0.1)
-texture = ExtResource("2_2iv3o")
+[node name="StartPoint" type="Node2D" parent="." unique_id=881093858]
 
-[node name="EndPoint" type="Node2D" parent="." unique_id=80986097]
+[node name="Cone" type="Sprite2D" parent="StartPoint" unique_id=86275766]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("5_fuds7")
+offset = Vector2(0, -30)
 
-[node name="Sprite" type="Sprite2D" parent="EndPoint" unique_id=1749149317]
-texture = ExtResource("2_2iv3o")
+[node name="EndPoint" type="Node2D" parent="." unique_id=2101499371]
 
-[node name="Arc" type="Line2D" parent="." unique_id=29081038]
+[node name="Cone" type="Sprite2D" parent="EndPoint" unique_id=384667784]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("5_fuds7")
+offset = Vector2(0, -30)
 
 [node name="RayCast2D" type="RayCast2D" parent="." unique_id=644045316]
 target_position = Vector2(-200, 200)

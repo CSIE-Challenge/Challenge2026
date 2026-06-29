@@ -16,11 +16,11 @@ var arc_assigned_width: float
 var arc_on: bool
 
 @onready var player: CharacterBody2D = $"../Player"
+@onready var crack: Sprite2D = $Crack
 @onready var start_point: Node2D = $StartPoint
 @onready var end_point: Node2D = $EndPoint
-@onready var start_point_sprite: Sprite2D = $StartPoint/Sprite
-@onready var end_point_sprite: Sprite2D = $EndPoint/Sprite
-@onready var arc: Line2D = $Arc
+@onready var start_cone: Sprite2D = $StartPoint/Cone
+@onready var end_cone: Sprite2D = $EndPoint/Cone
 @onready var raycast = $RayCast2D
 
 
@@ -33,83 +33,105 @@ static func initialize(start_pos: Vector2, end_pos: Vector2) -> Trap8ElectricArc
 
 func _ready():
 	arc_on = false
-	arc.position = Vector2.ZERO
-	_build_arc()
-	_visible_set(0)
+	_set_state(0)
 
 
-func _build_arc() -> void:
-	arc.add_point(Vector2.ZERO, 0)
-	arc.add_point(Vector2.ZERO, 1)
-	arc.width = 4.0
-
-
-func _randx() -> float:
-	return randf_range(326, 826)
-
-
-func _randy() -> float:
-	return randf_range(74, 574)
-
-
-func _physics_process(delta: float) -> void:
-	_points_rotate(delta)
-	_scaling(delta)
+func _physics_process(_delta: float) -> void:
 	_detect_player()
 
 
-func _points_rotate(delta: float):
-	start_point.global_rotation += points_revolution_speed * delta
-	end_point.global_rotation += -points_revolution_speed * delta
-
-
-func _scaling(delta: float) -> void:
-	points_scale += (points_assigned_scale - points_scale) * scaling_rate * delta
-	start_point_sprite.scale = points_scale
-	end_point_sprite.scale = points_scale
-	arc.width += (arc_assigned_width - arc.width) * scaling_rate * delta
-
-
 func spawn(start_position: Vector2, end_position: Vector2) -> void:
+	# position set-up
 	start_point.position = start_position
 	end_point.position = end_position
-	arc.set_point_position(0, start_position)
-	arc.set_point_position(1, end_position)
-	points_scale = Vector2.ZERO
-	points_assigned_scale = points_default_scale
-	arc.width = 0
-	arc_assigned_width = arc_width
-
-	_visible_set(1)
-	await get_tree().create_timer(delay_time).timeout
-
-	_visible_set(2)
-	arc_on = true
+	crack.position = start_position
 	raycast.position = start_position
 	raycast.target_position = end_position - start_position
+
+	var dir = end_position - start_position
+	var ratio = dir.length() / crack.texture.get_height()
+
+	crack.rotation = dir.angle() - PI / 2
+	crack.apply_scale(Vector2(max(0.25, ratio), ratio))
+
+	# warning phase
+	arc_assigned_width = arc_width
+	_spawn_animation()
+	_set_state(1)
+	await get_tree().create_timer(delay_time).timeout
+
+	# activated phase
+	arc_on = true
+	_activate_animation()
+	_set_state(2)
 	await get_tree().create_timer(duration_time).timeout
 
+	# despawn phase
 	points_assigned_scale = Vector2.ZERO
 	arc_assigned_width = 0
 	arc_on = false
+	_despawn_animation()
 	await get_tree().create_timer(0.5).timeout
-	_visible_set(0)
+	_set_state(0)
 	queue_free()
 
 
-func _visible_set(mode: int) -> void:
-	# 0 = invisible, 1 = warning, 2 = actived
-	start_point_sprite.visible = (mode > 0)
-	end_point_sprite.visible = (mode > 0)
-	arc.visible = (mode > 0)
-	if mode == 2:
-		start_point_sprite.modulate = Color(1.0, 0.0, 0.0, 1.0)
-		end_point_sprite.modulate = Color(1.0, 0.0, 0.0, 1.0)
-		arc.modulate = Color(1.0, 0.0, 0.0, 1.0)
-	else:
-		start_point_sprite.modulate = Color(1.0, 1.0, 1.0, 1.0)
-		end_point_sprite.modulate = Color(1.0, 1.0, 1.0, 1.0)
-		arc.modulate = Color(1.0, 1.0, 1.0, 1.0)
+func _spawn_animation() -> void:
+	# start cone
+	var tween = create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_SPRING).set_parallel()
+
+	start_cone.self_modulate.a = 0.0
+	start_cone.position = Vector2(5, -8)
+	start_cone.rotation_degrees = 20
+
+	tween.tween_property(start_cone, "self_modulate:a", 1.0, 0.2).set_trans(Tween.TRANS_LINEAR)
+	tween.tween_property(start_cone, "position", Vector2.ZERO, 0.5)
+	tween.tween_property(start_cone, "rotation_degrees", 0, 0.5)
+
+	# end cone
+	end_cone.self_modulate.a = 0.0
+	end_cone.position = Vector2(5, -8)
+	end_cone.rotation_degrees = 20
+
+	(
+		tween
+		. tween_property(end_cone, "self_modulate:a", 1.0, 0.2)
+		. set_trans(Tween.TRANS_LINEAR)
+		. set_delay(0.05)
+	)
+	tween.tween_property(end_cone, "position", Vector2.ZERO, 0.5).set_delay(0.05)
+	tween.tween_property(end_cone, "rotation_degrees", 0, 0.5).set_delay(0.05)
+
+	# crack
+	crack.material.set_shader_parameter("progress", 0.0)
+	tween.tween_property(crack.material, "shader_parameter/progress", 0.35, delay_time).set_trans(
+		Tween.TRANS_CUBIC
+	)
+
+
+func _activate_animation():
+	var tween = create_tween().set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	tween.tween_property(crack.material, "shader_parameter/progress", 1.0, 0.8)
+
+
+func _despawn_animation():
+	var tween = create_tween().set_parallel()
+	tween.tween_property(crack.material, "shader_parameter/progress", 0, 0.5)
+	tween.tween_property(start_cone, "self_modulate:a", 0.0, 0.2)
+	tween.tween_property(end_cone, "self_modulate:a", 0.0, 0.2).set_delay(0.05)
+
+
+func _set_state(mode: int) -> void:
+	match mode:
+		0:  # invisible
+			start_cone.visible = false
+			end_cone.visible = false
+		1:  # warning
+			start_cone.visible = true
+			end_cone.visible = true
+		2:  # activated
+			start_cone.visible = true
+			end_cone.visible = true
 
 
 func _detect_player() -> void:
