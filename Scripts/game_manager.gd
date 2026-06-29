@@ -1,9 +1,8 @@
 extends Node2D
 
-#const RESULT_SCREEN_TEST_DELAY := 10.0
-# Seats driven by a remote agent. The human plays directly on the keyboard, so
-# only agent seats need wiring: add a name here to add an agent (1 agent for now).
 const AGENT_SEATS: Array[String] = ["Agent1"]
+const AGENT_TEAM_ID := 0
+const ECONOMY_TICK_SEC := 1.0
 
 @export var player: CharacterBody2D
 @export var camera: Camera2D
@@ -48,6 +47,15 @@ func _ready() -> void:
 
 	agent_action_service.setup_services(team_status_service, trap_request_scheduler)
 
+	team_status_service.initialize_teams([AGENT_TEAM_ID])
+	trap_request_scheduler.initialize_teams([AGENT_TEAM_ID])
+
+	var economy_timer := Timer.new()
+	economy_timer.wait_time = ECONOMY_TICK_SEC
+	economy_timer.timeout.connect(_on_economy_tick)
+	add_child(economy_timer)
+	economy_timer.start()
+
 	energy_increase_timer.wait_time = energy_increase_period
 
 	player_invincible = false
@@ -57,29 +65,63 @@ func _ready() -> void:
 	#_show_test_result_after_delay()
 
 
+func _physics_process(delta: float) -> void:
+	# Real-time per frame: spawn queued traps promptly + count down cooldowns.
+	# Energy regen is NOT here -- it ticks discretely in _on_economy_tick().
+	if game_over:
+		return
+	agent_action_service.update_cooldowns(delta)
+	trap_request_scheduler.process_requests()
+
+
+func _on_economy_tick() -> void:
+	# Discrete integer energy regen (regen_rate * tick seconds) on a fixed clock.
+	if game_over:
+		return
+	team_status_service.update_energy_regen(ECONOMY_TICK_SEC)
+
+
 func _begin_agents() -> void:
-	var bundle := ApiServer.cmdline_value("--agent-bundle")
-	if bundle == "":
+	if "--console" in OS.get_cmdline_user_args():
+		_spawn_agents("", "")
+		return
+	var bundle := _resolve_bundle_dir()
+	if bundle == "" or not FileAccess.file_exists(bundle.path_join("runner.py")):
 		_spawn_agents("", "")
 		return
 	var override := ApiServer.cmdline_value("--agent-file")
+	var agent_file := override if override != "" else Global.agent_file
+	_spawn_agents(bundle, agent_file)
+
+
+func _resolve_bundle_dir() -> String:
+	var override := ApiServer.cmdline_value("--agent-bundle")
 	if override != "":
-		_spawn_agents(bundle, override)
+		return override
+	if OS.has_feature("editor"):
+		var root := ProjectSettings.globalize_path("res://")
+		return root.path_join("agent/build").path_join(_bundle_platform_label())
+	return OS.get_executable_path().get_base_dir().path_join("agent")
+
+
+func _bundle_platform_label() -> String:
+	var os_label := ""
+	if OS.has_feature("windows"):
+		os_label = "windows"
+	elif OS.has_feature("linux"):
+		os_label = "linux"
+	elif OS.has_feature("macos"):
+		os_label = "macos"
 	else:
-		_prompt_agent_file(bundle)
-
-
-func _prompt_agent_file(bundle: String) -> void:
-	var dialog := FileDialog.new()
-	dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
-	dialog.access = FileDialog.ACCESS_FILESYSTEM
-	dialog.use_native_dialog = true
-	dialog.add_filter("*.py", "Python agent")
-	# Cancel falls back to the bundle's baked agent.py (empty agent_file).
-	dialog.file_selected.connect(func(path: String): _spawn_agents(bundle, path))
-	dialog.canceled.connect(func(): _spawn_agents(bundle, ""))
-	add_child(dialog)
-	dialog.popup_centered_ratio(0.6)
+		return ""
+	var arch := ""
+	if OS.has_feature("arm64"):
+		arch = "aarch64"
+	elif OS.has_feature("x86_64"):
+		arch = "x86_64"
+	else:
+		return ""
+	return "%s-%s" % [os_label, arch]
 
 
 func _spawn_agents(bundle: String, agent_file: String) -> void:
@@ -92,7 +134,6 @@ func _spawn_agents(bundle: String, agent_file: String) -> void:
 		add_child(agent)
 
 
-# tests/examples/Api usage of Agent Action Service/Team Status Service/Trap Request Scheduler
 func get_agent_action_service() -> AgentActionService:
 	return agent_action_service
 

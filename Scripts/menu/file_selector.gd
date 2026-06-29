@@ -8,12 +8,13 @@ var selected_agent_file := ""
 var _file_dialog: FileDialog
 
 @onready var selected_label: Label = $Panel/VBoxContainer/SelectedFileLabel
+@onready var enter_button: Button = $Panel/VBoxContainer/EnterGameButton
 
 
 func _ready() -> void:
-	# Inherit any previous choice so going back and forth keeps the selection.
-	selected_agent_file = Global.agent_file
+	selected_agent_file = ""
 	_update_selected_label()
+	enter_button.disabled = true
 
 
 func _on_choose_button_up() -> void:
@@ -22,7 +23,12 @@ func _on_choose_button_up() -> void:
 
 func _on_default_button_up() -> void:
 	selected_agent_file = ""
+	_mark_chosen()
 	_update_selected_label()
+
+
+func _mark_chosen() -> void:
+	enter_button.disabled = false
 
 
 func _on_enter_game_button_up() -> void:
@@ -56,4 +62,5 @@ func _open_file_dialog() -> void:
 
 func _on_agent_file_selected(path: String) -> void:
 	selected_agent_file = path
+	_mark_chosen()
 	_update_selected_label()

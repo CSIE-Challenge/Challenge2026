@@ -97,8 +97,9 @@ if [[ -f "$AGENT_DIR/runner.py" ]]; then
   cp "$AGENT_DIR/runner.py" "$BUNDLE_DIR/runner.py"
   pkg "runner.py"
 fi
-if [[ -f "$AGENT_DIR/agent.sample.py" ]]; then
-  cp "$AGENT_DIR/agent.sample.py" "$BUNDLE_DIR/agent.py"
+# Ship the working agent.py as the default; fall back to the sample if absent.
+if [[ -f "$AGENT_DIR/agent.py" ]]; then
+  cp "$AGENT_DIR/agent.py" "$BUNDLE_DIR/agent.py"
   pkg "agent.py"
 fi
 

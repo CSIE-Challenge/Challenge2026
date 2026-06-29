@@ -1,17 +1,22 @@
 #!/usr/bin/env python3
-"""Spawn every trap in a running Godot game through the Python API.
+"""Dev/integration tool: spawn every trap in a running game through the API.
 
-You start the game yourself and paste in the agent token it prints.
+A test harness, not a real player agent -- it uses admin commands
+(init_agent_services) to fund one team per trap so the whole set spawns. Two
+ways to run it:
 
-    # 1. Start the game (in a separate terminal, or from the editor with F5):
-    godot --path . res://Scenes/main.tscn
-    # It prints:  [API Server] agent 'Agent1' token: 1a2b3c4d
+  * As an agent (no token): pick this file in the in-game file selector, or
+    `runner.py --agent scripts/spawn_all_traps.py`. The game connects for you.
 
-    # 2. Run this and give it that token:
-    uv run python scripts/spawn_all_traps.py 1a2b3c4d
-    # ...or run with no token and paste it when prompted.
+  * By hand (paste a token): start the game in console mode so it won't spawn
+    its own agent and leaves the token free (it self-picks a port):
+        godot --headless --path . res://Scenes/gameplay.tscn -- --console
+        # prints:  [API Server] Listening to port: 41234
+        #          [API Server] agent 'Agent1' token: 1a2b3c4d
+    then:
+        uv run python scripts/spawn_all_traps.py 1a2b3c4d --port 41234
 
-Run from the `agent/` directorty so `uv run` resolves the `api` package.
+Run from the `agent/` directory so `uv run` resolves the `api` package.
 """
 
 from __future__ import annotations
@@ -57,9 +62,16 @@ TRAPS: list[tuple[str, dict]] = [
         },
     ),
 ]
-# A team's energy is capped at max_energy (100), but the costliest trap is 100,
-# so each trap gets its own fully-funded team and the whole set spawns.
+
 INITIAL_ENERGY = 100.0
+
+
+DEFAULT_DELAY = 1.2
+
+
+def run(client: GameClientBase) -> None:
+    while True:
+        _spawn_all(client, DEFAULT_DELAY)
 
 
 def _spawn_all(client: GameClientBase, delay: float) -> bool:
@@ -102,7 +114,10 @@ def main() -> int:
         "--port", type=int, default=7749, help="game port (default 7749)"
     )
     parser.add_argument(
-        "--delay", type=float, default=1.2, help="seconds between traps (default 1.2)"
+        "--delay",
+        type=float,
+        default=DEFAULT_DELAY,
+        help="seconds between traps (default 1.2)",
     )
     args = parser.parse_args()
 

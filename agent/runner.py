@@ -1,13 +1,21 @@
 #!/usr/bin/env python3
 """Bundle entrypoint: connect to the game and hand the player's agent a client.
 
-The launcher spawns the bundled interpreter on this file with CHALLENGE_WS_URL
-and CHALLENGE_TOKEN in the environment. We wait for the server port to open,
-connect, import the player's agent.py (next to this file), and call run(client).
+The agent contract is just `def run(client)` -- the player never touches the
+token or the connection. This file does the connecting.
+
+Two ways it runs, same entrypoint:
+  * In-game (normal play): the game spawns the bundled interpreter on this file
+    with CHALLENGE_WS_URL / CHALLENGE_TOKEN / CHALLENGE_AGENT_PATH in the env.
+  * Manual test: start the game with `--console` (it prints a port and token),
+    then point this at them:
+        python runner.py --url ws://127.0.0.1:<port> --token <token> \
+            --agent path/to/agent.py
 """
 
 from __future__ import annotations
 
+import argparse
 import importlib.util
 import os
 import socket
@@ -70,22 +78,46 @@ def _run_agent(client: GameClientBase, agent_path: Path) -> None:
     run(client)
 
 
-def _agent_path() -> Path:
-    """Player's file: CHALLENGE_AGENT_PATH (launcher-set) or the sibling agent.py."""
-    override = os.environ.get("CHALLENGE_AGENT_PATH")
-    if override:
-        return Path(override)
+def _agent_path(override: str | None = None) -> Path:
+    """Player's file: --agent / CHALLENGE_AGENT_PATH, else the sibling agent.py."""
+    chosen = override or os.environ.get("CHALLENGE_AGENT_PATH")
+    if chosen:
+        return Path(chosen)
     return Path(__file__).resolve().parent / "agent.py"
 
 
-def main() -> int:
-    client = GameClientBase.from_env()
+def _build_client(args: argparse.Namespace) -> GameClientBase:
+    """Connection details: CLI flags win, else the env the game sets."""
+    url = args.url or os.environ.get("CHALLENGE_WS_URL", "ws://127.0.0.1:7749")
+    token = args.token or os.environ.get("CHALLENGE_TOKEN")
+    if not token:
+        raise RuntimeError(
+            "no token: pass --token, or set CHALLENGE_TOKEN. "
+            "For a manual run, start the game with --console to get a token."
+        )
+    return GameClientBase.from_url(url, token)
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Run a player agent against the game.")
+    parser.add_argument(
+        "--url",
+        help="ws://host:port (default: CHALLENGE_WS_URL or ws://127.0.0.1:7749)",
+    )
+    parser.add_argument("--token", help="agent token (default: CHALLENGE_TOKEN)")
+    parser.add_argument(
+        "--agent",
+        help="agent .py path (default: CHALLENGE_AGENT_PATH or sibling agent.py)",
+    )
+    args = parser.parse_args(argv)
+
+    client = _build_client(args)
     _wait_for_port(client.host, client.port, _PORT_WAIT_SEC)
     client.connect()
     stop = threading.Event()
     _start_reaper(client, stop)
     try:
-        _run_agent(client, _agent_path())
+        _run_agent(client, _agent_path(args.agent))
     finally:
         stop.set()
         client.close()

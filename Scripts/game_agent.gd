@@ -1,6 +1,8 @@
 class_name GameAgent
 extends Node
 
+const _REAP_INTERVAL := 1.0
+
 const TRAP_PARAM_DEFINITIONS := {
 	"trap1-mine": {"position": {"type": "vector2", "required": true}},
 	"trap2-electric_ring":
@@ -67,6 +69,7 @@ var agent_file := ""
 var _conn: WebSocketConnection
 var _command_handlers: Dictionary[String, Callable] = {}
 var _agent_pid := -1
+var _reap_accum := 0.0
 
 
 func _init() -> void:
@@ -84,6 +87,18 @@ func _ready() -> void:
 
 	if bundle_dir != "":
 		_spawn_agent_process(_conn.get_token())
+
+
+func _process(delta: float) -> void:
+	if _agent_pid < 0:
+		return
+	_reap_accum += delta
+	if _reap_accum < _REAP_INTERVAL:
+		return
+	_reap_accum = 0.0
+	if not OS.is_process_running(_agent_pid):
+		print("[API Server] agent '%s' process %d exited" % [name, _agent_pid])
+		_agent_pid = -1
 
 
 ## Launch the player's Python agent from the downloaded bundle.

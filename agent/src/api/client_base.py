@@ -86,14 +86,19 @@ class GameClientBase:
         )
 
     @classmethod
+    def from_url(cls, url: str, token: str) -> GameClientBase:
+        """Build a client from a ws:// URL and an agent token."""
+        parsed = urlparse(url)
+        return cls(token, host=parsed.hostname or "127.0.0.1", port=parsed.port or 7749)
+
+    @classmethod
     def from_env(cls) -> GameClientBase:
         """Build a client from CHALLENGE_WS_URL + CHALLENGE_TOKEN (launcher-set env)."""
         url = os.environ.get("CHALLENGE_WS_URL", "ws://127.0.0.1:7749")
         token = os.environ.get("CHALLENGE_TOKEN")
         if not token:
             raise RuntimeError("CHALLENGE_TOKEN is not set")
-        parsed = urlparse(url)
-        return cls(token, host=parsed.hostname or "127.0.0.1", port=parsed.port or 7749)
+        return cls.from_url(url, token)
 
     # --- async loop plumbing -------------------------------------------------
 
