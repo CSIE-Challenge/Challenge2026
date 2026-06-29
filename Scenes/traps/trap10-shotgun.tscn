@@ -8,6 +8,38 @@
 [ext_resource type="Texture2D" uid="uid://bbhdml57ys8i0" path="res://Shapes/basket.svg" id="6_my68g"]
 [ext_resource type="Texture2D" uid="uid://cloqbfcgyrhli" path="res://Shapes/empty_basket.svg" id="7_gtrg3"]
 
+[sub_resource type="Shader" id="Shader_my68g"]
+code = "shader_type canvas_item;
+
+uniform vec4 outline_color:source_color; 
+uniform float outline_width;            
+
+void fragment() {
+    vec4 texture_color = texture(TEXTURE, UV);
+    vec2 size = TEXTURE_PIXEL_SIZE * outline_width;
+    
+    float alpha = texture_color.a;
+    alpha += texture(TEXTURE, UV + vec2(0.0, size.y)).a;  
+    alpha += texture(TEXTURE, UV - vec2(0.0, size.y)).a;  
+    alpha += texture(TEXTURE, UV - vec2(size.x, 0.0)).a;  
+    alpha += texture(TEXTURE, UV + vec2(size.x, 0.0)).a; 
+	alpha += texture(TEXTURE, UV + size).a;
+	alpha += texture(TEXTURE, UV - size).a;
+	alpha += texture(TEXTURE, UV + vec2(size.x, -size.y)).a;  
+    alpha += texture(TEXTURE, UV - vec2(size.x, -size.y)).a; 
+
+    vec4 final_color = mix(outline_color, texture_color, texture_color.a);
+    
+    final_color.a = clamp(alpha, 0.0, 1.0);
+    
+    COLOR = final_color;
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gtrg3"]
+shader = SubResource("Shader_my68g")
+shader_parameter/outline_color = Color(0.5882353, 0.5882353, 0.5882353, 1)
+shader_parameter/outline_width = 10.0
+
 [sub_resource type="CircleShape2D" id="CircleShape2D_oluei"]
 radius = 12.0
 
@@ -81,6 +113,38 @@ scale_max = 0.12
 scale_curve = SubResource("CurveTexture_gtrg3")
 color = Color(1, 0.87058824, 0.06666667, 1)
 
+[sub_resource type="Shader" id="Shader_u2tcx"]
+code = "shader_type canvas_item;
+
+uniform vec4 outline_color:source_color = vec4(0.6,0.6,0.6,1); 
+uniform float outline_width = 20.0;            
+
+void fragment() {
+    vec4 texture_color = texture(TEXTURE, UV);
+    vec2 size = TEXTURE_PIXEL_SIZE * outline_width;
+    
+    float alpha = texture_color.a;
+    alpha += texture(TEXTURE, UV + vec2(0.0, size.y)).a;  
+    alpha += texture(TEXTURE, UV - vec2(0.0, size.y)).a;  
+    alpha += texture(TEXTURE, UV - vec2(size.x, 0.0)).a;  
+    alpha += texture(TEXTURE, UV + vec2(size.x, 0.0)).a; 
+	alpha += texture(TEXTURE, UV + size).a;
+	alpha += texture(TEXTURE, UV - size).a;
+	alpha += texture(TEXTURE, UV + vec2(size.x, -size.y)).a;  
+    alpha += texture(TEXTURE, UV - vec2(size.x, -size.y)).a; 
+
+    vec4 final_color = mix(outline_color, texture_color, texture_color.a);
+    
+    final_color.a = clamp(alpha, 0.0, 1.0);
+    
+    COLOR = final_color;
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7ukhr"]
+shader = SubResource("Shader_u2tcx")
+shader_parameter/outline_color = Color(0.5882353, 0.5882353, 0.5882353, 1)
+shader_parameter/outline_width = 10.0
+
 [sub_resource type="Animation" id="Animation_my68g"]
 length = 0.001
 tracks/0/type = "value"
@@ -136,6 +200,38 @@ scale_min = 0.08
 scale_max = 0.12
 scale_curve = SubResource("CurveTexture_gtrg3")
 color = Color(1, 0.78039217, 0, 1)
+
+[sub_resource type="Shader" id="Shader_8fuxe"]
+code = "shader_type canvas_item;
+
+uniform vec4 outline_color:source_color = vec4(0.6,0.6,0.6,1); 
+uniform float outline_width = 20.0;            
+
+void fragment() {
+    vec4 texture_color = texture(TEXTURE, UV);
+    vec2 size = TEXTURE_PIXEL_SIZE * outline_width;
+    
+    float alpha = texture_color.a;
+    alpha += texture(TEXTURE, UV + vec2(0.0, size.y)).a;  
+    alpha += texture(TEXTURE, UV - vec2(0.0, size.y)).a;  
+    alpha += texture(TEXTURE, UV - vec2(size.x, 0.0)).a;  
+    alpha += texture(TEXTURE, UV + vec2(size.x, 0.0)).a; 
+	alpha += texture(TEXTURE, UV + size).a;
+	alpha += texture(TEXTURE, UV - size).a;
+	alpha += texture(TEXTURE, UV + vec2(size.x, -size.y)).a;  
+    alpha += texture(TEXTURE, UV - vec2(size.x, -size.y)).a; 
+
+    vec4 final_color = mix(outline_color, texture_color, texture_color.a);
+    
+    final_color.a = clamp(alpha, 0.0, 1.0);
+    
+    COLOR = final_color;
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_t1byb"]
+shader = SubResource("Shader_8fuxe")
+shader_parameter/outline_color = Color(0.5882353, 0.5882353, 0.5882353, 1)
+shader_parameter/outline_width = 10.0
 
 [sub_resource type="Animation" id="Animation_7ukhr"]
 length = 0.001
@@ -325,7 +421,7 @@ collision_layer = 4
 collision_mask = 3
 
 [node name="Sprite2D" type="Sprite2D" parent="Bullets/Bullet1" unique_id=508732407]
-modulate = Color(1, 0.87058824, 0.06666667, 1)
+material = SubResource("ShaderMaterial_gtrg3")
 scale = Vector2(0.08, 0.08)
 texture = ExtResource("2_il5d0")
 
@@ -350,6 +446,7 @@ collision_layer = 4
 collision_mask = 3
 
 [node name="Sprite2D" type="Sprite2D" parent="Bullets/Bullet2" unique_id=1287761530]
+material = SubResource("ShaderMaterial_7ukhr")
 scale = Vector2(0.08, 0.08)
 texture = ExtResource("3_i7n8k")
 
@@ -374,6 +471,7 @@ collision_layer = 4
 collision_mask = 3
 
 [node name="Sprite2D" type="Sprite2D" parent="Bullets/Bullet3" unique_id=1854657220]
+material = SubResource("ShaderMaterial_t1byb")
 position = Vector2(1.14, 0)
 scale = Vector2(0.08, 0.08)
 texture = ExtResource("4_eitjp")

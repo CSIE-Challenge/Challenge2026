@@ -17,12 +17,21 @@ var external_velocity: Vector2 = Vector2.ZERO
 var isinvincible := false
 var jump_count := 0
 var distance_traveled := 0.0
+var all_sand_tiles: Array[Vector2i] = []
+var last_stepped_cell = Vector2i(-1, -1)
 
 @onready var body_sprite = $BodySprite
+@onready var sand_tilemap = $"../../SandTileMap"
+@onready var walk_particle = $WalkParticle
+@onready var jump_particle = $JumpParticle
+@onready var land_particle = $LandParticle
 
 
 func _ready() -> void:
 	health = max_health
+	for x in range(4):
+		for y in range(4):
+			all_sand_tiles.append(Vector2i(x, y))
 
 
 func _physics_process(delta: float) -> void:
@@ -34,6 +43,11 @@ func _physics_process(delta: float) -> void:
 		_jump_process(delta)
 	if isinvincible:
 		_invincible_flicker()
+	if input_dir.length_squared() > 0 and not isjumping:
+		walk_particle.emitting = true
+		_update_sand_tilemap()
+	else:
+		walk_particle.emitting = false
 
 
 func move(dir: Vector2, speed: float, delta: float):
@@ -51,9 +65,22 @@ func move(dir: Vector2, speed: float, delta: float):
 	distance_traveled += previous_position.distance_to(global_position)
 
 
+func _update_sand_tilemap():
+	var current_cell = sand_tilemap.local_to_map(position / 3)
+	if current_cell == last_stepped_cell:
+		return
+	last_stepped_cell = current_cell
+	var source_id = sand_tilemap.get_cell_source_id(current_cell)
+	if source_id != -1:
+		var random_tile = all_sand_tiles.pick_random()
+		sand_tilemap.set_cell(current_cell, source_id, random_tile)
+
+
 func _jump():
 	if isjumping:
 		return
+	jump_particle.restart()
+	jump_particle.emitting = true
 	isjumping = true
 	jump_count += 1
 	current_jump_velocity = jump_velocity
@@ -71,6 +98,8 @@ func _jump_process(delta: float):
 		isjumping = false
 		body_sprite.position.y = 0
 		_jump_invisiblility_toggle(false)
+		land_particle.restart()
+		land_particle.emitting = true
 	else:
 		body_sprite.position.y = -current_sprite_y
 
