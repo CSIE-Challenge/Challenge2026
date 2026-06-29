@@ -16,6 +16,7 @@ shape = SubResource("RectangleShape2D_k3tq1")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=2126618245]
 modulate = Color(0.65481544, 0.13069847, 0.16253066, 1)
+z_index = -2
 texture = SubResource("PlaceholderTexture2D_d7757")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
