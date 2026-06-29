@@ -10,29 +10,29 @@ var team_status_service: TeamStatusService
 var trap_request_scheduler: TrapRequestScheduler
 
 var trap_energy_costs := {
-	"trap1-mine": 10.0,
-	"trap2-electric_ring": 20.0,
-	"trap3-tracing_bullet": 30.0,
-	"trap4-conveyor": 40.0,
-	"trap5-icefloor": 50.0,
-	"trap6-scanline": 60.0,
-	"trap7-spreading_ripples": 70.0,
-	"trap8-electric_arc": 80.0,
-	"trap9-mortar": 90.0,
-	"trap10-shotgun": 100.0,
+	"trap1-mine": TrapData.new().data["trap1-mine"]["energy_costs"],
+	"trap2-electric_ring": TrapData.new().data["trap2-electric_ring"]["energy_costs"],
+	"trap3-tracing_bullet": TrapData.new().data["trap3-tracing_bullet"]["energy_costs"],
+	"trap4-conveyor": TrapData.new().data["trap4-conveyor"]["energy_costs"],
+	"trap5-icefloor": TrapData.new().data["trap5-icefloor"]["energy_costs"],
+	"trap6-scanline": TrapData.new().data["trap6-scanline"]["energy_costs"],
+	"trap7-spreading_ripples": TrapData.new().data["trap7-spreading_ripples"]["energy_costs"],
+	"trap8-electric_arc": TrapData.new().data["trap8-electric_arc"]["energy_costs"],
+	"trap9-mortar": TrapData.new().data["trap9-mortar"]["energy_costs"],
+	"trap10-shotgun": TrapData.new().data["trap10-shotgun"]["energy_costs"],
 }
 
 var trap_cooldown_times := {
-	"trap1-mine": 2.0,
-	"trap2-electric_ring": 3.0,
-	"trap3-tracing_bullet": 3.0,
-	"trap4-conveyor": 3.0,
-	"trap5-icefloor": 3.0,
-	"trap6-scanline": 3.0,
-	"trap7-spreading_ripples": 3.0,
-	"trap8-electric_arc": 3.0,
-	"trap9-mortar": 3.0,
-	"trap10-shotgun": 5.0,
+	"trap1-mine": TrapData.new().data["trap1-mine"]["cooldown_times"],
+	"trap2-electric_ring": TrapData.new().data["trap2-electric_ring"]["cooldown_times"],
+	"trap3-tracing_bullet": TrapData.new().data["trap3-tracing_bullet"]["cooldown_times"],
+	"trap4-conveyor": TrapData.new().data["trap4-conveyor"]["cooldown_times"],
+	"trap5-icefloor": TrapData.new().data["trap5-icefloor"]["cooldown_times"],
+	"trap6-scanline": TrapData.new().data["trap6-scanline"]["cooldown_times"],
+	"trap7-spreading_ripples": TrapData.new().data["trap7-spreading_ripples"]["cooldown_times"],
+	"trap8-electric_arc": TrapData.new().data["trap8-electric_arc"]["cooldown_times"],
+	"trap9-mortar": TrapData.new().data["trap9-mortar"]["cooldown_times"],
+	"trap10-shotgun": TrapData.new().data["trap10-shotgun"]["cooldown_times"],
 }
 
 # trap_cooldowns[team_id][trap_id] = remaining_seconds
