@@ -60,7 +60,7 @@ func _start_ripple_expansion() -> void:
 	water_particle.emitting = true
 
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if is_expanding and monitoring:
 		collision_shape.radius += current_expand_rate * delta
 		for body in get_overlapping_bodies():
