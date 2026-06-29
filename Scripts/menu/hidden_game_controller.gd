@@ -80,6 +80,9 @@ func run_hidden_game_sequence() -> void:
 
 
 func _run_phase_1() -> bool:
+	if is_aborted:
+		return true
+
 	Dialogue.start_dialogue(
 		["呃，你誰？<input>", "怎麼找到這裡的？<input>", "喔，嫌這個遊戲太簡單是吧。<input>", "那就別怪我不客氣了！<input>"]
 	)
@@ -103,6 +106,9 @@ func _run_phase_1() -> bool:
 
 
 func _run_phase_2() -> bool:
+	if is_aborted:
+		return true
+
 	Dialogue.start_dialogue(
 		["哦？躲得不錯嘛。<input>", "但接下來這招，[wave]<speed=0.1>你還能如此從容嗎？<glitch=1>[/wave]"]
 	)
@@ -123,6 +129,9 @@ func _run_phase_2() -> bool:
 
 
 func _run_phase_3() -> bool:
+	if is_aborted:
+		return true
+
 	# ----------------- 新增的流程 -----------------
 
 	Dialogue.start_dialogue(["嘖，比想像中難纏呢。"])
@@ -178,6 +187,9 @@ func _run_phase_3() -> bool:
 
 
 func _run_phase_4() -> bool:
+	if is_aborted:
+		return true
+
 	# ----------------- 第三波流程 -----------------
 	boss.rhythm_attack()
 	# rhythm_attack 不會立刻結束，我們等待它執行完畢
