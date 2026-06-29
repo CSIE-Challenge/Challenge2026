@@ -4,10 +4,12 @@ extends CharacterBody2D
 const PLAYER_COLLISION_LAYER := 1
 const WALL_COLLISION_LAYER := 2
 const TRAP_COLLISION_LAYER := 4
-
-@export var max_turn_rate := 2.0
-@export var max_speed := 300.0
-@export var min_speed := 100.0
+var cooldown_times = TrapData.new().data["trap3-tracing_bullet"]["cooldown_times"]
+var damage = TrapData.new().data["trap3-tracing_bullet"]["damage"]
+var energy_costs = TrapData.new().data["trap3-tracing_bullet"]["energy_costs"]
+var max_turn_rate = TrapData.new().data["trap3-tracing_bullet"]["max_turn_rate"]
+var max_speed = TrapData.new().data["trap3-tracing_bullet"]["max_speed"]
+var min_speed = TrapData.new().data["trap3-tracing_bullet"]["min_speed"]
 
 var target: Node2D = null
 var speed := 0.0
@@ -58,7 +60,7 @@ func _physics_process(delta):
 		feather_effect.finished.connect(feather_effect.queue_free)
 		feather_effect.reparent(Global.stage)
 		if collider == target:
-			Global.player_hit.emit(67)
+			Global.player_hit.emit(damage)
 			_destroy()
 		elif (collider.collision_layer & WALL_COLLISION_LAYER) != 0:
 			_destroy()

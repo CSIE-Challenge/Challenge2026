@@ -6,7 +6,10 @@ const ICE_ACCELERATION_BASE: float = 5.0
 
 static var _ice_overlap_count: Dictionary = {}
 
-@export var lifetime: float = 5.0
+var cooldown_times = TrapData.new().data["trap5-icefloor"]["cooldown_times"]
+var damage = TrapData.new().data["trap5-icefloor"]["damage"]
+var energy_costs = TrapData.new().data["trap5-icefloor"]["energy_costs"]
+var lifetime = TrapData.new().data["trap4-conveyor"]["lifetime"]
 
 
 static func initialize(pos: Vector2) -> Trap5IceFloor:

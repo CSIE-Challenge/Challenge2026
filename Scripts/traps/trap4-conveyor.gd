@@ -1,8 +1,11 @@
 class_name Trap4Conveyor
 extends Area2D
 
-@export var speed: float = 100
-@export var lifetime: float = 5.0
+var cooldown_times = TrapData.new().data["trap4-conveyor"]["cooldown_times"]
+var damage = TrapData.new().data["trap4-conveyor"]["damage"]
+var energy_costs = TrapData.new().data["trap4-conveyor"]["energy_costs"]
+var speed = TrapData.new().data["trap4-conveyor"]["speed"]
+var lifetime = TrapData.new().data["trap4-conveyor"]["lifetime"]
 var direction: Vector2
 var _is_disappearing: bool = false
 

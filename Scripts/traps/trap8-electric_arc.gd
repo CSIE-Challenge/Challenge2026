@@ -1,8 +1,18 @@
 class_name Trap8ElectricArc
 extends Node2D
 
-@export var delay_time: float = 2.0
-@export var duration_time: float = 5
+var cooldown_times = TrapData.new().data["trap8-electric_arc"]["cooldown_times"]
+var damage = TrapData.new().data["trap8-electric_arc"]["damage"]
+var energy_costs = TrapData.new().data["trap8-electric_arc"]["energy_costs"]
+var points_radius = TrapData.new().data["trap8-electric_arc"]["points_radius"]
+var points_default_scale_array = TrapData.new().data["trap8-electric_arc"]["points_default_scale"]
+var points_default_scale = Vector2(points_default_scale_array[0], points_default_scale_array[1])
+var points_revolution_speed = TrapData.new().data["trap8-electric_arc"]["points_revolution_speed"]
+var arc_width = TrapData.new().data["trap8-electric_arc"]["arc_width"]
+var scaling_rate = TrapData.new().data["trap8-electric_arc"]["scaling_rate"]
+var player_radius = TrapData.new().data["trap8-electric_arc"]["player_radius"]
+var delay_time = TrapData.new().data["trap8-electric_arc"]["delay_time"]
+var duration_time = TrapData.new().data["trap8-electric_arc"]["duration_time"]
 
 var points_scale: Vector2
 var points_assigned_scale: Vector2

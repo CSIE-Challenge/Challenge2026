@@ -1,14 +1,13 @@
 class_name Trap10Shotgun
 extends Node2D
 
-@export var damage: float = 5.0
-@export var bullet_speed: float = 700.0
-@export var aiing_time: float = 1.5
-@export var aiming_line_color: Color = Color(
-	0.937,
-	0.373,
-	0.285,
-)
+var cooldown_times = TrapData.new().data["trap10-shotgun"]["cooldown_times"]
+var damage = TrapData.new().data["trap10-shotgun"]["damage"]
+var energy_costs = TrapData.new().data["trap10-shotgun"]["energy_costs"]
+var bullet_speed = TrapData.new().data["trap10-shotgun"]["bullet_speed"]
+var aiming_time = TrapData.new().data["trap10-shotgun"]["aiming_time"]
+var aiming_line_color = Color(TrapData.new().data["trap10-shotgun"]["aiming_line_color"])
+# ▲[0.937, 0.373, 0.285] in HEX is #F05F49
 
 var directions: Array[Vector2] = []
 var hit_spawn_wall: Array[bool]
@@ -67,7 +66,7 @@ func activate(pos: Vector2, dir1: Vector2, dir2: Vector2, dir3: Vector2) -> void
 
 	aiming = true
 	visible = true
-	timer.start(aiing_time)
+	timer.start(aiming_time)
 	if not timer.timeout.is_connected(_on_aiming_timeout):
 		timer.timeout.connect(_on_aiming_timeout)
 

@@ -1,7 +1,11 @@
 class_name Trap1Mine
 extends Node2D
 
-@export var arming_time: float = 3.0  # How long it takes to turn completely red
+var cooldown_times = TrapData.new().data["trap1-mine"]["cooldown_times"]
+var damage = TrapData.new().data["trap1-mine"]["damage"]
+var energy_costs = TrapData.new().data["trap1-mine"]["energy_costs"]
+var arming_time = TrapData.new().data["trap1-mine"]["arming_time"]
+# ▲How long it takes to turn completely red
 
 var is_armed := false
 var isjumping_2_frame_ago := false
@@ -40,7 +44,7 @@ func on_arming_complete() -> void:
 
 func explode() -> void:
 	print("BOOM! Player landed on the mine trap!")
-	Global.player_hit.emit.call_deferred(10)  #Replace this with the actual damage
+	Global.player_hit.emit.call_deferred(damage)  #Replace this with the actual damage
 	queue_free()
 
 

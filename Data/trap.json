@@ -41,7 +41,12 @@
 		"lifetime": 5.0
 	},
 	"trap6-scanline": {
-		"path": "res://Scenes/traps/trap6-scanline.tscn"
+		"path": "res://Scenes/traps/trap6-scanline.tscn",
+		"cooldown_times": 3.0,
+		"damage": 4,
+		"energy_costs": 50.0,
+		"speed_lower_bound": 120,
+		"speed_upper_bound": 250
 	},
 	"trap7-spreading_ripples": {
 		"path": "res://Scenes/traps/trap7-spreading_ripples.tscn",
@@ -77,7 +82,8 @@
 		"max_height": 300.0,
 		"gravity": 200.0,
 		"explosion_max_radius": 100.0,
-		"explosion_expand_speed": 400.0
+		"explosion_expand_speed": 400.0,
+		"stay_time": 0.25
 	},
 	"trap10-shotgun": {
 		"path": "res://Scenes/traps/trap10-shotgun.tscn",
@@ -85,11 +91,7 @@
 		"damage": 5.0,
 		"energy_costs": 100.0,
 		"bullet_speed": 700.0,
-		"aiing_time": 1.5,
-		"aiming_line_color": [
-			0.937,
-			0.373,
-			0.285
-		]
+		"aiming_time": 1.5,
+		"aiming_line_color": "#F05F49"
 	}
 }

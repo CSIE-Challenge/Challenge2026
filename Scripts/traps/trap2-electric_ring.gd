@@ -1,10 +1,15 @@
 class_name Trap2ElectricRing
 extends Node2D
-@export var standard_radius: float  #sprite的scale為1時，場景中實際的電圈半徑
-@export var player_radius: float
-@export var stay_time: float
-@export var ring_thickness: float
-@export var test_player: CharacterBody2D
+var cooldown_times = TrapData.new().data["trap2-electric_ring"]["cooldown_times"]
+var damage = TrapData.new().data["trap2-electric_ring"]["damage"]
+var energy_costs = TrapData.new().data["trap2-electric_ring"]["energy_costs"]
+var standard_radius = TrapData.new().data["trap2-electric_ring"]["standard_radius"]
+# ▲sprite的scale為1時，場景中實際的電圈半徑
+var player_radius = TrapData.new().data["trap2-electric_ring"]["player_radius"]
+var stay_time = TrapData.new().data["trap2-electric_ring"]["stay_time"]
+var ring_thickness = TrapData.new().data["trap2-electric_ring"]["ring_thickness"]
+# @export var test_player: CharacterBody2D
+var test_player: CharacterBody2D
 var player: CharacterBody2D
 var current_fill: float
 var radius: float
@@ -25,9 +30,9 @@ static func initialize(time: float, radius: float) -> Trap2ElectricRing:
 
 
 func _ready():
-	if not test_player == null:
-		player = test_player
-		spawn(randf_range(75, 150), randf_range(1.0, 2.0), player)
+	#if not test_player == null:
+	player = null
+	spawn(randf_range(75, 150), randf_range(1.0, 2.0), player)
 
 
 func _physics_process(delta: float) -> void:
@@ -78,7 +83,7 @@ func _detect_player():
 	var dist = player.global_position.distance_to(global_position)
 	if dist < radius:
 		if dist + player_radius >= radius:
-			Global.player_hit.emit(randi_range(0, 10))
+			Global.player_hit.emit(damage)
 	else:
 		if dist - player_radius <= radius:
-			Global.player_hit.emit(randi_range(0, 10))
+			Global.player_hit.emit(damage)

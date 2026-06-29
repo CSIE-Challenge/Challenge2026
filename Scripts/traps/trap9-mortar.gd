@@ -1,14 +1,17 @@
 class_name Trap9Mortar
 extends Node2D
 
-@export var max_height: float = 300.0
-@export var gravity: float = 200.0
-@export var test_player: CharacterBody2D
-@export var explosion_max_radius: float = 100.0
-@export var stay_time: float = 0.25
-@export var damage: int = 20
 @export var shell_rotate_speed: float = 20.0
 @export var shadow_flicker_frequency: float = 1
+
+var cooldown_times = TrapData.new().data["trap9-mortar"]["cooldown_times"]
+var damage = TrapData.new().data["trap9-mortar"]["damage"]
+var energy_costs = TrapData.new().data["trap9-mortar"]["energy_costs"]
+var max_height = TrapData.new().data["trap9-mortar"]["max_height"]
+var gravity = TrapData.new().data["trap9-mortar"]["gravity"]
+var explosion_max_radius = TrapData.new().data["trap9-mortar"]["explosion_max_radius"]
+var explosion_expand_speed = TrapData.new().data["trap9-mortar"]["explosion_expand_speed"]
+var stay_time = TrapData.new().data["trap9-mortar"]["stay_time"]
 
 var player: CharacterBody2D
 var start_pos: Vector2
