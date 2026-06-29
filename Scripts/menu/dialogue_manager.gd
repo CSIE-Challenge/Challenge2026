@@ -305,7 +305,6 @@ func _confirm_choice():
 	tween.chain().tween_callback(
 		func():
 			_clear_choices()
-			var chosen = current_choices[selected_choice_index]  # 可以傳字串，但傳 index 較保險
 			current_choices.clear()
 			dialogue_box.hide()
 			_set_glitch(0.0)

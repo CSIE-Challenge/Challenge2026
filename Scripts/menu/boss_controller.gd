@@ -24,7 +24,7 @@ var invincible: bool
 var phase: int = 1
 var is_dead: bool = false
 var current_attack_interrupted: bool = false
-var difficulty: int = 2
+var current_difficulty: int = 2
 var is_paused: bool = false
 
 @onready var boss = self
@@ -80,7 +80,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func rand_attack(new_difficulty: int = -1):
 	if new_difficulty != -1:
-		difficulty = new_difficulty
+		current_difficulty = new_difficulty
 
 	while is_inside_tree():
 		if is_dead:
@@ -92,29 +92,31 @@ func rand_attack(new_difficulty: int = -1):
 			var rand_val = randi_range(0, 8)
 			match rand_val:
 				0:
-					await rhythm_attack(difficulty)
+					await rhythm_attack(current_difficulty)
 				1:
-					await test_sword_attack(difficulty)
+					await test_sword_attack(current_difficulty)
 				2:
-					await emit_rocket(difficulty)
+					await emit_rocket(current_difficulty)
 				3:
 					var rand_val2 = randi_range(
 						DifficultyParams.BOOMERANG_MODE_RANGE_MIN,
 						DifficultyParams.BOOMERANG_MODE_RANGE_MAX
 					)
-					await emit_boomerang(rand_val2, difficulty)
+					await emit_boomerang(rand_val2, current_difficulty)
 				4:
-					await squeeze_attack(difficulty)
+					await squeeze_attack(current_difficulty)
 				5:
-					await test_laser_attack(difficulty)
+					await test_laser_attack(current_difficulty)
 				6:
-					await pong_attack(difficulty)
+					await pong_attack(current_difficulty)
 				7:
-					await road_attack(difficulty)
+					await road_attack(current_difficulty)
 				8:
-					await sweeper_attack(difficulty)
+					await sweeper_attack(current_difficulty)
 
-		var cooldown = DifficultyParams.get_val(DifficultyParams.ATTACK_COOLDOWN, difficulty)
+		var cooldown = DifficultyParams.get_val(
+			DifficultyParams.ATTACK_COOLDOWN, current_difficulty
+		)
 		await interruptible_wait(cooldown)
 
 
@@ -982,7 +984,7 @@ func deal_damage(damage: int):
 		if phase == 1:
 			phase = 2
 			boss_hp = 250
-			difficulty = 3
+			current_difficulty = 3
 			boss_hp_bar.max_value = 250
 			boss_hp_bar.value = boss_hp
 

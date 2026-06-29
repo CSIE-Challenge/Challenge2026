@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dyuygpnsh58vn"]
 
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="1_cgfrr"]
-[ext_resource type="Script" uid="uid://dpuh1xvjjuadx" path="res://Scripts/menu/skins/skin_attack_ball.gd" id="1_uiu2b"]
+[ext_resource type="Script" path="res://Scenes/Skins/skin_attack_ball.gd" id="1_uiu2b"]
 
 [sub_resource type="Curve" id="Curve_uiu2b"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]

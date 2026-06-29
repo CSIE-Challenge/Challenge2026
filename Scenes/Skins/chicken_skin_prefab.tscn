@@ -1,0 +1,68 @@
+[gd_scene format=3 uid="uid://chickenskin"]
+
+[ext_resource type="Script" uid="uid://cabtop6poui4q" path="res://Scenes/Skins/chicken_skin_prefab.gd" id="1_chicken"]
+
+[node name="ChickenSkinPrefab" type="Node2D" unique_id=33461519]
+script = ExtResource("1_chicken")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=18408622]
+scale = Vector2(0.05, 0.05)
+
+[node name="HatchParticles" type="CPUParticles2D" parent="." unique_id=1924764462]
+emitting = false
+amount = 20
+lifetime = 0.5
+one_shot = true
+explosiveness = 0.8
+emission_shape = 1
+emission_sphere_radius = 20.0
+direction = Vector2(0, -1)
+spread = 60.0
+gravity = Vector2(0, 300)
+initial_velocity_min = 100.0
+initial_velocity_max = 200.0
+scale_amount_min = 3.0
+scale_amount_max = 6.0
+
+[node name="HeartParticles" type="CPUParticles2D" parent="." unique_id=1278417440]
+emitting = false
+amount = 5
+one_shot = true
+explosiveness = 0.9
+direction = Vector2(0, -1)
+spread = 60.0
+gravity = Vector2(0, -50)
+initial_velocity_min = 10.0
+initial_velocity_max = 40.0
+scale_amount_min = 0.2
+scale_amount_max = 0.5
+
+[node name="SmokeParticles" type="CPUParticles2D" parent="." unique_id=308786347]
+emitting = false
+amount = 30
+one_shot = true
+explosiveness = 0.9
+emission_shape = 1
+emission_sphere_radius = 30.0
+direction = Vector2(0, -1)
+spread = 90.0
+gravity = Vector2(0, -50)
+initial_velocity_min = 50.0
+initial_velocity_max = 150.0
+scale_amount_min = 10.0
+scale_amount_max = 20.0
+color = Color(0.3, 0.3, 0.3, 0.8)
+
+[node name="HeartViewport" type="SubViewport" parent="." unique_id=2116755197]
+transparent_bg = true
+size = Vector2i(40, 40)
+render_target_update_mode = 1
+
+[node name="Label" type="Label" parent="HeartViewport" unique_id=1677739129]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_colors/font_color = Color(1, 0.2, 0.4, 1)
+theme_override_font_sizes/font_size = 28
+text = "❤"
+horizontal_alignment = 1
+vertical_alignment = 1
