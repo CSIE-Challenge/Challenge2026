@@ -28,8 +28,6 @@ func _init() -> void:
 	data = _load_json(_trap_data_path)
 
 
-
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
 	pass
