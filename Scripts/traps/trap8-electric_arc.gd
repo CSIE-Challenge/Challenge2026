@@ -1,12 +1,6 @@
 class_name Trap8ElectricArc
 extends Node2D
 
-@export var points_radius: int = 10
-@export var points_default_scale: Vector2 = Vector2(0.15, 0.15)
-@export var points_revolution_speed: float = 8
-@export var arc_width: float = 5.0
-@export var scaling_rate: float = 10
-@export var player_radius: float = 5
 @export var delay_time: float = 2.0
 @export var duration_time: float = 5
 
@@ -14,6 +8,7 @@ var points_scale: Vector2
 var points_assigned_scale: Vector2
 var arc_assigned_width: float
 var arc_on: bool
+var activated: bool
 
 @onready var player: CharacterBody2D = $"../Player"
 @onready var crack: Sprite2D = $Crack
@@ -32,8 +27,8 @@ static func initialize(start_pos: Vector2, end_pos: Vector2) -> Trap8ElectricArc
 
 
 func _ready():
-	arc_on = false
-	_set_state(0)
+	activated = false
+	visible = false
 
 
 func _physics_process(_delta: float) -> void:
@@ -56,24 +51,21 @@ func spawn(start_position: Vector2, end_position: Vector2) -> void:
 	crack.apply_scale(Vector2(width, ratio))
 
 	# warning phase
-	arc_assigned_width = arc_width
 	_spawn_animation()
-	_set_state(1)
+	visible = true
 	await get_tree().create_timer(delay_time).timeout
 
 	# activated phase
-	arc_on = true
+	activated = true
 	_activate_animation()
-	_set_state(2)
 	await get_tree().create_timer(duration_time).timeout
 
 	# despawn phase
-	points_assigned_scale = Vector2.ZERO
-	arc_assigned_width = 0
-	arc_on = false
+	activated = false
 	_despawn_animation()
 	await get_tree().create_timer(0.2).timeout
-	_set_state(0)
+
+	visible = false
 	queue_free()
 
 
@@ -117,21 +109,8 @@ func _despawn_animation():
 	tween.tween_property(end_cone, "self_modulate:a", 0.0, 0.2)
 
 
-func _set_state(mode: int) -> void:
-	match mode:
-		0:  # invisible
-			start_cone.visible = false
-			end_cone.visible = false
-		1:  # warning
-			start_cone.visible = true
-			end_cone.visible = true
-		2:  # activated
-			start_cone.visible = true
-			end_cone.visible = true
-
-
 func _detect_player() -> void:
-	if not arc_on:
+	if not activated:
 		return
 	if raycast.is_colliding():
 		Global.player_hit.emit(5)
