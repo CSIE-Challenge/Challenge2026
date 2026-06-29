@@ -2,14 +2,12 @@ extends Control
 
 const FILE_SELECTOR_SCENE := "res://Scenes/menu/file_selector.tscn"
 
-@onready var about_panel = $Panel/AboutPanel
 @onready var mode_panel = $Panel/ModePanel
 @onready var single_button: Button = $Panel/ModePanel/VBoxContainer/ToggleRow/SingleButton
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	about_panel.visible = false
 	mode_panel.visible = false
 	Audio.set_bgm(Audio.BGM.MENU)
 
@@ -21,7 +19,8 @@ func _on_start_button_button_up() -> void:
 
 
 func _on_quit_button_button_up() -> void:
-	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
+	var player := Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
+	await player.finished
 	get_tree().quit()
 
 
@@ -33,16 +32,6 @@ func _on_volume_button_button_up() -> void:
 func _on_invisible_button_up() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	SceneTransition.transition_to("res://Scenes/menu/hidden_game.tscn")
-
-
-func _on_about_buttom_button_up() -> void:
-	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
-	about_panel.visible = true
-
-
-func _on_close_button_button_up() -> void:
-	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
-	about_panel.visible = false
 
 
 # --- Mode selection (toggle + confirm) -------------------------------------
@@ -63,3 +52,8 @@ func _on_confirm_button_up() -> void:
 func _on_mode_back_button_up() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	mode_panel.visible = false
+
+
+func _on_about_button_pressed() -> void:
+	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
+	SceneTransition.transition_to("res://Scenes/about.tscn")

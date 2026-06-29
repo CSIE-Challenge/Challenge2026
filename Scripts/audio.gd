@@ -41,7 +41,7 @@ func set_bgm(bgm: BGM) -> void:
 	fade_in_tween.tween_property(bgm_player, "volume_db", 0.0, 1)
 
 
-func play_sfx(sfx: SFX) -> void:
+func play_sfx(sfx: SFX) -> AudioStreamPlayer:
 	var stream := _sfx_streams.get(sfx) as AudioStream
 	if stream == null:
 		return
@@ -50,10 +50,11 @@ func play_sfx(sfx: SFX) -> void:
 		if not player.playing:
 			player.stream = stream
 			player.play()
-			return
+			return player
 	# fallback to the first player
 	_sfx_players[0].stream = stream
 	_sfx_players[0].play()
+	return _sfx_players[0]
 
 
 func bgm_is_playing() -> bool:
