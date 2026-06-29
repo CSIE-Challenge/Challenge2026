@@ -1,0 +1,13 @@
+services:
+  challenge2026-server:
+    build:
+      context: .
+      args:
+        GODOT_VERSION: "4.6.3"
+        GODOT_STATUS: "stable"
+    image: challenge2026-godot-server:4.6.3
+    command: ["--server", "--port", "7777"]
+    ports:
+      - "7777:7777/udp"
+      - "7749:7749/tcp"
+    restart: unless-stopped
