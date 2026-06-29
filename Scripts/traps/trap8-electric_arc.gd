@@ -50,9 +50,10 @@ func spawn(start_position: Vector2, end_position: Vector2) -> void:
 
 	var dir = end_position - start_position
 	var ratio = dir.length() / crack.texture.get_height()
+	var width = clamp(ratio, 0.3, 0.75)
 
 	crack.rotation = dir.angle() - PI / 2
-	crack.apply_scale(Vector2(max(0.25, ratio), ratio))
+	crack.apply_scale(Vector2(width, ratio))
 
 	# warning phase
 	arc_assigned_width = arc_width
@@ -71,7 +72,7 @@ func spawn(start_position: Vector2, end_position: Vector2) -> void:
 	arc_assigned_width = 0
 	arc_on = false
 	_despawn_animation()
-	await get_tree().create_timer(0.5).timeout
+	await get_tree().create_timer(0.2).timeout
 	_set_state(0)
 	queue_free()
 
@@ -93,32 +94,27 @@ func _spawn_animation() -> void:
 	end_cone.position = Vector2(5, -8)
 	end_cone.rotation_degrees = 20
 
-	(
-		tween
-		. tween_property(end_cone, "self_modulate:a", 1.0, 0.2)
-		. set_trans(Tween.TRANS_LINEAR)
-		. set_delay(0.05)
-	)
-	tween.tween_property(end_cone, "position", Vector2.ZERO, 0.5).set_delay(0.05)
-	tween.tween_property(end_cone, "rotation_degrees", 0, 0.5).set_delay(0.05)
+	tween.tween_property(end_cone, "self_modulate:a", 1.0, 0.2).set_trans(Tween.TRANS_LINEAR)
+	tween.tween_property(end_cone, "position", Vector2.ZERO, 0.5)
+	tween.tween_property(end_cone, "rotation_degrees", 0, 0.5)
 
 	# crack
 	crack.material.set_shader_parameter("progress", 0.0)
-	tween.tween_property(crack.material, "shader_parameter/progress", 0.35, delay_time).set_trans(
-		Tween.TRANS_CUBIC
+	tween.tween_property(crack.material, "shader_parameter/progress", 0.2, delay_time).set_trans(
+		Tween.TRANS_LINEAR
 	)
 
 
 func _activate_animation():
 	var tween = create_tween().set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
-	tween.tween_property(crack.material, "shader_parameter/progress", 1.0, 0.8)
+	tween.tween_property(crack.material, "shader_parameter/progress", 1.0, 1.0)
 
 
 func _despawn_animation():
 	var tween = create_tween().set_parallel()
-	tween.tween_property(crack.material, "shader_parameter/progress", 0, 0.5)
+	tween.tween_property(crack.material, "shader_parameter/progress", 0.0, 0.2)
 	tween.tween_property(start_cone, "self_modulate:a", 0.0, 0.2)
-	tween.tween_property(end_cone, "self_modulate:a", 0.0, 0.2).set_delay(0.05)
+	tween.tween_property(end_cone, "self_modulate:a", 0.0, 0.2)
 
 
 func _set_state(mode: int) -> void:

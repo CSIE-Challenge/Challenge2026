@@ -5,15 +5,25 @@
 [ext_resource type="Texture2D" uid="uid://wgi6fweb6vej" path="res://Shapes/crack.png" id="4_fuds7"]
 [ext_resource type="Texture2D" uid="uid://lqmr1p1lac6t" path="res://Shapes/trfcone.svg" id="5_fuds7"]
 
+[sub_resource type="Gradient" id="Gradient_spckc"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.1, 0.26, 0.54)
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 0.6568946, 0, 0, 0, 0.47929642, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_fuds7"]
+gradient = SubResource("Gradient_spckc")
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_nnf58"]
 resource_local_to_scene = true
 shader = ExtResource("3_spckc")
 shader_parameter/progress = 0.0
+shader_parameter/colors = SubResource("GradientTexture1D_fuds7")
 
 [node name="ElectricArc" type="Node2D" unique_id=238955290]
 script = ExtResource("1_fbvbf")
 
 [node name="Crack" type="Sprite2D" parent="." unique_id=1970214108]
+z_index = -1
 material = SubResource("ShaderMaterial_nnf58")
 texture = ExtResource("4_fuds7")
 centered = false
