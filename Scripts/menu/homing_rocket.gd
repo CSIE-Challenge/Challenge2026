@@ -128,6 +128,6 @@ func explode() -> void:
 		var explosion = ROCKET_EXPLOSION_SCENE.instantiate()
 		# 🌟 先 init 帶入局部座標，後 add_child！這能避免座標偏移
 		explosion.init(position, explosion_radius, explosion_duration, player)
-		damage_field.add_child(explosion)
+		damage_field.add_child.call_deferred(explosion)
 
 	queue_free()
