@@ -5,6 +5,7 @@ const HIDDEN_SCENE_PATH = "res://Scenes/menu/hidden_game.tscn"
 
 var attack_ball_scene = preload("res://Scenes/menu/attack_ball.tscn")
 var is_player_dead: bool = false
+var is_aborted: bool = false  # 是否已經在 change scene
 
 @onready var walls: Node2D = $Panel/Stage/Walls
 @onready var timer: Timer = $Timer
@@ -41,16 +42,16 @@ func _on_dialogue_event(event_name: String):
 
 func wait_or_die(time: float) -> bool:
 	var t = 0.0
-	while t < time:
+	while t < time and not is_aborted:
 		await get_tree().process_frame
-		if is_player_dead:
+		if is_player_dead or is_aborted:
 			return true
 		t += get_process_delta_time()
-	return is_player_dead
+	return is_player_dead or is_aborted
 
 
 func wait_for_boss_attack_or_die() -> bool:
-	while boss.is_attacking:
+	while boss.is_attacking and not is_aborted:
 		await get_tree().process_frame
 		if is_player_dead:
 			return true
@@ -61,15 +62,20 @@ func run_hidden_game_sequence() -> void:
 	timer.stop()
 	walls.tween_box(Vector2(400, 400), Vector2(0, 20), 1.0)
 	boss.boss_appear_animation()
+
+	if not is_inside_tree():
+		return
+	is_aborted = false
+
 	await get_tree().create_timer(1.0).timeout
 
-	if await _run_phase_1():
+	if await _run_phase_1() or is_aborted:
 		return
-	if await _run_phase_2():
+	if await _run_phase_2() or is_aborted:
 		return
-	if await _run_phase_3():
+	if await _run_phase_3() or is_aborted:
 		return
-	if await _run_phase_4():
+	if await _run_phase_4() or is_aborted:
 		return
 
 
@@ -87,7 +93,7 @@ func _run_phase_1() -> bool:
 	if not is_player_dead:
 		await wait_or_die(1.5)
 
-	if is_player_dead:
+	if is_player_dead and not is_aborted:
 		Dialogue.start_dialogue(["怎麼這就死了？"])
 		await Dialogue.dialogue_finished
 		SceneTransition.transition_to(HIDDEN_SCENE_PATH)
@@ -107,7 +113,7 @@ func _run_phase_2() -> bool:
 		if await wait_for_boss_attack_or_die():
 			break
 
-	if is_player_dead:
+	if is_player_dead and not is_aborted:
 		Dialogue.start_dialogue(["看來你不喜歡迴力鏢。"])
 		await Dialogue.dialogue_finished
 		SceneTransition.transition_to(HIDDEN_SCENE_PATH)
@@ -132,7 +138,7 @@ func _run_phase_3() -> bool:
 	if not is_player_dead:
 		await wait_or_die(5.0)
 
-	if is_player_dead:
+	if is_player_dead and not is_aborted:
 		Dialogue.start_dialogue(["哈！會追著你的就沒辦法了吧！"])
 		await Dialogue.dialogue_finished
 		SceneTransition.transition_to(HIDDEN_SCENE_PATH)
@@ -159,7 +165,7 @@ func _run_phase_3() -> bool:
 	if boss.is_attacking:
 		await wait_for_boss_attack_or_die()
 
-	if is_player_dead:
+	if is_player_dead and not is_aborted:
 		Dialogue.start_dialogue(["嘿嘿，誰說說話時不能攻擊的？"])
 		await Dialogue.dialogue_finished
 		SceneTransition.transition_to(HIDDEN_SCENE_PATH)
@@ -249,9 +255,15 @@ func _process(_delta: float) -> void:
 	pass
 
 
+# Exit scene
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
-		get_tree().change_scene_to_file(MENU_SCENE_PATH)
+		is_aborted = true
+		if Dialogue.current_state != Dialogue.State.IDLE:
+			Dialogue.interrupt_dialogue()
+		Dialogue.dialogue_box.hide()
+		Dialogue.dialogue_queue.clear()
+		SceneTransition.transition_to(MENU_SCENE_PATH)
 
 
 func _random_generate_attack_ball():
