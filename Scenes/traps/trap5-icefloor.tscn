@@ -22,9 +22,8 @@ shader_parameter/master_alpha = 1.0
 [node name="IceFloor" type="Area2D" unique_id=1192991918]
 script = ExtResource("1_j7spk")
 
-[node name="Cream" type="Sprite2D" parent="." unique_id=2135560715]
-
 [node name="SpilledJuice" type="Sprite2D" parent="." unique_id=2135560715]
+z_index = -2
 material = SubResource("ShaderMaterial_rkeu5")
 position = Vector2(1.9073486e-06, -1.2874603e-05)
 scale = Vector2(1.25, 1.2499999)
