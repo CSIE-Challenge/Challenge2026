@@ -43,8 +43,6 @@ scale_curve = SubResource("CurveTexture_2fqos")
 collision_layer = 4
 collision_mask = 3
 script = ExtResource("1_us4h7")
-max_radius = 1500.0
-white_ripple_oscil_freq = 10.0
 
 [node name="WarningSprite" type="Sprite2D" parent="." unique_id=1575762953]
 material = SubResource("ShaderMaterial_msq6u")

@@ -130,10 +130,6 @@ _data = {
 
 [node name="ElectricRing" type="Node2D" unique_id=1133403726]
 script = ExtResource("1_y6cpx")
-standard_radius = 54.0
-player_radius = 13.5
-stay_time = 1.8
-ring_thickness = 0.03
 
 [node name="ElectricRingWarning" type="Sprite2D" parent="." unique_id=1091487232]
 visible = false

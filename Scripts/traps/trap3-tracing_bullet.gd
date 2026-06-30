@@ -7,14 +7,17 @@ const TRAP_COLLISION_LAYER := 4
 var cooldown_times = TrapData.new().data["trap3-tracing_bullet"]["cooldown_times"]
 var damage = TrapData.new().data["trap3-tracing_bullet"]["damage"]
 var energy_costs = TrapData.new().data["trap3-tracing_bullet"]["energy_costs"]
-var max_turn_rate = TrapData.new().data["trap3-tracing_bullet"]["max_turn_rate"]
-var max_speed = TrapData.new().data["trap3-tracing_bullet"]["max_speed"]
-var min_speed = TrapData.new().data["trap3-tracing_bullet"]["min_speed"]
-
+var turn_rate = TrapData.new().data["trap3-tracing_bullet"]["turn_rate"]
+var wait_time = TrapData.new().data["trap3-tracing_bullet"]["wait_time"]
 var target: Node2D = null
 var speed := 0.0
 var tracing := true
+var flying := false
+var wall_counter := 0
 @onready var feather_effect = $FeatherEffect
+@onready var leave_wall_detector = $Area2D
+@onready var wait_timer = $WaitTimer
+@onready var animation = $AnimationPlayer
 
 
 static func initialize(pos: Vector2, dir: Vector2, speed: float) -> Trap3TracingBullet:
@@ -28,11 +31,16 @@ static func initialize(pos: Vector2, dir: Vector2, speed: float) -> Trap3Tracing
 
 
 func _ready() -> void:
-	speed = clamp(speed, min_speed, max_speed)
 	collision_layer = TRAP_COLLISION_LAYER
-	collision_mask = PLAYER_COLLISION_LAYER | WALL_COLLISION_LAYER
+	collision_mask = 0
+	leave_wall_detector.collision_mask = WALL_COLLISION_LAYER
 	tracing = true
 	set_physics_process(true)
+	wait_timer.timeout.connect(_on_wait_timer_out)
+	wait_timer.start(wait_time)
+	leave_wall_detector.body_entered.connect(_on_wall_entered)
+	leave_wall_detector.body_exited.connect(_on_wall_exited)
+	animation.play("spawn")
 
 
 func _destroy() -> void:
@@ -43,7 +51,8 @@ func _physics_process(delta):
 	if target == null:
 		_destroy()
 		return
-
+	if !flying:
+		return
 	if tracing:
 		turn_toward_target(delta)
 
@@ -54,12 +63,12 @@ func _physics_process(delta):
 
 	var collision := move_and_collide(velocity * delta)
 
-	if collision:
+	if collision or abs(position.x) > 1000 or abs(position.y) > 1000:
 		var collider := collision.get_collider()
 		feather_effect.emitting = true
 		feather_effect.finished.connect(feather_effect.queue_free)
 		feather_effect.reparent(Global.stage)
-		if collider == target:
+		if collider and collider == target:
 			Global.player_hit.emit(damage)
 			_destroy()
 		elif (collider.collision_layer & WALL_COLLISION_LAYER) != 0:
@@ -69,7 +78,7 @@ func _physics_process(delta):
 func turn_toward_target(delta):
 	var desired_angle := (target.global_position - global_position).angle()
 
-	rotation = rotate_toward(rotation, desired_angle, max_turn_rate * delta)
+	rotation = rotate_toward(rotation, desired_angle, turn_rate * delta)
 
 
 func target_passed_stop_line() -> bool:
@@ -77,3 +86,17 @@ func target_passed_stop_line() -> bool:
 	var to_target := target.global_position - global_position
 
 	return to_target.dot(forward) < 0
+
+
+func _on_wait_timer_out():
+	flying = true
+
+
+func _on_wall_entered(_body: Node2D) -> void:
+	wall_counter += 1
+
+
+func _on_wall_exited(_body: Node2D) -> void:
+	wall_counter -= 1
+	if wall_counter <= 0:
+		collision_mask = PLAYER_COLLISION_LAYER | WALL_COLLISION_LAYER

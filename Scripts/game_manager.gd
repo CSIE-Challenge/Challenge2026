@@ -23,6 +23,7 @@ var rng := RandomNumberGenerator.new()
 var player_invincible := false
 var game_over := false
 var survival_started_msec := 0
+var trap_data = TrapData.new().data
 
 @onready var player_invincibility_timer = $PlayerInvincibilityTimer
 @onready var energy_increase_timer = $EnergyIncreaseTimer
@@ -264,41 +265,49 @@ func _spawn_trap_from_request(request: Dictionary) -> void:
 			if not params.has("position"):
 				push_error("Missing position for mine trap")
 				return
+			Clamper.clamp_trap1(trap_data, params)
 			Trap1Mine.initialize(params["position"])
 		"trap2-electric_ring":
 			if not (params.has("delay_time") and params.has("radius")):
 				push_error("Missing delay_time or radius for electric_ring trap")
 				return
+			Clamper.clamp_trap2(trap_data, params)
 			Trap2ElectricRing.initialize(params["delay_time"], params["radius"])
 		"trap3-tracing_bullet":
 			if not (params.has("position") and params.has("direction") and params.has("speed")):
 				push_error("Missing position/direction/speed for tracing_bullet trap")
 				return
+			Clamper.clamp_trap3(trap_data, params)
 			Trap3TracingBullet.initialize(params["position"], params["direction"], params["speed"])
 		"trap4-conveyor":
 			if not (params.has("position") and params.has("direction")):
 				push_error("Missing position or direction for conveyor trap")
 				return
+			Clamper.clamp_trap4(trap_data, params)
 			Trap4Conveyor.initialize(params["position"], params["direction"])
 		"trap5-icefloor":
 			if not params.has("position"):
 				push_error("Missing position for icefloor trap")
 				return
+			Clamper.clamp_trap5(trap_data, params)
 			Trap5IceFloor.initialize(params["position"])
 		"trap6-scanline":
 			if not params.has("direction"):
 				push_error("Missing direction for scanline trap")
 				return
+			Clamper.clamp_trap6(trap_data, params)
 			Trap6Scanline.initialize(params["direction"], params.get("speed", 5.0))
 		"trap8-electric_arc":
 			if not (params.has("start_position") and params.has("end_position")):
 				push_error("Missing start_position or end_position for electric_arc trap")
 				return
+			Clamper.clamp_trap8(trap_data, params)
 			Trap8ElectricArc.initialize(params["start_position"], params["end_position"])
 		"trap9-mortar":
 			if not (params.has("start_position") and params.has("end_position")):
 				push_error("Missing start_position or end_position for mortar trap")
 				return
+			Clamper.clamp_trap9(trap_data, params)
 			Trap9Mortar.initialize(
 				params["start_position"], params["end_position"], params.get("air_time", 2.0)
 			)
@@ -306,6 +315,7 @@ func _spawn_trap_from_request(request: Dictionary) -> void:
 			if not (params.has("position") and params.has("expand_rate")):
 				push_error("Missing position or expand_rate for spreading_ripples trap")
 				return
+			Clamper.clamp_trap7(trap_data, params)
 			Trap7SpreadingRipples.initialize(params["position"], params["expand_rate"])
 		"trap10-shotgun":
 			if not (
@@ -316,6 +326,7 @@ func _spawn_trap_from_request(request: Dictionary) -> void:
 			):
 				push_error("Missing position or shoot directions for shotgun trap")
 				return
+			Clamper.clamp_trap10(trap_data, params)
 			Trap10Shotgun.initialize(
 				params["position"], params["dir1"], params["dir2"], params["dir3"]
 			)

@@ -1,6 +1,9 @@
 class_name Trap10Shotgun
 extends Node2D
 
+const PLAYER_COLLISION_LAYER = 1
+const WALL_COLLISION_LAYER = 2
+
 var cooldown_times = TrapData.new().data["trap10-shotgun"]["cooldown_times"]
 var damage = TrapData.new().data["trap10-shotgun"]["damage"]
 var energy_costs = TrapData.new().data["trap10-shotgun"]["energy_costs"]
@@ -10,9 +13,9 @@ var aiming_line_color = Color(TrapData.new().data["trap10-shotgun"]["aiming_line
 # ▲[0.937, 0.373, 0.285] in HEX is #F05F49
 
 var directions: Array[Vector2] = []
-var hit_spawn_wall: Array[bool]
 var aiming: bool = false
 var firing: bool = false
+var bullet_in_wall_counter: Array[int] = [0, 0, 0]
 @onready var timer: Timer = $Timer
 @onready var lines_container: Node2D = $AimingLines
 @onready var lines: Array = [$AimingLines/Line1, $AimingLines/Line2, $AimingLines/Line3]
@@ -33,14 +36,12 @@ func _ready() -> void:
 	visible = false
 	bullets_container.visible = false
 	set_physics_process(false)
-	hit_spawn_wall.resize(3)
-	hit_spawn_wall.fill(false)
 
 
 func activate(pos: Vector2, dir1: Vector2, dir2: Vector2, dir3: Vector2) -> void:
 	position = pos
 	baskets_animation.play("ready")
-	var average_angle = (dir1.angle() + dir2.angle() + dir3.angle()) / 3.0
+	var average_angle = (dir1.normalized() + dir2.normalized() + dir3.normalized()).angle()
 	baskets.rotation = average_angle
 	directions = [dir1.normalized(), dir2.normalized(), dir3.normalized()]
 	lines_container.visible = true
@@ -56,14 +57,15 @@ func activate(pos: Vector2, dir1: Vector2, dir2: Vector2, dir3: Vector2) -> void
 		line.width = 8.0
 
 		var bullet = bullets[i]
-		hit_spawn_wall[i] = false
+		bullet.collision_mask = PLAYER_COLLISION_LAYER
 		bullet.position = Vector2.ZERO
 		bullet.rotation = directions[i].angle()
 		bullet.visible = true
-		if not bullet.body_entered.is_connected(_on_bullet_body_entered):
-			bullet.body_entered.connect(_on_bullet_body_entered.bind(bullet))
+		bullet.body_entered.connect(_on_bullet_body_entered.bind(bullet))
 		bullet.get_node("CollisionShape2D").set_deferred("disabled", false)
-
+		var wall_detector = bullet.get_node("WallExitDetector") as Area2D
+		wall_detector.body_entered.connect(_on_enter_wall.bind(i))
+		wall_detector.body_exited.connect(_on_exit_wall.bind(i))
 	aiming = true
 	visible = true
 	timer.start(aiming_time)
@@ -116,11 +118,8 @@ func _on_bullet_body_entered(body: Node2D, bullet_node: Area2D) -> void:
 		bullet_node.get_node("CollisionShape2D").set_deferred("disabled", true)
 	else:
 		var idx = bullets.find(bullet_node)
-		if not hit_spawn_wall[idx]:
-			hit_spawn_wall[idx] = true
-		else:
-			bullet_node.visible = false
-			bullet_node.get_node("CollisionShape2D").set_deferred("disabled", true)
+		bullet_node.visible = false
+		bullet_node.get_node("CollisionShape2D").set_deferred("disabled", true)
 
 
 func _calculate_aiming_line_end_point(origin: Vector2, dir: Vector2) -> Vector2:
@@ -141,3 +140,15 @@ func _calculate_aiming_line_end_point(origin: Vector2, dir: Vector2) -> Vector2:
 	var t_exit = min(t_exit_x, t_exit_y)
 
 	return origin + dir * t_exit
+
+
+func _on_enter_wall(_body: CollisionObject2D, bullet_idx: int):
+	bullet_in_wall_counter[bullet_idx] += 1
+	print("bullet", bullet_idx, " entered wall, counter:", bullet_in_wall_counter[bullet_idx])
+
+
+func _on_exit_wall(_body: CollisionObject2D, bullet_idx: int):
+	bullet_in_wall_counter[bullet_idx] -= 1
+	print("bullet", bullet_idx, " exited wall, counter:", bullet_in_wall_counter[bullet_idx])
+	if bullet_in_wall_counter[bullet_idx] <= 0:
+		bullets[bullet_idx].collision_mask = PLAYER_COLLISION_LAYER | WALL_COLLISION_LAYER

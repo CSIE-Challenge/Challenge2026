@@ -38,7 +38,7 @@ void fragment() {
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gtrg3"]
 shader = SubResource("Shader_my68g")
 shader_parameter/outline_color = Color(0.5882353, 0.5882353, 0.5882353, 1)
-shader_parameter/outline_width = 10.0
+shader_parameter/outline_width = 20.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_oluei"]
 radius = 12.0
@@ -112,6 +112,9 @@ scale_min = 0.08
 scale_max = 0.12
 scale_curve = SubResource("CurveTexture_gtrg3")
 color = Color(1, 0.87058824, 0.06666667, 1)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_my68g"]
+radius = 12.0
 
 [sub_resource type="Shader" id="Shader_u2tcx"]
 code = "shader_type canvas_item;
@@ -201,6 +204,9 @@ scale_max = 0.12
 scale_curve = SubResource("CurveTexture_gtrg3")
 color = Color(1, 0.78039217, 0, 1)
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_gtrg3"]
+radius = 12.0
+
 [sub_resource type="Shader" id="Shader_8fuxe"]
 code = "shader_type canvas_item;
 
@@ -289,6 +295,9 @@ scale_max = 0.12
 scale_curve = SubResource("CurveTexture_gtrg3")
 color = Color(0.6382291, 0.38774085, 1, 1)
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_u2tcx"]
+radius = 12.0
+
 [sub_resource type="Animation" id="Animation_u2tcx"]
 length = 0.001
 tracks/0/type = "value"
@@ -326,6 +335,18 @@ tracks/2/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Vector2(0.15, 0.15)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1e-05, 1e-05)]
 }
 
 [sub_resource type="Animation" id="Animation_t1byb"]
@@ -393,6 +414,18 @@ tracks/1/keys = {
 "update": 0,
 "values": [Vector2(1e-05, 1e-05)]
 }
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1e-05, 1e-05), Vector2(1, 1)]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_wqi4w"]
 _data = {
@@ -405,6 +438,7 @@ _data = {
 script = ExtResource("1_oluei")
 
 [node name="Timer" type="Timer" parent="." unique_id=2062558811]
+one_shot = true
 
 [node name="AimingLines" type="Node2D" parent="." unique_id=1096219692]
 
@@ -441,6 +475,13 @@ one_shot = true
 explosiveness = 1.0
 process_material = SubResource("ParticleProcessMaterial_i7n8k")
 
+[node name="WallExitDetector" type="Area2D" parent="Bullets/Bullet1" unique_id=1710452704]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bullets/Bullet1/WallExitDetector" unique_id=247218817]
+shape = SubResource("CircleShape2D_my68g")
+
 [node name="Bullet2" type="Area2D" parent="Bullets" unique_id=96416200]
 collision_layer = 4
 collision_mask = 3
@@ -465,6 +506,13 @@ lifetime = 0.8
 one_shot = true
 explosiveness = 1.0
 process_material = SubResource("ParticleProcessMaterial_eitjp")
+
+[node name="WallExitDetector" type="Area2D" parent="Bullets/Bullet2" unique_id=106406832]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bullets/Bullet2/WallExitDetector" unique_id=202160464]
+shape = SubResource("CircleShape2D_gtrg3")
 
 [node name="Bullet3" type="Area2D" parent="Bullets" unique_id=262295554]
 collision_layer = 4
@@ -492,9 +540,17 @@ one_shot = true
 explosiveness = 1.0
 process_material = SubResource("ParticleProcessMaterial_u2tcx")
 
+[node name="WallExitDetector" type="Area2D" parent="Bullets/Bullet3" unique_id=865660948]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bullets/Bullet3/WallExitDetector" unique_id=1234719831]
+shape = SubResource("CircleShape2D_u2tcx")
+
 [node name="Baskets" type="Node2D" parent="." unique_id=904500447]
 
 [node name="MoveBasket" type="Node2D" parent="Baskets" unique_id=1302489735]
+scale = Vector2(1e-05, 1e-05)
 
 [node name="Basket" type="Sprite2D" parent="Baskets/MoveBasket" unique_id=2142092518]
 rotation = 1.5707964

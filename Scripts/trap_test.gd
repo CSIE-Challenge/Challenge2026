@@ -1,4 +1,5 @@
 extends Node2D
+var trap_data = TrapData.new().data
 
 
 func _input(event: InputEvent):
@@ -8,30 +9,120 @@ func _input(event: InputEvent):
 			KEY_H:
 				Global.player_hit.emit(3)
 			KEY_1:
-				Trap1Mine.initialize(_random_pos())
+				var dict = _generate_trap1_dictionary()
+				Clamper.clamp_trap1(trap_data, dict)
+				Trap1Mine.initialize(dict["position"])
 			KEY_2:
-				Trap2ElectricRing.initialize(randf_range(1.0, 2.0), randf_range(75, 150))
+				var dict = _generate_trap2_dictionary()
+				Clamper.clamp_trap2(trap_data, dict)
+				Trap2ElectricRing.initialize(dict["delay_time"], dict["radius"])
 			KEY_3:
-				Trap3TracingBullet.initialize(Vector2(100, 0), Vector2(0, -100), 200)
+				var dict = _generate_trap3_dictionary()
+				Clamper.clamp_trap3(trap_data, dict)
+				Trap3TracingBullet.initialize(dict["position"], dict["direction"], dict["speed"])
 			KEY_4:
-				Trap4Conveyor.initialize(_random_pos(), Vector2(1, 0))
+				var dict = _generate_trap4_dictionary()
+				Clamper.clamp_trap4(trap_data, dict)
+				Trap4Conveyor.initialize(dict["position"], dict["direction"])
 			KEY_5:
-				Trap5IceFloor.initialize(_random_pos())
+				var dict = _generate_trap5_dictionary()
+				Clamper.clamp_trap5(trap_data, dict)
+				Trap5IceFloor.initialize(dict["position"])
 			KEY_6:
-				var angle = randf_range(0, PI * 2)
-				Trap6Scanline.initialize(Vector2(cos(angle), sin(angle)), 100)
+				var dict = _generate_trap6_dictionary()
+				Clamper.clamp_trap6(trap_data, dict)
+				Trap6Scanline.initialize(dict["direction"], dict["speed"])
 			KEY_7:
-				Trap7SpreadingRipples.initialize(Vector2(300, 300), 150.0)
+				var dict = _generate_trap7_dictionary()
+				Clamper.clamp_trap7(trap_data, dict)
+				Trap7SpreadingRipples.initialize(dict["position"], dict["expand_rate"])
 			KEY_8:
-				Trap8ElectricArc.initialize(_random_pos(), _random_pos())
+				var dict = _generate_trap8_dictionary()
+				Clamper.clamp_trap8(trap_data, dict)
+				Trap8ElectricArc.initialize(dict["start_position"], dict["end_position"])
 			KEY_9:
-				Trap9Mortar.initialize(_random_pos(), _random_pos(), 2.0)
-			KEY_0:
-				Trap10Shotgun.initialize(
-					Vector2(-250, 100), Vector2(1, 0.2), Vector2(1, 0), Vector2(1, -0.2)
+				var dict = _generate_trap9_dictionary()
+				Clamper.clamp_trap9(trap_data, dict)
+				Trap9Mortar.initialize(
+					dict["start_position"], dict["end_position"], dict["air_time"]
 				)
+			KEY_0:
+				var dict = _generate_trap10_dictionary()
+				Clamper.clamp_trap10(trap_data, dict)
+				Trap10Shotgun.initialize(dict["position"], dict["dir1"], dict["dir2"], dict["dir3"])
 
 
 func _random_pos() -> Vector2:
 	var bounds = Global.stage.stage_bounds
 	return bounds.position + Vector2(randf_range(0, bounds.size.x), randf_range(0, bounds.size.y))
+
+
+func _generate_trap1_dictionary() -> Dictionary:
+	var d = {"position": _random_pos()}
+	return d
+
+
+func _generate_trap2_dictionary() -> Dictionary:
+	var d = {"delay_time": randf_range(1.0, 2.0), "radius": randf_range(75, 150)}
+	return d
+
+
+func _generate_trap3_dictionary() -> Dictionary:
+	var pos = Vector2.RIGHT.rotated(randf_range(0, TAU))
+	var d = {"position": pos, "direction": -pos, "speed": randf_range(100.0, 300.0)}
+	return d
+
+
+func _generate_trap4_dictionary() -> Dictionary:
+	var pos = _random_pos()
+	var dir = Vector2.RIGHT.rotated(randf_range(0, TAU))
+	var d = {
+		"position": pos,
+		"direction": dir,
+	}
+	return d
+
+
+func _generate_trap5_dictionary() -> Dictionary:
+	var pos = _random_pos()
+	var d = {
+		"position": pos,
+	}
+	return d
+
+
+func _generate_trap6_dictionary() -> Dictionary:
+	var dir = Vector2.RIGHT.rotated(randf_range(0, TAU))
+	var d = {"direction": dir, "speed": randf_range(120.0, 250.0)}
+	return d
+
+
+func _generate_trap7_dictionary() -> Dictionary:
+	var pos = _random_pos() * randf_range(1.0, 2.0)
+	var d = {"position": pos, "expand_rate": randf_range(100.0, 200.0)}
+	return d
+
+
+func _generate_trap8_dictionary() -> Dictionary:
+	var pos = _random_pos() * randf_range(1.0, 2.0)
+	var pos2 = _random_pos() * randf_range(1.0, 2.0)
+	var d = {"start_position": pos, "end_position": pos2}
+	return d
+
+
+func _generate_trap9_dictionary() -> Dictionary:
+	var pos = _random_pos()
+	var pos2 = _random_pos()
+	var d = {"start_position": pos, "end_position": pos2, "air_time": randf_range(2.0, 3.5)}
+	return d
+
+
+func _generate_trap10_dictionary() -> Dictionary:
+	var pos = _random_pos()
+	var d = {
+		"position": pos,
+		"dir1": -pos.rotated(randf_range(-PI / 6, PI / 6)),
+		"dir2": -pos.rotated(randf_range(-PI / 6, PI / 6)),
+		"dir3": -pos.rotated(randf_range(-PI / 6, PI / 6))
+	}
+	return d
