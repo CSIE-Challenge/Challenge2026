@@ -1,14 +1,15 @@
 class_name Player
 extends CharacterBody2D
 
-@export var acceleration: float = 100
-@export var move_speed: float
-@export var jump_velocity: float
-@export var jump_gravity: float
-@export var jump_fall_multiplier: float
-@export var max_health: float
 @export var health: float
-@export var invincibility_flicker_period: int
+
+var acceleration := 100.0
+var move_speed := 300.0
+var jump_velocity := 750.0
+var jump_gravity := 2500.0
+var jump_fall_multiplier := 1.5
+var max_health := 100.0
+var invincibility_flicker_period := 8
 
 var isjumping := false
 var current_jump_velocity: float
@@ -28,10 +29,27 @@ var last_stepped_cell = Vector2i(-1, -1)
 
 
 func _ready() -> void:
+	_reload_from_game_data()
+
 	health = max_health
 	for x in range(4):
 		for y in range(4):
 			all_sand_tiles.append(Vector2i(x, y))
+
+
+func _reload_from_game_data() -> void:
+	var game_data := GameData.new()
+	acceleration = game_data.get_float("player", "acceleration", acceleration)
+	move_speed = game_data.get_float("player", "move_speed", move_speed)
+	jump_velocity = game_data.get_float("player", "jump_velocity", jump_velocity)
+	jump_gravity = game_data.get_float("player", "jump_gravity", jump_gravity)
+	jump_fall_multiplier = game_data.get_float(
+		"player", "jump_fall_multiplier", jump_fall_multiplier
+	)
+	max_health = game_data.get_float("player", "max_health", max_health)
+	invincibility_flicker_period = game_data.get_int(
+		"player", "invincibility_flicker_period", invincibility_flicker_period
+	)
 
 
 func _physics_process(delta: float) -> void:

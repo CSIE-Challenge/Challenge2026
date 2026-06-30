@@ -191,8 +191,6 @@ stage_bounds = Rect2(-220, -220, 440, 440)
 [node name="EnergyBall" parent="SubViewport/Stage" unique_id=1714624484 node_paths=PackedStringArray("player_node") instance=ExtResource("2_ap8xm")]
 z_index = 15
 player_node = NodePath("../Player")
-coconut_flicker_speed = 0.2
-coconut_rotate_amplitude = 0.5
 
 [node name="Walls" type="Node2D" parent="SubViewport/Stage" unique_id=57048490]
 
@@ -248,12 +246,6 @@ position = Vector2(35, 35)
 collision_mask = 2
 motion_mode = 1
 script = ExtResource("2_m34ki")
-move_speed = 300.0
-jump_velocity = 750.0
-jump_gravity = 2500.0
-jump_fall_multiplier = 1.5
-max_health = 100.0
-invincibility_flicker_period = 8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewport/Stage/Player" unique_id=1018866415]
 shape = SubResource("CircleShape2D_wbxth")
@@ -304,9 +296,6 @@ energy_balls_label = NodePath("../HUD/EnergyBallsLabel")
 energy_bar_label = NodePath("../HUD/EnergyBarLabel")
 opponent_energy_bar_label = NodePath("../HUD/OpponentEnergyBarLabel")
 result_screen = NodePath("../ResultScreen")
-energy_increase_period = 1
-energy_ball_spawn_period = 1
-player_invincibility_time = 1.0
 
 [node name="EnergyIncreaseTimer" type="Timer" parent="GameManager" unique_id=1538767547]
 autostart = true

@@ -9,20 +9,25 @@ signal heal_used(team_id: int, heal_amount: float, energy_cost: float, heal_uses
 const MODE_NORMAL := "normal"
 const MODE_LIFESTEAL := "lifesteal"
 
-@export var default_max_health: float = 5.0
-@export var default_start_health: float = 5.0
+var default_max_health: float = 5.0
+var default_start_health: float = 5.0
 
-@export var default_max_energy: float = 100.0
-@export var default_start_energy: float = 0.0
-@export var default_energy_regen_rate: float = 5.0
+var default_max_energy: float = 100.0
+var default_start_energy: float = 0.0
+var default_energy_regen_rate: float = 5.0
 
-@export var default_heal_uses: int = 2
-@export var lifesteal_regen_multiplier: float = 2.0
+var default_heal_uses: int = 2
+var lifesteal_regen_multiplier: float = 2.0
 
 var team_status: Dictionary = {}
 
 
+func _ready() -> void:
+	_reload_from_game_data()
+
+
 func initialize_teams(team_ids: Array[int]) -> void:
+	_reload_from_game_data()
 	team_status.clear()
 
 	for team_id in team_ids:
@@ -41,6 +46,31 @@ func initialize_teams(team_ids: Array[int]) -> void:
 
 		energy_changed.emit(team_id, default_start_energy, default_max_energy)
 		health_changed.emit(team_id, default_start_health, default_max_health)
+
+
+func _reload_from_game_data() -> void:
+	var game_data := GameData.new()
+	default_max_health = game_data.get_float(
+		"team_status_service", "default_max_health", default_max_health
+	)
+	default_start_health = game_data.get_float(
+		"team_status_service", "default_start_health", default_start_health
+	)
+	default_max_energy = game_data.get_float(
+		"team_status_service", "default_max_energy", default_max_energy
+	)
+	default_start_energy = game_data.get_float(
+		"team_status_service", "default_start_energy", default_start_energy
+	)
+	default_energy_regen_rate = game_data.get_float(
+		"team_status_service", "default_energy_regen_rate", default_energy_regen_rate
+	)
+	default_heal_uses = game_data.get_int(
+		"team_status_service", "default_heal_uses", default_heal_uses
+	)
+	lifesteal_regen_multiplier = game_data.get_float(
+		"team_status_service", "lifesteal_regen_multiplier", lifesteal_regen_multiplier
+	)
 
 
 func has_team(team_id: int) -> bool:

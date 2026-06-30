@@ -11,9 +11,9 @@ const ECONOMY_TICK_SEC := 1.0
 @export var energy_bar_label: Label
 @export var opponent_energy_bar_label: Label
 @export var result_screen: ResultScreen
-@export var energy_increase_period: float
-@export var player_invincibility_time: float
-@export var energy_gain_per_ball: int = 10
+var energy_increase_period := 1.0
+var player_invincibility_time := 1.0
+var energy_gain_per_ball := 10
 
 var energy_ball_count := 0
 var energy_amount := 0
@@ -32,6 +32,8 @@ var survival_started_msec := 0
 
 
 func _ready() -> void:
+	_reload_from_game_data()
+
 	survival_started_msec = Time.get_ticks_msec()
 	Global.player_hit.connect(on_player_hit)
 	Global.energyball_collected.connect(_on_energyball_collected)
@@ -63,6 +65,19 @@ func _ready() -> void:
 	_begin_agents()
 
 	#_show_test_result_after_delay()
+
+
+func _reload_from_game_data() -> void:
+	var game_data := GameData.new()
+	energy_increase_period = game_data.get_float(
+		"game_manager", "energy_increase_period", energy_increase_period
+	)
+	player_invincibility_time = game_data.get_float(
+		"game_manager", "player_invincibility_time", player_invincibility_time
+	)
+	energy_gain_per_ball = game_data.get_int(
+		"game_manager", "energy_gain_per_ball", energy_gain_per_ball
+	)
 
 
 func _physics_process(delta: float) -> void:
