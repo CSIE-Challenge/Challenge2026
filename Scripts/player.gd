@@ -104,6 +104,7 @@ func _jump():
 	current_jump_velocity = jump_velocity
 	current_sprite_y = 0
 	_jump_invisiblility_toggle(true)
+	AudioManager.jump.play()
 
 
 func _jump_process(delta: float):

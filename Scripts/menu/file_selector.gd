@@ -43,6 +43,7 @@ func _mark_chosen() -> void:
 func _on_enter_game_button_up() -> void:
 	Global.single_player = true
 	Global.agent_file = selected_agent_file
+	AudioManager.menutheme.stop()
 	SceneTransition.transition_to(GAMEPLAY_SCENE)
 
 

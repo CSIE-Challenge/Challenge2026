@@ -1,11 +1,7 @@
 [gd_scene format=3 uid="uid://ddxn4syk05iys"]
 
-[ext_resource type="Script" path="res://Scripts/hidden_game_controller.gd" id="1_ebyp3"]
 [ext_resource type="Texture2D" uid="uid://dle4xt8upfg42" path="res://Shapes/Square.svg" id="1_tfqsm"]
-[ext_resource type="Script" path="res://Scripts/coconut_controller.gd" id="2_ebyp3"]
-[ext_resource type="Script" path="res://Scripts/walls_controller.gd" id="2_qncmu"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="3_pger8"]
-[ext_resource type="Script" path="res://Scripts/boss_controller.gd" id="5_pger8"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qncmu"]
 size = Vector2(135, 135)
@@ -28,7 +24,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_ebyp3")
 
 [node name="Panel" type="Panel" parent="." unique_id=558493639]
 layout_mode = 1
@@ -43,7 +38,6 @@ position = Vector2(576, 424)
 
 [node name="boss" type="Node2D" parent="Panel/Stage" unique_id=560461437]
 position = Vector2(0, -300)
-script = ExtResource("5_pger8")
 
 [node name="Sprites" type="Node2D" parent="Panel/Stage/boss" unique_id=733336291]
 modulate = Color(1, 0, 0, 1)
@@ -59,7 +53,6 @@ texture = ExtResource("3_pger8")
 position = Vector2(0, -50)
 collision_layer = 2
 collision_mask = 0
-script = ExtResource("2_qncmu")
 
 [node name="RightWallCollision" type="CollisionShape2D" parent="Panel/Stage/Walls" unique_id=2091655395]
 position = Vector2(249.99994, 0)
@@ -106,7 +99,6 @@ texture = ExtResource("1_tfqsm")
 [node name="coconut" type="CharacterBody2D" parent="Panel/Stage" unique_id=1812759276]
 collision_mask = 2
 motion_mode = 1
-script = ExtResource("2_ebyp3")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Panel/Stage/coconut" unique_id=499880627]
 shape = SubResource("CircleShape2D_plgjo")

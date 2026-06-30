@@ -1,0 +1,67 @@
+[gd_scene format=3 uid="uid://fh2uubspqhku"]
+
+[ext_resource type="Script" uid="uid://dwkms4oc73qao" path="res://Scripts/volume_setting.gd" id="1_qeyc0"]
+[ext_resource type="Script" uid="uid://cb74adv0y1hxa" path="res://Scripts/volume_slider.gd" id="2_gpihd"]
+
+[sub_resource type="Theme" id="Theme_qeyc0"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gpihd"]
+bg_color = Color(0.03137255, 0.039215688, 0.050980393, 0.9019608)
+
+[node name="VolumeSetting" type="Node2D" unique_id=942546627]
+script = ExtResource("1_qeyc0")
+
+[node name="Panel" type="Panel" parent="." unique_id=59809851]
+offset_left = 200.0
+offset_top = 206.0
+offset_right = 999.0
+offset_bottom = 589.0
+theme = SubResource("Theme_qeyc0")
+theme_override_styles/panel = SubResource("StyleBoxFlat_gpihd")
+
+[node name="Label" type="Label" parent="." unique_id=1168083539]
+offset_left = 512.0
+offset_top = 230.0
+offset_right = 672.0
+offset_bottom = 285.0
+theme_override_font_sizes/font_size = 40
+text = "音量設置"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1079509747]
+offset_left = 338.0
+offset_top = 338.0
+offset_right = 873.0
+offset_bottom = 572.0
+theme_override_constants/separation = 12
+
+[node name="MusicLabel" type="Label" parent="VBoxContainer" unique_id=1016900071]
+layout_mode = 2
+text = "Music"
+
+[node name="MusicSlider" type="HSlider" parent="VBoxContainer" unique_id=356254427]
+layout_mode = 2
+max_value = 1.0
+step = 0.001
+script = ExtResource("2_gpihd")
+bus_name = "Music"
+
+[node name="SFXLabel" type="Label" parent="VBoxContainer" unique_id=198577739]
+layout_mode = 2
+text = "SFX"
+
+[node name="SFXSlider" type="HSlider" parent="VBoxContainer" unique_id=875384166]
+layout_mode = 2
+max_value = 1.0
+step = 0.001
+script = ExtResource("2_gpihd")
+bus_name = "SFX"
+
+[node name="ExitButton" type="Button" parent="." unique_id=1875221553]
+offset_left = 551.0
+offset_top = 486.0
+offset_right = 639.0
+offset_bottom = 518.0
+theme_override_font_sizes/font_size = 20
+text = "Back"
+
+[connection signal="button_up" from="ExitButton" to="." method="_on_exit_button_button_up"]

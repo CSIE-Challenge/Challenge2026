@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://c8n4ortwop0"]
 
 [ext_resource type="Script" uid="uid://b5d7uvxoarxp1" path="res://Scripts/menu/menu_manager.gd" id="1_1rerr"]
+[ext_resource type="PackedScene" uid="uid://fh2uubspqhku" path="res://Scenes/volume_setting.tscn" id="2_xhh6f"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_mode"]
 
@@ -55,6 +56,13 @@ custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "about"
+
+[node name="VolumeButton" type="Button" parent="Panel/VBoxContainer" unique_id=475166805]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "調整音量
+"
 
 [node name="QuitButton" type="Button" parent="Panel/VBoxContainer" unique_id=1642981513]
 custom_minimum_size = Vector2(0, 80)
@@ -195,8 +203,11 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "返回"
 
+[node name="VolumeSetting" parent="." unique_id=709368218 instance=ExtResource("2_xhh6f")]
+
 [connection signal="button_up" from="Panel/VBoxContainer/StartButton" to="." method="_on_start_button_button_up"]
 [connection signal="button_up" from="Panel/VBoxContainer/AboutButtom" to="." method="_on_about_buttom_button_up"]
+[connection signal="button_up" from="Panel/VBoxContainer/VolumeButton" to="." method="_on_volume_button_button_up"]
 [connection signal="button_up" from="Panel/VBoxContainer/QuitButton" to="." method="_on_quit_button_button_up"]
 [connection signal="button_up" from="Panel/invisible" to="." method="_on_invisible_button_up"]
 [connection signal="button_up" from="Panel/AboutPanel/CloseButton" to="." method="_on_close_button_button_up"]

@@ -11,6 +11,8 @@ const FILE_SELECTOR_SCENE := "res://Scenes/menu/file_selector.tscn"
 func _ready() -> void:
 	about_panel.visible = false
 	mode_panel.visible = false
+	if not AudioManager.menutheme.has_stream_playback():
+		AudioManager.menutheme.play()
 
 
 # --- Main menu -------------------------------------------------------------
@@ -20,6 +22,10 @@ func _on_start_button_button_up() -> void:
 
 func _on_quit_button_button_up() -> void:
 	get_tree().quit()
+
+
+func _on_volume_button_button_up() -> void:
+	$VolumeSetting.open()
 
 
 func _on_invisible_button_up() -> void:
