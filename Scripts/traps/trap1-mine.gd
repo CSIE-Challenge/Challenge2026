@@ -40,6 +40,10 @@ func on_arming_complete() -> void:
 	mine_body.visible = true
 	is_armed = true
 
+	mine_body.scale = Vector2(0.3, 0.3)
+	var tween = create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_EXPO)
+	tween.tween_property(mine_body, "scale", Vector2(0.5, 0.5), 0.5)
+
 	# Check if the player is already standing inside the hitbox when arming finishes
 	var player = Global.game_manager.player
 	if explosion_area.overlaps_body(player) and not player.isjumping:
@@ -53,6 +57,7 @@ func explode() -> void:
 	# explode animation
 	set_process(false)
 	set_physics_process(false)
+	mine_body.visible = false
 	explosion_particle.emitting = true
 	await explosion_particle.finished
 
