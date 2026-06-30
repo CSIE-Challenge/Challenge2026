@@ -123,10 +123,13 @@ func _serialize_single_trap(node: Node) -> Dictionary:
 		"visible": node.visible if "visible" in node else true,
 	}
 
-	# Type-specific fields — matched by script filename suffix
+	# Type-specific fields — matched by script filename suffix.
+	# Each trap emits a "phase" string + 0~1 progress fields so the demo
+	# renderer can drive visuals without knowing internal variable names.
 	if script_path.ends_with("trap1-mine.gd"):
 		data["type"] = "mine"
 		data["is_armed"] = node.get("is_armed") if "is_armed" in node else false
+		data["phase"] = "armed" if data["is_armed"] else "arming"
 		var mine_body: Node = node.get_node_or_null("MineBody")
 		if mine_body and "modulate" in mine_body:
 			var col: Color = mine_body.modulate
@@ -148,6 +151,12 @@ func _serialize_single_trap(node: Node) -> Dictionary:
 		data["current_stay_time"] = (
 			node.get("current_stay_time") if "current_stay_time" in node else 0.0
 		)
+		if data["electric_on"]:
+			data["phase"] = "active"
+		elif data["current_fill"] > 0.0:
+			data["phase"] = "warning"
+		else:
+			data["phase"] = "idle"
 		var ring: Node2D = node.get_node_or_null("ElectricRing") as Node2D
 		var warn: Node2D = node.get_node_or_null("ElectricRingWarning") as Node2D
 		data["scale_x"] = ring.scale.x if ring else 1.0
@@ -160,8 +169,15 @@ func _serialize_single_trap(node: Node) -> Dictionary:
 	elif script_path.ends_with("trap3-tracing_bullet.gd"):
 		data["type"] = "tracing_bullet"
 		data["rotation"] = node.rotation if "rotation" in node else 0.0
-		data["tracing"] = node.get("tracing") if "tracing" in node else false
-		data["active"] = node.get("active") if "active" in node else false
+		var tracing: bool = node.get("tracing") if "tracing" in node else false
+		var target: Node = node.get("target") if "target" in node else null
+		data["tracing"] = tracing
+		if tracing:
+			data["phase"] = "homing"
+		elif target != null:
+			data["phase"] = "straight"
+		else:
+			data["phase"] = "done"
 
 	elif script_path.ends_with("trap4-conveyor.gd"):
 		data["type"] = "conveyor"
@@ -170,18 +186,94 @@ func _serialize_single_trap(node: Node) -> Dictionary:
 	elif script_path.ends_with("trap5-icefloor.gd"):
 		data["type"] = "ice_floor"
 
+	elif script_path.ends_with("trap6-scanline.gd"):
+		data["type"] = "scanline"
+		data["phase"] = "active"
+		data["line_dir"] = node.get("line_dir") if "line_dir" in node else Vector2.ZERO
+		var visual_line: Node2D = node.get_node_or_null("Hulas") as Node2D
+		data["oscillation_offset"] = (
+			visual_line.position.x if visual_line and "position" in visual_line else 0.0
+		)
+
 	elif script_path.ends_with("trap7-spreading_ripples.gd"):
 		data["type"] = "spreading_ripples"
-		data["expand_progress"] = node.get("expand_progress") if "expand_progress" in node else 0.0
-		data["phase"] = node.get("phase") if "phase" in node else "warning"
+		var is_expanding: bool = node.get("is_expanding") if "is_expanding" in node else false
+		var collision_shape: CollisionShape2D = (
+			node.get_node_or_null("CollisionShape2D") as CollisionShape2D
+		)
+		var current_radius: float = 0.0
+		if collision_shape and collision_shape.shape is CircleShape2D:
+			current_radius = (collision_shape.shape as CircleShape2D).radius
+		var max_radius: float = node.get("max_radius") if "max_radius" in node else 1000.0
+		data["expand_progress"] = (
+			clamp(current_radius / max_radius, 0.0, 1.0) if max_radius > 0.0 else 0.0
+		)
+		if not is_expanding and current_radius <= 0.0:
+			data["phase"] = "warning"
+		elif is_expanding:
+			data["phase"] = "expanding"
+		else:
+			data["phase"] = "done"
+
+	elif script_path.ends_with("trap8-electric_arc.gd"):
+		data["type"] = "electric_arc"
+		var activated: bool = node.get("activated") if "activated" in node else false
+		if activated:
+			data["phase"] = "active"
+		elif node.visible:
+			data["phase"] = "warning"
+		else:
+			data["phase"] = "despawn"
+		var start_point: Node2D = node.get_node_or_null("StartPoint") as Node2D
+		var end_point: Node2D = node.get_node_or_null("EndPoint") as Node2D
+		data["start_pos"] = start_point.position if start_point else Vector2.ZERO
+		data["end_pos"] = end_point.position if end_point else Vector2.ZERO
+		var crack: Sprite2D = node.get_node_or_null("Crack") as Sprite2D
+		if crack and crack.material:
+			data["crack_progress"] = crack.material.get_shader_parameter("progress")
+		else:
+			data["crack_progress"] = 0.0
+
+	elif script_path.ends_with("trap9-mortar.gd"):
+		data["type"] = "mortar"
+		var flying: bool = node.get("flying") if "flying" in node else false
+		var exploding: bool = node.get("exploding") if "exploding" in node else false
+		if flying:
+			data["phase"] = "flying"
+		elif exploding:
+			data["phase"] = "exploding"
+		else:
+			data["phase"] = "done"
+		var shell_shadow: Node2D = node.get_node_or_null("ShellShadow") as Node2D
+		data["shell_position"] = (
+			shell_shadow.position if shell_shadow and "position" in shell_shadow else Vector2.ZERO
+		)
+		var shell: Sprite2D = node.get_node_or_null("ShellShadow/Shell") as Sprite2D
+		data["shell_y_offset"] = shell.position.y if shell and "position" in shell else 0.0
+		data["shell_rotation"] = shell.rotation if shell and "rotation" in shell else 0.0
+		var explosion: Sprite2D = node.get_node_or_null("Explosion") as Sprite2D
+		data["explosion_visible"] = (
+			explosion.visible if explosion and "visible" in explosion else false
+		)
 
 	elif script_path.ends_with("trap10-shotgun.gd"):
 		data["type"] = "shotgun"
 		data["directions"] = node.get("directions") if "directions" in node else []
-		data["phase"] = node.get("phase") if "phase" in node else "warning"
-		data["warning_progress"] = (
-			node.get("warning_progress") if "warning_progress" in node else 0.0
-		)
+		var aiming: bool = node.get("aiming") if "aiming" in node else false
+		var firing: bool = node.get("firing") if "firing" in node else false
+		if aiming:
+			data["phase"] = "warning"
+		elif firing:
+			data["phase"] = "firing"
+		else:
+			data["phase"] = "done"
+		# warning_progress: time elapsed / aiming_time
+		var timer: Timer = node.get_node_or_null("Timer") as Timer
+		var aiming_time: float = node.get("aiming_time") if "aiming_time" in node else 1.0
+		if aiming and timer and aiming_time > 0.0:
+			data["warning_progress"] = clamp(1.0 - (timer.time_left / aiming_time), 0.0, 1.0)
+		else:
+			data["warning_progress"] = 0.0
 
 	else:
 		# Not a recognized trap type

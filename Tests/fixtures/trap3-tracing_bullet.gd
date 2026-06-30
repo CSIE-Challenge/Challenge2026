@@ -2,4 +2,4 @@
 extends Node2D
 
 var tracing := false
-var active := false
+var target: Node2D = null
