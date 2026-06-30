@@ -1,5 +1,5 @@
 extends Node2D
-const TRUNK_HEIGHT_PIXEL = 40
+const TRUNK_HEIGHT_PIXEL = 36
 @export var energy: int = 0
 var trunks: Array[Node2D]
 var leaves: Array[Node2D]
@@ -25,13 +25,8 @@ func _process(delta: float) -> void:
 	use(delta)
 
 
-func _input(event: InputEvent):
-	if event is InputEventKey and event.pressed:
-		match event.keycode:
-			KEY_P:
-				energy = min(energy + 5, 100)
-			KEY_L:
-				energy = max(energy - 5, 0)
+func update_energy(new_energy: int) -> void:
+	energy = new_energy
 
 
 func rearrange_trunks() -> void:
@@ -41,7 +36,7 @@ func rearrange_trunks() -> void:
 	while trunks.size() > num_target:
 		tree_cut()
 	var len = trunks.size()
-	var scale: float = 0.2 + len * 0.02
+	var scale: float = 0.18 + len * 0.02
 	tree_height = 0
 	for i in len:
 		trunks[i].z_index = 0
@@ -55,7 +50,8 @@ func tree_grow() -> void:
 	var new_trunk = trunk.instantiate()
 	var new_sprite = new_trunk.get_node("AnimationSprite")
 	new_sprite.play(str(randi_range(1, 5)))
-	new_trunk.resize(0)
+	new_trunk.position = Vector2(0, 0)
+	new_trunk.scale = Vector2(0, 0)
 	trunks.push_front(new_trunk)
 	add_child(new_trunk)
 
@@ -77,7 +73,7 @@ func rearrange_leaves() -> void:
 	for i in len:
 		leaves[i].z_index = 2
 		leaves[i].relocate(Vector2(0, tree_height))
-		leaves[i].resize(sqrt(energy) * 0.04)
+		leaves[i].resize(sqrt(energy) * 0.036)
 		leaves[i].set_direction((75 - 5 * len) * (i - len / 2))
 		if i == len / 2:
 			leaves[i].set_type(0)
@@ -89,6 +85,8 @@ func rearrange_leaves() -> void:
 
 func leaf_grow() -> void:
 	var new_leaf = leaf.instantiate()
+	new_leaf.position = Vector2(0, tree_height)
+	new_leaf.scale = Vector2(0, 0)
 	leaves.push_back(new_leaf)
 	add_child(new_leaf)
 
@@ -111,15 +109,17 @@ func rearrange_coconuts() -> void:
 		coconuts[i].z_index = 1
 		coconuts[i].relocate(
 			(
-				Vector2(0, tree_height + energy * 0.3)
-				+ polar_vector(100 + 180 / len + 360 / len * i, energy * 0.2)
+				Vector2(0, tree_height + energy * 0.2)
+				+ polar_vector(100 + 180 / len + 360 / len * i, energy * 0.18)
 			)
 		)
-		coconuts[i].resize(0.1 + energy * 0.0025)
+		coconuts[i].resize(0.12 + energy * 0.0016)
 
 
 func coconut_grow() -> void:
 	var new_coconut = coconut.instantiate()
+	new_coconut.position = Vector2(0, tree_height)
+	new_coconut.scale = Vector2(0, 0)
 	coconuts.push_back(new_coconut)
 	add_child(new_coconut)
 
@@ -133,7 +133,7 @@ func coconut_cut() -> void:
 
 func polar_vector(deg: float, len: float) -> Vector2:
 	var arc: float = deg * PI / 180
-	return Vector2(len * cos(arc), len * sin(arc) * 0.7)
+	return Vector2(len * cos(arc), len * sin(arc) * 0.6)
 
 
 func use(delta: float) -> float:

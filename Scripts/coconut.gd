@@ -1,7 +1,7 @@
 extends Node2D
 const SLIDING_RATE: float = 0.15
-var swaying_speed: float = 4
-var swaying_amplitude: float = 8
+var swaying_speed: float = 3
+var swaying_amplitude: float = 20
 var assigned_position: Vector2
 var assigned_scale: float
 var time: float

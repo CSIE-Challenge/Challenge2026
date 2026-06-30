@@ -5,6 +5,7 @@ extends Node2D
 @export var health_label: Label
 @export var energy_balls_label: Label
 @export var energy_bar_label: Label
+@export var energy_bar: Node2D
 @export var opponent_energy_bar_label: Label
 @export var result_screen: ResultScreen
 var energy_increase_period := 1.0
@@ -40,7 +41,7 @@ func _ready() -> void:
 	NetworkManager.energy_changed.connect(_on_network_energy_changed)
 	health_label.text = "Health: %d" % player.max_health
 	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
-	_update_energy_label()
+	_update_energy()
 	_update_opponent_energy_label(0, 0)
 	_connect_agent_action_signals()
 
@@ -330,14 +331,14 @@ func _on_network_energy_changed(peer_id: int, energy: int) -> void:
 		if energy < energy_amount:
 			total_energy_spent += energy_amount - energy
 		energy_amount = energy
-		_update_energy_label()
-		return
+		_update_energy()
 
 	_update_opponent_energy_label(peer_id, energy)
 
 
-func _update_energy_label() -> void:
+func _update_energy() -> void:
 	energy_bar_label.text = "My Energy: %d" % energy_amount
+	energy_bar.energy = energy_amount
 
 
 func _update_opponent_energy_label(peer_id: int, energy: int) -> void:

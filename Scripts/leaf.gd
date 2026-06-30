@@ -28,12 +28,12 @@ func swaying(delta: float) -> void:
 
 
 func set_direction(dir: float) -> void:
-	while dir > 360:
+	while dir > 180:
 		dir -= 360
-	while dir < 0:
+	while dir < -180:
 		dir += 360
 	direction = dir
-	if direction > 180:
+	if direction < 0:
 		leafstalk.scale = Vector2(-1, 1)
 	else:
 		leafstalk.scale = Vector2(1, 1)
