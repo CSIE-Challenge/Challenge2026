@@ -11,7 +11,9 @@ var is_armed := false
 var isjumping_2_frame_ago := false
 var isjumping_1_frame_ago := false
 
+@onready var mine_warning: Sprite2D = $MineWarning
 @onready var mine_body: Sprite2D = $MineBody
+@onready var spawn_particle: GPUParticles2D = $SpawnParticle
 @onready var explosion_particle: GPUParticles2D = $ExplosionParticle
 @onready var explosion_area: Area2D = $ExplosionArea
 
@@ -25,17 +27,18 @@ static func initialize(pos: Vector2) -> Trap1Mine:
 
 
 func start_arming_sequence() -> void:
-	var tween = create_tween()
+	mine_warning.visible = true
+	mine_body.visible = false
 
-	mine_body.material.set_shader_parameter("progress", 0.0)
-	mine_body.material.set_shader_parameter("radar_mul", 0.0)
-	tween.tween_property(mine_body.material, "shader_parameter/progress", 1.0, arming_time)
-	tween.tween_callback(on_arming_complete)
+	await get_tree().create_timer(arming_time).timeout
+	on_arming_complete()
 
 
 func on_arming_complete() -> void:
+	spawn_particle.emitting = true
+	mine_warning.visible = false
+	mine_body.visible = true
 	is_armed = true
-	mine_body.material.set_shader_parameter("radar_mul", 1.0)
 
 	# Check if the player is already standing inside the hitbox when arming finishes
 	var player = Global.game_manager.player

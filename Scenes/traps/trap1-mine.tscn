@@ -1,23 +1,36 @@
 [gd_scene format=3 uid="uid://cnaanuabg2p08"]
 
 [ext_resource type="Script" uid="uid://c3wedrfqpagbc" path="res://Scripts/traps/trap1-mine.gd" id="1_lts3b"]
-[ext_resource type="Shader" uid="uid://c332srcs8mico" path="res://Shaders/banana_mine.gdshader" id="2_5q35q"]
+[ext_resource type="Shader" uid="uid://db8qrfcvj5ym" path="res://Shaders/flashing_warning.gdshader" id="2_dme0h"]
 [ext_resource type="Texture2D" uid="uid://bpdkcuawn3dcc" path="res://Shapes/banana.svg" id="3_5q35q"]
+[ext_resource type="Texture2D" uid="uid://s0g61obj6054" path="res://Shapes/warning.svg" id="3_x741d"]
 [ext_resource type="Texture2D" uid="uid://c8wav4cyu2vsn" path="res://Shapes/smoke.svg" id="4_dme0h"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_bao78"]
-resource_local_to_scene = true
-shader = ExtResource("2_5q35q")
-shader_parameter/radar_color = Color(1, 0.654902, 0.14901961, 0.43529412)
-shader_parameter/radar_mul = 1.0
-shader_parameter/radar_speed = 0.40000001574012
-shader_parameter/tail_length = 1.0
-shader_parameter/division_lines = 3.0
-shader_parameter/progress = 1.0
-shader_parameter/bg_brightness = 0.30000001425
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_x741d"]
+shader = ExtResource("2_dme0h")
+shader_parameter/frequency = 5.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5q35q"]
-radius = 31.0
+radius = 26.019224
+
+[sub_resource type="Gradient" id="Gradient_x741d"]
+offsets = PackedFloat32Array(0.109004736, 1)
+colors = PackedColorArray(1, 0.72156864, 0.011764706, 1, 1, 0.72156864, 0.011764706, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_rv0bw"]
+gradient = SubResource("Gradient_x741d")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_g6b3o"]
+particle_flag_disable_z = true
+spread = 180.0
+initial_velocity_min = 100.0
+initial_velocity_max = 200.0
+gravity = Vector3(0, 200, 0)
+damping_min = 10.0
+damping_max = 20.0
+scale_min = 3.0
+scale_max = 5.0
+color_ramp = SubResource("GradientTexture1D_rv0bw")
 
 [sub_resource type="Gradient" id="Gradient_g1nsu"]
 offsets = PackedFloat32Array(0, 0.9875776)
@@ -50,17 +63,28 @@ color_ramp = SubResource("GradientTexture1D_dme0h")
 [node name="MineTrap" type="Node2D" unique_id=1887909814]
 script = ExtResource("1_lts3b")
 
+[node name="MineWarning" type="Sprite2D" parent="." unique_id=1725543231]
+material = SubResource("ShaderMaterial_x741d")
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("3_x741d")
+
 [node name="MineBody" type="Sprite2D" parent="." unique_id=99312446]
 z_index = -1
-material = SubResource("ShaderMaterial_bao78")
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("3_5q35q")
 
 [node name="ExplosionArea" type="Area2D" parent="." unique_id=1132755755]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ExplosionArea" unique_id=623879391]
-visible = false
 shape = SubResource("CircleShape2D_5q35q")
+
+[node name="SpawnParticle" type="GPUParticles2D" parent="." unique_id=233435850]
+emitting = false
+amount = 16
+lifetime = 0.5
+one_shot = true
+explosiveness = 0.9
+process_material = SubResource("ParticleProcessMaterial_g6b3o")
 
 [node name="ExplosionParticle" type="GPUParticles2D" parent="." unique_id=1226084622]
 emitting = false
