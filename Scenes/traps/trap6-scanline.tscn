@@ -1,26 +1,110 @@
 [gd_scene format=3 uid="uid://doj5imvqfusp2"]
 
 [ext_resource type="Script" uid="uid://bxlecmyhyxnxj" path="res://Scripts/traps/trap6-scanline.gd" id="1_1w6og"]
-[ext_resource type="Texture2D" uid="uid://bqkyfc3ijytil" path="res://Shapes/ScanLine.png" id="1_ulktd"]
+[ext_resource type="Texture2D" uid="uid://c0f7jfmf7hox4" path="res://Shapes/hula.png" id="2_1w6og"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wwt1h"]
 size = Vector2(1920, 29)
 
 [node name="Scanline" type="Area2D" unique_id=2049827693]
 script = ExtResource("1_1w6og")
-
-[node name="ColorRect" type="ColorRect" parent="." unique_id=829123046]
-clip_contents = true
-offset_left = -500.0
-offset_top = -500.0
-offset_right = 499.0
-offset_bottom = 500.0
-color = Color(0.972549, 0.972549, 0.972549, 0)
-
-[node name="Sprite2D" type="Sprite2D" parent="ColorRect" unique_id=1871092418]
-position = Vector2(500, 500)
-scale = Vector2(0.162, 0.162)
-texture = ExtResource("1_ulktd")
+oscillate_frequency = 0.7
+oscillate_amplitude = 10.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=299328473]
 shape = SubResource("RectangleShape2D_wwt1h")
+
+[node name="Hulas" type="Node2D" parent="." unique_id=990402230]
+
+[node name="Hula1" type="Sprite2D" parent="Hulas" unique_id=2082295006]
+position = Vector2(-300, 0)
+texture = ExtResource("2_1w6og")
+
+[node name="Hula2" type="Sprite2D" parent="Hulas" unique_id=514545164]
+position = Vector2(-270, 0)
+texture = ExtResource("2_1w6og")
+flip_h = true
+
+[node name="Hula3" type="Sprite2D" parent="Hulas" unique_id=623698252]
+position = Vector2(-240, 0)
+texture = ExtResource("2_1w6og")
+
+[node name="Hula4" type="Sprite2D" parent="Hulas" unique_id=1168251216]
+position = Vector2(-210, 0)
+texture = ExtResource("2_1w6og")
+flip_h = true
+
+[node name="Hula5" type="Sprite2D" parent="Hulas" unique_id=310575029]
+position = Vector2(-180, 0)
+texture = ExtResource("2_1w6og")
+
+[node name="Hula6" type="Sprite2D" parent="Hulas" unique_id=1754453307]
+position = Vector2(-150, 0)
+texture = ExtResource("2_1w6og")
+flip_h = true
+
+[node name="Hula7" type="Sprite2D" parent="Hulas" unique_id=515346004]
+position = Vector2(-120, 0)
+texture = ExtResource("2_1w6og")
+
+[node name="Hula8" type="Sprite2D" parent="Hulas" unique_id=896626624]
+position = Vector2(-90, 0)
+texture = ExtResource("2_1w6og")
+flip_h = true
+
+[node name="Hula9" type="Sprite2D" parent="Hulas" unique_id=1372205985]
+position = Vector2(-60, 0)
+texture = ExtResource("2_1w6og")
+
+[node name="Hula10" type="Sprite2D" parent="Hulas" unique_id=1715335798]
+position = Vector2(-30, 0)
+texture = ExtResource("2_1w6og")
+flip_h = true
+
+[node name="Hula11" type="Sprite2D" parent="Hulas" unique_id=437081398]
+texture = ExtResource("2_1w6og")
+
+[node name="Hula12" type="Sprite2D" parent="Hulas" unique_id=468496938]
+position = Vector2(30, 0)
+texture = ExtResource("2_1w6og")
+flip_h = true
+
+[node name="Hula13" type="Sprite2D" parent="Hulas" unique_id=142016075]
+position = Vector2(60, 0)
+texture = ExtResource("2_1w6og")
+
+[node name="Hula14" type="Sprite2D" parent="Hulas" unique_id=647926868]
+position = Vector2(90, 0)
+texture = ExtResource("2_1w6og")
+flip_h = true
+
+[node name="Hula15" type="Sprite2D" parent="Hulas" unique_id=886492664]
+position = Vector2(120, 0)
+texture = ExtResource("2_1w6og")
+
+[node name="Hula16" type="Sprite2D" parent="Hulas" unique_id=1735219685]
+position = Vector2(150, 0)
+texture = ExtResource("2_1w6og")
+flip_h = true
+
+[node name="Hula17" type="Sprite2D" parent="Hulas" unique_id=1445568659]
+position = Vector2(180, 0)
+texture = ExtResource("2_1w6og")
+
+[node name="Hula18" type="Sprite2D" parent="Hulas" unique_id=1855792135]
+position = Vector2(210, 0)
+texture = ExtResource("2_1w6og")
+flip_h = true
+
+[node name="Hula19" type="Sprite2D" parent="Hulas" unique_id=974411267]
+position = Vector2(240, 0)
+texture = ExtResource("2_1w6og")
+
+[node name="Hula20" type="Sprite2D" parent="Hulas" unique_id=23160113]
+position = Vector2(270, 0)
+texture = ExtResource("2_1w6og")
+flip_h = true
+
+[node name="Hula21" type="Sprite2D" parent="Hulas" unique_id=378376064]
+position = Vector2(300, 0)
+texture = ExtResource("2_1w6og")
