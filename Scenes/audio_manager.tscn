@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://bxj6outuppaq0"]
 
 [ext_resource type="Script" uid="uid://onn30eh2nvc" path="res://Scripts/audio_manager.gd" id="1_sm2tf"]
-[ext_resource type="AudioStream" uid="uid://bl6fiwjgs24to" path="res://assets/SmashTheCoconuts.mp3" id="2_hhwve"]
-[ext_resource type="AudioStream" uid="uid://kwrrir3nslnh" path="res://assets/Jump2.mp3" id="3_qixve"]
+[ext_resource type="AudioStream" uid="uid://bl6fiwjgs24to" path="res://assets/audio/SmashTheCoconuts.mp3" id="2_hhwve"]
+[ext_resource type="AudioStream" uid="uid://kwrrir3nslnh" path="res://assets/audio/Jump2.mp3" id="3_qixve"]
 
 [node name="AudioManager" type="Node" unique_id=664248620]
 script = ExtResource("1_sm2tf")
