@@ -123,4 +123,4 @@ func _detect_player() -> void:
 	if not activated:
 		return
 	if raycast.is_colliding():
-		Global.player_hit.emit(5)
+		Global.player_hit.emit(damage)
