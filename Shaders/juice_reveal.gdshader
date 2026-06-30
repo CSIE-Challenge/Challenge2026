@@ -15,6 +15,9 @@ uniform float border_thickness : hint_range(0.0, 0.05) = 0.015;
 uniform float reveal_progress : hint_range(0.0, 1.0) = 0.0;
 uniform vec2 reveal_origin = vec2(0.5, 0.5);
 
+// Final alpha multiplier
+uniform float master_alpha : hint_range(0.0, 1.0) = 1.0;
+
 // Helper mask function
 float get_revealed_mask(vec2 uv, float radius, sampler2D tex) {
     float tex_a = texture(tex, uv).a;
@@ -61,7 +64,7 @@ void fragment() {
     final_color = mix(final_color, highlight_color, highlight_mask * highlight_color.a);
 
     // Final alpha crop to the overall liquid shape
-    final_color.a *= liquid_mask;
+    final_color.a *= liquid_mask * master_alpha;
 
     COLOR = final_color;
 }

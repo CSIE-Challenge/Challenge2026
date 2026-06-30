@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://bg7lqkweutjas" path="res://Shapes/juice_spilled.svg" id="3_rvr82"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rkeu5"]
+resource_local_to_scene = true
 shader = ExtResource("2_rvr82")
 shader_parameter/liquid_color = Color(1, 0.7019608, 0.5019608, 1)
 shader_parameter/border_color = Color(1, 0.59607846, 0.33333334, 1)
@@ -16,6 +17,7 @@ shader_parameter/wave_speed = 0.800000038
 shader_parameter/border_thickness = 0.010000000475
 shader_parameter/reveal_progress = 0.0
 shader_parameter/reveal_origin = Vector2(0.745, 0.24)
+shader_parameter/master_alpha = 1.0
 
 [node name="IceFloor" type="Area2D" unique_id=1192991918]
 script = ExtResource("1_j7spk")

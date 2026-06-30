@@ -11,6 +11,8 @@ var damage = TrapData.new().data["trap5-icefloor"]["damage"]
 var energy_costs = TrapData.new().data["trap5-icefloor"]["energy_costs"]
 var lifetime = TrapData.new().data["trap5-icefloor"]["lifetime"]
 
+var _is_destroying: bool = false
+
 @onready var juice_sprite: Sprite2D = $SpilledJuice
 @onready var glass_sprite: Sprite2D = $JuiceGlass
 
@@ -29,18 +31,26 @@ func _ready() -> void:
 
 
 func _destroy_trap() -> void:
-	if not is_inside_tree():
+	if not is_inside_tree() or _is_destroying:
 		return
+	_is_destroying = true
 
 	for body in get_overlapping_bodies():
 		if body == Global.game_manager.player:
 			_remove_ice_effect(body)
 			print("icefloor disappear")
 
+	var tween = create_tween()
+	tween.tween_property(juice_sprite.material, "shader_parameter/master_alpha", 0.0, 0.2)
+	await tween.finished
+
 	queue_free()
 
 
 func start_animation() -> void:
+	juice_sprite.material.set_shader_parameter("master_alpha", 1.0)
+	juice_sprite.material.set_shader_parameter("reveal_progress", 0.0)
+
 	var tween = create_tween().set_parallel()
 	tween.set_trans(Tween.TRANS_CUBIC)
 	tween.set_ease(Tween.EASE_OUT)
@@ -53,13 +63,13 @@ func start_animation() -> void:
 
 
 func _on_body_entered(body: Node2D) -> void:
-	if body == Global.game_manager.player:
+	if body == Global.game_manager.player and not _is_destroying:
 		print("player entered icefloor")
 		_add_ice_effect(body)
 
 
 func _on_body_exited(body: Node2D) -> void:
-	if body == Global.game_manager.player:
+	if body == Global.game_manager.player and not _is_destroying:
 		print("player left icefloor")
 		_remove_ice_effect(body)
 
