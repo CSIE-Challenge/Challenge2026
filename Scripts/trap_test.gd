@@ -3,6 +3,7 @@ extends Node2D
 
 func _input(event: InputEvent):
 	if event is InputEventKey and event.pressed:
+		print("meow")
 		match event.keycode:
 			KEY_H:
 				Global.player_hit.emit(3)

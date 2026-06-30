@@ -14,6 +14,12 @@
 [ext_resource type="Script" uid="uid://bs7ntuoxby0al" path="res://Scripts/trap_request_scheduler.gd" id="8_urrcd"]
 [ext_resource type="Script" uid="uid://c8r5j40yj4je7" path="res://Scripts/agent_action_service.gd" id="9_puebw"]
 [ext_resource type="Script" uid="uid://c8md8v3eeja45" path="res://Scripts/state_serializer.gd" id="4_ssg01"]
+[ext_resource type="Script" uid="uid://dkfqc5fwcbi7" path="res://Scripts/sand_tile_map.gd" id="4_jb71e"]
+[ext_resource type="Script" uid="uid://jpbxoevnpa0u" path="res://Scripts/team_status_service.gd" id="7_1qnfl"]
+[ext_resource type="PackedScene" path="res://Scenes/result_screen.tscn" id="8_result"]
+[ext_resource type="Texture2D" uid="uid://c1rj0im3pw7gd" path="res://Shapes/sand_background.png" id="8_rg35f"]
+[ext_resource type="Script" uid="uid://bs7ntuoxby0al" path="res://Scripts/trap_request_scheduler.gd" id="8_urrcd"]
+[ext_resource type="Script" uid="uid://c8r5j40yj4je7" path="res://Scripts/agent_action_service.gd" id="9_puebw"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_puebw"]
 viewport_path = NodePath("SubViewport")
@@ -348,6 +354,7 @@ script = ExtResource("8_urrcd")
 script = ExtResource("9_puebw")
 
 [node name="ResultScreen" parent="." unique_id=1827147285 instance=ExtResource("8_result")]
+
 [node name="StateSerializer" type="Node" parent="." node_paths=PackedStringArray("game_manager", "stage")]
 script = ExtResource("4_ssg01")
 game_manager = NodePath("../GameManager")
