@@ -72,7 +72,7 @@
 		"scaling_rate": 10,
 		"player_radius": 5,
 		"delay_time": 2.0,
-		"duration_time": 100
+		"duration_time": 5
 	},
 	"trap9-mortar": {
 		"path": "res://Scenes/traps/trap9-mortar.tscn",
