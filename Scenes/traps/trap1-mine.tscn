@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://c3wedrfqpagbc" path="res://Scripts/traps/trap1-mine.gd" id="1_lts3b"]
 [ext_resource type="Shader" uid="uid://db8qrfcvj5ym" path="res://Shaders/flashing_warning.gdshader" id="2_dme0h"]
 [ext_resource type="Texture2D" uid="uid://bpdkcuawn3dcc" path="res://Shapes/banana.svg" id="3_5q35q"]
-[ext_resource type="Texture2D" uid="uid://s0g61obj6054" path="res://Shapes/warning.svg" id="3_x741d"]
+[ext_resource type="Texture2D" uid="uid://c4867lgvdm7jo" path="res://Shapes/warning.png" id="3_rv0bw"]
 [ext_resource type="Texture2D" uid="uid://c8wav4cyu2vsn" path="res://Shapes/smoke.svg" id="4_dme0h"]
 [ext_resource type="Shader" uid="uid://c8yqa2f7jk3wo" path="res://Shaders/outline.gdshader" id="4_rv0bw"]
 
@@ -13,7 +13,7 @@ shader_parameter/frequency = 5.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_a250w"]
 shader = ExtResource("4_rv0bw")
-shader_parameter/outline_color = Color(0.91, 0.72572505, 0.5005, 1)
+shader_parameter/outline_color = Color(0.950223, 0.8228245, 0.67327076, 1)
 shader_parameter/outline_width = 2.5
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5q35q"]
@@ -71,8 +71,8 @@ script = ExtResource("1_lts3b")
 
 [node name="MineWarning" type="Sprite2D" parent="." unique_id=1725543231]
 material = SubResource("ShaderMaterial_x741d")
-scale = Vector2(0.3, 0.3)
-texture = ExtResource("3_x741d")
+scale = Vector2(1.6, 1.6)
+texture = ExtResource("3_rv0bw")
 
 [node name="MineBody" type="Sprite2D" parent="." unique_id=99312446]
 z_index = -1
