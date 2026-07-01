@@ -14,6 +14,7 @@ const ECONOMY_TICK_SEC := 1.0
 var energy_increase_period := 1.0
 var player_invincibility_time := 1.0
 var energy_gain_per_ball := 10
+var game_duration := 180.0
 
 var energy_ball_count := 0
 var energy_amount := 0
@@ -25,6 +26,7 @@ var survival_started_msec := 0
 
 @onready var player_invincibility_timer = $PlayerInvincibilityTimer
 @onready var energy_increase_timer = $EnergyIncreaseTimer
+@onready var game_duration_timer = $GameDurationTimer
 
 @onready var team_status_service: TeamStatusService = $"../TeamStatusService"
 @onready var trap_request_scheduler: TrapRequestScheduler = $"../TrapRequestScheduler"
@@ -60,6 +62,10 @@ func _ready() -> void:
 
 	energy_increase_timer.wait_time = energy_increase_period
 
+	game_duration_timer.wait_time = game_duration
+	game_duration_timer.timeout.connect(_on_game_duration_timeout)
+	game_duration_timer.start()
+
 	player_invincible = false
 
 	_begin_agents()
@@ -78,6 +84,7 @@ func _reload_from_game_data() -> void:
 	energy_gain_per_ball = game_data.get_int(
 		"game_manager", "energy_gain_per_ball", energy_gain_per_ball
 	)
+	game_duration = game_data.get_float("game_manager", "game_duration", game_duration)
 
 
 func _physics_process(delta: float) -> void:
@@ -337,12 +344,17 @@ func on_player_hit(damage: int) -> void:
 #finish_game()
 
 
+func _on_game_duration_timeout() -> void:
+	finish_game()
+
+
 func finish_game(authoritative_stats: Dictionary = {}) -> void:
 	if game_over:
 		return
 	game_over = true
 	energy_increase_timer.stop()
 	player_invincibility_timer.stop()
+	game_duration_timer.stop()
 	player.set_physics_process(false)
 	player.collision_layer = 0
 	player.collision_mask = 0

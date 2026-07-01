@@ -309,6 +309,9 @@ autostart = true
 
 [node name="PlayerInvincibilityTimer" type="Timer" parent="GameManager" unique_id=1398851901]
 
+[node name="GameDurationTimer" type="Timer" parent="GameManager" unique_id=1398851902]
+one_shot = true
+
 [node name="Stage#HealthLabel" type="Label" parent="." unique_id=1134340444]
 offset_left = -236.0
 offset_top = -236.0

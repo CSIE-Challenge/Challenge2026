@@ -15,7 +15,8 @@
     "game_manager": {
         "energy_increase_period": 1.0,
         "player_invincibility_time": 1.0,
-        "energy_gain_per_ball": 10
+        "energy_gain_per_ball": 10,
+        "game_duration": 180.0
     },
     "player": {
         "acceleration": 100.0,
