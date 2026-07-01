@@ -143,63 +143,40 @@ class GameClientBase:
         """Round-trip through every layer; returns the server's "pong"."""
         return self._call(protocol.Cmd.PING)
 
-    def get_energy(self) -> int:
-        """Read the current energy amount from the game."""
-        return self._call(protocol.Cmd.GET_ENERGY)
-
     def request_trap(
         self,
-        team_id: int,
         trap_id: int | str,
         params: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
-        """Request to place a trap.
+        """Place a trap.
 
         Vector parameters should be sent as ``[x, y]`` arrays in JSON payloads.
         """
         trap_id = _normalize_trap_id(trap_id)
         return self._call(
             protocol.Cmd.REQUEST_TRAP,
-            {
-                "team_id": team_id,
-                "trap_id": trap_id,
-                "params": params or {},
-            },
+            {"trap_id": trap_id, "params": params or {}},
         )
 
-    def get_team_status(self, team_id: int = 0) -> dict[str, Any]:
-        """Read full status for one team."""
-        return self._call(
-            protocol.Cmd.GET_TEAM_STATUS,
-            {"team_id": team_id},
-        )
+    def get_my_energy(self) -> int:
+        """Read my current energy."""
+        return self._call(protocol.Cmd.GET_MY_ENERGY)
 
-    def get_team_energy(self, team_id: int = 0) -> dict[str, Any]:
-        """Read one team's current/max energy."""
-        return self._call(
-            protocol.Cmd.GET_TEAM_ENERGY,
-            {"team_id": team_id},
-        )
+    def get_my_health(self) -> int:
+        """Read my current health."""
+        return self._call(protocol.Cmd.GET_MY_HEALTH)
 
-    def get_team_health(self, team_id: int = 0) -> dict[str, Any]:
-        """Read one team's current/max health and mode."""
-        return self._call(
-            protocol.Cmd.GET_TEAM_HEALTH,
-            {"team_id": team_id},
-        )
+    def get_opponent_player_position(self) -> list[float]:
+        """Read the opponent player's position as ``[x, y]`` (self in 1P)."""
+        return self._call(protocol.Cmd.GET_OPPONENT_PLAYER_POSITION)
 
-    def request_heal(
-        self,
-        team_id: int,
-        heal_amount: float,
-        energy_cost: float,
-    ) -> dict[str, Any]:
-        """Request an energy-costed heal action for one team."""
+    def get_opponent_energy_ball_position(self) -> list[float]:
+        """Read the opponent's energy ball position as ``[x, y]`` (self in 1P)."""
+        return self._call(protocol.Cmd.GET_OPPONENT_ENERGY_BALL_POSITION)
+
+    def heal(self, heal_amount: float, energy_cost: float) -> dict[str, Any]:
+        """Request an energy-costed heal."""
         return self._call(
-            protocol.Cmd.REQUEST_HEAL,
-            {
-                "team_id": team_id,
-                "heal_amount": heal_amount,
-                "energy_cost": energy_cost,
-            },
+            protocol.Cmd.HEAL,
+            {"heal_amount": heal_amount, "energy_cost": energy_cost},
         )

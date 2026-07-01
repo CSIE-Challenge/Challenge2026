@@ -16,20 +16,16 @@ class Cmd:
     tests/test_contract_drift.py fails the build if the two ends diverge.
     """
 
-    # Runtime API commands.
+    # Actions.
     PING = "ping"
-    GET_ENERGY = "get_energy"
     REQUEST_TRAP = "request_trap"
+    HEAL = "heal"
 
-    # Test-only utility commands (deterministic integration-test helpers).
-    INIT_AGENT_SERVICES = "init_agent_services"
-    PROCESS_TRAP_REQUESTS = "process_trap_requests"
-
-    # Team and status API commands.
-    GET_TEAM_STATUS = "get_team_status"
-    GET_TEAM_ENERGY = "get_team_energy"
-    GET_TEAM_HEALTH = "get_team_health"
-    REQUEST_HEAL = "request_heal"
+    # Reads.
+    GET_MY_ENERGY = "get_my_energy"
+    GET_MY_HEALTH = "get_my_health"
+    GET_OPPONENT_PLAYER_POSITION = "get_opponent_player_position"
+    GET_OPPONENT_ENERGY_BALL_POSITION = "get_opponent_energy_ball_position"
 
 
 class Status:

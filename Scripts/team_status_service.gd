@@ -236,76 +236,6 @@ func is_team_in_lifesteal(team_id: int) -> bool:
 # ----------------------------------------------------------------------
 
 
-func get_team_status_api(team_id: int) -> Dictionary:
-	if not has_team(team_id):
-		return {
-			"ok": false,
-			"team_id": team_id,
-			"reason": "unknown_team_id",
-		}
-
-	var team: Dictionary = team_status[team_id]
-
-	return {
-		"ok": true,
-		"team_id": team_id,
-		"health": team["health"],
-		"max_health": team["max_health"],
-		"energy": team["energy"],
-		"max_energy": team["max_energy"],
-		"energy_regen_rate": team["energy_regen_rate"],
-		"energy_regen_multiplier": team["energy_regen_multiplier"],
-		"mode": team["mode"],
-		"heal_uses_left": team["heal_uses_left"],
-		"is_eliminated": team["is_eliminated"],
-		"reason": "",
-	}
-
-
-func get_team_energy_api(team_id: int) -> Dictionary:
-	if not has_team(team_id):
-		return {
-			"ok": false,
-			"team_id": team_id,
-			"energy": 0.0,
-			"max_energy": 0.0,
-			"reason": "unknown_team_id",
-		}
-
-	var team: Dictionary = team_status[team_id]
-
-	return {
-		"ok": true,
-		"team_id": team_id,
-		"energy": team["energy"],
-		"max_energy": team["max_energy"],
-		"reason": "",
-	}
-
-
-func get_team_health_api(team_id: int) -> Dictionary:
-	if not has_team(team_id):
-		return {
-			"ok": false,
-			"team_id": team_id,
-			"health": 0.0,
-			"max_health": 0.0,
-			"mode": "",
-			"reason": "unknown_team_id",
-		}
-
-	var team: Dictionary = team_status[team_id]
-
-	return {
-		"ok": true,
-		"team_id": team_id,
-		"health": team["health"],
-		"max_health": team["max_health"],
-		"mode": team["mode"],
-		"reason": "",
-	}
-
-
 # gdlint: disable=max-returns
 func request_heal_api(team_id: int, heal_amount: float, energy_cost: float) -> Dictionary:
 	if not has_team(team_id):
@@ -342,7 +272,6 @@ func _make_heal_api_result(ok: bool, team_id: int, reason: String) -> Dictionary
 	if not has_team(team_id):
 		return {
 			"ok": ok,
-			"team_id": team_id,
 			"health": 0.0,
 			"max_health": 0.0,
 			"energy": 0.0,
@@ -356,7 +285,6 @@ func _make_heal_api_result(ok: bool, team_id: int, reason: String) -> Dictionary
 
 	return {
 		"ok": ok,
-		"team_id": team_id,
 		"health": team["health"],
 		"max_health": team["max_health"],
 		"energy": team["energy"],

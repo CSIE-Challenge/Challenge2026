@@ -3,6 +3,8 @@ extends Node
 
 const _REAP_INTERVAL := 1.0
 
+const TEAM_ID := 0
+
 const TRAP_PARAM_DEFINITIONS := {
 	"trap1-mine": {"position": {"type": "vector2", "required": true}},
 	"trap2-electric_ring":
@@ -61,9 +63,7 @@ const TRAP_PARAM_DEFINITIONS := {
 }
 
 var game: Node2D
-# Set by game_manager before add_child. A non-empty bundle_dir means the game
-# owns the Python agent: this seat spawns it and reaps it on exit. Empty = manual
-# / console mode (just register the connection + print the token).
+
 var bundle_dir := ""
 var agent_file := ""
 var _conn: WebSocketConnection
@@ -135,20 +135,16 @@ func _exit_tree() -> void:
 
 # Add one line per new API.
 func _register_commands() -> void:
-	# Runtime gameplay commands.
+	# Actions.
 	register_command("ping", _cmd_ping)
-	register_command("get_energy", _cmd_get_energy)
 	register_command("request_trap", _cmd_request_trap)
+	register_command("heal", _cmd_request_heal)
 
-	# Test-only commands (integration test helpers only).
-	register_command("init_agent_services", _cmd_init_agent_services)
-	register_command("process_trap_requests", _cmd_process_trap_requests)
-
-	# Team/player status commands.
-	register_command("get_team_status", _cmd_get_team_status)
-	register_command("get_team_energy", _cmd_get_team_energy)
-	register_command("get_team_health", _cmd_get_team_health)
-	register_command("request_heal", _cmd_request_heal)
+	# Reads.
+	register_command("get_my_energy", _cmd_get_my_energy)
+	register_command("get_my_health", _cmd_get_my_health)
+	register_command("get_opponent_player_position", _cmd_get_opponent_player_position)
+	register_command("get_opponent_energy_ball_position", _cmd_get_opponent_energy_ball_position)
 
 
 func register_command(cmd_name: String, handler: Callable) -> void:
@@ -164,41 +160,6 @@ func _get_team_status_service() -> TeamStatusService:
 		return null
 
 	return game.get_team_status_service()
-
-
-# Test-only helpers used by integration-test utility APIs.
-func _get_trap_request_scheduler() -> TrapRequestScheduler:
-	if game == null:
-		return null
-
-	var scheduler = game.get_node_or_null("../TrapRequestScheduler")
-	if scheduler == null:
-		return null
-
-	return scheduler
-
-
-# Test-only helpers used by integration-test utility APIs.
-func _read_team_id_array(args: Dictionary) -> Dictionary:
-	if not args.has("team_ids"):
-		return {"ok": false, "team_ids": []}
-
-	var raw_team_ids: Variant = args["team_ids"]
-	if typeof(raw_team_ids) != TYPE_ARRAY:
-		return {"ok": false, "team_ids": []}
-
-	var team_ids: Array[int] = []
-	for value in raw_team_ids:
-		if typeof(value) != TYPE_INT and typeof(value) != TYPE_FLOAT:
-			return {"ok": false, "team_ids": []}
-
-		var num: int = int(value)
-		team_ids.append(num)
-
-	if team_ids.is_empty():
-		return {"ok": false, "team_ids": []}
-
-	return {"ok": true, "team_ids": team_ids, "reason": ""}
 
 
 func _is_number(value: Variant) -> bool:
@@ -321,30 +282,6 @@ func _coerce_to_vector2(value: Variant) -> Dictionary:
 	return {"ok": false, "value": Vector2.ZERO}
 
 
-func _read_team_id(args: Dictionary) -> Dictionary:
-	if not args.has("team_id"):
-		return {
-			"ok": false,
-			"team_id": -1,
-			"reason": "missing_team_id",
-		}
-
-	var raw_team_id: Variant = args["team_id"]
-
-	if not _is_number(raw_team_id):
-		return {
-			"ok": false,
-			"team_id": -1,
-			"reason": "invalid_team_id",
-		}
-
-	return {
-		"ok": true,
-		"team_id": int(raw_team_id),
-		"reason": "",
-	}
-
-
 func _read_float_arg(
 	args: Dictionary, key: String, missing_reason: String, invalid_reason: String
 ) -> Dictionary:
@@ -371,19 +308,6 @@ func _read_float_arg(
 	}
 
 
-func _make_team_api_error(team_id: int, reason: String) -> Dictionary:
-	return (
-		ApiServer
-		. ok(
-			{
-				"ok": false,
-				"team_id": team_id,
-				"reason": reason,
-			}
-		)
-	)
-
-
 #region Command handlers
 #
 # Runtime handlers.
@@ -391,198 +315,71 @@ func _cmd_ping(_args: Dictionary) -> Dictionary:
 	return ApiServer.ok("pong")
 
 
-func _cmd_get_energy(_args: Dictionary) -> Dictionary:
-	return ApiServer.ok(game.energy_amount)
-
-
 func _cmd_request_trap(args: Dictionary) -> Dictionary:
-	if game == null:
-		return (
-			ApiServer
-			. ok(
-				{
-					"ok": false,
-					"stage": "rejected",
-					"request_id": -1,
-					"team_id": -1,
-					"trap_id": "",
-					"reason": "game_not_assigned",
-				}
-			)
-		)
-
-	if not game.has_method("get_agent_action_service"):
-		return (
-			ApiServer
-			. ok(
-				{
-					"ok": false,
-					"stage": "rejected",
-					"request_id": -1,
-					"team_id": -1,
-					"trap_id": "",
-					"reason": "agent_action_service_not_available",
-				}
-			)
-		)
-
-	var team_read := _read_team_id(args)
-	if not team_read["ok"]:
-		return _make_team_api_error(team_read["team_id"], team_read["reason"])
-
 	var read_trap := _read_trap_id(args)
 	if not read_trap["ok"]:
-		return (
-			ApiServer
-			. ok(
-				{
-					"ok": false,
-					"stage": "rejected",
-					"request_id": -1,
-					"team_id": team_read["team_id"],
-					"trap_id": read_trap["trap_id"],
-					"reason": read_trap["reason"],
-				}
-			)
-		)
+		return _trap_reject(read_trap["trap_id"], read_trap["reason"])
 
 	var raw_params: Variant = args.get("params", {})
 	if typeof(raw_params) != TYPE_DICTIONARY:
-		return (
-			ApiServer
-			. ok(
-				{
-					"ok": false,
-					"stage": "rejected",
-					"request_id": -1,
-					"team_id": team_read["team_id"],
-					"trap_id": read_trap["trap_id"],
-					"reason": "invalid_params_type",
-				}
-			)
-		)
+		return _trap_reject(read_trap["trap_id"], "invalid_params_type")
 
 	var normalize_params := _normalize_trap_params(read_trap["trap_id"], raw_params)
 	if not normalize_params["ok"]:
-		return (
-			ApiServer
-			. ok(
-				{
-					"ok": false,
-					"stage": "rejected",
-					"request_id": -1,
-					"team_id": team_read["team_id"],
-					"trap_id": read_trap["trap_id"],
-					"reason": normalize_params["reason"],
-				}
-			)
-		)
+		return _trap_reject(read_trap["trap_id"], normalize_params["reason"])
 
+	# A trap is always my action, so it is charged to TEAM_ID.
 	var agent_action_service: AgentActionService = game.get_agent_action_service()
 	var result: Dictionary = agent_action_service.submit_trap_request_result(
-		team_read["team_id"], read_trap["trap_id"], normalize_params["params"]
+		TEAM_ID, read_trap["trap_id"], normalize_params["params"]
 	)
 
 	return ApiServer.ok(result)
 
 
-# Test-only handlers (for deterministic API e2e setup/process behavior only).
-func _cmd_init_agent_services(args: Dictionary) -> Dictionary:
-	var scheduler := _get_trap_request_scheduler()
-	if scheduler == null:
-		return ApiServer.ok({"ok": false, "reason": "trap_request_scheduler_not_available"})
-
-	var service := _get_team_status_service()
-	if service == null:
-		return ApiServer.ok({"ok": false, "reason": "team_status_service_not_available"})
-
-	var team_ids_read := _read_team_id_array(args)
-	if not team_ids_read["ok"]:
-		return ApiServer.ok({"ok": false, "reason": "invalid_team_ids"})
-
-	var team_ids: Array[int] = team_ids_read["team_ids"]
-	service.initialize_teams(team_ids)
-	scheduler.initialize_teams(team_ids)
-
-	var initial_energy_read: Variant = args.get("initial_energy", 0.0)
-	if _is_number(initial_energy_read):
-		var initial_energy: float = float(initial_energy_read)
-		for team_id in team_ids:
-			service.add_energy(team_id, initial_energy)
-
-	return ApiServer.ok({"ok": true, "team_ids": team_ids})
+func _trap_reject(trap_id: String, reason: String) -> Dictionary:
+	return ApiServer.ok(
+		{"ok": false, "stage": "rejected", "request_id": -1, "trap_id": trap_id, "reason": reason}
+	)
 
 
-# Test-only handlers (for deterministic API e2e setup/process behavior only).
-func _cmd_process_trap_requests(_args: Dictionary) -> Dictionary:
-	var scheduler := _get_trap_request_scheduler()
-	if scheduler == null:
-		return ApiServer.ok({"ok": false, "reason": "trap_request_scheduler_not_available"})
-
-	scheduler.process_requests()
-	return ApiServer.ok({"ok": true})
+func _cmd_get_my_energy(_args: Dictionary) -> Dictionary:
+	return ApiServer.ok(game.energy_amount)
 
 
-func _cmd_get_team_status(args: Dictionary) -> Dictionary:
-	var team_read := _read_team_id(args)
-	if not team_read["ok"]:
-		return _make_team_api_error(team_read["team_id"], team_read["reason"])
-
-	var service := _get_team_status_service()
-	if service == null:
-		return _make_team_api_error(team_read["team_id"], "team_status_service_not_available")
-
-	return ApiServer.ok(service.get_team_status_api(team_read["team_id"]))
+func _cmd_get_my_health(_args: Dictionary) -> Dictionary:
+	return ApiServer.ok(int(game.player.health))
 
 
-func _cmd_get_team_energy(args: Dictionary) -> Dictionary:
-	var team_read := _read_team_id(args)
-	if not team_read["ok"]:
-		return _make_team_api_error(team_read["team_id"], team_read["reason"])
-
-	var service := _get_team_status_service()
-	if service == null:
-		return _make_team_api_error(team_read["team_id"], "team_status_service_not_available")
-
-	return ApiServer.ok(service.get_team_energy_api(team_read["team_id"]))
+func _cmd_get_opponent_player_position(_args: Dictionary) -> Dictionary:
+	var pos: Vector2 = game.player.position
+	return ApiServer.ok([pos.x, pos.y])
 
 
-func _cmd_get_team_health(args: Dictionary) -> Dictionary:
-	var team_read := _read_team_id(args)
-	if not team_read["ok"]:
-		return _make_team_api_error(team_read["team_id"], team_read["reason"])
-
-	var service := _get_team_status_service()
-	if service == null:
-		return _make_team_api_error(team_read["team_id"], "team_status_service_not_available")
-
-	return ApiServer.ok(service.get_team_health_api(team_read["team_id"]))
+func _cmd_get_opponent_energy_ball_position(_args: Dictionary) -> Dictionary:
+	var pos: Vector2 = game.energy_ball.position
+	return ApiServer.ok([pos.x, pos.y])
 
 
 func _cmd_request_heal(args: Dictionary) -> Dictionary:
-	var team_read := _read_team_id(args)
-	if not team_read["ok"]:
-		return _make_team_api_error(team_read["team_id"], team_read["reason"])
-
 	var heal_read := _read_float_arg(
 		args, "heal_amount", "missing_heal_amount", "invalid_heal_amount"
 	)
 	if not heal_read["ok"]:
-		return _make_team_api_error(team_read["team_id"], heal_read["reason"])
+		return ApiServer.ok({"ok": false, "reason": heal_read["reason"]})
 
 	var cost_read := _read_float_arg(
 		args, "energy_cost", "missing_energy_cost", "invalid_energy_cost"
 	)
 	if not cost_read["ok"]:
-		return _make_team_api_error(team_read["team_id"], cost_read["reason"])
+		return ApiServer.ok({"ok": false, "reason": cost_read["reason"]})
 
 	var service := _get_team_status_service()
 	if service == null:
-		return _make_team_api_error(team_read["team_id"], "team_status_service_not_available")
+		return ApiServer.ok({"ok": false, "reason": "team_status_service_not_available"})
 
-	return ApiServer.ok(
-		service.request_heal_api(team_read["team_id"], heal_read["value"], cost_read["value"])
-	)
+	# Heal is always my action, so it is charged to TEAM_ID.
+	return ApiServer.ok(service.request_heal_api(TEAM_ID, heal_read["value"], cost_read["value"]))
 
 
 #endregion

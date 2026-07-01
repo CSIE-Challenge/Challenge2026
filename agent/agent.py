@@ -1,7 +1,5 @@
 import time
 
-TEAM_ID = 0
-
 PLAN = [
     ("trap1-mine", {"position": [120.0, 80.0]}),
     ("trap2-electric_ring", {"delay_time": 1.5, "radius": 100.0}),
@@ -40,10 +38,9 @@ def run(client):
     for trap_id, params in PLAN:
         # Energy refills over time -- wait and retry until we can afford it.
         while True:
-            result = client.request_trap(TEAM_ID, trap_id, params)
+            result = client.request_trap(trap_id, params)
             if result.get("ok"):
-                energy = client.get_team_energy(TEAM_ID)["energy"]
-                print(f"placed {trap_id} (energy left: {energy:.0f})")
+                print(f"placed {trap_id} (energy left: {client.get_my_energy()})")
                 break
             if result.get("reason") != "insufficient_energy":
                 print(f"{trap_id} rejected: {result.get('reason')}")

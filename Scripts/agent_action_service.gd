@@ -9,30 +9,32 @@ signal trap_rejected(request: Dictionary, reason: String)
 var team_status_service: TeamStatusService
 var trap_request_scheduler: TrapRequestScheduler
 
+var trap_data = TrapData.new().data
+
 var trap_energy_costs := {
-	"trap1-mine": TrapData.new().data["trap1-mine"]["energy_costs"],
-	"trap2-electric_ring": TrapData.new().data["trap2-electric_ring"]["energy_costs"],
-	"trap3-tracing_bullet": TrapData.new().data["trap3-tracing_bullet"]["energy_costs"],
-	"trap4-conveyor": TrapData.new().data["trap4-conveyor"]["energy_costs"],
-	"trap5-icefloor": TrapData.new().data["trap5-icefloor"]["energy_costs"],
-	"trap6-scanline": TrapData.new().data["trap6-scanline"]["energy_costs"],
-	"trap7-spreading_ripples": TrapData.new().data["trap7-spreading_ripples"]["energy_costs"],
-	"trap8-electric_arc": TrapData.new().data["trap8-electric_arc"]["energy_costs"],
-	"trap9-mortar": TrapData.new().data["trap9-mortar"]["energy_costs"],
-	"trap10-shotgun": TrapData.new().data["trap10-shotgun"]["energy_costs"],
+	"trap1-mine": trap_data["trap1-mine"]["energy_costs"],
+	"trap2-electric_ring": trap_data["trap2-electric_ring"]["energy_costs"],
+	"trap3-tracing_bullet": trap_data["trap3-tracing_bullet"]["energy_costs"],
+	"trap4-conveyor": trap_data["trap4-conveyor"]["energy_costs"],
+	"trap5-icefloor": trap_data["trap5-icefloor"]["energy_costs"],
+	"trap6-scanline": trap_data["trap6-scanline"]["energy_costs"],
+	"trap7-spreading_ripples": trap_data["trap7-spreading_ripples"]["energy_costs"],
+	"trap8-electric_arc": trap_data["trap8-electric_arc"]["energy_costs"],
+	"trap9-mortar": trap_data["trap9-mortar"]["energy_costs"],
+	"trap10-shotgun": trap_data["trap10-shotgun"]["energy_costs"],
 }
 
 var trap_cooldown_times := {
-	"trap1-mine": TrapData.new().data["trap1-mine"]["cooldown_times"],
-	"trap2-electric_ring": TrapData.new().data["trap2-electric_ring"]["cooldown_times"],
-	"trap3-tracing_bullet": TrapData.new().data["trap3-tracing_bullet"]["cooldown_times"],
-	"trap4-conveyor": TrapData.new().data["trap4-conveyor"]["cooldown_times"],
-	"trap5-icefloor": TrapData.new().data["trap5-icefloor"]["cooldown_times"],
-	"trap6-scanline": TrapData.new().data["trap6-scanline"]["cooldown_times"],
-	"trap7-spreading_ripples": TrapData.new().data["trap7-spreading_ripples"]["cooldown_times"],
-	"trap8-electric_arc": TrapData.new().data["trap8-electric_arc"]["cooldown_times"],
-	"trap9-mortar": TrapData.new().data["trap9-mortar"]["cooldown_times"],
-	"trap10-shotgun": TrapData.new().data["trap10-shotgun"]["cooldown_times"],
+	"trap1-mine": trap_data["trap1-mine"]["cooldown_times"],
+	"trap2-electric_ring": trap_data["trap2-electric_ring"]["cooldown_times"],
+	"trap3-tracing_bullet": trap_data["trap3-tracing_bullet"]["cooldown_times"],
+	"trap4-conveyor": trap_data["trap4-conveyor"]["cooldown_times"],
+	"trap5-icefloor": trap_data["trap5-icefloor"]["cooldown_times"],
+	"trap6-scanline": trap_data["trap6-scanline"]["cooldown_times"],
+	"trap7-spreading_ripples": trap_data["trap7-spreading_ripples"]["cooldown_times"],
+	"trap8-electric_arc": trap_data["trap8-electric_arc"]["cooldown_times"],
+	"trap9-mortar": trap_data["trap9-mortar"]["cooldown_times"],
+	"trap10-shotgun": trap_data["trap10-shotgun"]["cooldown_times"],
 }
 
 # trap_cooldowns[team_id][trap_id] = remaining_seconds
@@ -251,13 +253,12 @@ func _make_request(
 
 
 func _make_submit_result(
-	ok: bool, request_id: int, team_id: int, trap_id: String, reason: String
+	ok: bool, request_id: int, _team_id: int, trap_id: String, reason: String
 ) -> Dictionary:
 	return {
 		"ok": ok,
 		"stage": "queued" if ok else "rejected",
 		"request_id": request_id,
-		"team_id": team_id,
 		"trap_id": trap_id,
 		"reason": reason,
 	}
