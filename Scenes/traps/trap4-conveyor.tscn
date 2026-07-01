@@ -1,12 +1,48 @@
 [gd_scene format=3 uid="uid://bn2r2n5iik0jg"]
 
 [ext_resource type="Script" uid="uid://b8jegvbjhjdha" path="res://Scripts/traps/trap4-conveyor.gd" id="1_d7757"]
+[ext_resource type="Texture2D" uid="uid://cr74apkukfnam" path="res://Shapes/Wave/wave_1.png" id="2_ss4bs"]
+[ext_resource type="Texture2D" uid="uid://bmb5nsohhxdo3" path="res://Shapes/Wave/wave_2.png" id="3_jabnn"]
+[ext_resource type="Texture2D" uid="uid://bxgsylx2er45c" path="res://Shapes/Wave/wave_3.png" id="4_iq5co"]
+[ext_resource type="Texture2D" uid="uid://5eet0wmv2ffs" path="res://Shapes/Wave/wave_4.png" id="5_pjokb"]
+[ext_resource type="Texture2D" uid="uid://de0gifoocp3ch" path="res://Shapes/Wave/wave_5.png" id="6_mult1"]
+[ext_resource type="Texture2D" uid="uid://bce1rgpl8bqo" path="res://Shapes/Wave/wave_6.png" id="7_hc0px"]
+[ext_resource type="Texture2D" uid="uid://bveqe5yf4in5y" path="res://Shapes/Wave/wave_7.png" id="8_hvgkg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k3tq1"]
 size = Vector2(100, 100)
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_d7757"]
 size = Vector2(100, 100)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_37j6j"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_ss4bs")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_jabnn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_iq5co")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_pjokb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_mult1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_hc0px")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_hvgkg")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
 
 [node name="Conveyor" type="Area2D" unique_id=745938423]
 script = ExtResource("1_d7757")
@@ -18,6 +54,13 @@ shape = SubResource("RectangleShape2D_k3tq1")
 modulate = Color(0.65481544, 0.13069847, 0.16253066, 1)
 z_index = -2
 texture = SubResource("PlaceholderTexture2D_d7757")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1507092653]
+position = Vector2(4.3710074e-06, 9.536743e-07)
+scale = Vector2(0.052083336, 0.052083336)
+sprite_frames = SubResource("SpriteFrames_37j6j")
+autoplay = "default"
+frame_progress = 0.4143334
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_body_exited"]

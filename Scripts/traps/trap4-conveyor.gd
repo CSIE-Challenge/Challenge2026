@@ -15,6 +15,7 @@ static func initialize(pos: Vector2, dir: Vector2) -> Trap4Conveyor:
 	Global.stage.add_child(trap)
 	trap.position = pos
 	trap.direction = dir.normalized()
+	trap.rotation = trap.direction.angle() - PI / 2
 	return trap
 
 
