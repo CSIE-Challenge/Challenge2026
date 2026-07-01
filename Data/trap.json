@@ -127,7 +127,7 @@
 		"bullet_speed": 700.0,
 		"aiming_time": 1.5,
 		"aiming_line_color": "#F05F49",
-		"spawn_x": 250.0,
-		"spawn_y": 250.0
+		"spawn_x": 258.0,
+		"spawn_y": 258.0
 	}
 }
