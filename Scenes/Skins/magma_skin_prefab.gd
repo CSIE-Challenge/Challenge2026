@@ -19,6 +19,10 @@ func play_spawn():
 	tween.tween_property(self, "scale", Vector2.ONE, 0.5).set_trans(Tween.TRANS_BACK).set_ease(
 		Tween.EASE_OUT
 	)
+	if tween:
+		await tween.finished
+	else:
+		await get_tree().process_frame
 
 
 func play_die():
@@ -29,6 +33,10 @@ func play_die():
 	death_particles.emitting = true
 	var tween = create_tween()
 	tween.tween_property(self, "scale", Vector2.ZERO, 0.4)
+	if tween:
+		await tween.finished
+	else:
+		await get_tree().process_frame
 
 
 func _start_throb():

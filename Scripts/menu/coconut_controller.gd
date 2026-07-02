@@ -28,9 +28,15 @@ func _ready() -> void:
 		body_sprite.hide()
 		# 你也可以選擇把陰影也隱藏：shadow_sprite.hide()
 
-		# 4. 觸發皮膚專屬的出生動畫 (例如賽博龐克會破圖彈出)
 		if skin_instance.has_method("play_spawn"):
-			skin_instance.play_spawn()
+			can_move = false
+			is_immutable = true
+
+			await get_tree().create_timer(0.8).timeout
+			await skin_instance.play_spawn()
+
+			can_move = true
+			is_immutable = false
 
 
 func _physics_process(_delta: float) -> void:
@@ -52,11 +58,13 @@ func die():
 	can_move = false
 	$CollisionShape2D.set_deferred("disabled", true)
 
+	player_died.emit()
+
 	# 如果皮膚有自帶的死亡動畫，就播放皮膚的
 	if skin_instance and skin_instance.has_method("play_die"):
-		skin_instance.play_die()
 		# 如果皮膚有自帶特效，就隱藏預設的陰影
 		shadow_sprite.hide()
+		await skin_instance.play_die()
 	else:
 		# 備用防呆：如果你裝備的皮膚沒有 play_die，就用原本的粒子爆炸
 		var die_tween: Tween = create_tween().set_parallel(true)
@@ -64,11 +72,8 @@ func die():
 		die_tween.tween_property(shadow_sprite, "modulate:a", 0.0, 0.2)
 		cpu_particle.global_position = self.global_position
 		cpu_particle.emitting = true
+		await get_tree().create_timer(0.5).timeout
 
-	# 稍微等待皮膚播完死亡動畫 (統一給 0.5 秒)
-	await get_tree().create_timer(0.5).timeout
-
-	player_died.emit()
 	if auto_restart:
 		SceneTransition.transition_to("")
 	queue_free()

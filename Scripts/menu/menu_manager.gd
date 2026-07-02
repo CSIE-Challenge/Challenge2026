@@ -31,6 +31,8 @@ func _on_volume_button_button_up() -> void:
 
 func _on_invisible_button_up() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
+	const HiddenGameController = preload("res://Scripts/menu/hidden_game_controller.gd")
+	HiddenGameController.reset_dialogue_state()
 	SceneTransition.transition_to("res://Scenes/menu/hidden_game.tscn")
 
 

@@ -20,6 +20,10 @@ func play_spawn():
 		Tween.EASE_OUT
 	)
 	_start_hover()
+	if tween:
+		await tween.finished
+	else:
+		await get_tree().process_frame
 
 
 func play_die():
@@ -28,6 +32,10 @@ func play_die():
 	var tween = create_tween()
 	tween.tween_property(sprite, "modulate:a", 0.0, 0.4)
 	tween.parallel().tween_property(sprite, "scale", Vector2(0.5, 2.0), 0.4)
+	if tween:
+		await tween.finished
+	else:
+		await get_tree().process_frame
 
 
 func _start_hover():

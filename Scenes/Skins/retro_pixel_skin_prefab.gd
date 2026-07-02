@@ -25,6 +25,10 @@ func play_spawn():
 	tween.tween_property(self, "scale", Vector2(0.5, 0.5), 0.1)
 	tween.tween_interval(0.1)
 	tween.tween_property(self, "scale", Vector2(1.0, 1.0), 0.1)
+	if tween:
+		await tween.finished
+	else:
+		await get_tree().process_frame
 
 
 func play_die():

@@ -5,11 +5,11 @@ class_name BaseSkin extends Node2D
 # 標準特效介面 (讓子類別去覆寫實作細節)
 # ==========================================
 func play_spawn():
-	pass
+	await get_tree().process_frame
 
 
 func play_die():
-	pass
+	await get_tree().process_frame
 
 
 func play_eat_ball():

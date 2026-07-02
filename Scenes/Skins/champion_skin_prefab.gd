@@ -20,6 +20,10 @@ func play_spawn():
 	tween.tween_property(self, "scale", Vector2.ONE, 0.4).set_trans(Tween.TRANS_ELASTIC).set_ease(
 		Tween.EASE_OUT
 	)
+	if tween:
+		await tween.finished
+	else:
+		await get_tree().process_frame
 
 
 func play_die():
@@ -29,6 +33,10 @@ func play_die():
 	tween.tween_property(core, "scale", Vector2.ZERO, 0.2)
 	tween.tween_property(ring1, "scale", Vector2.ZERO, 0.2)
 	tween.tween_property(ring2, "scale", Vector2.ZERO, 0.2)
+	if tween:
+		await tween.finished
+	else:
+		await get_tree().process_frame
 
 
 func play_eat_ball():

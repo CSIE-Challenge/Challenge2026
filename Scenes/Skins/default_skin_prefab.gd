@@ -5,13 +5,17 @@ extends BaseSkin
 
 
 func play_spawn():
-	pass
+	await get_tree().process_frame
 
 
 func play_die():
 	particles.emitting = true
 	var tween = create_tween()
 	tween.tween_property(sprite, "modulate:a", 0.0, 0.2)
+	if tween:
+		await tween.finished
+	else:
+		await get_tree().process_frame
 
 
 func play_eat_ball():

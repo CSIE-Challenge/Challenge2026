@@ -14,6 +14,10 @@ func play_spawn():
 		Tween.EASE_OUT
 	)
 	particles.emitting = true
+	if tween:
+		await tween.finished
+	else:
+		await get_tree().process_frame
 
 
 func play_die():
@@ -24,6 +28,10 @@ func play_die():
 		Tween.EASE_IN
 	)
 	tween.parallel().tween_property(sprite, "modulate:a", 0.0, 0.2)
+	if tween:
+		await tween.finished
+	else:
+		await get_tree().process_frame
 
 
 func play_eat_ball():

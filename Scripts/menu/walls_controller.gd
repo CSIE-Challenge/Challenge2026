@@ -1,7 +1,7 @@
 extends AnimatableBody2D  # 🌟 根節點改為繼承 AnimatableBody2D
 
 const DEFAULT_HALF_SIZE = Vector2(200.0, 200.0)
-const DEFAULT_POSITION = Vector2(0, -20)  # 預設場地中心
+const DEFAULT_POSITION = Vector2(0, -50)  # 預設場地中心，原(0, -20)
 
 # 當前的半寬高值 (方便 Tween 讀寫)
 var current_half_size: Vector2 = DEFAULT_HALF_SIZE:

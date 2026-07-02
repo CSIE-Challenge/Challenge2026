@@ -11,6 +11,10 @@ func play_spawn():
 	tween.tween_property(self, "scale", Vector2.ONE, 0.5).set_trans(Tween.TRANS_ELASTIC).set_ease(
 		Tween.EASE_OUT
 	)
+	if tween:
+		await tween.finished
+	else:
+		await get_tree().process_frame
 
 
 func play_die():
@@ -18,6 +22,7 @@ func play_die():
 	tween.tween_property(sprite, "scale", Vector2.ZERO, 0.1)
 
 	# Shatter into ice shards
+	var st: Tween
 	for i in range(12):
 		var shard = Polygon2D.new()
 		shard.color = Color(0.6, 0.9, 1.0, 0.8)
@@ -32,13 +37,17 @@ func play_die():
 		var target_pos = Vector2(cos(angle), sin(angle)) * dist
 		var rot = randf_range(-10.0, 10.0)
 
-		var st = create_tween().set_parallel(true)
+		st = create_tween().set_parallel(true)
 		st.tween_property(shard, "position", target_pos, 0.4).set_trans(Tween.TRANS_EXPO).set_ease(
 			Tween.EASE_OUT
 		)
 		st.tween_property(shard, "rotation", rot, 0.4)
 		st.tween_property(shard, "scale", Vector2.ZERO, 0.4).set_delay(0.2)
 		st.chain().tween_callback(shard.queue_free)
+	if st:
+		await st.finished
+	else:
+		await get_tree().process_frame
 
 
 func play_eat_ball():

@@ -15,6 +15,7 @@ var tex_walk2 = preload("res://Shapes/chicken/走路2.png")
 var time_passed = 0.0
 var is_dead = false
 var is_flying = false
+var is_spawning = true
 
 @onready var sprite = $Sprite2D
 @onready var hatch_particles = $HatchParticles
@@ -24,6 +25,7 @@ var is_flying = false
 
 
 func _ready():
+	scale = Vector2.ZERO
 	# 確保 Viewport 算繪完畢後抓取截圖作為粒子材質
 	await get_tree().process_frame
 	await get_tree().process_frame
@@ -35,7 +37,7 @@ func _ready():
 
 
 func _process(delta):
-	if is_dead:
+	if is_dead or is_spawning:
 		return
 
 	if not is_flying:
@@ -111,6 +113,7 @@ func play_spawn():
 	if is_dead:
 		return
 	sprite.texture = tex_chicken
+	is_spawning = false
 
 
 func play_jump():
@@ -173,3 +176,4 @@ func play_die():
 	sprite.texture = tex_cooked
 	# 變成烤雞的顏色 (焦糖色)
 	# sprite.modulate = Color(1.0, 0.6, 0.2)
+	await get_tree().create_timer(1.0).timeout
