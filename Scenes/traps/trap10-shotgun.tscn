@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://crmi87tdk5kb5"]
 
 [ext_resource type="Script" uid="uid://cgyg8jq3g472r" path="res://Scripts/traps/trap10-shotgun.gd" id="1_oluei"]
+[ext_resource type="Script" uid="uid://ct2iq2u7jq2l1" path="res://Scenes/traps/trap10-shotgun_bullet.gd" id="2_gtrg3"]
 [ext_resource type="Texture2D" uid="uid://beilvq8t7d8iy" path="res://Shapes/banana_bullet.svg" id="2_il5d0"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_wov31"]
 [ext_resource type="Texture2D" uid="uid://bcxda587p87ol" path="res://Shapes/pineapple.svg" id="3_i7n8k"]
@@ -453,6 +454,7 @@ one_shot = true
 [node name="Bullet1" type="Area2D" parent="Bullets" unique_id=1893491073]
 collision_layer = 4
 collision_mask = 3
+script = ExtResource("2_gtrg3")
 
 [node name="Sprite2D" type="Sprite2D" parent="Bullets/Bullet1" unique_id=508732407]
 material = SubResource("ShaderMaterial_gtrg3")
@@ -485,6 +487,7 @@ shape = SubResource("CircleShape2D_my68g")
 [node name="Bullet2" type="Area2D" parent="Bullets" unique_id=96416200]
 collision_layer = 4
 collision_mask = 3
+script = ExtResource("2_gtrg3")
 
 [node name="Sprite2D" type="Sprite2D" parent="Bullets/Bullet2" unique_id=1287761530]
 material = SubResource("ShaderMaterial_7ukhr")
@@ -517,6 +520,7 @@ shape = SubResource("CircleShape2D_gtrg3")
 [node name="Bullet3" type="Area2D" parent="Bullets" unique_id=262295554]
 collision_layer = 4
 collision_mask = 3
+script = ExtResource("2_gtrg3")
 
 [node name="Sprite2D" type="Sprite2D" parent="Bullets/Bullet3" unique_id=1854657220]
 material = SubResource("ShaderMaterial_t1byb")

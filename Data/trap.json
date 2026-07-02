@@ -114,10 +114,9 @@
 		"min_air_time": 1.5,
 		"max_air_time": 2.5,
 		"spawn_x": 275.0,
-		"spawn_x": 400.0,
 		"spawn_y": 275.0,
 		"max_end_position_x": 225.0,
-		"max_end_position_y": 225.0,
+		"max_end_position_y": 225.0
 	},
 	"trap10-shotgun": {
 		"path": "res://Scenes/traps/trap10-shotgun.tscn",

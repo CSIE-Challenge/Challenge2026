@@ -62,8 +62,8 @@ func activate(pos: Vector2, dir1: Vector2, dir2: Vector2, dir3: Vector2) -> void
 		bullet.rotation = directions[i].angle()
 		bullet.visible = true
 		bullet.body_entered.connect(_on_bullet_body_entered.bind(bullet))
-		bullet.get_node("CollisionShape2D").set_deferred("disabled", false)
-		var wall_detector = bullet.get_node("WallExitDetector") as Area2D
+		bullet.collision_shape.set_deferred("disabled", false)
+		var wall_detector = bullet.wall_exit_detector as Area2D
 		wall_detector.body_entered.connect(_on_enter_wall.bind(i))
 		wall_detector.body_exited.connect(_on_exit_wall.bind(i))
 	aiming = true
@@ -88,7 +88,7 @@ func _physics_process(delta: float) -> void:
 
 				if bullet.position.length() > 5000.0:
 					bullet.visible = false
-					bullet.get_node("CollisionShape2D").set_deferred("disabled", true)
+					bullet.collision_shape.set_deferred("disabled", true)
 
 		if not bullets_still_moving:
 			deactivate()
@@ -104,7 +104,7 @@ func _on_aiming_timeout() -> void:
 
 
 func _on_bullet_body_entered(body: Node2D, bullet_node: Area2D) -> void:
-	var effect = bullet_node.get_node("JuiceEffect") as GPUParticles2D
+	var effect = bullet_node.effect as GPUParticles2D
 	if effect and firing:
 		effect.reparent(Global.stage)
 		if not effect.finished.is_connected(effect.queue_free):
@@ -115,11 +115,11 @@ func _on_bullet_body_entered(body: Node2D, bullet_node: Area2D) -> void:
 		Global.player_hit.emit(damage)
 		bullet_node.visible = false
 		# disable collision for this bullet
-		bullet_node.get_node("CollisionShape2D").set_deferred("disabled", true)
+		bullet_node.collision_shape.set_deferred("disabled", true)
 	else:
-		var idx = bullets.find(bullet_node)
+		# var idx = bullets.find(bullet_node)
 		bullet_node.visible = false
-		bullet_node.get_node("CollisionShape2D").set_deferred("disabled", true)
+		bullet_node.collision_shape.set_deferred("disabled", true)
 
 
 func _calculate_aiming_line_end_point(origin: Vector2, dir: Vector2) -> Vector2:

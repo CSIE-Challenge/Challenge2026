@@ -64,14 +64,17 @@ func _physics_process(delta):
 	var collision := move_and_collide(velocity * delta)
 
 	if collision or abs(position.x) > 1000 or abs(position.y) > 1000:
-		var collider := collision.get_collider()
 		feather_effect.emitting = true
 		feather_effect.finished.connect(feather_effect.queue_free)
 		feather_effect.reparent(Global.stage)
-		if collider and collider == target:
-			Global.player_hit.emit(damage)
-			_destroy()
-		elif (collider.collision_layer & WALL_COLLISION_LAYER) != 0:
+		if collision != null:
+			var collider := collision.get_collider()
+			if collider and collider == target:
+				Global.player_hit.emit(damage)
+				_destroy()
+			elif (collider.collision_layer & WALL_COLLISION_LAYER) != 0:
+				_destroy()
+		else:
 			_destroy()
 
 
