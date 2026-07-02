@@ -352,6 +352,7 @@ func finish_game(authoritative_stats: Dictionary = {}) -> void:
 	if game_over:
 		return
 	game_over = true
+	get_tree().paused = true
 	energy_increase_timer.stop()
 	player_invincibility_timer.stop()
 	game_duration_timer.stop()
