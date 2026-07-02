@@ -64,7 +64,7 @@ func _open_file_dialog() -> void:
 		_file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 		_file_dialog.access = FileDialog.ACCESS_FILESYSTEM
 		# Use non-native dialog for consistent cross-platform behavior.
-		_file_dialog.use_native_dialog = false
+		_file_dialog.use_native_dialog = true
 		_file_dialog.current_dir = initial_directory
 		_file_dialog.add_filter("*.py", "Python agent")
 		_file_dialog.file_selected.connect(_on_agent_file_selected)
