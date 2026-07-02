@@ -24,6 +24,8 @@ const DEFAULT_DATA := {
 		"default_start_energy": 0.0,
 		"default_energy_regen_rate": 5.0,
 		"default_heal_uses": 2,
+		"default_heal_amount": 2,
+		"default_heal_energy_cost": 40,
 		"lifesteal_regen_multiplier": 2.0
 	},
 	"energy_ball":

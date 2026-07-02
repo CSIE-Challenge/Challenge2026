@@ -350,14 +350,6 @@ func on_player_hit(damage: int) -> void:
 		finish_game()
 
 
-#func _show_test_result_after_delay() -> void:
-#await get_tree().create_timer(RESULT_SCREEN_TEST_DELAY).timeout
-#finish_game()
-
-
-func _on_game_duration_timeout() -> void:
-	finish_game()
-
 
 func finish_game(authoritative_stats: Dictionary = {}) -> void:
 	if game_over:

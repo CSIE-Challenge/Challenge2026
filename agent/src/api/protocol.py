@@ -18,8 +18,19 @@ class Cmd:
 
     # Actions.
     PING = "ping"
-    REQUEST_TRAP = "request_trap"
     HEAL = "heal"
+
+    # Traps (one command per trap; all params required).
+    SPAWN_TRAP1 = "spawn_trap1"
+    SPAWN_TRAP2 = "spawn_trap2"
+    SPAWN_TRAP3 = "spawn_trap3"
+    SPAWN_TRAP4 = "spawn_trap4"
+    SPAWN_TRAP5 = "spawn_trap5"
+    SPAWN_TRAP6 = "spawn_trap6"
+    SPAWN_TRAP7 = "spawn_trap7"
+    SPAWN_TRAP8 = "spawn_trap8"
+    SPAWN_TRAP9 = "spawn_trap9"
+    SPAWN_TRAP10 = "spawn_trap10"
 
     # Reads.
     GET_MY_ENERGY = "get_my_energy"

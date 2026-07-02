@@ -3,7 +3,7 @@ from __future__ import annotations
 from websockets.asyncio.client import ClientConnection, connect
 
 # The exact string the Godot server replies with on a successful handshake.
-_AUTH_OK = "Connection OK. Have Fun!"
+_AUTH_OK = "Connection OK."
 
 
 class AuthError(ConnectionError):

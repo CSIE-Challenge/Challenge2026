@@ -153,7 +153,7 @@ func auth_connection(ws: WebSocketPeer) -> WebSocketConnection:
 			var conn = used_token[token]
 			if is_instance_valid(conn):
 				if not conn.is_client_connected():
-					ws.send_text("Connection OK. Have Fun!")
+					ws.send_text("Connection OK.")
 					return conn
 				ws.send_text("Already connected.")
 				return null

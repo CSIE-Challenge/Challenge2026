@@ -9,35 +9,10 @@ from urllib.parse import urlparse
 
 from . import protocol
 from .rpc import RpcClient
+from .structures import Direction, Vector2
 from .transport import Transport
 
 T = TypeVar("T")
-
-_TRAP_ID_BY_NUMBER: dict[int, str] = {
-    1: "trap1-mine",
-    2: "trap2-electric_ring",
-    3: "trap3-tracing_bullet",
-    4: "trap4-conveyor",
-    5: "trap5-icefloor",
-    6: "trap6-scanline",
-    8: "trap8-electric_arc",
-    9: "trap9-mortar",
-    7: "trap7-spreading_ripples",
-    10: "trap10-shotgun",
-}
-
-_KNOWN_TRAP_IDS: set[str] = {
-    "trap1-mine",
-    "trap2-electric_ring",
-    "trap3-tracing_bullet",
-    "trap4-conveyor",
-    "trap5-icefloor",
-    "trap6-scanline",
-    "trap8-electric_arc",
-    "trap9-mortar",
-    "trap7-spreading_ripples",
-    "trap10-shotgun",
-}
 
 
 class ApiError(Exception):
@@ -50,27 +25,6 @@ def _unwrap(response: dict) -> Any:
     if response.get("status") == protocol.Status.ERROR:
         raise ApiError(response.get("code", protocol.Code.ILLFORMED))
     return response.get("data")
-
-
-def _normalize_trap_id(trap_id: int | str) -> str:
-    if isinstance(trap_id, bool):
-        raise TypeError("trap_id must be int or str")
-
-    if isinstance(trap_id, int):
-        canonical = _TRAP_ID_BY_NUMBER.get(trap_id)
-        if canonical is None:
-            raise ValueError(f"unsupported numeric trap_id: {trap_id}")
-        return canonical
-
-    if isinstance(trap_id, str):
-        if trap_id in _KNOWN_TRAP_IDS:
-            return trap_id
-        if trap_id.isdigit():
-            canonical = _TRAP_ID_BY_NUMBER.get(int(trap_id))
-            if canonical is not None:
-                return canonical
-
-    raise TypeError(f"unsupported trap_id: {trap_id!r}")
 
 
 class GameClientBase:
@@ -132,51 +86,365 @@ class GameClientBase:
         self._loop.call_soon_threadsafe(self._loop.stop)
         self._thread.join(timeout=2.0)
 
-    # --- layer 6: game commands (skeleton) -----------------------------------
-
+    # --- APIs ---------------------------------------------------------------
+    # ruff: disable[E501]
     def _call(self, cmd: str, args: dict[str, Any] | None = None) -> Any:
         """Send a command, block for the reply, and unwrap it (raises ApiError)."""
         assert self._rpc is not None, "not connected"
         return _unwrap(self._submit(self._rpc.call(cmd, args)))
 
     def ping(self) -> Any:
-        """Round-trip through every layer; returns the server's "pong"."""
+        """
+        # Ping
+        測試與遊戲伺服器的連線，訊息會經過所有傳輸層並收到伺服器回傳的 "pong"。
+
+        ## Parameters
+        無參數
+
+        ## Returns
+        回傳字串 `"pong"`。
+
+        ## Example
+        ```python
+        print(client.ping())  # pong
+        ```
+        """
         return self._call(protocol.Cmd.PING)
 
-    def request_trap(
-        self,
-        trap_id: int | str,
-        params: dict[str, Any] | None = None,
-    ) -> dict[str, Any]:
-        """Place a trap.
-
-        Vector parameters should be sent as ``[x, y]`` arrays in JSON payloads.
-        """
-        trap_id = _normalize_trap_id(trap_id)
-        return self._call(
-            protocol.Cmd.REQUEST_TRAP,
-            {"trap_id": trap_id, "params": params or {}},
-        )
-
+    # Read-only
     def get_my_energy(self) -> int:
-        """Read my current energy."""
+        """
+        # Get My Energy
+        取得我方目前的能量值。
+
+        ## Parameters
+        無參數
+
+        ## Returns
+        回傳一個整數，表示我方目前的能量。
+
+        ## Example
+        ```python
+        energy = client.get_my_energy()  # 取得目前能量
+        ```
+        """
         return self._call(protocol.Cmd.GET_MY_ENERGY)
 
     def get_my_health(self) -> int:
-        """Read my current health."""
+        """
+        # Get My Health
+        取得我方玩家目前的生命值。
+
+        ## Parameters
+        無參數
+
+        ## Returns
+        回傳一個整數，表示我方玩家目前的生命值。
+
+        ## Example
+        ```python
+        hp = client.get_my_health()
+        ```
+        """
         return self._call(protocol.Cmd.GET_MY_HEALTH)
 
     def get_opponent_player_position(self) -> list[float]:
-        """Read the opponent player's position as ``[x, y]`` (self in 1P)."""
+        """
+        # Get Opponent Player Position
+        取得對手玩家的位置（單人模式下即為自己）。
+
+        ## Parameters
+        無參數
+
+        ## Returns
+        回傳一個 ``[x, y]`` 陣列（list[float]），表示對手玩家的座標；
+        可用 `Vector2.from_list(...)` 轉成 `Vector2`。
+
+        ## Example
+        ```python
+        pos = Vector2.from_list(client.get_opponent_player_position())
+        ```
+        """
         return self._call(protocol.Cmd.GET_OPPONENT_PLAYER_POSITION)
 
     def get_opponent_energy_ball_position(self) -> list[float]:
-        """Read the opponent's energy ball position as ``[x, y]`` (self in 1P)."""
+        """
+        # Get Opponent Energy Ball Position
+        取得對手能量球的位置（單人模式下即為自己）。
+
+        ## Parameters
+        無參數
+
+        ## Returns
+        回傳一個 ``[x, y]`` 陣列（list[float]），表示能量球的座標；
+        可用 `Vector2.from_list(...)` 轉成 `Vector2`。
+
+        ## Example
+        ```python
+        ball = Vector2.from_list(client.get_opponent_energy_ball_position())
+        ```
+        """
         return self._call(protocol.Cmd.GET_OPPONENT_ENERGY_BALL_POSITION)
 
-    def heal(self, heal_amount: float, energy_cost: float) -> dict[str, Any]:
-        """Request an energy-costed heal."""
+    def heal(self) -> dict[str, Any]:
+        """
+        # Heal
+        花費固定能量恢復固定生命值。治療量與能量花費由遊戲設定，呼叫時不需傳入參數。
+
+        ## Parameters
+        無參數
+
+        ## Returns
+        回傳一個字典 (dict)，包含此次治療的結果：
+        - `ok` (bool): 是否成功治療。
+        - `reason` (str): 失敗原因（成功時為空字串），例如 `"insufficient_energy"`、`"no_heal_uses_left"`。
+        - `health` / `max_health` / `energy` / `max_energy` / `mode` / `heal_uses_left`: 治療後的狀態。
+
+        ## Example
+        ```python
+        result = client.heal()
+        if not result["ok"]:
+            print(result["reason"])
+        ```
+        """
+        return self._call(protocol.Cmd.HEAL)
+
+    def spawn_trap1(self, position: Vector2) -> dict[str, Any]:
+        """
+        # Spawn Trap 1 (Mine)
+        在指定位置放置一個地雷。
+
+        ## Parameters
+        - `position` (Vector2): 放置地雷的位置。
+
+        ## Returns
+        回傳一個字典 (dict)，表示此次陷阱請求的結果：
+        - `ok` (bool): 請求是否成功送出（進入佇列）。
+        - `stage` (str): `"queued"`（已排入）或 `"rejected"`（被拒絕）。
+        - `reason` (str): 被拒絕時的原因，例如 `"insufficient_energy"`、`"cooldown_active"`、`"missing_position"`。
+        - `request_id` (int): 請求編號（被拒絕時為 -1）。
+        - `trap_id` (str): 陷阱代號。
+
+        ## Example
+        ```python
+        client.spawn_trap1(Vector2(120, 80))
+        ```
+        """
+        return self._call(protocol.Cmd.SPAWN_TRAP1, {"position": position})
+
+    def spawn_trap2(self, delay_time: float, radius: float) -> dict[str, Any]:
+        """
+        # Spawn Trap 2 (Electric Ring)
+        放置一個電環，經過 `delay_time` 秒後於半徑 `radius` 的範圍觸發。
+
+        ## Parameters
+        - `delay_time` (float): 觸發前的延遲秒數。
+        - `radius` (float): 電環的半徑。
+
+        ## Returns
+        回傳陷阱請求結果字典（欄位同 `spawn_trap1`：`ok`、`stage`、`reason`、`request_id`、`trap_id`）。
+
+        ## Example
+        ```python
+        client.spawn_trap2(1.5, 100)
+        ```
+        """
         return self._call(
-            protocol.Cmd.HEAL,
-            {"heal_amount": heal_amount, "energy_cost": energy_cost},
+            protocol.Cmd.SPAWN_TRAP2,
+            {"delay_time": delay_time, "radius": radius},
         )
+
+    def spawn_trap3(
+        self, position: Vector2, direction: Vector2, speed: float
+    ) -> dict[str, Any]:
+        """
+        # Spawn Trap 3 (Tracing Bullet)
+        從 `position` 以 `speed` 沿 `direction` 發射一顆追蹤子彈。
+
+        ## Parameters
+        - `position` (Vector2): 子彈的發射位置。
+        - `direction` (Vector2): 子彈的初始方向。
+        - `speed` (float): 子彈的速度。
+
+        ## Returns
+        回傳陷阱請求結果字典（欄位同 `spawn_trap1`）。
+
+        ## Example
+        ```python
+        client.spawn_trap3(Vector2(100, 0), Vector2(0, -100), 200)
+        ```
+        """
+        return self._call(
+            protocol.Cmd.SPAWN_TRAP3,
+            {"position": position, "direction": direction, "speed": speed},
+        )
+
+    def spawn_trap4(self, position: Vector2, direction: Direction) -> dict[str, Any]:
+        """
+        # Spawn Trap 4 (Conveyor)
+        在 `position` 放置一塊履帶，把踩上去的玩家往 `direction` 推。
+
+        ## Parameters
+        - `position` (Vector2): 履帶的位置。
+        - `direction` (Direction):推動方向，可傳 `Direction.UP/DOWN/LEFT/RIGHT`。
+
+        ## Returns
+        回傳陷阱請求結果字典（欄位同 `spawn_trap1`）。
+
+        ## Example
+        ```python
+        client.spawn_trap4(Vector2(50, 50), Direction.RIGHT)
+        ```
+        """
+        return self._call(
+            protocol.Cmd.SPAWN_TRAP4,
+            {"position": position, "direction": direction},
+        )
+
+    def spawn_trap5(self, position: Vector2) -> dict[str, Any]:
+        """
+        # Spawn Trap 5 (Ice Floor)
+        在 `position` 放置一塊冰面。
+
+        ## Parameters
+        - `position` (Vector2): 冰面的位置。
+
+        ## Returns
+        回傳陷阱請求結果字典（欄位同 `spawn_trap1`）。
+
+        ## Example
+        ```python
+        client.spawn_trap5(Vector2(150, 150))
+        ```
+        """
+        return self._call(protocol.Cmd.SPAWN_TRAP5, {"position": position})
+
+    def spawn_trap6(self, direction: Direction, speed: float) -> dict[str, Any]:
+        """
+        # Spawn Trap 6 (Scanline)
+        產生一條掃描線，沿 `direction` 以 `speed` 掃過場地。
+
+        ## Parameters
+        - `direction` (Direction):掃描方向，可傳 `Direction.UP/DOWN/LEFT/RIGHT`。
+        - `speed` (float): 掃描線的移動速度。
+
+        ## Returns
+        回傳陷阱請求結果字典（欄位同 `spawn_trap1`）。
+
+        ## Example
+        ```python
+        client.spawn_trap6(Direction.UP, 100)
+        ```
+        """
+        return self._call(
+            protocol.Cmd.SPAWN_TRAP6,
+            {"direction": direction, "speed": speed},
+        )
+
+    def spawn_trap7(self, position: Vector2, expand_rate: float) -> dict[str, Any]:
+        """
+        # Spawn Trap 7 (Spreading Ripples)
+        在 `position` 產生向外擴散的漣漪，擴散速率為 `expand_rate`。
+
+        ## Parameters
+        - `position` (Vector2): 漣漪的中心位置。
+        - `expand_rate` (float): 漣漪的擴散速率。
+
+        ## Returns
+        回傳陷阱請求結果字典（欄位同 `spawn_trap1`）。
+
+        ## Example
+        ```python
+        client.spawn_trap7(Vector2(300, 300), 150)
+        ```
+        """
+        return self._call(
+            protocol.Cmd.SPAWN_TRAP7,
+            {"position": position, "expand_rate": expand_rate},
+        )
+
+    def spawn_trap8(
+        self, start_position: Vector2, end_position: Vector2
+    ) -> dict[str, Any]:
+        """
+        # Spawn Trap 8 (Electric Arc)
+        在 `start_position` 與 `end_position` 之間產生一道電弧。
+
+        ## Parameters
+        - `start_position` (Vector2): 電弧的起點。
+        - `end_position` (Vector2): 電弧的終點。
+
+        ## Returns
+        回傳陷阱請求結果字典（欄位同 `spawn_trap1`）。
+
+        ## Example
+        ```python
+        client.spawn_trap8(Vector2(-100, -100), Vector2(100, -100))
+        ```
+        """
+        return self._call(
+            protocol.Cmd.SPAWN_TRAP8,
+            {"start_position": start_position, "end_position": end_position},
+        )
+
+    def spawn_trap9(
+        self, start_position: Vector2, end_position: Vector2, air_time: float
+    ) -> dict[str, Any]:
+        """
+        # Spawn Trap 9 (Mortar)
+        從 `start_position` 發射迫擊砲彈，經過 `air_time` 秒後落在 `end_position`。
+
+        ## Parameters
+        - `start_position` (Vector2): 迫擊砲的發射點。
+        - `end_position` (Vector2): 砲彈的落點。
+        - `air_time` (float): 砲彈的滯空秒數。
+
+        ## Returns
+        回傳陷阱請求結果字典（欄位同 `spawn_trap1`）。
+
+        ## Example
+        ```python
+        client.spawn_trap9(Vector2(200, 100), Vector2(220, 100), 1.0)
+        ```
+        """
+        return self._call(
+            protocol.Cmd.SPAWN_TRAP9,
+            {
+                "start_position": start_position,
+                "end_position": end_position,
+                "air_time": air_time,
+            },
+        )
+
+    def spawn_trap10(
+        self, position: Vector2, dir1: Vector2, dir2: Vector2, dir3: Vector2
+    ) -> dict[str, Any]:
+        """
+        # Spawn Trap 10 (Shotgun)
+        在 `position` 沿 `dir1`、`dir2`、`dir3` 三個方向同時發射霰彈。
+
+        ## Parameters
+        - `position` (Vector2): 霰彈的發射位置。
+        - `dir1` (Vector2): 第一顆彈的方向。
+        - `dir2` (Vector2): 第二顆彈的方向。
+        - `dir3` (Vector2): 第三顆彈的方向。
+
+        ## Returns
+        回傳陷阱請求結果字典（欄位同 `spawn_trap1`）。
+
+        ## Example
+        ```python
+        client.spawn_trap10(Vector2(-250, 100), Vector2(1, 0.2), Vector2(1, 0), Vector2(1, -0.2))
+        ```
+        """
+        return self._call(
+            protocol.Cmd.SPAWN_TRAP10,
+            {
+                "position": position,
+                "dir1": dir1,
+                "dir2": dir2,
+                "dir3": dir3,
+            },
+        )
+
+    # ruff: enable[E501]

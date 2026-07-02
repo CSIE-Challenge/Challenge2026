@@ -9,14 +9,16 @@ signal heal_used(team_id: int, heal_amount: float, energy_cost: float, heal_uses
 const MODE_NORMAL := "normal"
 const MODE_LIFESTEAL := "lifesteal"
 
-var default_max_health: float = 5.0
-var default_start_health: float = 5.0
+var default_max_health: int = 5
+var default_start_health: int = 5
 
-var default_max_energy: float = 100.0
-var default_start_energy: float = 0.0
-var default_energy_regen_rate: float = 5.0
+var default_max_energy: int = 100
+var default_start_energy: int = 0
+var default_energy_regen_rate: int = 5
 
 var default_heal_uses: int = 2
+var default_heal_amount: int = 2
+var default_heal_energy_cost: int = 40
 var lifesteal_regen_multiplier: float = 2.0
 
 var team_status: Dictionary = {}
@@ -67,6 +69,12 @@ func _reload_from_game_data() -> void:
 	)
 	default_heal_uses = game_data.get_int(
 		"team_status_service", "default_heal_uses", default_heal_uses
+	)
+	default_heal_amount = game_data.get_int(
+		"team_status_service", "default_heal_amount", default_heal_amount
+	)
+	default_heal_energy_cost = game_data.get_float(
+		"team_status_service", "default_heal_energy_cost", default_heal_energy_cost
 	)
 	lifesteal_regen_multiplier = game_data.get_float(
 		"team_status_service", "lifesteal_regen_multiplier", lifesteal_regen_multiplier
@@ -237,15 +245,10 @@ func is_team_in_lifesteal(team_id: int) -> bool:
 
 
 # gdlint: disable=max-returns
-func request_heal_api(team_id: int, heal_amount: float, energy_cost: float) -> Dictionary:
+# Heal amount and energy cost are fixed in game.json; the caller passes nothing.
+func request_heal_api(team_id: int) -> Dictionary:
 	if not has_team(team_id):
 		return _make_heal_api_result(false, team_id, "unknown_team_id")
-
-	if heal_amount <= 0.0:
-		return _make_heal_api_result(false, team_id, "invalid_heal_amount")
-
-	if energy_cost < 0.0:
-		return _make_heal_api_result(false, team_id, "invalid_energy_cost")
 
 	var team: Dictionary = team_status[team_id]
 
@@ -255,10 +258,10 @@ func request_heal_api(team_id: int, heal_amount: float, energy_cost: float) -> D
 	if team["heal_uses_left"] <= 0:
 		return _make_heal_api_result(false, team_id, "no_heal_uses_left")
 
-	if team["energy"] < energy_cost:
+	if team["energy"] < default_heal_energy_cost:
 		return _make_heal_api_result(false, team_id, "insufficient_energy")
 
-	var ok := try_heal_team(team_id, heal_amount, energy_cost)
+	var ok := try_heal_team(team_id, default_heal_amount, default_heal_energy_cost)
 	if not ok:
 		return _make_heal_api_result(false, team_id, "heal_failed")
 

@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import pytest
 
-from api.client_base import ApiError, _normalize_trap_id, _unwrap
+from api import serialization
+from api.client_base import ApiError, _unwrap
+from api.structures import Direction, Vector2
 
 
 def test_unwrap_returns_data_on_ok() -> None:
@@ -21,24 +23,22 @@ def test_unwrap_raises_apierror_on_error() -> None:
     assert excinfo.value.code == 404
 
 
-def test_normalize_trap_id_accepts_number_or_string() -> None:
-    assert _normalize_trap_id(1) == "trap1-mine"
-    assert _normalize_trap_id(9) == "trap9-mortar"
-    assert _normalize_trap_id("trap1-mine") == "trap1-mine"
-    assert _normalize_trap_id("trap6-scanline") == "trap6-scanline"
-    assert _normalize_trap_id("10") == "trap10-shotgun"
+def test_encode_serializes_vector2_and_direction_as_xy() -> None:
+    import json
+
+    payload = {"position": Vector2(1.0, 2.0), "direction": Direction.RIGHT}
+    assert json.loads(serialization.encode(payload)) == {
+        "position": [1.0, 2.0],
+        "direction": [1.0, 0.0],
+    }
 
 
-def test_normalize_trap_id_rejects_unknown_inputs() -> None:
-    with pytest.raises(ValueError):
-        _normalize_trap_id(99)
-
+def test_encode_rejects_unknown_types() -> None:
     with pytest.raises(TypeError):
-        _normalize_trap_id({})
+        serialization.encode({"bad": object()})
 
-    with pytest.raises(TypeError):
-        _normalize_trap_id([])
 
-    with pytest.raises(TypeError):
-        # Bare legacy names (without the trapN- prefix) are no longer valid.
-        _normalize_trap_id("electric_arc")
+def test_vector2_from_list_round_trips() -> None:
+    vec = Vector2.from_list([5.0, 6.0])
+    assert (vec.x, vec.y) == (5.0, 6.0)
+    assert list(vec) == [5.0, 6.0]

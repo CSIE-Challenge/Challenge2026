@@ -5,63 +5,6 @@ const _REAP_INTERVAL := 1.0
 
 const TEAM_ID := 0
 
-const TRAP_PARAM_DEFINITIONS := {
-	"trap1-mine": {"position": {"type": "vector2", "required": true}},
-	"trap2-electric_ring":
-	{
-		"delay_time": {"type": "float", "required": true},
-		"radius": {"type": "float", "required": true},
-	},
-	"trap3-tracing_bullet":
-	{
-		"position": {"type": "vector2", "required": true},
-		"direction": {"type": "vector2", "required": true},
-		"speed": {"type": "float", "required": true},
-	},
-	"trap4-conveyor":
-	{
-		"position": {"type": "vector2", "required": true},
-		"direction":
-		{
-			"type": "vector2",
-			"required": false,
-			"default": Vector2.UP,
-		},
-	},
-	"trap5-icefloor":
-	{
-		"position": {"type": "vector2", "required": true},
-	},
-	"trap6-scanline":
-	{
-		"direction": {"type": "vector2", "required": true},
-		"speed": {"type": "float", "required": false, "default": 5.0},
-	},
-	"trap7-spreading_ripples":
-	{
-		"position": {"type": "vector2", "required": true},
-		"expand_rate": {"type": "float", "required": false, "default": 10.0},
-	},
-	"trap8-electric_arc":
-	{
-		"start_position": {"type": "vector2", "required": true},
-		"end_position": {"type": "vector2", "required": true},
-	},
-	"trap9-mortar":
-	{
-		"start_position": {"type": "vector2", "required": true},
-		"end_position": {"type": "vector2", "required": true},
-		"air_time": {"type": "float", "required": false, "default": 2.0},
-	},
-	"trap10-shotgun":
-	{
-		"position": {"type": "vector2", "required": true},
-		"dir1": {"type": "vector2", "required": true},
-		"dir2": {"type": "vector2", "required": true},
-		"dir3": {"type": "vector2", "required": true},
-	},
-}
-
 var game: Node2D
 
 var bundle_dir := ""
@@ -135,10 +78,22 @@ func _exit_tree() -> void:
 
 # Add one line per new API.
 func _register_commands() -> void:
-	# Actions.
 	register_command("ping", _cmd_ping)
-	register_command("request_trap", _cmd_request_trap)
-	register_command("heal", _cmd_request_heal)
+
+	# Actions.
+	register_command("heal", _cmd_heal)
+
+	# Traps.
+	register_command("spawn_trap1", _cmd_spawn_trap1)
+	register_command("spawn_trap2", _cmd_spawn_trap2)
+	register_command("spawn_trap3", _cmd_spawn_trap3)
+	register_command("spawn_trap4", _cmd_spawn_trap4)
+	register_command("spawn_trap5", _cmd_spawn_trap5)
+	register_command("spawn_trap6", _cmd_spawn_trap6)
+	register_command("spawn_trap7", _cmd_spawn_trap7)
+	register_command("spawn_trap8", _cmd_spawn_trap8)
+	register_command("spawn_trap9", _cmd_spawn_trap9)
+	register_command("spawn_trap10", _cmd_spawn_trap10)
 
 	# Reads.
 	register_command("get_my_energy", _cmd_get_my_energy)
@@ -166,96 +121,52 @@ func _is_number(value: Variant) -> bool:
 	return typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT
 
 
-func _read_trap_id(args: Dictionary) -> Dictionary:
-	if not args.has("trap_id"):
-		return {
-			"ok": false,
-			"trap_id": "",
-			"reason": "missing_trap_id",
-		}
+func _read_required(args: Dictionary, vec_keys: Array, float_keys: Array) -> Dictionary:
+	var params: Dictionary = {}
 
-	var raw_trap_id: Variant = args["trap_id"]
-	if typeof(raw_trap_id) != TYPE_STRING:
-		return {
-			"ok": false,
-			"trap_id": str(raw_trap_id),
-			"reason": "invalid_trap_id_type",
-		}
+	for key in vec_keys:
+		var vec := _read_required_vector2(args, key)
+		if not vec["ok"]:
+			return {"ok": false, "params": {}, "reason": vec["reason"]}
+		params[key] = vec["value"]
 
-	var trap_id: String = str(raw_trap_id)
-	if not TRAP_PARAM_DEFINITIONS.has(trap_id):
-		return {
-			"ok": false,
-			"trap_id": trap_id,
-			"reason": "unknown_trap",
-		}
+	for key in float_keys:
+		var num := _read_required_float(args, key)
+		if not num["ok"]:
+			return {"ok": false, "params": {}, "reason": num["reason"]}
+		params[key] = num["value"]
 
-	return {
-		"ok": true,
-		"trap_id": trap_id,
-		"reason": "",
-	}
+	return {"ok": true, "params": params, "reason": ""}
 
 
-func _normalize_trap_params(trap_id: String, raw_params: Dictionary) -> Dictionary:
-	if not TRAP_PARAM_DEFINITIONS.has(trap_id):
-		return {
-			"ok": false,
-			"params": {},
-			"reason": "unknown_trap",
-		}
+func _read_required_vector2(args: Dictionary, key: String) -> Dictionary:
+	if not args.has(key):
+		return {"ok": false, "value": Vector2.ZERO, "reason": "missing_" + key}
 
-	var normalized_params: Dictionary = {}
-	var schema: Dictionary = TRAP_PARAM_DEFINITIONS[trap_id]
+	var parsed := _coerce_to_vector2(args[key])
+	if not parsed["ok"]:
+		return {"ok": false, "value": Vector2.ZERO, "reason": "invalid_" + key}
 
-	for key in raw_params.keys():
-		if not schema.has(key):
-			return {
-				"ok": false,
-				"params": {},
-				"reason": "invalid_param_%s" % key,
-			}
+	return {"ok": true, "value": parsed["value"], "reason": ""}
 
-	for key in schema.keys():
-		var field: Dictionary = schema[key]
-		var requirement: bool = bool(field.get("required", false))
-		var raw_value: Variant = raw_params.get(key)
 
-		if raw_value == null:
-			if requirement:
-				return {
-					"ok": false,
-					"params": {},
-					"reason": "missing_" + key,
-				}
-			normalized_params[key] = field.get("default", null)
-			continue
+func _read_required_float(args: Dictionary, key: String) -> Dictionary:
+	if not args.has(key):
+		return {"ok": false, "value": 0.0, "reason": "missing_" + key}
 
-		if field["type"] == "vector2":
-			var parsed: Dictionary = _coerce_to_vector2(raw_value)
-			if not parsed["ok"]:
-				return {
-					"ok": false,
-					"params": {},
-					"reason": "invalid_" + key,
-				}
-			normalized_params[key] = parsed["value"]
-		elif field["type"] == "float":
-			if not _is_number(raw_value):
-				return {
-					"ok": false,
-					"params": {},
-					"reason": "invalid_" + key,
-				}
-			normalized_params[key] = float(raw_value)
-		else:
-			normalized_params[key] = raw_value
+	if not _is_number(args[key]):
+		return {"ok": false, "value": 0.0, "reason": "invalid_" + key}
 
-	return {
-		"ok": true,
-		"params": normalized_params,
-		"reason": "",
-	}
+	return {"ok": true, "value": float(args[key]), "reason": ""}
+
+
+# A trap is always my action, so it is charged to TEAM_ID.
+func _submit_trap(trap_id: String, params: Dictionary) -> Dictionary:
+	var agent_action_service: AgentActionService = game.get_agent_action_service()
+	var result: Dictionary = agent_action_service.submit_trap_request_result(
+		TEAM_ID, trap_id, params
+	)
+	return ApiServer.ok(result)
 
 
 # gdlint: disable=max-returns
@@ -282,30 +193,7 @@ func _coerce_to_vector2(value: Variant) -> Dictionary:
 	return {"ok": false, "value": Vector2.ZERO}
 
 
-func _read_float_arg(
-	args: Dictionary, key: String, missing_reason: String, invalid_reason: String
-) -> Dictionary:
-	if not args.has(key):
-		return {
-			"ok": false,
-			"value": 0.0,
-			"reason": missing_reason,
-		}
-
-	var raw_value: Variant = args[key]
-
-	if not _is_number(raw_value):
-		return {
-			"ok": false,
-			"value": 0.0,
-			"reason": invalid_reason,
-		}
-
-	return {
-		"ok": true,
-		"value": float(raw_value),
-		"reason": "",
-	}
+# gdlint: enable=max-returns
 
 
 #region Command handlers
@@ -315,26 +203,74 @@ func _cmd_ping(_args: Dictionary) -> Dictionary:
 	return ApiServer.ok("pong")
 
 
-func _cmd_request_trap(args: Dictionary) -> Dictionary:
-	var read_trap := _read_trap_id(args)
-	if not read_trap["ok"]:
-		return _trap_reject(read_trap["trap_id"], read_trap["reason"])
+func _cmd_spawn_trap1(args: Dictionary) -> Dictionary:
+	var r := _read_required(args, ["position"], [])
+	if not r["ok"]:
+		return _trap_reject("trap1-mine", r["reason"])
+	return _submit_trap("trap1-mine", r["params"])
 
-	var raw_params: Variant = args.get("params", {})
-	if typeof(raw_params) != TYPE_DICTIONARY:
-		return _trap_reject(read_trap["trap_id"], "invalid_params_type")
 
-	var normalize_params := _normalize_trap_params(read_trap["trap_id"], raw_params)
-	if not normalize_params["ok"]:
-		return _trap_reject(read_trap["trap_id"], normalize_params["reason"])
+func _cmd_spawn_trap2(args: Dictionary) -> Dictionary:
+	var r := _read_required(args, [], ["delay_time", "radius"])
+	if not r["ok"]:
+		return _trap_reject("trap2-electric_ring", r["reason"])
+	return _submit_trap("trap2-electric_ring", r["params"])
 
-	# A trap is always my action, so it is charged to TEAM_ID.
-	var agent_action_service: AgentActionService = game.get_agent_action_service()
-	var result: Dictionary = agent_action_service.submit_trap_request_result(
-		TEAM_ID, read_trap["trap_id"], normalize_params["params"]
-	)
 
-	return ApiServer.ok(result)
+func _cmd_spawn_trap3(args: Dictionary) -> Dictionary:
+	var r := _read_required(args, ["position", "direction"], ["speed"])
+	if not r["ok"]:
+		return _trap_reject("trap3-tracing_bullet", r["reason"])
+	return _submit_trap("trap3-tracing_bullet", r["params"])
+
+
+func _cmd_spawn_trap4(args: Dictionary) -> Dictionary:
+	var r := _read_required(args, ["position", "direction"], [])
+	if not r["ok"]:
+		return _trap_reject("trap4-conveyor", r["reason"])
+	return _submit_trap("trap4-conveyor", r["params"])
+
+
+func _cmd_spawn_trap5(args: Dictionary) -> Dictionary:
+	var r := _read_required(args, ["position"], [])
+	if not r["ok"]:
+		return _trap_reject("trap5-icefloor", r["reason"])
+	return _submit_trap("trap5-icefloor", r["params"])
+
+
+func _cmd_spawn_trap6(args: Dictionary) -> Dictionary:
+	var r := _read_required(args, ["direction"], ["speed"])
+	if not r["ok"]:
+		return _trap_reject("trap6-scanline", r["reason"])
+	return _submit_trap("trap6-scanline", r["params"])
+
+
+func _cmd_spawn_trap7(args: Dictionary) -> Dictionary:
+	var r := _read_required(args, ["position"], ["expand_rate"])
+	if not r["ok"]:
+		return _trap_reject("trap7-spreading_ripples", r["reason"])
+	return _submit_trap("trap7-spreading_ripples", r["params"])
+
+
+func _cmd_spawn_trap8(args: Dictionary) -> Dictionary:
+	var r := _read_required(args, ["start_position", "end_position"], [])
+	if not r["ok"]:
+		return _trap_reject("trap8-electric_arc", r["reason"])
+	return _submit_trap("trap8-electric_arc", r["params"])
+
+
+func _cmd_spawn_trap9(args: Dictionary) -> Dictionary:
+	var r := _read_required(args, ["start_position", "end_position"], ["air_time"])
+	if not r["ok"]:
+		return _trap_reject("trap9-mortar", r["reason"])
+	return _submit_trap("trap9-mortar", r["params"])
+
+
+func _cmd_spawn_trap10(args: Dictionary) -> Dictionary:
+	var r := _read_required(args, ["position", "dir1", "dir2", "dir3"], [])
+	if not r["ok"]:
+		return _trap_reject("trap10-shotgun", r["reason"])
+	return _submit_trap("trap10-shotgun", r["params"])
 
 
 func _trap_reject(trap_id: String, reason: String) -> Dictionary:
@@ -361,16 +297,12 @@ func _cmd_get_opponent_energy_ball_position(_args: Dictionary) -> Dictionary:
 	return ApiServer.ok([pos.x, pos.y])
 
 
-func _cmd_request_heal(args: Dictionary) -> Dictionary:
-	var heal_read := _read_float_arg(
-		args, "heal_amount", "missing_heal_amount", "invalid_heal_amount"
-	)
+func _cmd_heal(args: Dictionary) -> Dictionary:
+	var heal_read := _read_required_float(args, "heal_amount")
 	if not heal_read["ok"]:
 		return ApiServer.ok({"ok": false, "reason": heal_read["reason"]})
 
-	var cost_read := _read_float_arg(
-		args, "energy_cost", "missing_energy_cost", "invalid_energy_cost"
-	)
+	var cost_read := _read_required_float(args, "energy_cost")
 	if not cost_read["ok"]:
 		return ApiServer.ok({"ok": false, "reason": cost_read["reason"]})
 
@@ -386,7 +318,7 @@ func _cmd_request_heal(args: Dictionary) -> Dictionary:
 
 
 func _on_received_text(msg: String) -> void:
-	# Deserialize, look the command up in this agent's table, and call it.
+	# Deserialize
 	var data: Variant = JSON.parse_string(msg)
 	if typeof(data) != TYPE_DICTIONARY:
 		_conn.send_text(JSON.stringify(ApiServer.err(400)))
@@ -402,4 +334,3 @@ func _on_received_text(msg: String) -> void:
 	var response: Dictionary = handler.call(args) if handler.is_valid() else ApiServer.err(404)
 	response["id"] = req_id
 	_conn.send_text(JSON.stringify(response))
-# gdlint: enable=max-returns
