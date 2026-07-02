@@ -42,6 +42,7 @@ layout_mode = 2
 theme_override_font_sizes/normal_font_size = 70
 bbcode_enabled = true
 text = "躲陷阱對抗賽"
+scroll_active = false
 horizontal_alignment = 1
 vertical_alignment = 1
 
