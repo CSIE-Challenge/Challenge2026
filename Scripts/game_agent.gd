@@ -297,21 +297,13 @@ func _cmd_get_opponent_energy_ball_position(_args: Dictionary) -> Dictionary:
 	return ApiServer.ok([pos.x, pos.y])
 
 
-func _cmd_heal(args: Dictionary) -> Dictionary:
-	var heal_read := _read_required_float(args, "heal_amount")
-	if not heal_read["ok"]:
-		return ApiServer.ok({"ok": false, "reason": heal_read["reason"]})
-
-	var cost_read := _read_required_float(args, "energy_cost")
-	if not cost_read["ok"]:
-		return ApiServer.ok({"ok": false, "reason": cost_read["reason"]})
-
+func _cmd_heal(_args: Dictionary) -> Dictionary:
 	var service := _get_team_status_service()
 	if service == null:
 		return ApiServer.ok({"ok": false, "reason": "team_status_service_not_available"})
 
 	# Heal is always my action, so it is charged to TEAM_ID.
-	return ApiServer.ok(service.request_heal_api(TEAM_ID, heal_read["value"], cost_read["value"]))
+	return ApiServer.ok(service.request_heal_api(TEAM_ID))
 
 
 #endregion
