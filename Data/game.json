@@ -27,13 +27,9 @@
 		"max_health": 100.0,
 		"invincibility_flicker_period": 8
 	},
-	"team_status_service": {
-		"default_max_health": 5.0,
-		"default_start_health": 5.0,
-		"default_max_energy": 100.0,
-		"default_start_energy": 0.0,
-		"default_energy_regen_rate": 5.0,
-		"default_heal_uses": 2,
-		"lifesteal_regen_multiplier": 2.0
+	"heal": {
+		"uses": 2,
+		"amount": 2,
+		"energy_cost": 40
 	}
 }

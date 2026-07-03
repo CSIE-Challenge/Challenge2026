@@ -198,7 +198,7 @@ class GameClientBase:
         回傳一個字典 (dict)，包含此次治療的結果：
         - `ok` (bool): 是否成功治療。
         - `reason` (str): 失敗原因（成功時為空字串），例如 `"insufficient_energy"`、`"no_heal_uses_left"`。
-        - `health` / `max_health` / `energy` / `max_energy` / `mode` / `heal_uses_left`: 治療後的狀態。
+        - `health` / `max_health` / `energy` / `heal_uses_left`: 治療後的即時狀態。
 
         ## Example
         ```python

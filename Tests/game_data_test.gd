@@ -48,9 +48,9 @@ func _run_tests() -> void:
 	)
 
 	_assert_eq(
-		game_data.get_float("team_status_service", "default_energy_regen_rate", -1.0),
-		5.0,
-		"team_status_service should load from Data/game.json"
+		game_data.get_float("heal", "energy_cost", -1.0),
+		40.0,
+		"heal section should load from Data/game.json"
 	)
 
 	var missing := game_data.get_float("missing_section", "key", 12.34)

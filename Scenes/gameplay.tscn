@@ -8,18 +8,11 @@
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_wbxth"]
 [ext_resource type="Script" uid="uid://cuxjrdxtrso0m" path="res://Scripts/stage.gd" id="3_1qnfl"]
 [ext_resource type="Script" uid="uid://dkfqc5fwcbi7" path="res://Scripts/sand_tile_map.gd" id="4_jb71e"]
-[ext_resource type="Script" uid="uid://jpbxoevnpa0u" path="res://Scripts/team_status_service.gd" id="7_1qnfl"]
 [ext_resource type="PackedScene" path="res://Scenes/result_screen.tscn" id="8_result"]
 [ext_resource type="Texture2D" uid="uid://c1rj0im3pw7gd" path="res://Shapes/sand_background.png" id="8_rg35f"]
 [ext_resource type="Script" uid="uid://bs7ntuoxby0al" path="res://Scripts/trap_request_scheduler.gd" id="8_urrcd"]
 [ext_resource type="Script" uid="uid://c8r5j40yj4je7" path="res://Scripts/agent_action_service.gd" id="9_puebw"]
 [ext_resource type="Script" uid="uid://c8md8v3eeja45" path="res://Scripts/state_serializer.gd" id="4_ssg01"]
-[ext_resource type="Script" uid="uid://dkfqc5fwcbi7" path="res://Scripts/sand_tile_map.gd" id="4_jb71e"]
-[ext_resource type="Script" uid="uid://jpbxoevnpa0u" path="res://Scripts/team_status_service.gd" id="7_1qnfl"]
-[ext_resource type="PackedScene" path="res://Scenes/result_screen.tscn" id="8_result"]
-[ext_resource type="Texture2D" uid="uid://c1rj0im3pw7gd" path="res://Shapes/sand_background.png" id="8_rg35f"]
-[ext_resource type="Script" uid="uid://bs7ntuoxby0al" path="res://Scripts/trap_request_scheduler.gd" id="8_urrcd"]
-[ext_resource type="Script" uid="uid://c8r5j40yj4je7" path="res://Scripts/agent_action_service.gd" id="9_puebw"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_puebw"]
 viewport_path = NodePath("SubViewport")
@@ -152,9 +145,6 @@ color = Color(0.90854853, 0.8522231, 0.6334674, 1)
 color_initial_ramp = SubResource("GradientTexture1D_5i20n")
 
 [node name="Gameplay" type="Node2D" unique_id=678551049]
-
-[node name="TeamStatusService" type="Node" parent="." unique_id=931862738]
-script = ExtResource("7_1qnfl")
 
 [node name="GameCamera" type="Camera2D" parent="." unique_id=1177813420]
 offset = Vector2(576, 324)

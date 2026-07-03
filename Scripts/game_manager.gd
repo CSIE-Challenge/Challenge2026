@@ -1,7 +1,6 @@
 extends Node2D
 
 const AGENT_NAME := "Agent1"
-const ECONOMY_TICK_SEC := 1.0
 
 @export var player: CharacterBody2D
 @export var camera: Camera2D
@@ -28,7 +27,6 @@ var trap_data = TrapData.new().data
 @onready var energy_increase_timer = $EnergyIncreaseTimer
 @onready var game_duration_timer = $GameDurationTimer
 
-@onready var team_status_service: TeamStatusService = $"../TeamStatusService"
 @onready var trap_request_scheduler: TrapRequestScheduler = $"../TrapRequestScheduler"
 @onready var agent_action_service: AgentActionService = $"../AgentActionService"
 
@@ -46,19 +44,10 @@ func _ready() -> void:
 	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
 	_update_energy_label()
 	_update_opponent_energy_label(0, 0)
-	_connect_team_status_signals()
 	_connect_agent_action_signals()
 
-	agent_action_service.setup_services(team_status_service, trap_request_scheduler)
-
-	team_status_service.initialize()
+	agent_action_service.setup_services(self, trap_request_scheduler)
 	trap_request_scheduler.initialize()
-
-	var economy_timer := Timer.new()
-	economy_timer.wait_time = ECONOMY_TICK_SEC
-	economy_timer.timeout.connect(_on_economy_tick)
-	add_child(economy_timer)
-	economy_timer.start()
 
 	energy_increase_timer.wait_time = energy_increase_period
 
@@ -89,18 +78,11 @@ func _reload_from_game_data() -> void:
 
 func _physics_process(delta: float) -> void:
 	# Real-time per frame: spawn queued traps promptly + count down cooldowns.
-	# Energy regen is NOT here -- it ticks discretely in _on_economy_tick().
+	# Energy regen is NOT here -- it ticks discretely via EnergyIncreaseTimer.
 	if game_over:
 		return
 	agent_action_service.update_cooldowns(delta)
 	trap_request_scheduler.process_requests()
-
-
-func _on_economy_tick() -> void:
-	# Discrete integer energy regen (regen_rate * tick seconds) on a fixed clock.
-	if game_over:
-		return
-	team_status_service.update_energy_regen(ECONOMY_TICK_SEC)
 
 
 func _begin_agents() -> void:
@@ -159,15 +141,13 @@ func get_agent_action_service() -> AgentActionService:
 	return agent_action_service
 
 
-func get_team_status_service() -> TeamStatusService:
-	return team_status_service
+# Energy authority is NetworkManager; these forward so services can reach it via `game`.
+func get_my_energy() -> int:
+	return NetworkManager.get_my_energy()
 
 
-func _connect_team_status_signals() -> void:
-	team_status_service.energy_changed.connect(_on_team_energy_changed)
-	team_status_service.health_changed.connect(_on_team_health_changed)
-	team_status_service.mode_changed.connect(_on_team_mode_changed)
-	team_status_service.heal_used.connect(_on_team_heal_used)
+func request_spend_energy(amount: int, reason: String) -> void:
+	NetworkManager.request_spend_energy(amount, reason)
 
 
 func _connect_agent_action_signals() -> void:
@@ -175,21 +155,11 @@ func _connect_agent_action_signals() -> void:
 	agent_action_service.trap_request_rejected.connect(_on_trap_request_rejected)
 	agent_action_service.trap_approved.connect(_on_trap_approved)
 	agent_action_service.trap_rejected.connect(_on_trap_rejected)
+	agent_action_service.heal_used.connect(_on_heal_used)
 
 
-func _on_team_energy_changed(current: float, max_energy: float) -> void:
-	print("ENERGY_CHANGED energy=", current, "/", max_energy)
-
-
-func _on_team_health_changed(current: float, max_health: float) -> void:
-	print("HEALTH_CHANGED health=", current, "/", max_health)
-
-
-func _on_team_mode_changed(old_mode: String, new_mode: String) -> void:
-	print("MODE_CHANGED ", old_mode, " -> ", new_mode)
-
-
-func _on_team_heal_used(heal_amount: float, energy_cost: float, heal_uses_left: int) -> void:
+func _on_heal_used(heal_amount: int, energy_cost: int, heal_uses_left: int) -> void:
+	health_label.text = "Health: %d" % player.health
 	print("HEAL_USED heal=", heal_amount, " cost=", energy_cost, " uses_left=", heal_uses_left)
 
 

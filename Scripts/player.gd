@@ -1,14 +1,14 @@
 class_name Player
 extends CharacterBody2D
 
-@export var health: float
+@export var health: int
 
 var acceleration := 100.0
 var move_speed := 300.0
 var jump_velocity := 750.0
 var jump_gravity := 2500.0
 var jump_fall_multiplier := 1.5
-var max_health := 100.0
+var max_health := 100
 var invincibility_flicker_period := 8
 
 var isjumping := false

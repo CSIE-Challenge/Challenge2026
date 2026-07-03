@@ -23,3 +23,23 @@ def test_unknown_command_raises_not_found(client: GameClientBase) -> None:
     with pytest.raises(ApiError) as excinfo:
         client._call("does_not_exist")
     assert excinfo.value.code == 404
+
+
+def test_heal_refused_when_energy_too_low(client: GameClientBase) -> None:
+    """A freshly booted game starts near-zero energy, so heal is refused for lack of it.
+
+    Exercises the whole live path (Python -> API -> GameAgent -> AgentActionService ->
+    NetworkManager) and proves heal reads the REAL energy, not the old phantom ledger.
+    """
+    result = client.heal()
+    assert result["ok"] is False
+    assert result["reason"] == "insufficient_energy"
+
+
+def test_heal_reports_real_player_health(client: GameClientBase) -> None:
+    """A refused heal must not touch health, and must report the same live player.health
+    that get_my_health() returns."""
+    before = client.get_my_health()
+    result = client.heal()
+    assert result["health"] == before
+    assert client.get_my_health() == before

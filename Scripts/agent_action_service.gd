@@ -5,9 +5,16 @@ signal trap_request_submitted(request: Dictionary)
 signal trap_request_rejected(request: Dictionary, reason: String)
 signal trap_approved(request: Dictionary, energy_cost: float)
 signal trap_rejected(request: Dictionary, reason: String)
+signal heal_used(heal_amount: int, energy_cost: int, heal_uses_left: int)
 
-var team_status_service: TeamStatusService
+var game
 var trap_request_scheduler: TrapRequestScheduler
+
+var game_data := GameData.new()
+var default_heal_uses: int = game_data.get_int("heal", "uses", 2)
+var default_heal_amount: int = game_data.get_int("heal", "amount", 2)
+var default_heal_energy_cost: int = game_data.get_int("heal", "energy_cost", 40)
+var heal_uses_left: int = default_heal_uses
 
 var trap_data = TrapData.new().data
 
@@ -43,8 +50,8 @@ var trap_cooldowns: Dictionary = {}
 var _is_connected_to_scheduler := false
 
 
-func setup_services(team_status: TeamStatusService, scheduler: TrapRequestScheduler) -> void:
-	team_status_service = team_status
+func setup_services(game_node, scheduler: TrapRequestScheduler) -> void:
+	game = game_node
 	trap_request_scheduler = scheduler
 	_connect_scheduler_signal_once()
 
@@ -67,9 +74,9 @@ func _connect_scheduler_signal_once() -> void:
 func submit_trap_request(trap_id: String, params: Dictionary = {}) -> int:
 	var rejected_request := _make_request(-1, trap_id, params)
 
-	if team_status_service == null:
-		push_error("AgentActionService: team_status_service is not assigned.")
-		trap_request_rejected.emit(rejected_request, "team_status_service_not_assigned")
+	if game == null:
+		push_error("AgentActionService: game is not assigned.")
+		trap_request_rejected.emit(rejected_request, "game_not_assigned")
 		return -1
 
 	if trap_request_scheduler == null:
@@ -109,9 +116,9 @@ func submit_trap_request(trap_id: String, params: Dictionary = {}) -> int:
 func submit_trap_request_result(trap_id: String, params: Dictionary = {}) -> Dictionary:
 	var rejected_request := _make_request(-1, trap_id, params)
 
-	if team_status_service == null:
-		trap_request_rejected.emit(rejected_request, "team_status_service_not_assigned")
-		return _make_submit_result(false, -1, trap_id, "team_status_service_not_assigned")
+	if game == null:
+		trap_request_rejected.emit(rejected_request, "game_not_assigned")
+		return _make_submit_result(false, -1, trap_id, "game_not_assigned")
 
 	if trap_request_scheduler == null:
 		trap_request_rejected.emit(rejected_request, "trap_request_scheduler_not_assigned")
@@ -161,9 +168,9 @@ func _on_request_ready(request: Dictionary) -> void:
 
 	var trap_id: String = request["trap_id"]
 
-	if team_status_service == null:
-		push_error("AgentActionService: team_status_service is not assigned.")
-		trap_rejected.emit(request, "team_status_service_not_assigned")
+	if game == null:
+		push_error("AgentActionService: game is not assigned.")
+		trap_rejected.emit(request, "game_not_assigned")
 		return
 
 	if not _is_known_trap(trap_id):
@@ -176,10 +183,11 @@ func _on_request_ready(request: Dictionary) -> void:
 
 	var cost := _get_trap_cost(trap_id)
 
-	if not team_status_service.try_spend_energy(cost):
+	if game.get_my_energy() < cost:
 		trap_rejected.emit(request, "insufficient_energy")
 		return
 
+	game.request_spend_energy(int(cost), "trap:" + trap_id)
 	_start_cooldown(trap_id)
 	trap_approved.emit(request, cost)
 
@@ -223,7 +231,7 @@ func _has_enough_energy(trap_id: String) -> bool:
 	if cost < 0.0:
 		return false
 
-	return team_status_service.get_energy() >= cost
+	return game.get_my_energy() >= cost
 
 
 func _make_request(request_id: int, trap_id: String, params: Dictionary) -> Dictionary:
@@ -241,5 +249,31 @@ func _make_submit_result(ok: bool, request_id: int, trap_id: String, reason: Str
 		"stage": "queued" if ok else "rejected",
 		"request_id": request_id,
 		"trap_id": trap_id,
+		"reason": reason,
+	}
+
+
+func request_heal() -> Dictionary:
+	if heal_uses_left <= 0:
+		return _make_heal_result(false, "no_heal_uses_left")
+
+	if game.get_my_energy() < default_heal_energy_cost:
+		return _make_heal_result(false, "insufficient_energy")
+
+	game.request_spend_energy(default_heal_energy_cost, "heal")
+	game.player.health = min(game.player.health + default_heal_amount, game.player.max_health)
+	heal_uses_left -= 1
+
+	heal_used.emit(default_heal_amount, default_heal_energy_cost, heal_uses_left)
+	return _make_heal_result(true, "")
+
+
+func _make_heal_result(ok: bool, reason: String) -> Dictionary:
+	return {
+		"ok": ok,
+		"health": game.player.health,
+		"max_health": game.player.max_health,
+		"energy": game.get_my_energy(),
+		"heal_uses_left": heal_uses_left,
 		"reason": reason,
 	}

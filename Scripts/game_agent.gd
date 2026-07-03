@@ -105,16 +105,6 @@ func register_command(cmd_name: String, handler: Callable) -> void:
 
 
 # Helpers used by gameplay APIs.
-func _get_team_status_service() -> TeamStatusService:
-	if game == null:
-		return null
-
-	if not game.has_method("get_team_status_service"):
-		return null
-
-	return game.get_team_status_service()
-
-
 func _is_number(value: Variant) -> bool:
 	return typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT
 
@@ -278,7 +268,7 @@ func _cmd_get_my_energy(_args: Dictionary) -> Dictionary:
 
 
 func _cmd_get_my_health(_args: Dictionary) -> Dictionary:
-	return ApiServer.ok(int(game.player.health))
+	return ApiServer.ok(game.player.health)
 
 
 func _cmd_get_opponent_player_position(_args: Dictionary) -> Dictionary:
@@ -292,11 +282,7 @@ func _cmd_get_opponent_energy_ball_position(_args: Dictionary) -> Dictionary:
 
 
 func _cmd_heal(_args: Dictionary) -> Dictionary:
-	var service := _get_team_status_service()
-	if service == null:
-		return ApiServer.ok({"ok": false, "reason": "team_status_service_not_available"})
-
-	return ApiServer.ok(service.request_heal_api())
+	return ApiServer.ok(game.get_agent_action_service().request_heal())
 
 
 #endregion

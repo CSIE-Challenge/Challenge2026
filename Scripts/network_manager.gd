@@ -134,6 +134,20 @@ func get_energy(peer_id: int) -> int:
 	return int(energy_by_peer_id.get(peer_id, 0))
 
 
+# Reads/spends always target the LOCAL peer (see request_spend_energy). Traps and heal use this.
+#
+# TODO(multiplayer, deferred): two follow-ups are needed for 2-player, both left for whoever
+# does the networking layer:
+#   1. owner_id — let a caller act on a SPECIFIC peer's energy instead of always the local peer
+#      (e.g. an agent running on the opponent's machine spending its own owner's energy). Thread
+#      owner_id through request_spend_energy -> the server RPC -> _server_spend_energy.
+#   2. health — mirror this energy machinery here (health_by_peer_id + request_damage/request_heal
+#      + broadcast) so health is server-authoritative like energy. Health currently lives on the
+#      player node (player.health), not in NetworkManager.
+func get_my_energy() -> int:
+	return get_energy(multiplayer.get_unique_id())
+
+
 ## Parses command-line [param args] and starts the appropriate network mode automatically.
 func _start_from_command_line(args: Array) -> void:
 	var mode := get_startup_mode(args)
