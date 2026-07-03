@@ -319,6 +319,9 @@ func on_player_hit(damage: int) -> void:
 		finish_game()
 
 
+func _on_game_duration_timeout() -> void:
+	finish_game()
+
 
 func finish_game(authoritative_stats: Dictionary = {}) -> void:
 	if game_over:
