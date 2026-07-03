@@ -3,42 +3,6 @@ extends Node
 
 const FILE_PATH := "res://Data/game.json"
 
-const DEFAULT_DATA := {
-	"game_manager":
-	{"energy_increase_period": 1.0, "player_invincibility_time": 1.0, "energy_gain_per_ball": 10},
-	"player":
-	{
-		"acceleration": 100.0,
-		"move_speed": 300.0,
-		"jump_velocity": 750.0,
-		"jump_gravity": 2500.0,
-		"jump_fall_multiplier": 1.5,
-		"max_health": 100.0,
-		"invincibility_flicker_period": 8
-	},
-	"team_status_service":
-	{
-		"default_max_health": 5.0,
-		"default_start_health": 5.0,
-		"default_max_energy": 100.0,
-		"default_start_energy": 0.0,
-		"default_energy_regen_rate": 5.0,
-		"default_heal_uses": 2,
-		"default_heal_amount": 2,
-		"default_heal_energy_cost": 40,
-		"lifesteal_regen_multiplier": 2.0
-	},
-	"energy_ball":
-	{
-		"spawn_bounds": {"x": -220.0, "y": -220.0, "width": 440.0, "height": 440.0},
-		"min_spawn_distance_from_player": 48.0,
-		"max_spawn_attempts": 100,
-		"coconut_flicker_speed": 0.2,
-		"coconut_rotate_speed": 0.1,
-		"coconut_rotate_amplitude": 0.5
-	}
-}
-
 var data: Dictionary = {}
 
 
@@ -47,21 +11,10 @@ func _init() -> void:
 
 
 func _load_data() -> Dictionary:
-	if data != {} and not data.is_empty():
-		return data.duplicate(true)
-
 	var loaded = _load_json_file(FILE_PATH)
 	if loaded == null or typeof(loaded) != TYPE_DICTIONARY:
-		return DEFAULT_DATA.duplicate(true)
-
-	var merged := DEFAULT_DATA.duplicate(true)
-	for section in loaded:
-		if typeof(section) != TYPE_STRING:
-			continue
-		var section_data = loaded[section]
-		if typeof(section_data) == TYPE_DICTIONARY:
-			merged[section] = section_data.duplicate(true)
-	return merged
+		return {}
+	return loaded
 
 
 func _load_json_file(file_path: String) -> Variant:

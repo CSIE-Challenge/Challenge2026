@@ -3,8 +3,6 @@ extends Node
 
 const _REAP_INTERVAL := 1.0
 
-const TEAM_ID := 0
-
 var game: Node2D
 
 var bundle_dir := ""
@@ -160,12 +158,9 @@ func _read_required_float(args: Dictionary, key: String) -> Dictionary:
 	return {"ok": true, "value": float(args[key]), "reason": ""}
 
 
-# A trap is always my action, so it is charged to TEAM_ID.
 func _submit_trap(trap_id: String, params: Dictionary) -> Dictionary:
 	var agent_action_service: AgentActionService = game.get_agent_action_service()
-	var result: Dictionary = agent_action_service.submit_trap_request_result(
-		TEAM_ID, trap_id, params
-	)
+	var result: Dictionary = agent_action_service.submit_trap_request_result(trap_id, params)
 	return ApiServer.ok(result)
 
 
@@ -197,7 +192,6 @@ func _coerce_to_vector2(value: Variant) -> Dictionary:
 
 
 #region Command handlers
-#
 # Runtime handlers.
 func _cmd_ping(_args: Dictionary) -> Dictionary:
 	return ApiServer.ok("pong")
@@ -302,8 +296,7 @@ func _cmd_heal(_args: Dictionary) -> Dictionary:
 	if service == null:
 		return ApiServer.ok({"ok": false, "reason": "team_status_service_not_available"})
 
-	# Heal is always my action, so it is charged to TEAM_ID.
-	return ApiServer.ok(service.request_heal_api(TEAM_ID))
+	return ApiServer.ok(service.request_heal_api())
 
 
 #endregion

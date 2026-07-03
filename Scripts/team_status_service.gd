@@ -1,10 +1,10 @@
 class_name TeamStatusService
 extends Node
 
-signal energy_changed(team_id: int, current_energy: float, max_energy: float)
-signal health_changed(team_id: int, current_health: float, max_health: float)
-signal mode_changed(team_id: int, old_mode: String, new_mode: String)
-signal heal_used(team_id: int, heal_amount: float, energy_cost: float, heal_uses_left: int)
+signal energy_changed(current_energy: float, max_energy: float)
+signal health_changed(current_health: float, max_health: float)
+signal mode_changed(old_mode: String, new_mode: String)
+signal heal_used(heal_amount: float, energy_cost: float, heal_uses_left: int)
 
 const MODE_NORMAL := "normal"
 const MODE_LIFESTEAL := "lifesteal"
@@ -21,33 +21,36 @@ var default_heal_amount: int = 2
 var default_heal_energy_cost: int = 40
 var lifesteal_regen_multiplier: float = 2.0
 
-var team_status: Dictionary = {}
+var health: float = 0.0
+var max_health: float = 0.0
+var energy: float = 0.0
+var max_energy: float = 0.0
+var energy_regen_rate: float = 0.0
+var energy_regen_multiplier: float = 1.0
+var mode: String = MODE_NORMAL
+var heal_uses_left: int = 0
+var is_eliminated: bool = false
 
 
 func _ready() -> void:
 	_reload_from_game_data()
 
 
-func initialize_teams(team_ids: Array[int]) -> void:
+func initialize() -> void:
 	_reload_from_game_data()
-	team_status.clear()
 
-	for team_id in team_ids:
-		team_status[team_id] = {
-			"team_id": team_id,
-			"health": default_start_health,
-			"max_health": default_max_health,
-			"energy": default_start_energy,
-			"max_energy": default_max_energy,
-			"energy_regen_rate": default_energy_regen_rate,
-			"energy_regen_multiplier": 1.0,
-			"mode": MODE_NORMAL,
-			"heal_uses_left": default_heal_uses,
-			"is_eliminated": false
-		}
+	health = default_start_health
+	max_health = default_max_health
+	energy = default_start_energy
+	max_energy = default_max_energy
+	energy_regen_rate = default_energy_regen_rate
+	energy_regen_multiplier = 1.0
+	mode = MODE_NORMAL
+	heal_uses_left = default_heal_uses
+	is_eliminated = false
 
-		energy_changed.emit(team_id, default_start_energy, default_max_energy)
-		health_changed.emit(team_id, default_start_health, default_max_health)
+	energy_changed.emit(energy, max_energy)
+	health_changed.emit(health, max_health)
 
 
 func _reload_from_game_data() -> void:
@@ -81,97 +84,69 @@ func _reload_from_game_data() -> void:
 	)
 
 
-func has_team(team_id: int) -> bool:
-	return team_status.has(team_id)
+func get_energy() -> float:
+	return energy
 
 
-func get_energy(team_id: int) -> float:
-	if not has_team(team_id):
-		print("Team ", team_id, " does not exist!")
-		return -1.0
-
-	return team_status[team_id]["energy"]
+func get_health() -> float:
+	return health
 
 
-func get_health(team_id: int) -> float:
-	if not has_team(team_id):
-		print("Team ", team_id, " does not exist!")
-		return -1.0
-
-	return team_status[team_id]["health"]
-
-
-func get_team_status(team_id: int) -> Dictionary:
-	if not has_team(team_id):
-		print("Team ", team_id, " does not exist!")
-		return {}
-
-	return team_status[team_id].duplicate(true)
+func get_status() -> Dictionary:
+	return {
+		"health": health,
+		"max_health": max_health,
+		"energy": energy,
+		"max_energy": max_energy,
+		"energy_regen_rate": energy_regen_rate,
+		"energy_regen_multiplier": energy_regen_multiplier,
+		"mode": mode,
+		"heal_uses_left": heal_uses_left,
+		"is_eliminated": is_eliminated,
+	}
 
 
-func add_energy(team_id: int, amount: float) -> void:
-	if not has_team(team_id):
-		print("Team ", team_id, " does not exist!")
-		return
-
+func add_energy(amount: int) -> void:
 	if amount <= 0.0:
 		return
 
-	var team: Dictionary = team_status[team_id]
-	team["energy"] = min(team["energy"] + amount, team["max_energy"])
-
-	energy_changed.emit(team_id, team["energy"], team["max_energy"])
+	energy = min(energy + amount, max_energy)
+	energy_changed.emit(energy, max_energy)
 
 
-func try_spend_energy(team_id: int, amount: float) -> bool:
-	if not has_team(team_id):
-		print("Team ", team_id, " does not exist!")
-		return false
-
+func try_spend_energy(amount: int) -> bool:
 	if amount < 0.0:
 		print("Cannot spend negative energy!")
 		return false
 
-	var team: Dictionary = team_status[team_id]
-
-	if team["energy"] < amount:
+	if energy < amount:
 		print("Not enough energy!")
 		return false
 
-	team["energy"] -= amount
-	energy_changed.emit(team_id, team["energy"], team["max_energy"])
+	energy -= amount
+	energy_changed.emit(energy, max_energy)
 
 	return true
 
 
-func damage_team(team_id: int, damage: float) -> void:
-	if not has_team(team_id):
-		print("Team ", team_id, " does not exist!")
-		return
-
+func take_damage(damage: float) -> void:
 	if damage <= 0.0:
 		return
 
-	var team: Dictionary = team_status[team_id]
-	var old_health: float = team["health"]
-	var old_mode: String = team["mode"]
+	var old_health := health
+	var old_mode := mode
 
-	team["health"] -= damage
+	health -= damage
+	health_changed.emit(health, max_health)
 
-	health_changed.emit(team_id, team["health"], team["max_health"])
-
-	if old_health > 0.0 and team["health"] <= 0.0 and old_mode == MODE_NORMAL:
-		team["mode"] = MODE_LIFESTEAL
-		team["energy_regen_multiplier"] = lifesteal_regen_multiplier
-		mode_changed.emit(team_id, MODE_NORMAL, MODE_LIFESTEAL)
+	if old_health > 0.0 and health <= 0.0 and old_mode == MODE_NORMAL:
+		mode = MODE_LIFESTEAL
+		energy_regen_multiplier = lifesteal_regen_multiplier
+		mode_changed.emit(MODE_NORMAL, MODE_LIFESTEAL)
 
 
 # gdlint: disable=max-returns
-func try_heal_team(team_id: int, heal_amount: float, energy_cost: float) -> bool:
-	if not has_team(team_id):
-		print("Team ", team_id, " does not exist!")
-		return false
-
+func try_heal(heal_amount: float, energy_cost: float) -> bool:
 	if heal_amount <= 0.0:
 		print("Heal amount must be positive!")
 		return false
@@ -180,27 +155,25 @@ func try_heal_team(team_id: int, heal_amount: float, energy_cost: float) -> bool
 		print("Energy cost cannot be negative!")
 		return false
 
-	var team: Dictionary = team_status[team_id]
-
-	if team["mode"] == MODE_LIFESTEAL:
+	if mode == MODE_LIFESTEAL:
 		print("In lifesteal mode!")
 		return false
 
-	if team["heal_uses_left"] <= 0:
+	if heal_uses_left <= 0:
 		print("No heal uses left!")
 		return false
 
-	if team["energy"] < energy_cost:
+	if energy < energy_cost:
 		print("Not enough energy!")
 		return false
 
-	team["energy"] -= energy_cost
-	team["health"] = min(team["health"] + heal_amount, team["max_health"])
-	team["heal_uses_left"] -= 1
+	energy -= energy_cost
+	health = min(health + heal_amount, max_health)
+	heal_uses_left -= 1
 
-	energy_changed.emit(team_id, team["energy"], team["max_energy"])
-	health_changed.emit(team_id, team["health"], team["max_health"])
-	heal_used.emit(team_id, heal_amount, energy_cost, team["heal_uses_left"])
+	energy_changed.emit(energy, max_energy)
+	health_changed.emit(health, max_health)
+	heal_used.emit(heal_amount, energy_cost, heal_uses_left)
 
 	return true
 
@@ -212,29 +185,19 @@ func update_energy_regen(delta: float) -> void:
 	if delta <= 0.0:
 		return
 
-	for team_id in team_status.keys():
-		var team: Dictionary = team_status[team_id]
-
-		if team["is_eliminated"]:
-			continue
-
-		var energy_gain: float = team["energy_regen_rate"] * team["energy_regen_multiplier"] * delta
-		add_energy(team_id, energy_gain)
-
-
-func set_energy_regen_multiplier(team_id: int, multiplier: float) -> void:
-	if not has_team(team_id):
-		print("Team ", team_id, " does not exist!")
+	if is_eliminated:
 		return
 
-	team_status[team_id]["energy_regen_multiplier"] = max(multiplier, 0.0)
+	var energy_gain := energy_regen_rate * energy_regen_multiplier * delta
+	add_energy(energy_gain)
 
 
-func is_team_in_lifesteal(team_id: int) -> bool:
-	if not has_team(team_id):
-		return false
+func set_energy_regen_multiplier(multiplier: float) -> void:
+	energy_regen_multiplier = max(multiplier, 0.0)
 
-	return team_status[team_id]["mode"] == MODE_LIFESTEAL
+
+func is_in_lifesteal() -> bool:
+	return mode == MODE_LIFESTEAL
 
 
 # ----------------------------------------------------------------------
@@ -244,55 +207,31 @@ func is_team_in_lifesteal(team_id: int) -> bool:
 # ----------------------------------------------------------------------
 
 
-# gdlint: disable=max-returns
 # Heal amount and energy cost are fixed in game.json; the caller passes nothing.
-func request_heal_api(team_id: int) -> Dictionary:
-	if not has_team(team_id):
-		return _make_heal_api_result(false, team_id, "unknown_team_id")
+func request_heal_api() -> Dictionary:
+	if mode == MODE_LIFESTEAL:
+		return _make_heal_api_result(false, "lifesteal_mode_cannot_heal")
 
-	var team: Dictionary = team_status[team_id]
+	if heal_uses_left <= 0:
+		return _make_heal_api_result(false, "no_heal_uses_left")
 
-	if team["mode"] == MODE_LIFESTEAL:
-		return _make_heal_api_result(false, team_id, "lifesteal_mode_cannot_heal")
+	if energy < default_heal_energy_cost:
+		return _make_heal_api_result(false, "insufficient_energy")
 
-	if team["heal_uses_left"] <= 0:
-		return _make_heal_api_result(false, team_id, "no_heal_uses_left")
+	if not try_heal(default_heal_amount, default_heal_energy_cost):
+		return _make_heal_api_result(false, "heal_failed")
 
-	if team["energy"] < default_heal_energy_cost:
-		return _make_heal_api_result(false, team_id, "insufficient_energy")
-
-	var ok := try_heal_team(team_id, default_heal_amount, default_heal_energy_cost)
-	if not ok:
-		return _make_heal_api_result(false, team_id, "heal_failed")
-
-	return _make_heal_api_result(true, team_id, "")  # gdlint: ignore=max-returns
+	return _make_heal_api_result(true, "")
 
 
-# gdlint: enable=max-returns
-
-
-func _make_heal_api_result(ok: bool, team_id: int, reason: String) -> Dictionary:
-	if not has_team(team_id):
-		return {
-			"ok": ok,
-			"health": 0.0,
-			"max_health": 0.0,
-			"energy": 0.0,
-			"max_energy": 0.0,
-			"mode": "",
-			"heal_uses_left": 0,
-			"reason": reason,
-		}
-
-	var team: Dictionary = team_status[team_id]
-
+func _make_heal_api_result(ok: bool, reason: String) -> Dictionary:
 	return {
 		"ok": ok,
-		"health": team["health"],
-		"max_health": team["max_health"],
-		"energy": team["energy"],
-		"max_energy": team["max_energy"],
-		"mode": team["mode"],
-		"heal_uses_left": team["heal_uses_left"],
-		"reason": reason
+		"health": health,
+		"max_health": max_health,
+		"energy": energy,
+		"max_energy": max_energy,
+		"mode": mode,
+		"heal_uses_left": heal_uses_left,
+		"reason": reason,
 	}

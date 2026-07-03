@@ -1,7 +1,6 @@
 extends Node2D
 
-const AGENT_SEATS: Array[String] = ["Agent1"]
-const AGENT_TEAM_ID := 0
+const AGENT_NAME := "Agent1"
 const ECONOMY_TICK_SEC := 1.0
 
 @export var player: CharacterBody2D
@@ -52,8 +51,8 @@ func _ready() -> void:
 
 	agent_action_service.setup_services(team_status_service, trap_request_scheduler)
 
-	team_status_service.initialize_teams([AGENT_TEAM_ID])
-	trap_request_scheduler.initialize_teams([AGENT_TEAM_ID])
+	team_status_service.initialize()
+	trap_request_scheduler.initialize()
 
 	var economy_timer := Timer.new()
 	economy_timer.wait_time = ECONOMY_TICK_SEC
@@ -148,13 +147,12 @@ func _bundle_platform_label() -> String:
 
 
 func _spawn_agents(bundle: String, agent_file: String) -> void:
-	for seat_name: String in AGENT_SEATS:
-		var agent := GameAgent.new()
-		agent.name = seat_name
-		agent.game = self
-		agent.bundle_dir = bundle
-		agent.agent_file = agent_file
-		add_child(agent)
+	var agent := GameAgent.new()
+	agent.name = AGENT_NAME
+	agent.game = self
+	agent.bundle_dir = bundle
+	agent.agent_file = agent_file
+	add_child(agent)
 
 
 func get_agent_action_service() -> AgentActionService:
@@ -179,61 +177,34 @@ func _connect_agent_action_signals() -> void:
 	agent_action_service.trap_rejected.connect(_on_trap_rejected)
 
 
-func _on_team_energy_changed(team_id: int, current: float, max_energy: float) -> void:
-	print("ENERGY_CHANGED team=", team_id, " energy=", current, "/", max_energy)
+func _on_team_energy_changed(current: float, max_energy: float) -> void:
+	print("ENERGY_CHANGED energy=", current, "/", max_energy)
 
 
-func _on_team_health_changed(team_id: int, current: float, max_health: float) -> void:
-	print("HEALTH_CHANGED team=", team_id, " health=", current, "/", max_health)
+func _on_team_health_changed(current: float, max_health: float) -> void:
+	print("HEALTH_CHANGED health=", current, "/", max_health)
 
 
-func _on_team_mode_changed(team_id: int, old_mode: String, new_mode: String) -> void:
-	print("MODE_CHANGED team=", team_id, " ", old_mode, " -> ", new_mode)
+func _on_team_mode_changed(old_mode: String, new_mode: String) -> void:
+	print("MODE_CHANGED ", old_mode, " -> ", new_mode)
 
 
-func _on_team_heal_used(
-	team_id: int, heal_amount: float, energy_cost: float, heal_uses_left: int
-) -> void:
-	print(
-		"HEAL_USED team=",
-		team_id,
-		" heal=",
-		heal_amount,
-		" cost=",
-		energy_cost,
-		" uses_left=",
-		heal_uses_left
-	)
+func _on_team_heal_used(heal_amount: float, energy_cost: float, heal_uses_left: int) -> void:
+	print("HEAL_USED heal=", heal_amount, " cost=", energy_cost, " uses_left=", heal_uses_left)
 
 
 func _on_trap_request_submitted(request: Dictionary) -> void:
-	print(
-		"SUBMITTED request_id=",
-		request["request_id"],
-		" team=",
-		request["team_id"],
-		" trap=",
-		request["trap_id"]
-	)
+	print("SUBMITTED request_id=", request["request_id"], " trap=", request["trap_id"])
 
 
 func _on_trap_request_rejected(request: Dictionary, reason: String) -> void:
-	print(
-		"SUBMIT_REJECTED team=",
-		request["team_id"],
-		" trap=",
-		request["trap_id"],
-		" reason=",
-		reason
-	)
+	print("SUBMIT_REJECTED trap=", request["trap_id"], " reason=", reason)
 
 
 func _on_trap_approved(request: Dictionary, energy_cost: float) -> void:
 	print(
 		"APPROVED request_id=",
 		request["request_id"],
-		" team=",
-		request["team_id"],
 		" trap=",
 		request["trap_id"],
 		" cost=",
@@ -246,8 +217,6 @@ func _on_trap_rejected(request: Dictionary, reason: String) -> void:
 	print(
 		"FINAL_REJECTED request_id=",
 		request["request_id"],
-		" team=",
-		request["team_id"],
 		" trap=",
 		request["trap_id"],
 		" reason=",
