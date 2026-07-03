@@ -22,7 +22,7 @@ var all_sand_tiles: Array[Vector2i] = []
 var last_stepped_cell = Vector2i(-1, -1)
 
 @onready var body_sprite = $BodySprite
-@onready var sand_tilemap = $"../../SandTileMap"
+@onready var sand_tilemap = $"../../../BackGroundLayer/SandTileMap"
 @onready var walk_particle = $WalkParticle
 @onready var jump_particle = $JumpParticle
 @onready var land_particle = $LandParticle

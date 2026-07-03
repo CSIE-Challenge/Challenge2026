@@ -289,10 +289,10 @@ func finish_game(authoritative_stats: Dictionary = {}) -> void:
 	)
 
 
-func _on_energyball_collected() -> void:
+func _on_energyball_collected(multiplier: float) -> void:
 	energy_ball_count += 1
 	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
-	NetworkManager.request_add_energy(energy_gain_per_ball, "energy_ball")
+	NetworkManager.request_add_energy(energy_gain_per_ball * multiplier, "energy_ball")
 
 
 func _player_become_invincible() -> void:
