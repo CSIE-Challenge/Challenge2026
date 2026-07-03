@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://ccsek587w7nqo"]
+
+[ext_resource type="Script" uid="uid://px1t5hr2gejm" path="res://Scripts/eaten_coconut.gd" id="1_5r210"]
+[ext_resource type="Texture2D" uid="uid://btsxhipyrvldu" path="res://Shapes/coconut.svg" id="1_xg574"]
+
+[node name="EatenCoconut" type="Node2D" unique_id=115165459]
+script = ExtResource("1_5r210")
+
+[node name="CoconutSprite" type="Sprite2D" parent="." unique_id=112841787]
+visibility_layer = 513
+texture = ExtResource("1_xg574")
+
+[node name="BrightSprite" type="Sprite2D" parent="." unique_id=2089389783]
+modulate = Color(18.892157, 18.892157, 18.892157, 1)
+texture = ExtResource("1_xg574")
+
+[node name="Particles" type="CPUParticles2D" parent="." unique_id=1197273263]
+modulate = Color(18.892157, 18.892157, 18.892157, 1)
+z_index = 20
+amount = 32
+texture = ExtResource("1_xg574")
+lifetime = 0.5
+randomness = 1.0
+emission_shape = 1
+emission_sphere_radius = 10.0
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 256.0
+initial_velocity_max = 1024.0
+angular_velocity_max = 720.0
+scale_amount_min = 0.01
+scale_amount_max = 0.01

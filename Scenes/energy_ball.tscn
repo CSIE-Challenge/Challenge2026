@@ -16,6 +16,12 @@ radius = 18.0
 [node name="EnergyBall" type="Area2D" unique_id=1960388759]
 collision_layer = 4
 script = ExtResource("1_q5f0i")
+energy_ball_spawn_bounds = null
+min_spawn_distance_from_player = null
+max_spawn_attempts = null
+coconut_flicker_speed = null
+coconut_rotate_speed = null
+coconut_rotate_amplitude = null
 
 [node name="Coconut" type="Sprite2D" parent="." unique_id=1695717793]
 material = SubResource("ShaderMaterial_mxt0i")

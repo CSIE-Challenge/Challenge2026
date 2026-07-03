@@ -186,9 +186,16 @@ position = Vector2(576, 324)
 script = ExtResource("3_1qnfl")
 stage_bounds = Rect2(-220, -220, 440, 440)
 
-[node name="EnergyBall" parent="SubViewport/Stage" unique_id=1714624484 node_paths=PackedStringArray("player_node") instance=ExtResource("2_ap8xm")]
+[node name="EnergyBall" parent="SubViewport/Stage" unique_id=1714624484 node_paths=PackedStringArray("player_node", "energy_bar") instance=ExtResource("2_ap8xm")]
 z_index = 15
+energy_ball_spawn_bounds = Rect2(-220, -220, 440, 440)
+min_spawn_distance_from_player = 48.0
+max_spawn_attempts = 100
 player_node = NodePath("../Player")
+coconut_flicker_speed = 0.2
+coconut_rotate_speed = 0.1
+coconut_rotate_amplitude = 0.5
+energy_bar = NodePath("../../EnergyBar")
 
 [node name="Walls" type="Node2D" parent="SubViewport/Stage" unique_id=57048490]
 
@@ -265,6 +272,8 @@ texture = ExtResource("1_hf1ha")
 lifetime = 0.7
 process_material = SubResource("ParticleProcessMaterial_jb71e")
 
+[node name="EnergyBar" parent="SubViewport" unique_id=339971714 instance=ExtResource("8_ltefv")]
+
 [node name="JumpParticle" type="GPUParticles2D" parent="SubViewport/Stage/Player" unique_id=919719132]
 z_index = 19
 emitting = false
@@ -295,7 +304,7 @@ camera = NodePath("../GameCamera")
 health_label = NodePath("../HUD/HealthLabel")
 energy_balls_label = NodePath("../HUD/EnergyBallsLabel")
 energy_bar_label = NodePath("../HUD/EnergyBarLabel")
-energy_bar = NodePath("../SubViewport/energy_bar")
+energy_bar = NodePath("../SubViewport/EnergyBar")
 opponent_energy_bar_label = NodePath("../HUD/OpponentEnergyBarLabel")
 result_screen = NodePath("../ResultScreen")
 

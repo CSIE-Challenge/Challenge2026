@@ -1,16 +1,19 @@
 extends Area2D
 
 @export var player_node: Node2D
+@export var coconut_flicker_speed := 0.1
+@export var coconut_rotate_speed := 0.1
+@export var coconut_rotate_amplitude := 0.1
+@export var energy_bar: Node2D
+
 var energy_ball_spawn_bounds := Rect2(Vector2(-220, -220), Vector2(440, 440))
 var min_spawn_distance_from_player := 48.0
 var max_spawn_attempts := 100
-var coconut_flicker_speed := 0.1
-var coconut_rotate_speed := 0.1
-var coconut_rotate_amplitude := 0.1
 
 var rng := RandomNumberGenerator.new()
 
 @onready var coconut_sprite = $Coconut
+@onready var eaten_coconut = preload("res://Scenes/energy_bar/eaten_coconut.tscn")
 
 
 func _ready() -> void:
@@ -47,6 +50,7 @@ func _on_body_entered(body: Node2D) -> void:
 	visible = false
 	Global.energyball_collected.emit()
 
+	energy_bar.spawn_eaten_coconut(self.global_position)
 	_respawn_energy_ball()
 
 

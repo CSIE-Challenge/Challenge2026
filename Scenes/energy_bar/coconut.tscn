@@ -12,3 +12,8 @@ script = ExtResource("1_3clr0")
 [node name="Coconut" type="Sprite2D" parent="FruitStalk" unique_id=1570972638]
 position = Vector2(0, 19)
 texture = ExtResource("2_q3pyi")
+
+[node name="Brightness" type="Sprite2D" parent="FruitStalk" unique_id=1245848407]
+modulate = Color(18.892157, 18.892157, 18.892157, 1)
+position = Vector2(0, 19)
+texture = ExtResource("2_q3pyi")

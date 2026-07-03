@@ -1,20 +1,26 @@
 extends Node2D
 const TRUNK_HEIGHT_PIXEL = 36
 @export var energy: int = 0
+@export var coconut_count: int = 0
+@export var tree_height: float
+@export var tree_root_position: Vector2 = Vector2(980, 512)
 var trunks: Array[Node2D]
 var leaves: Array[Node2D]
 var coconuts: Array[Node2D]
-var tree_height: float
-@onready var trunk: Resource = load("res://Scenes/energy_bar/trunk.tscn")
-@onready var leaf: Resource = load("res://Scenes/energy_bar/leaf.tscn")
-@onready var coconut: Resource = load("res://Scenes/energy_bar/coconut.tscn")
+var eaten_coconuts: Array[Node2D]
+@onready var trunk: Resource = preload("res://Scenes/energy_bar/trunk.tscn")
+@onready var leaf: Resource = preload("res://Scenes/energy_bar/leaf.tscn")
+@onready var coconut: Resource = preload("res://Scenes/energy_bar/coconut.tscn")
+@onready var eaten_coconut: Resource = preload("res://Scenes/energy_bar/eaten_coconut.tscn")
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	global_position = tree_root_position
 	trunks.clear()
 	leaves.clear()
 	coconuts.clear()
+	eaten_coconuts.clear()
 	leaf_grow()
 
 
@@ -22,6 +28,7 @@ func _process(delta: float) -> void:
 	rearrange_trunks()
 	rearrange_coconuts()
 	rearrange_leaves()
+	rearrange_eaten_coconuts()
 	use(delta)
 
 
@@ -99,21 +106,20 @@ func leaf_cut() -> void:
 
 
 func rearrange_coconuts() -> void:
-	var num_target = energy / 20
-	while coconuts.size() < num_target:
+	while coconuts.size() < coconut_count:
 		coconut_grow()
-	while coconuts.size() > num_target:
+	while coconuts.size() > coconut_count:
 		coconut_cut()
 	var len = coconuts.size()
 	for i in len:
 		coconuts[i].z_index = 1
 		coconuts[i].relocate(
 			(
-				Vector2(0, tree_height + energy * 0.2)
-				+ polar_vector(100 + 180 / len + 360 / len * i, energy * 0.18)
+				Vector2(0, tree_height + sqrt(coconut_count) * 4)
+				+ polar_vector(100 + 180 / len + 360 / len * i, sqrt(coconut_count) * 5)
 			)
 		)
-		coconuts[i].resize(0.12 + energy * 0.0016)
+		coconuts[i].resize(0.14 + energy * 0.001)
 
 
 func coconut_grow() -> void:
@@ -134,6 +140,26 @@ func coconut_cut() -> void:
 func polar_vector(deg: float, len: float) -> Vector2:
 	var arc: float = deg * PI / 180
 	return Vector2(len * cos(arc), len * sin(arc) * 0.6)
+
+
+func spawn_eaten_coconut(pos: Vector2) -> void:
+	var new_eaten_coconut = eaten_coconut.instantiate()
+	new_eaten_coconut.global_position = pos - global_position
+	eaten_coconuts.push_back(new_eaten_coconut)
+	add_child(new_eaten_coconut)
+
+
+func rearrange_eaten_coconuts() -> void:
+	var len = eaten_coconuts.size()
+	var target_position = tree_root_position + Vector2(0, tree_height)
+	for i in len:
+		var j = len - i - 1
+		if (eaten_coconuts[j].global_position - target_position).length() < 3.0:
+			eaten_coconuts[j].delete()
+			eaten_coconuts.remove_at(j)
+			coconut_count = min(10, coconut_count + 1)
+			continue
+		eaten_coconuts[j].set_target_position(target_position)
 
 
 func use(delta: float) -> float:
