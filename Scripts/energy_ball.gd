@@ -2,6 +2,8 @@ extends Area2D
 
 @export var player_node: Node2D
 @export var energy_text: PackedScene
+@export var energy_bar: Node2D
+
 var energy_ball_spawn_bounds := Rect2(Vector2(-220, -220), Vector2(440, 440))
 var min_spawn_distance_from_player := 48.0
 var max_spawn_attempts := 100
@@ -25,6 +27,7 @@ func _ready() -> void:
 	_reload_from_game_data()
 
 	body_entered.connect(_on_body_entered)
+	energy_bar.spawn_eaten_coconut(self.global_position)
 	_respawn_energy_ball()
 
 
@@ -56,6 +59,7 @@ func _on_body_entered(body: Node2D) -> void:
 	Global.energyball_collected.emit(combo_multiplier[now_combo])
 	_spawn_energy_text()
 	now_combo = min(now_combo + 1, combo_multiplier.size() - 1)
+	energy_bar.spawn_eaten_coconut(self.global_position)
 	_respawn_energy_ball()
 
 

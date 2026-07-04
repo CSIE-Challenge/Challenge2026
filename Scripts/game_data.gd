@@ -1,5 +1,5 @@
 class_name GameData
-extends Node
+extends RefCounted
 
 const FILE_PATH := "res://Data/game.json"
 

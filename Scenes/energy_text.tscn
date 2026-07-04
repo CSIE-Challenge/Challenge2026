@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cwfs8yn4r4hjl"]
 
-[ext_resource type="FontFile" uid="uid://ouxsjra2p1ox" path="res://Fonts/deltarune.ttf" id="1_bpbcx"]
+[ext_resource type="FontFile" uid="uid://ouxsjra2p1ox" path="res://assets/fonts/deltarune.ttf" id="1_bpbcx"]
 [ext_resource type="Script" uid="uid://dg0mxh6tmem0v" path="res://Scripts/energy_text.gd" id="2_bpbcx"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_bpbcx"]
