@@ -1,8 +1,9 @@
 [gd_scene format=3 uid="uid://bxj6outuppaq0"]
 
 [ext_resource type="Script" uid="uid://onn30eh2nvc" path="res://Scripts/audio_manager.gd" id="1_sm2tf"]
-[ext_resource type="AudioStream" uid="uid://bl6fiwjgs24to" path="res://assets/audio/SmashTheCoconuts.mp3" id="2_hhwve"]
-[ext_resource type="AudioStream" uid="uid://kwrrir3nslnh" path="res://assets/audio/Jump2.mp3" id="3_qixve"]
+[ext_resource type="AudioStream" uid="uid://bl6fiwjgs24to" path="res://Assets/audio/SmashTheCoconuts.mp3" id="2_hhwve"]
+[ext_resource type="AudioStream" uid="uid://kwrrir3nslnh" path="res://Assets/audio/Jump2.mp3" id="3_qixve"]
+[ext_resource type="AudioStream" uid="uid://bpdh48egj7td6" path="res://Assets/audio/Press1.mp3" id="4_qixve"]
 
 [node name="AudioManager" type="Node" unique_id=664248620]
 script = ExtResource("1_sm2tf")
@@ -15,3 +16,7 @@ parameters/looping = true
 [node name="Jump" type="AudioStreamPlayer" parent="." unique_id=981191027]
 stream = ExtResource("3_qixve")
 bus = &"SFX"
+
+[node name="ButtomPress" type="AudioStreamPlayer" parent="." unique_id=1962087828]
+stream = ExtResource("4_qixve")
+volume_db = -5.0

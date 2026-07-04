@@ -8,6 +8,24 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gpihd"]
 bg_color = Color(0.03137255, 0.039215688, 0.050980393, 0.9019608)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uwnqj"]
+bg_color = Color(0.19607843, 0.19607843, 0.19607843, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y8amn"]
+bg_color = Color(0.11764706, 0.11764706, 0.11764706, 0.8627451)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tj36u"]
+bg_color = Color(0.39215687, 0.39215687, 0.39215687, 0.8627451)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nfjsg"]
+bg_color = Color(0.19607843, 0.19607843, 0.19607843, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8j1ee"]
+bg_color = Color(0.11764706, 0.11764706, 0.11764706, 0.8627451)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m7ul2"]
+bg_color = Color(0.39215687, 0.39215687, 0.39215687, 0.8627451)
+
 [node name="VolumeSetting" type="Node2D" unique_id=942546627]
 script = ExtResource("1_qeyc0")
 
@@ -56,12 +74,29 @@ step = 0.001
 script = ExtResource("2_gpihd")
 bus_name = "SFX"
 
-[node name="ExitButton" type="Button" parent="." unique_id=1875221553]
-offset_left = 551.0
-offset_top = 486.0
-offset_right = 639.0
-offset_bottom = 518.0
+[node name="SaveButton" type="Button" parent="." unique_id=1875221553]
+offset_left = 620.0
+offset_top = 485.0
+offset_right = 700.0
+offset_bottom = 521.0
 theme_override_font_sizes/font_size = 20
-text = "Back"
+theme_override_styles/normal = SubResource("StyleBoxFlat_uwnqj")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_y8amn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_tj36u")
+text = "儲存
+"
 
-[connection signal="button_up" from="ExitButton" to="." method="_on_exit_button_button_up"]
+[node name="RevertButton" type="Button" parent="." unique_id=1501094021]
+offset_left = 495.0
+offset_top = 485.0
+offset_right = 575.0
+offset_bottom = 521.0
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_nfjsg")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_8j1ee")
+theme_override_styles/hover = SubResource("StyleBoxFlat_m7ul2")
+text = "復原"
+
+[connection signal="drag_ended" from="VBoxContainer/SFXSlider" to="." method="_on_sfx_slider_drag_ended"]
+[connection signal="button_up" from="SaveButton" to="." method="_on_save_button_button_up"]
+[connection signal="button_up" from="RevertButton" to="." method="_on_revert_button_button_up"]

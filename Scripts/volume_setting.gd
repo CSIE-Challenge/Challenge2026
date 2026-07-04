@@ -1,6 +1,8 @@
 extends Node2D
 
 var settings = ConfigFile.new()
+var temp_music_volume: float
+var temp_sfx_volume: float
 
 @onready var music_slider = $VBoxContainer/MusicSlider
 @onready var sfx_slider = $VBoxContainer/SFXSlider
@@ -14,6 +16,8 @@ func open() -> void:
 	settings.load("user://settings.cfg")
 	music_slider.value = settings.get_value("Volume", "music", 1.0)
 	sfx_slider.value = settings.get_value("Volume", "sfx", 1.0)
+	temp_music_volume = music_slider.value
+	temp_sfx_volume = sfx_slider.value	
 	self.visible = true
 
 
@@ -23,6 +27,16 @@ func close() -> void:
 	settings.save("user://settings.cfg")
 	self.visible = false
 
-
-func _on_exit_button_button_up() -> void:
+func _on_save_button_button_up() -> void:
+	AudioManager.buttompress.play()
 	close()
+
+
+func _on_revert_button_button_up() -> void:
+	music_slider.value = temp_music_volume
+	sfx_slider.value = temp_sfx_volume
+	AudioManager.buttompress.play()
+
+
+func _on_sfx_slider_drag_ended(_value_changed: bool) -> void:
+	AudioManager.buttompress.play()
