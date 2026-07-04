@@ -22,10 +22,10 @@ var game_over := false
 var survival_started_msec := 0
 var trap_data = TrapData.new().data
 
+@onready var energy_ball: Node2D = $"../SubViewport/Stage/EnergyBall"
 @onready var player_invincibility_timer = $PlayerInvincibilityTimer
 @onready var energy_increase_timer = $EnergyIncreaseTimer
 @onready var game_duration_timer = $GameDurationTimer
-
 @onready var trap_request_scheduler: TrapRequestScheduler = $"../TrapRequestScheduler"
 @onready var agent_action_service: AgentActionService = $"../AgentActionService"
 
