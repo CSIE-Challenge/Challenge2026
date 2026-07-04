@@ -1,0 +1,38 @@
+[gd_scene format=4]
+
+[ext_resource type="Script" path="res://Scripts/demo_renderer.gd" id="1_demo"]
+
+[node name="DemoMain" type="Node2D"]
+
+[node name="ScreenA" type="SubViewportContainer" parent="."]
+anchors_preset = -1
+anchor_left = 0.0
+anchor_right = 0.5
+anchor_top = 0.0
+anchor_bottom = 1.0
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="ScreenA"]
+size = Vector2i(1152, 648)
+
+[node name="StageA" type="Node2D" parent="ScreenA/SubViewport"]
+position = Vector2(576, 324)
+
+[node name="ScreenB" type="SubViewportContainer" parent="."]
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 1.0
+anchor_top = 0.0
+anchor_bottom = 1.0
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="ScreenB"]
+size = Vector2i(1152, 648)
+
+[node name="StageB" type="Node2D" parent="ScreenB/SubViewport"]
+position = Vector2(576, 324)
+
+[node name="DemoRenderer" type="Node" parent="."]
+script = ExtResource("1_demo")
+stage_a = NodePath("ScreenA/SubViewport/StageA")
+stage_b = NodePath("ScreenB/SubViewport/StageB")
