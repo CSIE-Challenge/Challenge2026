@@ -35,6 +35,8 @@ var energy_by_peer_id: Dictionary = {}
 var health_by_peer_id: Dictionary = {}
 var demo_peer_id: int = -1  # -1 when no demo is connected
 var _client_states: Dictionary = {}  # peer_id → state snapshot Dictionary
+var _server_receive_count: int = 0
+var _demo_push_count: int = 0
 
 
 ## Called on startup. Connects multiplayer signals and handles command-line launch.
@@ -42,7 +44,7 @@ func _ready() -> void:
 	_connect_multiplayer_signals()
 	_start_from_command_line(OS.get_cmdline_user_args())
 
-	if multiplayer.is_server():
+	if multiplayer.is_server() and not _has_demo_flag(OS.get_cmdline_user_args()):
 		var collector: Node = load("res://Scripts/state_collector.gd").new()
 		add_child(collector)
 
@@ -182,8 +184,7 @@ func _start_from_command_line(args: Array) -> void:
 		var connect_addr := _extract_connect_address(args)
 		if connect_addr.is_empty():
 			connect_addr = DEFAULT_SERVER_ADDRESS
-		get_tree().change_scene_to_file("res://Scenes/demo.tscn")
-		join_server(connect_addr)
+		_do_demo_start.call_deferred(connect_addr)
 		return
 
 	if mode == "server":
@@ -195,6 +196,13 @@ func _start_from_command_line(args: Array) -> void:
 ## Returns true if [param args] contains the --demo flag.
 func _has_demo_flag(args: Array) -> bool:
 	return args.has("--demo")
+
+
+## Loads the demo scene and joins the server. Called deferred to avoid
+## change_scene_to_file during _ready() tree setup.
+func _do_demo_start(connect_addr: String) -> void:
+	get_tree().change_scene_to_file("res://Scenes/demo.tscn")
+	join_server(connect_addr)
 
 
 ## Extracts the --connect address from [param args] that may also contain --demo.
@@ -609,6 +617,19 @@ func _server_receive_state(state: Dictionary) -> void:
 		return
 
 	_store_client_state(sender_id, state)
+	_server_receive_count += 1
+	if _server_receive_count % 30 == 1:
+		print(
+			(
+				"[Server] received state #%d from peer %d | tick=%d | traps=%d"
+				% [
+					_server_receive_count,
+					sender_id,
+					state.get("tick", 0),
+					state.get("traps", []).size(),
+				]
+			)
+		)
 
 
 ## Public: attempt to register [param peer_id] as the demo spectator.
@@ -669,9 +690,33 @@ func _push_state_to_demo() -> void:
 
 	var combined := _build_demo_state()
 	rpc_id(demo_peer_id, "_demo_receive_state", combined)
+	_demo_push_count += 1
+	if _demo_push_count % 30 == 1:
+		print(
+			(
+				"[Server] pushed demo state #%d to peer %d | screens=%d"
+				% [
+					_demo_push_count,
+					demo_peer_id,
+					combined.get("screens", []).size(),
+				]
+			)
+		)
 
 
 ## RPC stub: receiver on the demo side. Emits signal for DemoRenderer.
 @rpc("authority", "unreliable_ordered")
 func _demo_receive_state(combined: Dictionary) -> void:
 	demo_state_received.emit(combined)
+	_demo_push_count += 1
+	if _demo_push_count % 30 == 1:
+		var screens: Array = combined.get("screens", [])
+		var trap_count := 0
+		if screens.size() > 0:
+			trap_count = screens[0].get("traps", []).size()
+		print(
+			(
+				"[Demo] received combined state #%d | screens=%d | traps=%d"
+				% [_demo_push_count, screens.size(), trap_count]
+			)
+		)
