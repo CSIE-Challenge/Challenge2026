@@ -1,13 +1,14 @@
 class_name Trap2ElectricRing
 extends Node2D
-var cooldown_times = TrapData.new().data["trap2-electric_ring"]["cooldown_times"]
-var damage = TrapData.new().data["trap2-electric_ring"]["damage"]
-var energy_costs = TrapData.new().data["trap2-electric_ring"]["energy_costs"]
-var standard_radius = TrapData.new().data["trap2-electric_ring"]["standard_radius"]
+var trap_data = TrapData.new().data
+var cooldown_times = trap_data["trap2-electric_ring"]["cooldown_times"]
+var damage = trap_data["trap2-electric_ring"]["damage"]
+var energy_costs = trap_data["trap2-electric_ring"]["energy_costs"]
+var standard_radius = trap_data["trap2-electric_ring"]["standard_radius"]
 # ▲sprite的scale為1時，場景中實際的電圈半徑
-var player_radius = TrapData.new().data["trap2-electric_ring"]["player_radius"]
-var stay_time = TrapData.new().data["trap2-electric_ring"]["stay_time"]
-var ring_thickness = TrapData.new().data["trap2-electric_ring"]["ring_thickness"]
+var player_radius = trap_data["trap2-electric_ring"]["player_radius"]
+var stay_time = trap_data["trap2-electric_ring"]["stay_time"]
+var ring_thickness = trap_data["trap2-electric_ring"]["ring_thickness"]
 # @export var test_player: CharacterBody2D
 var test_player: CharacterBody2D
 var player: CharacterBody2D

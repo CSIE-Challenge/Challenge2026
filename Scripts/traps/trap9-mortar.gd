@@ -4,14 +4,15 @@ extends Node2D
 @export var shell_rotate_speed: float = 20.0
 @export var shadow_flicker_frequency: float = 1
 
-var cooldown_times = TrapData.new().data["trap9-mortar"]["cooldown_times"]
-var damage = TrapData.new().data["trap9-mortar"]["damage"]
-var energy_costs = TrapData.new().data["trap9-mortar"]["energy_costs"]
-var max_height = TrapData.new().data["trap9-mortar"]["max_height"]
-var gravity = TrapData.new().data["trap9-mortar"]["gravity"]
-var explosion_max_radius = TrapData.new().data["trap9-mortar"]["explosion_max_radius"]
-var explosion_expand_speed = TrapData.new().data["trap9-mortar"]["explosion_expand_speed"]
-var stay_time = TrapData.new().data["trap9-mortar"]["stay_time"]
+var trap_data = TrapData.new().data
+var cooldown_times = trap_data["trap9-mortar"]["cooldown_times"]
+var damage = trap_data["trap9-mortar"]["damage"]
+var energy_costs = trap_data["trap9-mortar"]["energy_costs"]
+var max_height = trap_data["trap9-mortar"]["max_height"]
+var gravity = trap_data["trap9-mortar"]["gravity"]
+var explosion_max_radius = trap_data["trap9-mortar"]["explosion_max_radius"]
+var explosion_expand_speed = trap_data["trap9-mortar"]["explosion_expand_speed"]
+var stay_time = trap_data["trap9-mortar"]["stay_time"]
 
 var player: CharacterBody2D
 var start_pos: Vector2

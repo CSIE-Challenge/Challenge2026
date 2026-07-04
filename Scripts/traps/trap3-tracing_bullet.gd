@@ -4,11 +4,12 @@ extends CharacterBody2D
 const PLAYER_COLLISION_LAYER := 1
 const WALL_COLLISION_LAYER := 2
 const TRAP_COLLISION_LAYER := 4
-var cooldown_times = TrapData.new().data["trap3-tracing_bullet"]["cooldown_times"]
-var damage = TrapData.new().data["trap3-tracing_bullet"]["damage"]
-var energy_costs = TrapData.new().data["trap3-tracing_bullet"]["energy_costs"]
-var turn_rate = TrapData.new().data["trap3-tracing_bullet"]["turn_rate"]
-var wait_time = TrapData.new().data["trap3-tracing_bullet"]["wait_time"]
+var trap_data = TrapData.new().data
+var cooldown_times = trap_data["trap3-tracing_bullet"]["cooldown_times"]
+var damage = trap_data["trap3-tracing_bullet"]["damage"]
+var energy_costs = trap_data["trap3-tracing_bullet"]["energy_costs"]
+var turn_rate = trap_data["trap3-tracing_bullet"]["turn_rate"]
+var wait_time = trap_data["trap3-tracing_bullet"]["wait_time"]
 var target: Node2D = null
 var speed := 0.0
 var tracing := true

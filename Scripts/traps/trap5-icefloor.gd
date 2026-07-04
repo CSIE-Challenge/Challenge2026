@@ -6,10 +6,11 @@ const ICE_ACCELERATION_BASE: float = 5.0
 
 static var _ice_overlap_count: Dictionary = {}
 
-var cooldown_times = TrapData.new().data["trap5-icefloor"]["cooldown_times"]
-var damage = TrapData.new().data["trap5-icefloor"]["damage"]
-var energy_costs = TrapData.new().data["trap5-icefloor"]["energy_costs"]
-var lifetime = TrapData.new().data["trap5-icefloor"]["lifetime"]
+var trap_data = TrapData.new().data
+var cooldown_times = trap_data["trap5-icefloor"]["cooldown_times"]
+var damage = trap_data["trap5-icefloor"]["damage"]
+var energy_costs = trap_data["trap5-icefloor"]["energy_costs"]
+var lifetime = trap_data["trap5-icefloor"]["lifetime"]
 
 var _is_destroying: bool = false
 

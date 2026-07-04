@@ -6,9 +6,10 @@ const LINE_SHIFT := 500  # 圖片中心和 Area2D 的中心的距離是 (500, 50
 @export var oscillate_frequency: float = 0.5
 @export var oscillate_amplitude: float = 20
 
-var cooldown_times = TrapData.new().data["trap6-scanline"]["cooldown_times"]
-var damage = TrapData.new().data["trap6-scanline"]["damage"]
-var energy_costs = TrapData.new().data["trap6-scanline"]["energy_costs"]
+var trap_data = TrapData.new().data
+var cooldown_times = trap_data["trap6-scanline"]["cooldown_times"]
+var damage = trap_data["trap6-scanline"]["damage"]
+var energy_costs = trap_data["trap6-scanline"]["energy_costs"]
 
 var line_dir := Vector2(0, 0)
 var line_alive := 1

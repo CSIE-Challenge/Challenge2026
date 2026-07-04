@@ -4,12 +4,13 @@ extends Node2D
 const PLAYER_COLLISION_LAYER = 1
 const WALL_COLLISION_LAYER = 2
 
-var cooldown_times = TrapData.new().data["trap10-shotgun"]["cooldown_times"]
-var damage = TrapData.new().data["trap10-shotgun"]["damage"]
-var energy_costs = TrapData.new().data["trap10-shotgun"]["energy_costs"]
-var bullet_speed = TrapData.new().data["trap10-shotgun"]["bullet_speed"]
-var aiming_time = TrapData.new().data["trap10-shotgun"]["aiming_time"]
-var aiming_line_color = Color(TrapData.new().data["trap10-shotgun"]["aiming_line_color"])
+var trap_data = TrapData.new().data
+var cooldown_times = trap_data["trap10-shotgun"]["cooldown_times"]
+var damage = trap_data["trap10-shotgun"]["damage"]
+var energy_costs = trap_data["trap10-shotgun"]["energy_costs"]
+var bullet_speed = trap_data["trap10-shotgun"]["bullet_speed"]
+var aiming_time = trap_data["trap10-shotgun"]["aiming_time"]
+var aiming_line_color = Color(trap_data["trap10-shotgun"]["aiming_line_color"])
 # ▲[0.937, 0.373, 0.285] in HEX is #F05F49
 
 var directions: Array[Vector2] = []

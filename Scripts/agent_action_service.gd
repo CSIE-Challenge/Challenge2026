@@ -9,9 +9,9 @@ var game
 var trap_request_scheduler: TrapRequestScheduler
 
 var game_data := GameData.new()
-var default_heal_uses: int = game_data.get_int("heal", "uses", 2)
-var default_heal_amount: int = game_data.get_int("heal", "amount", 2)
-var default_heal_energy_cost: int = game_data.get_int("heal", "energy_cost", 40)
+var default_heal_uses: int = game_data.data["heal"]["uses"]
+var default_heal_amount: int = game_data.data["heal"]["amount"]
+var default_heal_energy_cost: int = game_data.data["heal"]["energy_cost"]
 var heal_uses_left: int = default_heal_uses
 
 var trap_data = TrapData.new().data

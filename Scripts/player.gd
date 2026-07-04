@@ -39,17 +39,13 @@ func _ready() -> void:
 
 func _reload_from_game_data() -> void:
 	var game_data := GameData.new()
-	acceleration = game_data.get_float("player", "acceleration", acceleration)
-	move_speed = game_data.get_float("player", "move_speed", move_speed)
-	jump_velocity = game_data.get_float("player", "jump_velocity", jump_velocity)
-	jump_gravity = game_data.get_float("player", "jump_gravity", jump_gravity)
-	jump_fall_multiplier = game_data.get_float(
-		"player", "jump_fall_multiplier", jump_fall_multiplier
-	)
-	max_health = game_data.get_float("player", "max_health", max_health)
-	invincibility_flicker_period = game_data.get_int(
-		"player", "invincibility_flicker_period", invincibility_flicker_period
-	)
+	acceleration = game_data.data["player"]["acceleration"]
+	move_speed = game_data.data["player"]["move_speed"]
+	jump_velocity = game_data.data["player"]["jump_velocity"]
+	jump_gravity = game_data.data["player"]["jump_gravity"]
+	jump_fall_multiplier = game_data.data["player"]["jump_fall_multiplier"]
+	max_health = game_data.data["player"]["max_health"]
+	invincibility_flicker_period = game_data.data["player"]["invincibility_flicker_period"]
 
 
 func _physics_process(delta: float) -> void:

@@ -3,11 +3,12 @@ extends Area2D
 
 static var current_conveyor: Trap4Conveyor = null
 
-var cooldown_times = TrapData.new().data["trap4-conveyor"]["cooldown_times"]
-var damage = TrapData.new().data["trap4-conveyor"]["damage"]
-var energy_costs = TrapData.new().data["trap4-conveyor"]["energy_costs"]
-var speed = TrapData.new().data["trap4-conveyor"]["speed"]
-var lifetime = TrapData.new().data["trap4-conveyor"]["lifetime"]
+var trap_data = TrapData.new().data
+var cooldown_times = trap_data["trap4-conveyor"]["cooldown_times"]
+var damage = trap_data["trap4-conveyor"]["damage"]
+var energy_costs = trap_data["trap4-conveyor"]["energy_costs"]
+var speed = trap_data["trap4-conveyor"]["speed"]
+var lifetime = trap_data["trap4-conveyor"]["lifetime"]
 var direction: Vector2
 var _is_disappearing: bool = false
 

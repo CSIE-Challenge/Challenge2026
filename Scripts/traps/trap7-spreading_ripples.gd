@@ -1,12 +1,13 @@
 class_name Trap7SpreadingRipples
 extends Area2D
 
-var cooldown_times = TrapData.new().data["trap7-spreading_ripples"]["cooldown_times"]
-var damage = TrapData.new().data["trap7-spreading_ripples"]["damage"]
-var energy_costs = TrapData.new().data["trap7-spreading_ripples"]["energy_costs"]
-var warning_time = TrapData.new().data["trap7-spreading_ripples"]["warning_time"]
-var max_radius = TrapData.new().data["trap7-spreading_ripples"]["max_radius"]
-var ring_thickness = TrapData.new().data["trap7-spreading_ripples"]["ring_thickness"]
+var trap_data = TrapData.new().data
+var cooldown_times = trap_data["trap7-spreading_ripples"]["cooldown_times"]
+var damage = trap_data["trap7-spreading_ripples"]["damage"]
+var energy_costs = trap_data["trap7-spreading_ripples"]["energy_costs"]
+var warning_time = trap_data["trap7-spreading_ripples"]["warning_time"]
+var max_radius = trap_data["trap7-spreading_ripples"]["max_radius"]
+var ring_thickness = trap_data["trap7-spreading_ripples"]["ring_thickness"]
 var white_ripple_oscil_freq: float
 
 var current_expand_rate: float = 10.0

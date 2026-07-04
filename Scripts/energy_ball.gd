@@ -33,22 +33,15 @@ func _ready() -> void:
 
 func _reload_from_game_data() -> void:
 	var game_data := GameData.new()
-	energy_ball_spawn_bounds = game_data.get_rect2(
-		"energy_ball", "spawn_bounds", energy_ball_spawn_bounds
+	var spawn_bounds = game_data.data["energy_ball"]["spawn_bounds"]
+	energy_ball_spawn_bounds = Rect2(
+		spawn_bounds["x"], spawn_bounds["y"], spawn_bounds["width"], spawn_bounds["height"]
 	)
-	min_spawn_distance_from_player = game_data.get_float(
-		"energy_ball", "min_spawn_distance_from_player", min_spawn_distance_from_player
-	)
-	max_spawn_attempts = game_data.get_int("energy_ball", "max_spawn_attempts", max_spawn_attempts)
-	coconut_flicker_frequency = game_data.get_float(
-		"energy_ball", "coconut_flicker_speed", coconut_flicker_frequency
-	)
-	coconut_rotate_frequency = game_data.get_float(
-		"energy_ball", "coconut_rotate_speed", coconut_rotate_frequency
-	)
-	coconut_rotate_amplitude = game_data.get_float(
-		"energy_ball", "coconut_rotate_amplitude", coconut_rotate_amplitude
-	)
+	min_spawn_distance_from_player = game_data.data["energy_ball"]["min_spawn_distance_from_player"]
+	max_spawn_attempts = game_data.data["energy_ball"]["max_spawn_attempts"]
+	coconut_flicker_frequency = game_data.data["energy_ball"]["coconut_flicker_speed"]
+	coconut_rotate_frequency = game_data.data["energy_ball"]["coconut_rotate_speed"]
+	coconut_rotate_amplitude = game_data.data["energy_ball"]["coconut_rotate_amplitude"]
 	combo_multiplier = game_data.data["energy_ball"]["combo_multiplier"]
 
 

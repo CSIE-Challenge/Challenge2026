@@ -8,53 +8,44 @@ func _init() -> void:
 
 
 func _run_tests() -> void:
-	var game_data := GameDataScript.new()
+	var data := GameDataScript.new().data
 
 	_assert_eq(
-		game_data.get_float("game_manager", "energy_increase_period", -1.0),
+		data["game_manager"]["energy_increase_period"],
 		1.0,
 		"game manager energy_increase_period should load from Data/game.json"
 	)
 	_assert_eq(
-		game_data.get_float("game_manager", "player_invincibility_time", -1.0),
+		data["game_manager"]["player_invincibility_time"],
 		1.0,
 		"game manager player_invincibility_time should load from Data/game.json"
 	)
 	_assert_eq(
-		game_data.get_int("game_manager", "energy_gain_per_ball", -1),
+		data["game_manager"]["energy_gain_per_ball"],
 		10,
 		"game manager energy_gain_per_ball should load from Data/game.json"
 	)
 
 	_assert_eq(
-		game_data.get_float("player", "move_speed", -1.0),
-		300.0,
-		"player move_speed should load from Data/game.json"
+		data["player"]["move_speed"], 300.0, "player move_speed should load from Data/game.json"
 	)
 	_assert_eq(
-		game_data.get_int("player", "invincibility_flicker_period", -1),
+		data["player"]["invincibility_flicker_period"],
 		8,
 		"player invincibility_flicker_period should load from Data/game.json"
 	)
 
 	_assert(
-		game_data.get_rect2("energy_ball", "spawn_bounds", Rect2()).size.x > 0.0,
+		data["energy_ball"]["spawn_bounds"]["width"] > 0.0,
 		"energy_ball spawn bounds should be a valid rect"
 	)
 	_assert_eq(
-		game_data.get_int("energy_ball", "max_spawn_attempts", -1),
+		data["energy_ball"]["max_spawn_attempts"],
 		100,
 		"energy_ball max_spawn_attempts should load from Data/game.json"
 	)
 
-	_assert_eq(
-		game_data.get_float("heal", "energy_cost", -1.0),
-		40.0,
-		"heal section should load from Data/game.json"
-	)
-
-	var missing := game_data.get_float("missing_section", "key", 12.34)
-	_assert_eq(missing, 12.34, "get_float should fallback when section/key missing")
+	_assert_eq(data["heal"]["energy_cost"], 40.0, "heal section should load from Data/game.json")
 
 	print("Game data tests passed")
 	quit(0)

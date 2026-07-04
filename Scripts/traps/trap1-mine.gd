@@ -1,10 +1,11 @@
 class_name Trap1Mine
 extends Node2D
 
-var cooldown_times = TrapData.new().data["trap1-mine"]["cooldown_times"]
-var damage = TrapData.new().data["trap1-mine"]["damage"]
-var energy_costs = TrapData.new().data["trap1-mine"]["energy_costs"]
-var arming_time = TrapData.new().data["trap1-mine"]["arming_time"]
+var trap_data = TrapData.new().data
+var cooldown_times = trap_data["trap1-mine"]["cooldown_times"]
+var damage = trap_data["trap1-mine"]["damage"]
+var energy_costs = trap_data["trap1-mine"]["energy_costs"]
+var arming_time = trap_data["trap1-mine"]["arming_time"]
 # ▲How long it takes to turn completely red
 
 var is_armed := false

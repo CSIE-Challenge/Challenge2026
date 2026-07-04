@@ -64,16 +64,10 @@ func _ready() -> void:
 
 func _reload_from_game_data() -> void:
 	var game_data := GameData.new()
-	energy_increase_period = game_data.get_float(
-		"game_manager", "energy_increase_period", energy_increase_period
-	)
-	player_invincibility_time = game_data.get_float(
-		"game_manager", "player_invincibility_time", player_invincibility_time
-	)
-	energy_gain_per_ball = game_data.get_int(
-		"game_manager", "energy_gain_per_ball", energy_gain_per_ball
-	)
-	game_duration = game_data.get_float("game_manager", "game_duration", game_duration)
+	energy_increase_period = game_data.data["game_manager"]["energy_increase_period"]
+	player_invincibility_time = game_data.data["game_manager"]["player_invincibility_time"]
+	energy_gain_per_ball = game_data.data["game_manager"]["energy_gain_per_ball"]
+	game_duration = game_data.data["game_manager"]["game_duration"]
 
 
 func _physics_process(delta: float) -> void:
