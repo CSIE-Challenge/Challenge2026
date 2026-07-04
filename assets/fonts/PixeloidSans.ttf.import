@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://b5wu80bvybrt2"
-path="res://.godot/imported/PressStart2P-Regular.ttf-fb4d69e3cdc7ab7e2197e3cff0cf50e8.fontdata"
+uid="uid://bwxpjx83lxclb"
+path="res://.godot/imported/PixeloidSans.ttf-814bbefeca85d51f6673fab7cdd43ac0.fontdata"
 
 [deps]
 
-source_file="res://Fonts/PressStart2P-Regular.ttf"
-dest_files=["res://.godot/imported/PressStart2P-Regular.ttf-fb4d69e3cdc7ab7e2197e3cff0cf50e8.fontdata"]
+source_file="res://assets/fonts/PixeloidSans.ttf"
+dest_files=["res://.godot/imported/PixeloidSans.ttf-814bbefeca85d51f6673fab7cdd43ac0.fontdata"]
 
 [params]
 
