@@ -4,6 +4,7 @@ extends Area2D
 @export var energy_text: PackedScene
 @export var energy_bar: Node2D
 
+var is_demo := false
 var energy_ball_spawn_bounds := Rect2(Vector2(-220, -220), Vector2(440, 440))
 var min_spawn_distance_from_player := 48.0
 var max_spawn_attempts := 100
@@ -24,6 +25,10 @@ var rng := RandomNumberGenerator.new()
 
 
 func _ready() -> void:
+	if is_demo:
+		_reload_from_game_data()
+		return
+
 	_reload_from_game_data()
 
 	body_entered.connect(_on_body_entered)

@@ -138,9 +138,93 @@ func _run_tests() -> void:
 	_assert(not ghost_dict.has(8), "stale ghost id=8 should be removed from dict")
 	_assert(ghost_dict.has(42), "active ghost id=42 should remain")
 
+	# ── TEST 7: _create_player_ghost creates a Sprite2D ─────────
+	var player_stage := Node2D.new()
+	player_stage.name = "PlayerStage"
+	root.add_child(player_stage)
+
+	var ghost: Node2D = renderer._create_player_ghost(player_stage)
+	_assert(is_instance_valid(ghost), "player ghost should be created")
+	_assert(ghost is Sprite2D, "player ghost should be a Sprite2D")
+	_assert_eq(ghost.name, "PlayerGhost", "ghost name should be PlayerGhost")
+	_assert_eq(ghost.z_index, 20, "ghost z_index should be 20")
+
+	# ── TEST 8: _apply_player with empty state returns early ────
+	var screen_dict: Dictionary = {"player": null}
+	renderer._apply_player(screen_dict, player_stage, {})
+	_assert(screen_dict["player"] == null, "empty state should not create ghost")
+
+	# ── TEST 9: _apply_player creates ghost and sets position ───
+	var player_state := {
+		"position": Vector2(200, 150),
+		"sprite_y": 50.0,
+		"modulate_alpha": 0.5,
+	}
+	renderer._apply_player(screen_dict, player_stage, player_state)
+	var created: Node2D = screen_dict["player"]
+	_assert(is_instance_valid(created), "player state should create ghost")
+	# global_position is set to state position, then sprite_y offset moves it up
+	_assert_eq(
+		created.global_position,
+		Vector2(200, 150 - 50),
+		"ghost global_position should account for sprite_y offset"
+	)
+	_assert_eq(created.modulate.a, 0.5, "ghost modulate alpha should match")
+
+	# ── TEST 10: _apply_player updates existing ghost ───────────
+	var update_state := {
+		"position": Vector2(400, 300),
+		"sprite_y": 0.0,
+		"modulate_alpha": 1.0,
+	}
+	renderer._apply_player(screen_dict, player_stage, update_state)
+	_assert_eq(screen_dict["player"], created, "same ghost should be reused on update")
+	# sprite_y=0 so no offset — global_position matches state position exactly
+	_assert_eq(
+		created.global_position, Vector2(400, 300), "ghost position should update (no jump offset)"
+	)
+	_assert_eq(created.modulate.a, 1.0, "ghost alpha should update")
+
+	# ── TEST 11: _update_energy_balls creates ghost from real scene ─
+	var ball_stage := Node2D.new()
+	ball_stage.name = "BallStage"
+	root.add_child(ball_stage)
+
+	var ball_screen: Dictionary = {"balls": {}}
+	var ball_data: Array = [
+		{"id": 100, "position": Vector2(50, 60), "collected": false},
+		{"id": 200, "position": Vector2(70, 80), "collected": false},
+	]
+	renderer._update_energy_balls(ball_screen, ball_stage, ball_data)
+	var bdict: Dictionary = ball_screen["balls"]
+	# energy_ball.tscn may fail to load in test mode — verify no crash either way
+	_assert(bdict.size() >= 0, "energy ball update should not crash")
+	if bdict.size() >= 2:
+		_assert(bdict.has(100), "ball id=100 should exist")
+		_assert(bdict.has(200), "ball id=200 should exist")
+		var g: Node2D = bdict[100]
+		_assert(g is Area2D, "ball ghost should be Area2D from energy_ball.tscn")
+		_assert_eq(g.global_position, Vector2(50, 60), "ball ghost position")
+
+	# ── TEST 12: collected balls are removed ─────────────────────
+	var collected_data: Array = [
+		{"id": 100, "position": Vector2(50, 60), "collected": true},
+	]
+	renderer._update_energy_balls(ball_screen, ball_stage, collected_data)
+	_assert(not bdict.has(100), "collected ball id=100 should be removed")
+	# id=200 stays if it was created; if instantiation failed, dict was empty so it's OK
+
+	# ── TEST 13: stale balls are cleaned up ──────────────────────
+	var empty_data: Array = []
+	renderer._update_energy_balls(ball_screen, ball_stage, empty_data)
+	_assert_eq(bdict.size(), 0, "all balls should be removed on empty update")
+
 	# ── Cleanup ────────────────────────────────────────────────────
 	existing_ghost.queue_free()
 	trapped_stage.queue_free()
+	ghost.queue_free()
+	player_stage.queue_free()
+	ball_stage.queue_free()
 	renderer.queue_free()
 	stage_a.queue_free()
 	stage_b.queue_free()

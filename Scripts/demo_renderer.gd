@@ -9,6 +9,11 @@ extends Node
 
 var _ghosts_a: Dictionary = {}
 var _ghosts_b: Dictionary = {}
+var _balls_a: Dictionary = {}  # energy ball ghosts: ball_id → Node
+var _balls_b: Dictionary = {}
+var _player_a: Node2D
+var _player_b: Node2D
+var _screens: Array = []
 
 
 func _ready() -> void:
@@ -38,6 +43,11 @@ func _ready() -> void:
 	if stage_b:
 		_setup_walls(stage_b)
 
+	_screens = [
+		{"ghosts": _ghosts_a, "balls": _balls_a, "stage": stage_a, "player": _player_a},
+		{"ghosts": _ghosts_b, "balls": _balls_b, "stage": stage_b, "player": _player_b},
+	]
+
 
 func _identify_as_demo(nm: Node) -> void:
 	nm.rpc_id(1, "_server_identify_as_demo")
@@ -46,15 +56,26 @@ func _identify_as_demo(nm: Node) -> void:
 func _on_demo_state_received(combined: Dictionary) -> void:
 	var screens: Array = combined.get("screens", [])
 	for i in range(mini(screens.size(), 2)):
-		var screen_data: Dictionary = screens[i]
-		var ghosts: Dictionary = _ghosts_a if i == 0 else _ghosts_b
-		var stage: Node2D = stage_a if i == 0 else stage_b
-		_apply_screen(ghosts, stage, screen_data)
+		_apply_screen(_screens[i], screens[i])
 
 
-func _apply_screen(ghosts: Dictionary, stage: Node2D, screen_data: Dictionary) -> void:
+func _apply_screen(screen: Dictionary, screen_data: Dictionary) -> void:
+	var stage: Node2D = screen["stage"]
+	if not stage:
+		return
+	var ghosts: Dictionary = screen["ghosts"]
+
+	# Apply player ghost
+	var player_state: Dictionary = screen_data.get("player", {})
+	_apply_player(screen, stage, player_state)
+
+	# Apply trap ghosts
 	var traps: Array = screen_data.get("traps", [])
 	_update_ghosts(ghosts, stage, traps)
+
+	# Apply energy ball ghosts
+	var balls: Array = screen_data.get("energy_balls", [])
+	_update_energy_balls(screen, stage, balls)
 
 
 ## Recursively disables game logic callbacks on [param node] and its children.
@@ -132,6 +153,103 @@ func _update_ghosts(ghosts: Dictionary, stage: Node2D, traps_array: Array) -> vo
 			if is_instance_valid(old_ghost):
 				old_ghost.queue_free()
 			ghosts.erase(trap_id)
+
+
+## Diff loop for energy ball ghosts: instantiates the real energy_ball.tscn,
+## suppresses game logic, and positions from state data.
+func _update_energy_balls(screen: Dictionary, stage: Node2D, balls_array: Array) -> void:
+	var balls: Dictionary = screen["balls"]
+	var active_ids: Array = []
+
+	for ball_data in balls_array:
+		var ball_id = ball_data.get("id", -1)
+		if ball_id == -1:
+			continue
+
+		var collected: bool = ball_data.get("collected", false)
+		if collected:
+			if balls.has(ball_id):
+				var old: Node = balls[ball_id]
+				if is_instance_valid(old):
+					old.queue_free()
+				balls.erase(ball_id)
+			continue
+
+		active_ids.append(ball_id)
+		var pos: Vector2 = ball_data.get("position", Vector2.ZERO)
+
+		if balls.has(ball_id):
+			var ghost: Node2D = balls[ball_id]
+			if is_instance_valid(ghost):
+				ghost.global_position = pos
+				ghost.visible = true
+		else:
+			var ghost: Node = _instantiate_energy_ball()
+			if ghost:
+				ghost.is_demo = true
+				stage.add_child(ghost)
+				_suppress_energy_ball(ghost)
+				ghost.global_position = pos
+				ghost.visible = true
+				balls[ball_id] = ghost
+
+	# Remove stale
+	for ball_id in balls.keys():
+		if not active_ids.has(ball_id):
+			var old: Node = balls[ball_id]
+			if is_instance_valid(old):
+				old.queue_free()
+			balls.erase(ball_id)
+
+
+## Lightweight suppression for energy ball ghosts: keeps _physics_process
+## for coconut animation, but disables collision and _process.
+func _suppress_energy_ball(node: Node) -> void:
+	node.set_process(false)
+	# Keep set_physics_process(true) — drives coconut rotation + outline color
+	if node is Area2D:
+		(node as Area2D).monitoring = false
+
+
+## Instantiates the energy_ball.tscn scene for demo rendering.
+func _instantiate_energy_ball() -> Node:
+	return load("res://Scenes/energy_ball.tscn").instantiate()
+
+
+## Creates or updates the player ghost on [param stage] from [param player_state].
+## Uses a simplified colored circle sprite to represent the player.
+func _apply_player(screen: Dictionary, stage: Node2D, player_state: Dictionary) -> void:
+	if player_state.is_empty():
+		return
+
+	var ghost: Node2D = screen["player"]
+	if not is_instance_valid(ghost):
+		ghost = _create_player_ghost(stage)
+		screen["player"] = ghost
+
+	var pos: Vector2 = player_state.get("position", Vector2.ZERO)
+	ghost.global_position = pos
+
+	# Jump visual: sprite bobs upward during jump
+	var sprite_y: float = player_state.get("sprite_y", 0.0)
+	ghost.position.y -= sprite_y
+
+	# Invincibility flicker via modulate alpha
+	var alpha: float = player_state.get("modulate_alpha", 1.0)
+	ghost.modulate.a = alpha
+
+
+## Creates a simple player ghost sprite on [param stage].
+## Returns the created Node2D.
+func _create_player_ghost(stage: Node2D) -> Node2D:
+	var ghost := Sprite2D.new()
+	ghost.name = "PlayerGhost"
+	ghost.texture = preload("res://Shapes/Circle.svg")
+	ghost.scale = Vector2(0.2, 0.2)
+	ghost.z_index = 20
+	ghost.modulate = Color(0.2, 0.6, 1.0, 1.0)  # Blue tint to distinguish from energy balls
+	stage.add_child(ghost)
+	return ghost
 
 
 ## Draws four thin wall rectangles on [param stage] to show the arena boundary.
