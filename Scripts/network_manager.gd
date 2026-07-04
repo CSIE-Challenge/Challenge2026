@@ -178,10 +178,28 @@ func _start_from_command_line(args: Array) -> void:
 	var port := get_server_port(args)
 	print("[NetworkManager] startup mode=%s port=%d args=%s" % [mode, port, args])
 
+	if _has_demo_flag(args):
+		var connect_addr := _extract_connect_address(args)
+		if connect_addr.is_empty():
+			connect_addr = DEFAULT_SERVER_ADDRESS
+		get_tree().change_scene_to_file("res://Scenes/demo.tscn")
+		join_server(connect_addr)
+		return
+
 	if mode == "server":
 		start_server(port)
 	elif mode == "client":
 		join_server(get_server_address(args), port)
+
+
+## Returns true if [param args] contains the --demo flag.
+func _has_demo_flag(args: Array) -> bool:
+	return args.has("--demo")
+
+
+## Extracts the --connect address from [param args] that may also contain --demo.
+func _extract_connect_address(args: Array) -> String:
+	return _find_arg_value(args, "--connect")
 
 
 ## Connects all multiplayer API signals to their local handler functions.
