@@ -22,6 +22,7 @@ signal health_changed(peer_id: int, health: int)
 signal health_rejected(peer_id: int, reason: String)
 signal demo_connected(peer_id: int)
 signal demo_disconnected
+signal demo_state_received(data: Dictionary)
 
 const MAX_ENERGY := 100
 const MAX_HEALTH := 100
@@ -652,7 +653,7 @@ func _push_state_to_demo() -> void:
 	rpc_id(demo_peer_id, "_demo_receive_state", combined)
 
 
-## RPC stub: receiver on the demo side. Overridden by the demo client.
+## RPC stub: receiver on the demo side. Emits signal for DemoRenderer.
 @rpc("authority", "unreliable_ordered")
-func _demo_receive_state(_combined: Dictionary) -> void:
-	pass
+func _demo_receive_state(combined: Dictionary) -> void:
+	demo_state_received.emit(combined)
