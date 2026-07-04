@@ -132,9 +132,11 @@ func _update_ghosts(ghosts: Dictionary, stage: Node2D, traps_array: Array) -> vo
 ## Draws four thin wall rectangles on [param stage] to show the arena boundary.
 ## Arena is 500×500 centered at the stage origin, matching gameplay walls at ±250.
 func _setup_walls(stage: Node2D) -> void:
-	const WALL_COLOR := Color(0.45, 0.45, 0.45, 0.9)
+	const WALL_COLOR := Color(0.7, 0.7, 0.7, 1.0)
 	const ARENA_HALF := 250.0
 	const THICKNESS := 4.0
+
+	print("[DemoRenderer] drawing walls on stage %s" % stage.name)
 
 	var walls_data := [
 		{
