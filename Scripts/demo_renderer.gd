@@ -13,8 +13,20 @@ var _ghosts_b: Dictionary = {}
 
 func _ready() -> void:
 	var nm := get_node_or_null("/root/NetworkManager")
-	if nm and nm.has_signal("demo_state_received"):
+	if not nm:
+		return
+
+	# Connect state receiver
+	if nm.has_signal("demo_state_received"):
 		nm.demo_state_received.connect(_on_demo_state_received)
+
+	# Identify as demo to server — wait for connection to be ready
+	if nm.has_signal("connection_succeeded"):
+		nm.connection_succeeded.connect(_identify_as_demo.bind(nm))
+
+
+func _identify_as_demo(nm: Node) -> void:
+	nm.rpc_id(1, "_server_identify_as_demo")
 
 
 func _on_demo_state_received(combined: Dictionary) -> void:
