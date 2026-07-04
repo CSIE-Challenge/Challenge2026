@@ -17,7 +17,7 @@ func open() -> void:
 	music_slider.value = settings.get_value("Volume", "music", 1.0)
 	sfx_slider.value = settings.get_value("Volume", "sfx", 1.0)
 	temp_music_volume = music_slider.value
-	temp_sfx_volume = sfx_slider.value	
+	temp_sfx_volume = sfx_slider.value
 	self.visible = true
 
 
@@ -26,6 +26,7 @@ func close() -> void:
 	settings.set_value("Volume", "sfx", sfx_slider.value)
 	settings.save("user://settings.cfg")
 	self.visible = false
+
 
 func _on_save_button_button_up() -> void:
 	AudioManager.buttompress.play()
