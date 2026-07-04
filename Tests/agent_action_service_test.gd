@@ -75,7 +75,7 @@ func _run_tests() -> void:
 	_assert_eq(agent.submit_trap_request("unknown_trap", {}), -1, "unknown trap should be rejected")
 
 	# TEST 5: a trap the player can't afford is rejected. Drain to empty, then refund.
-	game.request_spend_energy(game.get_my_energy())
+	NetworkManager.request_spend_energy(game.get_my_energy())
 	_assert_eq(
 		agent.submit_trap_request("trap5-icefloor", {}),
 		-1,
@@ -103,7 +103,7 @@ func _run_tests() -> void:
 	agent.heal_uses_left = 1
 	game.player.health = 1
 	game.player.max_health = 5
-	game.request_spend_energy(game.get_my_energy())
+	NetworkManager.request_spend_energy(game.get_my_energy())
 	game.add(100)
 
 	var heal_ok: Dictionary = agent.request_heal()
@@ -115,7 +115,7 @@ func _run_tests() -> void:
 	# TEST 8: heal is refused with no uses, then with insufficient energy.
 	_assert_eq(agent.request_heal()["reason"], "no_heal_uses_left", "heal without uses is rejected")
 	agent.heal_uses_left = 1
-	game.request_spend_energy(game.get_my_energy())
+	NetworkManager.request_spend_energy(game.get_my_energy())
 	_assert_eq(
 		agent.request_heal()["reason"], "insufficient_energy", "heal without energy is rejected"
 	)

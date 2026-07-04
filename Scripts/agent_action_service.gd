@@ -1,8 +1,6 @@
 class_name AgentActionService
 extends Node
 
-signal trap_request_submitted(request: Dictionary)
-signal trap_request_rejected(request: Dictionary, reason: String)
 signal trap_approved(request: Dictionary, energy_cost: float)
 signal trap_rejected(request: Dictionary, reason: String)
 signal heal_used(heal_amount: int, energy_cost: int, heal_uses_left: int)
@@ -71,82 +69,53 @@ func _connect_scheduler_signal_once() -> void:
 # gdlint: disable=max-returns
 # For Game Manager tests
 func submit_trap_request(trap_id: String, params: Dictionary = {}) -> int:
-	var rejected_request := _make_request(-1, trap_id, params)
-
 	if game == null:
 		push_error("AgentActionService: game is not assigned.")
-		trap_request_rejected.emit(rejected_request, "game_not_assigned")
 		return -1
 
 	if trap_request_scheduler == null:
 		push_error("AgentActionService: trap_request_scheduler is not assigned.")
-		trap_request_rejected.emit(rejected_request, "trap_request_scheduler_not_assigned")
 		return -1
 
 	if not _is_known_trap(trap_id):
-		trap_request_rejected.emit(rejected_request, "unknown_trap")
 		return -1
 
 	if _is_trap_on_cooldown(trap_id):
-		trap_request_rejected.emit(rejected_request, "cooldown_active")
 		return -1
 
 	if not _has_enough_energy(trap_id):
-		trap_request_rejected.emit(rejected_request, "insufficient_energy")
 		return -1
 
 	if not trap_request_scheduler.can_accept_request():
-		trap_request_rejected.emit(rejected_request, "scheduler_cannot_accept_request")
 		return -1
 
-	var request_id := trap_request_scheduler.submit_request(trap_id, params)
-
-	if request_id == -1:
-		trap_request_rejected.emit(rejected_request, "scheduler_submit_failed")
-		return -1
-
-	var submitted_request := _make_request(request_id, trap_id, params)
-	trap_request_submitted.emit(submitted_request)
-
-	return request_id
+	return trap_request_scheduler.submit_request(trap_id, params)
 
 
 # For Python API Server Calling
 func submit_trap_request_result(trap_id: String, params: Dictionary = {}) -> Dictionary:
-	var rejected_request := _make_request(-1, trap_id, params)
-
 	if game == null:
-		trap_request_rejected.emit(rejected_request, "game_not_assigned")
 		return _make_submit_result(false, -1, trap_id, "game_not_assigned")
 
 	if trap_request_scheduler == null:
-		trap_request_rejected.emit(rejected_request, "trap_request_scheduler_not_assigned")
 		return _make_submit_result(false, -1, trap_id, "trap_request_scheduler_not_assigned")
 
 	if not _is_known_trap(trap_id):
-		trap_request_rejected.emit(rejected_request, "unknown_trap")
 		return _make_submit_result(false, -1, trap_id, "unknown_trap")
 
 	if _is_trap_on_cooldown(trap_id):
-		trap_request_rejected.emit(rejected_request, "cooldown_active")
 		return _make_submit_result(false, -1, trap_id, "cooldown_active")
 
 	if not _has_enough_energy(trap_id):
-		trap_request_rejected.emit(rejected_request, "insufficient_energy")
 		return _make_submit_result(false, -1, trap_id, "insufficient_energy")
 
 	if not trap_request_scheduler.can_accept_request():
-		trap_request_rejected.emit(rejected_request, "scheduler_cannot_accept_request")
 		return _make_submit_result(false, -1, trap_id, "scheduler_cannot_accept_request")
 
 	var request_id := trap_request_scheduler.submit_request(trap_id, params)
 
 	if request_id == -1:
-		trap_request_rejected.emit(rejected_request, "scheduler_submit_failed")
 		return _make_submit_result(false, -1, trap_id, "scheduler_submit_failed")
-
-	var submitted_request := _make_request(request_id, trap_id, params)
-	trap_request_submitted.emit(submitted_request)
 
 	return _make_submit_result(true, request_id, trap_id, "")
 
@@ -180,11 +149,13 @@ func _on_request_ready(request: Dictionary) -> void:
 
 	var cost := _get_trap_cost(trap_id)
 
-	if game.get_my_energy() < cost:
+	# Script A runs on the opponent's client, so a trap is paid for by the
+	# opponent's energy (aliases to self in offline mode).
+	if NetworkManager.get_energy(NetworkManager.get_opponent_peer_id()) < cost:
 		trap_rejected.emit(request, "insufficient_energy")
 		return
 
-	game.request_spend_energy(int(cost), "trap:" + trap_id)
+	NetworkManager.request_spend_opponent_energy(cost, "trap:" + trap_id)
 	_start_cooldown(trap_id)
 	trap_approved.emit(request, cost)
 
@@ -193,9 +164,9 @@ func _is_known_trap(trap_id: String) -> bool:
 	return trap_energy_costs.has(trap_id)
 
 
-func _get_trap_cost(trap_id: String) -> float:
+func _get_trap_cost(trap_id: String) -> int:
 	if not trap_energy_costs.has(trap_id):
-		return -1.0
+		return -1
 
 	return trap_energy_costs[trap_id]
 
@@ -225,19 +196,12 @@ func _start_cooldown(trap_id: String) -> void:
 func _has_enough_energy(trap_id: String) -> bool:
 	var cost := _get_trap_cost(trap_id)
 
-	if cost < 0.0:
+	if cost < 0:
 		return false
 
-	return game.get_my_energy() >= cost
-
-
-func _make_request(request_id: int, trap_id: String, params: Dictionary) -> Dictionary:
-	return {
-		"request_id": request_id,
-		"trap_id": trap_id,
-		"params": params,
-		"submit_time": Time.get_ticks_msec()
-	}
+	# A trap is paid for by the opponent's energy (NetworkManager peer energy),
+	# so the submit-time gate must check the same wallet as the actual spend.
+	return NetworkManager.get_energy(NetworkManager.get_opponent_peer_id()) >= cost
 
 
 func _make_submit_result(ok: bool, request_id: int, trap_id: String, reason: String) -> Dictionary:
@@ -254,11 +218,12 @@ func request_heal() -> Dictionary:
 	if heal_uses_left <= 0:
 		return _make_heal_result(false, "no_heal_uses_left")
 
-	if game.get_my_energy() < default_heal_energy_cost:
+	var owner_peer_id := NetworkManager.get_opponent_peer_id()
+	if NetworkManager.get_energy(owner_peer_id) < default_heal_energy_cost:
 		return _make_heal_result(false, "insufficient_energy")
 
-	game.request_spend_energy(default_heal_energy_cost, "heal")
-	game.player.health = min(game.player.health + default_heal_amount, game.player.max_health)
+	NetworkManager.request_spend_opponent_energy(default_heal_energy_cost, "heal")
+	NetworkManager.request_heal_opponent_health(default_heal_amount, "heal")
 	heal_uses_left -= 1
 
 	heal_used.emit(default_heal_amount, default_heal_energy_cost, heal_uses_left)
@@ -266,11 +231,12 @@ func request_heal() -> Dictionary:
 
 
 func _make_heal_result(ok: bool, reason: String) -> Dictionary:
+	var owner_peer_id := NetworkManager.get_opponent_peer_id()
 	return {
 		"ok": ok,
-		"health": game.player.health,
-		"max_health": game.player.max_health,
-		"energy": game.get_my_energy(),
+		"health": NetworkManager.get_health(owner_peer_id),
+		"max_health": NetworkManager.MAX_HEALTH,
+		"energy": NetworkManager.get_energy(owner_peer_id),
 		"heal_uses_left": heal_uses_left,
 		"reason": reason,
 	}

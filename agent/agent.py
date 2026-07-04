@@ -1,6 +1,8 @@
 import time
 
-from api import Direction, Vector2
+# ruff: disable[F403]
+# ruff: disable[F405]
+from api import *
 
 PLAN = [
     lambda c: c.spawn_trap1(Vector2(120.0, 80.0)),
@@ -21,7 +23,7 @@ PLAN = [
 ]
 
 
-def run(client):
+def run(client: GameClientBase):
     while True:
         for place_trap in PLAN:
             while True:
@@ -33,3 +35,7 @@ def run(client):
                     print(f"trap rejected: {result.get('reason')}")
                     break
                 time.sleep(1.0)
+
+
+# ruff: enable[F403]
+# ruff: enable[F405]

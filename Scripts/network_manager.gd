@@ -141,11 +141,6 @@ func get_energy(peer_id: int) -> int:
 	return int(energy_by_peer_id.get(peer_id, 0))
 
 
-## Returns this client's own server-approved energy.
-func get_my_energy() -> int:
-	return get_energy(multiplayer.get_unique_id())
-
-
 ## Returns the server-approved health for [param peer_id].
 func get_health(peer_id: int) -> int:
 	return int(health_by_peer_id.get(peer_id, MAX_HEALTH))

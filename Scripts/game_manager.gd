@@ -140,17 +140,7 @@ func get_agent_action_service() -> AgentActionService:
 	return agent_action_service
 
 
-# Energy authority is NetworkManager; these forward so services can reach it via `game`.
-func get_my_energy() -> int:
-	return NetworkManager.get_my_energy()
-
-
-func request_spend_energy(amount: int, reason: String) -> void:
-	NetworkManager.request_spend_energy(amount, reason)
-
-
 func _connect_agent_action_signals() -> void:
-	agent_action_service.trap_request_rejected.connect(_on_trap_request_rejected)
 	agent_action_service.trap_approved.connect(_on_trap_approved)
 	agent_action_service.trap_rejected.connect(_on_trap_rejected)
 	agent_action_service.heal_used.connect(_on_heal_used)
@@ -158,10 +148,6 @@ func _connect_agent_action_signals() -> void:
 
 func _on_heal_used(_heal_amount: int, _energy_cost: int, _heal_uses_left: int) -> void:
 	health_label.text = "Health: %d" % player.health
-
-
-func _on_trap_request_rejected(request: Dictionary, reason: String) -> void:
-	print("SUBMIT_REJECTED trap=", request["trap_id"], " reason=", reason)
 
 
 func _on_trap_approved(request: Dictionary, _energy_cost: float) -> void:

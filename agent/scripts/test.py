@@ -1,7 +1,8 @@
 import itertools
-import math
 import time
 
+# ruff: disable[F403]
+# ruff: disable[F405]
 from api import Direction, Vector2
 
 LOOP_DELAY_SEC = 1.0
@@ -11,10 +12,6 @@ MAP_CENTER = Vector2(0.0, 0.0)
 DEFAULT_MAX_HP = 100
 SCANLINE_SPEED = 100.0
 SCAN_DIRECTIONS = [Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.LEFT]
-
-
-def _distance(a: Vector2, b: Vector2) -> float:
-    return math.hypot(a.x - b.x, a.y - b.y)
 
 
 def _spawn_scanline(client, direction: Direction) -> None:
@@ -60,3 +57,7 @@ def run(client) -> None:
             _spawn_scanline(client, next(directions))
 
         time.sleep(LOOP_DELAY_SEC)
+
+
+# ruff: enable[F403]
+# ruff: enable[F405]
