@@ -1,3 +1,4 @@
+# gdlint: disable=max-public-methods
 ## Autoload singleton that manages all ENet networking for this game.
 ## Supports up to two simultaneous clients connected to a single server.
 ## Can be started as a server ([code]--server[/code]) or client
@@ -17,16 +18,20 @@ signal server_disconnected
 signal room_full(peer_id: int)
 signal energy_changed(peer_id: int, energy: int)
 signal energy_rejected(peer_id: int, reason: String)
+signal health_changed(peer_id: int, health: int)
+signal health_rejected(peer_id: int, reason: String)
 signal demo_connected(peer_id: int)
 signal demo_disconnected
 
 const MAX_ENERGY := 100
+const MAX_HEALTH := 100
 const DEFAULT_PORT := 7777
 const DEFAULT_SERVER_ADDRESS := "127.0.0.1"
 const MAX_CLIENTS := 3
 
 var connected_peer_ids: Array[int] = []
 var energy_by_peer_id: Dictionary = {}
+var health_by_peer_id: Dictionary = {}
 var demo_peer_id: int = -1  # -1 when no demo is connected
 var _client_states: Dictionary = {}  # peer_id → state snapshot Dictionary
 
@@ -55,6 +60,7 @@ func start_server(port := DEFAULT_PORT) -> Error:
 	multiplayer.multiplayer_peer = peer
 	connected_peer_ids.clear()
 	energy_by_peer_id.clear()
+	health_by_peer_id.clear()
 	_client_states.clear()
 	server_started.emit(port)
 	print("Network server started on UDP port %d, max clients: %d" % [port, MAX_CLIENTS])
@@ -86,6 +92,7 @@ func stop_network() -> void:
 	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
 	connected_peer_ids.clear()
 	energy_by_peer_id.clear()
+	health_by_peer_id.clear()
 	_client_states.clear()
 
 
@@ -134,18 +141,39 @@ func get_energy(peer_id: int) -> int:
 	return int(energy_by_peer_id.get(peer_id, 0))
 
 
-# Reads/spends always target the LOCAL peer (see request_spend_energy). Traps and heal use this.
-#
-# TODO(multiplayer, deferred): two follow-ups are needed for 2-player, both left for whoever
-# does the networking layer:
-#   1. owner_id — let a caller act on a SPECIFIC peer's energy instead of always the local peer
-#      (e.g. an agent running on the opponent's machine spending its own owner's energy). Thread
-#      owner_id through request_spend_energy -> the server RPC -> _server_spend_energy.
-#   2. health — mirror this energy machinery here (health_by_peer_id + request_damage/request_heal
-#      + broadcast) so health is server-authoritative like energy. Health currently lives on the
-#      player node (player.health), not in NetworkManager.
+## Returns this client's own server-approved energy.
 func get_my_energy() -> int:
 	return get_energy(multiplayer.get_unique_id())
+
+
+## Returns the server-approved health for [param peer_id].
+func get_health(peer_id: int) -> int:
+	return int(health_by_peer_id.get(peer_id, MAX_HEALTH))
+
+
+## Returns every peer for which this client has authoritative status cache.
+## This includes peers learned through either energy or health synchronization.
+func get_tracked_peer_ids() -> Array[int]:
+	var peer_ids: Array[int] = []
+	for peer_id in health_by_peer_id:
+		peer_ids.append(int(peer_id))
+	for peer_id in energy_by_peer_id:
+		if not peer_ids.has(int(peer_id)):
+			peer_ids.append(int(peer_id))
+	return peer_ids
+
+
+## Returns the first non-local gameplay peer. In offline mode, opponent aliases self
+## so agent scripts can call opponent APIs without single-player special cases.
+func get_opponent_peer_id() -> int:
+	if _is_offline_mode():
+		return multiplayer.get_unique_id()
+
+	var local_peer_id := multiplayer.get_unique_id()
+	for peer_id in get_tracked_peer_ids():
+		if peer_id != local_peer_id and peer_id != demo_peer_id:
+			return peer_id
+	return -1
 
 
 ## Parses command-line [param args] and starts the appropriate network mode automatically.
@@ -190,8 +218,11 @@ func _on_peer_connected(peer_id: int) -> void:
 	if not connected_peer_ids.has(peer_id):
 		connected_peer_ids.append(peer_id)
 	energy_by_peer_id[peer_id] = 0
+	health_by_peer_id[peer_id] = MAX_HEALTH
 	_broadcast_energy(peer_id, 0)
+	_broadcast_health(peer_id, MAX_HEALTH)
 	_sync_energy_to_peer(peer_id)
+	_sync_health_to_peer(peer_id)
 
 	player_connected.emit(peer_id)
 	print("Peer connected: %d (%d/%d)" % [peer_id, connected_peer_ids.size(), MAX_CLIENTS])
@@ -201,6 +232,7 @@ func _on_peer_connected(peer_id: int) -> void:
 func _on_peer_disconnected(peer_id: int) -> void:
 	connected_peer_ids.erase(peer_id)
 	energy_by_peer_id.erase(peer_id)
+	health_by_peer_id.erase(peer_id)
 	_client_states.erase(peer_id)
 
 	if peer_id == demo_peer_id:
@@ -244,10 +276,11 @@ func _find_arg_value(args: Array, arg_name: String) -> String:
 func request_add_energy(amount: int, reason := "") -> void:
 	if amount <= 0:
 		return
-	if multiplayer.multiplayer_peer.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED:
+	if not _can_process_local_network_request():
 		return
 
 	if multiplayer.is_server():
+		_ensure_local_peer_state()
 		_server_add_energy(multiplayer.get_unique_id(), amount, reason)
 	else:
 		rpc_id(1, "_server_request_add_energy", amount, reason)
@@ -256,13 +289,89 @@ func request_add_energy(amount: int, reason := "") -> void:
 func request_spend_energy(amount: int, reason := "") -> void:
 	if amount <= 0:
 		return
-	if multiplayer.multiplayer_peer.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED:
+	if not _can_process_local_network_request():
 		return
 
 	if multiplayer.is_server():
+		_ensure_local_peer_state()
 		_server_spend_energy(multiplayer.get_unique_id(), amount, reason)
 	else:
 		rpc_id(1, "_server_request_spend_energy", amount, reason)
+
+
+## Spends energy from an explicit peer. This is used when an agent runs on one
+## machine but needs to spend the other player's server-authoritative energy.
+func request_spend_peer_energy(peer_id: int, amount: int, reason := "") -> void:
+	if amount <= 0:
+		return
+	if not _can_process_local_network_request():
+		return
+
+	if multiplayer.is_server():
+		_ensure_local_peer_state()
+		_server_spend_energy(peer_id, amount, reason, multiplayer.get_unique_id())
+	else:
+		rpc_id(1, "_server_request_spend_peer_energy", peer_id, amount, reason)
+
+
+## Spends energy from the opponent peer; aliases to self in offline mode.
+func request_spend_opponent_energy(amount: int, reason := "") -> void:
+	var opponent_peer_id := get_opponent_peer_id()
+	if opponent_peer_id == -1:
+		energy_rejected.emit(multiplayer.get_unique_id(), "opponent peer not found")
+		return
+	request_spend_peer_energy(opponent_peer_id, amount, reason)
+
+
+## Applies damage to this client's own health through the same network path as remote updates.
+func request_damage_health(amount: int, reason := "") -> void:
+	if amount <= 0:
+		return
+	request_change_peer_health(multiplayer.get_unique_id(), -amount, reason)
+
+
+## Heals this client's own health through the same network path as remote updates.
+func request_heal_health(amount: int, reason := "") -> void:
+	if amount <= 0:
+		return
+	request_change_peer_health(multiplayer.get_unique_id(), amount, reason)
+
+
+## Changes a specific peer's health. Positive [param delta] heals, negative damages.
+func request_change_peer_health(peer_id: int, delta: int, reason := "") -> void:
+	if delta == 0:
+		return
+	if not _can_process_local_network_request():
+		return
+
+	if multiplayer.is_server():
+		_ensure_local_peer_state()
+		_server_change_health(peer_id, delta, reason, multiplayer.get_unique_id())
+	else:
+		rpc_id(1, "_server_request_change_peer_health", peer_id, delta, reason)
+
+
+## Changes opponent health; aliases to self in offline mode.
+func request_change_opponent_health(delta: int, reason := "") -> void:
+	var opponent_peer_id := get_opponent_peer_id()
+	if opponent_peer_id == -1:
+		health_rejected.emit(multiplayer.get_unique_id(), "opponent peer not found")
+		return
+	request_change_peer_health(opponent_peer_id, delta, reason)
+
+
+## Heals opponent health; aliases to self in offline mode.
+func request_heal_opponent_health(amount: int, reason := "") -> void:
+	if amount <= 0:
+		return
+	request_change_opponent_health(amount, reason)
+
+
+## Damages opponent health; aliases to self in offline mode.
+func request_damage_opponent_health(amount: int, reason := "") -> void:
+	if amount <= 0:
+		return
+	request_change_opponent_health(-amount, reason)
 
 
 @rpc("any_peer", "call_remote", "reliable")
@@ -287,11 +396,50 @@ func _server_request_spend_energy(amount: int, reason := "") -> void:
 	_server_spend_energy(sender_id, amount, reason)
 
 
+@rpc("any_peer", "call_remote", "reliable")
+func _server_request_spend_peer_energy(peer_id: int, amount: int, reason := "") -> void:
+	if not multiplayer.is_server():
+		return
+
+	var sender_id := multiplayer.get_remote_sender_id()
+	if not connected_peer_ids.has(sender_id):
+		return
+	if not energy_by_peer_id.has(peer_id):
+		_server_reject_energy(sender_id, "unknown peer: %d" % peer_id)
+		return
+
+	_server_spend_energy(peer_id, amount, reason, sender_id)
+
+
+## Server-side health mutation endpoint. The sender is only used as the rejection target;
+## the mutation target can be any tracked peer.
+@rpc("any_peer", "call_remote", "reliable")
+func _server_request_change_peer_health(peer_id: int, delta: int, reason := "") -> void:
+	if not multiplayer.is_server():
+		return
+
+	var sender_id := multiplayer.get_remote_sender_id()
+	if not connected_peer_ids.has(sender_id):
+		return
+	if not health_by_peer_id.has(peer_id):
+		_server_reject_health(sender_id, "unknown peer: %d" % peer_id)
+		return
+
+	_server_change_health(peer_id, delta, reason, sender_id)
+
+
 func _sync_energy_to_peer(target_peer_id: int) -> void:
 	for peer_id in energy_by_peer_id:
 		if peer_id == target_peer_id:
 			continue
 		_client_set_energy.rpc_id(target_peer_id, peer_id, get_energy(peer_id))
+
+
+func _sync_health_to_peer(target_peer_id: int) -> void:
+	for peer_id in health_by_peer_id:
+		if peer_id == target_peer_id:
+			continue
+		_client_set_health.rpc_id(target_peer_id, peer_id, get_health(peer_id))
 
 
 func _server_reject_energy(peer_id: int, reason: String) -> void:
@@ -303,6 +451,17 @@ func _server_reject_energy(peer_id: int, reason: String) -> void:
 @rpc("authority", "call_remote", "reliable")
 func _client_reject_energy(reason: String) -> void:
 	energy_rejected.emit(multiplayer.get_unique_id(), reason)
+
+
+func _server_reject_health(peer_id: int, reason: String) -> void:
+	health_rejected.emit(peer_id, reason)
+	if peer_id != multiplayer.get_unique_id() and connected_peer_ids.has(peer_id):
+		_client_reject_health.rpc_id(peer_id, reason)
+
+
+@rpc("authority", "call_remote", "reliable")
+func _client_reject_health(reason: String) -> void:
+	health_rejected.emit(multiplayer.get_unique_id(), reason)
 
 
 func _server_add_energy(peer_id: int, amount: int, _reason := "") -> void:
@@ -317,20 +476,55 @@ func _server_add_energy(peer_id: int, amount: int, _reason := "") -> void:
 	_broadcast_energy(peer_id, new_energy)
 
 
-func _server_spend_energy(peer_id: int, amount: int, _reason := "") -> bool:
+func _server_spend_energy(peer_id: int, amount: int, reason := "", reject_peer_id := -1) -> bool:
+	var rejection_peer_id := peer_id if reject_peer_id == -1 else reject_peer_id
 	if amount <= 0:
-		_server_reject_energy(peer_id, "spend amount must be positive")
+		_server_reject_energy(rejection_peer_id, "spend amount must be positive")
 		return false
 
 	var old_energy := get_energy(peer_id)
 
 	if old_energy < amount:
-		_server_reject_energy(peer_id, "not enough energy: need %d, have %d" % [amount, old_energy])
+		_server_reject_energy(
+			rejection_peer_id, "not enough energy: need %d, have %d" % [amount, old_energy]
+		)
 		return false
 
 	var new_energy := old_energy - amount
 	energy_by_peer_id[peer_id] = new_energy
 	_broadcast_energy(peer_id, new_energy)
+
+	print(
+		(
+			"Energy spend peer=%d amount=%d old=%d new=%d reason=%s"
+			% [peer_id, amount, old_energy, new_energy, reason]
+		)
+	)
+
+	return true
+
+
+func _server_change_health(peer_id: int, delta: int, reason := "", reject_peer_id := -1) -> bool:
+	var rejection_peer_id := peer_id if reject_peer_id == -1 else reject_peer_id
+	if delta == 0:
+		_server_reject_health(rejection_peer_id, "health delta must be non-zero")
+		return false
+	if not health_by_peer_id.has(peer_id):
+		_server_reject_health(rejection_peer_id, "unknown peer: %d" % peer_id)
+		return false
+
+	var old_health := get_health(peer_id)
+	var new_health := clampi(old_health + delta, 0, MAX_HEALTH)
+
+	health_by_peer_id[peer_id] = new_health
+	_broadcast_health(peer_id, new_health)
+
+	print(
+		(
+			"Health change peer=%d delta=%d old=%d new=%d reason=%s"
+			% [peer_id, delta, old_health, new_health, reason]
+		)
+	)
 
 	return true
 
@@ -340,10 +534,45 @@ func _broadcast_energy(peer_id: int, energy: int) -> void:
 	rpc("_client_set_energy", peer_id, energy)
 
 
+func _broadcast_health(peer_id: int, health: int) -> void:
+	health_changed.emit(peer_id, health)
+	rpc("_client_set_health", peer_id, health)
+
+
 @rpc("authority", "call_remote", "reliable")
 func _client_set_energy(peer_id: int, energy: int) -> void:
 	energy_by_peer_id[peer_id] = energy
 	energy_changed.emit(peer_id, energy)
+	print("Energy update peer=%d energy=%d" % [peer_id, energy])
+
+
+@rpc("authority", "call_remote", "reliable")
+func _client_set_health(peer_id: int, health: int) -> void:
+	health_by_peer_id[peer_id] = health
+	health_changed.emit(peer_id, health)
+	print("Health update peer=%d health=%d" % [peer_id, health])
+
+
+## Public APIs should still work in single-player; offline mode is treated as local authority.
+func _can_process_local_network_request() -> bool:
+	if _is_offline_mode():
+		return true
+
+	var peer: MultiplayerPeer = multiplayer.multiplayer_peer
+	return peer.get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTED
+
+
+func _is_offline_mode() -> bool:
+	return multiplayer.multiplayer_peer is OfflineMultiplayerPeer
+
+
+## Lazily initializes the offline/server local peer so single-player calls use the same caches.
+func _ensure_local_peer_state() -> void:
+	var peer_id := multiplayer.get_unique_id()
+	if not energy_by_peer_id.has(peer_id):
+		energy_by_peer_id[peer_id] = 0
+	if not health_by_peer_id.has(peer_id):
+		health_by_peer_id[peer_id] = MAX_HEALTH
 
 
 ## Public: store a state snapshot for [param peer_id].

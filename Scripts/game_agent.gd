@@ -99,6 +99,15 @@ func _register_commands() -> void:
 	register_command("get_opponent_player_position", _cmd_get_opponent_player_position)
 	register_command("get_opponent_energy_ball_position", _cmd_get_opponent_energy_ball_position)
 
+	# Network peer commands are backed by NetworkManager rather than the game state.
+	# Opponent commands intentionally hide peer-id lookup from Python agents.
+	register_command("get_network_status", _cmd_get_network_status)
+	register_command("spend_peer_energy", _cmd_spend_peer_energy)
+	register_command("spend_opponent_energy", _cmd_spend_opponent_energy)
+	register_command("change_peer_health", _cmd_change_peer_health)
+	register_command("heal_opponent_health", _cmd_heal_opponent_health)
+	register_command("damage_opponent_health", _cmd_damage_opponent_health)
+
 
 func register_command(cmd_name: String, handler: Callable) -> void:
 	_command_handlers[cmd_name] = handler
@@ -148,6 +157,20 @@ func _read_required_float(args: Dictionary, key: String) -> Dictionary:
 	return {"ok": true, "value": float(args[key]), "reason": ""}
 
 
+func _read_peer_id(args: Dictionary) -> Dictionary:
+	if not args.has("peer_id"):
+		return {"ok": false, "peer_id": -1, "reason": "missing_peer_id"}
+
+	if not _is_number(args["peer_id"]):
+		return {"ok": false, "peer_id": -1, "reason": "invalid_peer_id"}
+
+	return {"ok": true, "peer_id": int(args["peer_id"]), "reason": ""}
+
+
+func _make_network_api_error(peer_id: int, reason: String) -> Dictionary:
+	return ApiServer.ok({"ok": false, "peer_id": peer_id, "reason": reason})
+
+
 func _submit_trap(trap_id: String, params: Dictionary) -> Dictionary:
 	var agent_action_service: AgentActionService = game.get_agent_action_service()
 	var result: Dictionary = agent_action_service.submit_trap_request_result(trap_id, params)
@@ -182,7 +205,6 @@ func _coerce_to_vector2(value: Variant) -> Dictionary:
 
 
 #region Command handlers
-# Runtime handlers.
 func _cmd_ping(_args: Dictionary) -> Dictionary:
 	return ApiServer.ok("pong")
 
@@ -283,6 +305,135 @@ func _cmd_get_opponent_energy_ball_position(_args: Dictionary) -> Dictionary:
 
 func _cmd_heal(_args: Dictionary) -> Dictionary:
 	return ApiServer.ok(game.get_agent_action_service().request_heal())
+
+
+#endregion
+
+#region Network
+
+
+func _cmd_get_network_status(_args: Dictionary) -> Dictionary:
+	# Returns NetworkManager's peer-id view so agents can debug self/opponent mapping.
+	var peers: Array[Dictionary] = []
+	for peer_id in NetworkManager.get_tracked_peer_ids():
+		(
+			peers
+			. append(
+				{
+					"peer_id": peer_id,
+					"is_local": peer_id == multiplayer.get_unique_id(),
+					"energy": NetworkManager.get_energy(peer_id),
+					"health": NetworkManager.get_health(peer_id),
+				}
+			)
+		)
+
+	return (
+		ApiServer
+		. ok(
+			{
+				"ok": true,
+				"local_peer_id": multiplayer.get_unique_id(),
+				"opponent_peer_id": NetworkManager.get_opponent_peer_id(),
+				"peers": peers,
+				"reason": "",
+			}
+		)
+	)
+
+
+func _cmd_spend_peer_energy(args: Dictionary) -> Dictionary:
+	# Low-level escape hatch for tests/tools that already know the target peer id.
+	var peer_read := _read_peer_id(args)
+	if not peer_read["ok"]:
+		return _make_network_api_error(peer_read["peer_id"], peer_read["reason"])
+
+	var amount_read := _read_required_float(args, "amount")
+	if not amount_read["ok"]:
+		return _make_network_api_error(peer_read["peer_id"], amount_read["reason"])
+
+	NetworkManager.request_spend_peer_energy(
+		peer_read["peer_id"], int(amount_read["value"]), "agent_api"
+	)
+	return ApiServer.ok(
+		{
+			"ok": true,
+			"peer_id": peer_read["peer_id"],
+			"amount": int(amount_read["value"]),
+			"reason": ""
+		}
+	)
+
+
+func _cmd_spend_opponent_energy(args: Dictionary) -> Dictionary:
+	# Preferred match API: spend the remote player's energy, or self in offline mode.
+	var amount_read := _read_required_float(args, "amount")
+	if not amount_read["ok"]:
+		return _make_network_api_error(-1, amount_read["reason"])
+
+	var opponent_peer_id := NetworkManager.get_opponent_peer_id()
+	if opponent_peer_id == -1:
+		return _make_network_api_error(opponent_peer_id, "opponent_peer_not_found")
+
+	NetworkManager.request_spend_opponent_energy(int(amount_read["value"]), "agent_api")
+	return ApiServer.ok(
+		{"ok": true, "peer_id": opponent_peer_id, "amount": int(amount_read["value"]), "reason": ""}
+	)
+
+
+func _cmd_change_peer_health(args: Dictionary) -> Dictionary:
+	# Low-level health mutation: positive delta heals, negative delta damages.
+	var peer_read := _read_peer_id(args)
+	if not peer_read["ok"]:
+		return _make_network_api_error(peer_read["peer_id"], peer_read["reason"])
+
+	var delta_read := _read_required_float(args, "delta")
+	if not delta_read["ok"]:
+		return _make_network_api_error(peer_read["peer_id"], delta_read["reason"])
+
+	NetworkManager.request_change_peer_health(
+		peer_read["peer_id"], int(delta_read["value"]), "agent_api"
+	)
+	return ApiServer.ok(
+		{
+			"ok": true,
+			"peer_id": peer_read["peer_id"],
+			"delta": int(delta_read["value"]),
+			"reason": ""
+		}
+	)
+
+
+func _cmd_heal_opponent_health(args: Dictionary) -> Dictionary:
+	# Preferred match API for B-machine agents healing A through NetworkManager.
+	var amount_read := _read_required_float(args, "amount")
+	if not amount_read["ok"]:
+		return _make_network_api_error(-1, amount_read["reason"])
+
+	var opponent_peer_id := NetworkManager.get_opponent_peer_id()
+	if opponent_peer_id == -1:
+		return _make_network_api_error(opponent_peer_id, "opponent_peer_not_found")
+
+	NetworkManager.request_heal_opponent_health(int(amount_read["value"]), "agent_api")
+	return ApiServer.ok(
+		{"ok": true, "peer_id": opponent_peer_id, "amount": int(amount_read["value"]), "reason": ""}
+	)
+
+
+func _cmd_damage_opponent_health(args: Dictionary) -> Dictionary:
+	# Preferred match API for B-machine agents damaging A through NetworkManager.
+	var amount_read := _read_required_float(args, "amount")
+	if not amount_read["ok"]:
+		return _make_network_api_error(-1, amount_read["reason"])
+
+	var opponent_peer_id := NetworkManager.get_opponent_peer_id()
+	if opponent_peer_id == -1:
+		return _make_network_api_error(opponent_peer_id, "opponent_peer_not_found")
+
+	NetworkManager.request_damage_opponent_health(int(amount_read["value"]), "agent_api")
+	return ApiServer.ok(
+		{"ok": true, "peer_id": opponent_peer_id, "amount": int(amount_read["value"]), "reason": ""}
+	)
 
 
 #endregion

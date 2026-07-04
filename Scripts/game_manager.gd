@@ -39,9 +39,10 @@ func _ready() -> void:
 	Global.game_manager = self
 	player_invincibility_timer.timeout.connect(_on_player_invincibility_timer_timeout)
 	NetworkManager.energy_changed.connect(_on_network_energy_changed)
+	NetworkManager.health_changed.connect(_on_network_health_changed)
 	health_label.text = "Health: %d" % player.max_health
 	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
-	_update_energy()
+	_update_energy_label()
 	_update_opponent_energy_label(0, 0)
 	_connect_agent_action_signals()
 
@@ -266,10 +267,7 @@ func on_player_hit(damage: int) -> void:
 		return
 	_player_become_invincible()
 	camera.shake_cam()
-	player.health = max(player.health - damage, 0.0)
-	health_label.text = "Health: %d" % player.health
-	if player.health <= 0.0:
-		finish_game()
+	NetworkManager.request_damage_health(damage, "player_hit")
 
 
 func _on_game_duration_timeout() -> void:
@@ -331,18 +329,36 @@ func _on_network_energy_changed(peer_id: int, energy: int) -> void:
 		if energy < energy_amount:
 			total_energy_spent += energy_amount - energy
 		energy_amount = energy
-		_update_energy()
+		_update_energy_label()
 
 	_update_opponent_energy_label(peer_id, energy)
 
 
-func _update_energy() -> void:
+func _on_network_health_changed(peer_id: int, health: int) -> void:
+	if peer_id == multiplayer.get_unique_id():
+		player.health = health
+		health_label.text = "Health: %d" % player.health
+		if player.health <= 0.0:
+			finish_game()
+		return
+
+	_update_opponent_energy_label(peer_id, NetworkManager.get_energy(peer_id))
+
+
+func _update_energy_label() -> void:
 	energy_bar_label.text = "My Energy: %d" % energy_amount
 	energy_bar.energy = energy_amount
 
 
 func _update_opponent_energy_label(peer_id: int, energy: int) -> void:
 	if peer_id == 0:
-		opponent_energy_bar_label.text = "Opponent Energy: waiting"
+		opponent_energy_bar_label.text = "Opponent: waiting"
 		return
-	opponent_energy_bar_label.text = "Opponent Energy (%d): %d" % [peer_id, energy]
+	opponent_energy_bar_label.text = (
+		"Opponent (%d) Energy: %d Health: %d"
+		% [
+			peer_id,
+			energy,
+			NetworkManager.get_health(peer_id),
+		]
+	)
