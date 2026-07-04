@@ -28,6 +28,12 @@ func _ready() -> void:
 		nm.connection_succeeded.connect(_identify_as_demo.bind(nm))
 
 	# Draw arena walls on both stages
+	# Use get_node as fallback — exported NodePath may fail across SubViewport boundaries
+	if not stage_a:
+		stage_a = get_node_or_null("../ScreenA/SubViewport/StageA") as Node2D
+	if not stage_b:
+		stage_b = get_node_or_null("../ScreenB/SubViewport/StageB") as Node2D
+	print("[DemoRenderer] stage_a=%s stage_b=%s" % [stage_a, stage_b])
 	if stage_a:
 		_setup_walls(stage_a)
 	if stage_b:
