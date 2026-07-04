@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://ckydfw0uqneas"]
 
-[ext_resource type="Script" uid="uid://dt2g1aqih87br" path="res://Scripts/leaf.gd" id="1_80k68"]
+[ext_resource type="Script" uid="uid://dt2g1aqih87br" path="res://Scripts/energy_bar/leaf.gd" id="1_80k68"]
 [ext_resource type="Texture2D" uid="uid://dyt01wsjqs46q" path="res://Shapes/coconut_tree/LongLeaf.png" id="2_bbidk"]
 [ext_resource type="Texture2D" uid="uid://cjewo3g7ebcvb" path="res://Shapes/coconut_tree/ShortLeaf.png" id="3_rhsnf"]
 [ext_resource type="Texture2D" uid="uid://qto2mq3mf0q1" path="res://Shapes/coconut_tree/TopLeaf.png" id="4_bbidk"]

@@ -1,5 +1,11 @@
 extends Node2D
 const TRUNK_HEIGHT_PIXEL = 36
+
+@export var trunk: PackedScene
+@export var leaf: PackedScene
+@export var coconut: PackedScene
+@export var eaten_coconut: PackedScene
+
 @export var energy: int = 0
 @export var coconut_count: int = 0
 @export var tree_height: float
@@ -8,10 +14,6 @@ var trunks: Array[Node2D]
 var leaves: Array[Node2D]
 var coconuts: Array[Node2D]
 var eaten_coconuts: Array[Node2D]
-@onready var trunk: Resource = preload("res://Scenes/energy_bar/trunk.tscn")
-@onready var leaf: Resource = preload("res://Scenes/energy_bar/leaf.tscn")
-@onready var coconut: Resource = preload("res://Scenes/energy_bar/coconut.tscn")
-@onready var eaten_coconut: Resource = preload("res://Scenes/energy_bar/eaten_coconut.tscn")
 
 
 # Called when the node enters the scene tree for the first time.
@@ -30,10 +32,6 @@ func _process(delta: float) -> void:
 	rearrange_leaves()
 	rearrange_eaten_coconuts()
 	use(delta)
-
-
-func update_energy(new_energy: int) -> void:
-	energy = new_energy
 
 
 func rearrange_trunks() -> void:
@@ -55,12 +53,12 @@ func rearrange_trunks() -> void:
 
 func tree_grow() -> void:
 	var new_trunk = trunk.instantiate()
-	var new_sprite = new_trunk.get_node("AnimationSprite")
+	add_child(new_trunk)
+	var new_sprite = new_trunk.sprite
 	new_sprite.play(str(randi_range(1, 5)))
 	new_trunk.position = Vector2(0, 0)
 	new_trunk.scale = Vector2(0, 0)
 	trunks.push_front(new_trunk)
-	add_child(new_trunk)
 
 
 func tree_cut() -> void:
@@ -92,10 +90,10 @@ func rearrange_leaves() -> void:
 
 func leaf_grow() -> void:
 	var new_leaf = leaf.instantiate()
+	add_child(new_leaf)
 	new_leaf.position = Vector2(0, tree_height)
 	new_leaf.scale = Vector2(0, 0)
 	leaves.push_back(new_leaf)
-	add_child(new_leaf)
 
 
 func leaf_cut() -> void:
@@ -124,10 +122,10 @@ func rearrange_coconuts() -> void:
 
 func coconut_grow() -> void:
 	var new_coconut = coconut.instantiate()
+	add_child(new_coconut)
 	new_coconut.position = Vector2(0, tree_height)
 	new_coconut.scale = Vector2(0, 0)
 	coconuts.push_back(new_coconut)
-	add_child(new_coconut)
 
 
 func coconut_cut() -> void:
@@ -144,9 +142,9 @@ func polar_vector(deg: float, len: float) -> Vector2:
 
 func spawn_eaten_coconut(pos: Vector2) -> void:
 	var new_eaten_coconut = eaten_coconut.instantiate()
+	add_child(new_eaten_coconut)
 	new_eaten_coconut.global_position = pos - global_position
 	eaten_coconuts.push_back(new_eaten_coconut)
-	add_child(new_eaten_coconut)
 
 
 func rearrange_eaten_coconuts() -> void:

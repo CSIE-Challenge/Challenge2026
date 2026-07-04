@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cwcgxf140mcg3"]
 
-[ext_resource type="Script" uid="uid://bdaatdtv7ly1d" path="res://Scripts/coconut.gd" id="1_3clr0"]
+[ext_resource type="Script" uid="uid://bdaatdtv7ly1d" path="res://Scripts/energy_bar/coconut.gd" id="1_3clr0"]
 [ext_resource type="Texture2D" uid="uid://d3jafh5p5cfo0" path="res://Shapes/coconut_tree/Coconut.png" id="2_q3pyi"]
 
 [node name="Coconut" type="Node2D" unique_id=1302771476]

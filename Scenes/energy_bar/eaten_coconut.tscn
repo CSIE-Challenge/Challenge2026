@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://ccsek587w7nqo"]
 
-[ext_resource type="Script" uid="uid://px1t5hr2gejm" path="res://Scripts/eaten_coconut.gd" id="1_5r210"]
+[ext_resource type="Script" uid="uid://px1t5hr2gejm" path="res://Scripts/energy_bar/eaten_coconut.gd" id="1_5r210"]
 [ext_resource type="Texture2D" uid="uid://btsxhipyrvldu" path="res://Shapes/coconut.svg" id="1_xg574"]
 
 [node name="EatenCoconut" type="Node2D" unique_id=115165459]

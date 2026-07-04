@@ -3,6 +3,8 @@ const SLIDING_RATE: float = 10
 var assigned_position: Vector2
 var assigned_scale: float
 
+@onready var sprite: AnimatedSprite2D = $AnimationSprite
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
