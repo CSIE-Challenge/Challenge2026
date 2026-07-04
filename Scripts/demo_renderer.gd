@@ -33,7 +33,6 @@ func _ready() -> void:
 		stage_a = get_node_or_null("../ScreenA/SubViewport/StageA") as Node2D
 	if not stage_b:
 		stage_b = get_node_or_null("../ScreenB/SubViewport/StageB") as Node2D
-	print("[DemoRenderer] stage_a=%s stage_b=%s" % [stage_a, stage_b])
 	if stage_a:
 		_setup_walls(stage_a)
 	if stage_b:
@@ -141,8 +140,6 @@ func _setup_walls(stage: Node2D) -> void:
 	const WALL_COLOR := Color(0.7, 0.7, 0.7, 1.0)
 	const ARENA_HALF := 250.0
 	const THICKNESS := 4.0
-
-	print("[DemoRenderer] drawing walls on stage %s" % stage.name)
 
 	var walls_data := [
 		{
