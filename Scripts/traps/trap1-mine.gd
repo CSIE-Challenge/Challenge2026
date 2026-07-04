@@ -51,7 +51,6 @@ func on_arming_complete() -> void:
 
 
 func explode() -> void:
-	print("BOOM! Player landed on the mine trap!")
 	Global.player_hit.emit.call_deferred(damage)  #Replace this with the actual damage
 
 	# explode animation
@@ -65,7 +64,6 @@ func explode() -> void:
 
 
 func disarm() -> void:
-	print("Player disarmed the mine trap!")
 	queue_free()
 
 

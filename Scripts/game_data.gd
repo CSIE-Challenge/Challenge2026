@@ -61,27 +61,6 @@ func get_int(section: String, key: String, fallback: int) -> int:
 	return fallback
 
 
-func get_vector2(section: String, key: String, fallback: Vector2) -> Vector2:
-	var section_data: Dictionary = get_section(section)
-	var value: Variant = section_data.get(key, null)
-
-	if value is Array:
-		var value_as_array := value as Array
-		if value_as_array.size() >= 2:
-			return Vector2(
-				_to_float(value_as_array[0], fallback.x), _to_float(value_as_array[1], fallback.y)
-			)
-
-	if value is Dictionary:
-		var value_as_dict := value as Dictionary
-		return Vector2(
-			_to_float(value_as_dict.get("x", fallback.x), fallback.x),
-			_to_float(value_as_dict.get("y", fallback.y), fallback.y)
-		)
-
-	return fallback
-
-
 func get_rect2(section: String, key: String, fallback: Rect2) -> Rect2:
 	var section_data: Dictionary = get_section(section)
 	var value: Variant = section_data.get(key, null)

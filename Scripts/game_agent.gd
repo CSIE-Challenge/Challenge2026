@@ -22,7 +22,7 @@ func _ready() -> void:
 	_conn = ApiServer.register_connection()
 	add_child(_conn)
 	_conn.received_text.connect(_on_received_text)
-	print("[API Server] agent '%s' token: %s" % [name, _conn.get_token()])
+	print("[API Server] agent token: %s" % _conn.get_token())
 
 	_register_commands()
 
@@ -38,7 +38,7 @@ func _process(delta: float) -> void:
 		return
 	_reap_accum = 0.0
 	if not OS.is_process_running(_agent_pid):
-		print("[API Server] agent '%s' process %d exited" % [name, _agent_pid])
+		print("[API Server] agent process %d exited" % _agent_pid)
 		_agent_pid = -1
 
 
@@ -59,7 +59,7 @@ func _spawn_agent_process(token: String) -> void:
 		OS.unset_environment("CHALLENGE_AGENT_PATH")
 
 	_agent_pid = OS.create_process(python, ["-s", runner])
-	print("[API Server] agent '%s' process pid: %d" % [name, _agent_pid])
+	print("[API Server] agent process pid: %d" % _agent_pid)
 
 
 func _bundle_python() -> String:
@@ -71,7 +71,7 @@ func _bundle_python() -> String:
 func _exit_tree() -> void:
 	if _agent_pid >= 0 and OS.is_process_running(_agent_pid):
 		OS.kill(_agent_pid)
-		print("[API Server] agent '%s' process %d stopped" % [name, _agent_pid])
+		print("[API Server] agent process %d stopped" % _agent_pid)
 
 
 # Add one line per new API.

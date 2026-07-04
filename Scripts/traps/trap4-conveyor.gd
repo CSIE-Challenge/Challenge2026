@@ -56,13 +56,8 @@ func _destroy_trap() -> void:
 func _on_body_entered(body: Node2D) -> void:
 	if body == Global.game_manager.player and body is CharacterBody2D:
 		body.external_velocity += speed * direction
-		print("玩家踩到了履帶地塊")
 
 
 func _on_body_exited(body: Node2D) -> void:
 	if body == Global.game_manager.player and body is CharacterBody2D:
 		body.external_velocity -= speed * direction
-		if _is_disappearing:
-			print("陷阱超時消失，強制解除玩家的履帶效果")
-		else:
-			print("玩家離開了履帶地塊")

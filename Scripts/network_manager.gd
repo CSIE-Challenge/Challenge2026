@@ -305,7 +305,7 @@ func _client_reject_energy(reason: String) -> void:
 	energy_rejected.emit(multiplayer.get_unique_id(), reason)
 
 
-func _server_add_energy(peer_id: int, amount: int, reason := "") -> void:
+func _server_add_energy(peer_id: int, amount: int, _reason := "") -> void:
 	if amount <= 0:
 		_server_reject_energy(peer_id, "add amount must be positive")
 		return
@@ -316,15 +316,8 @@ func _server_add_energy(peer_id: int, amount: int, reason := "") -> void:
 	energy_by_peer_id[peer_id] = new_energy
 	_broadcast_energy(peer_id, new_energy)
 
-	print(
-		(
-			"Energy add peer=%d amount=%d old=%d new=%d reason=%s"
-			% [peer_id, amount, old_energy, new_energy, reason]
-		)
-	)
 
-
-func _server_spend_energy(peer_id: int, amount: int, reason := "") -> bool:
+func _server_spend_energy(peer_id: int, amount: int, _reason := "") -> bool:
 	if amount <= 0:
 		_server_reject_energy(peer_id, "spend amount must be positive")
 		return false
@@ -339,13 +332,6 @@ func _server_spend_energy(peer_id: int, amount: int, reason := "") -> bool:
 	energy_by_peer_id[peer_id] = new_energy
 	_broadcast_energy(peer_id, new_energy)
 
-	print(
-		(
-			"Energy spend peer=%d amount=%d old=%d new=%d reason=%s"
-			% [peer_id, amount, old_energy, new_energy, reason]
-		)
-	)
-
 	return true
 
 
@@ -358,7 +344,6 @@ func _broadcast_energy(peer_id: int, energy: int) -> void:
 func _client_set_energy(peer_id: int, energy: int) -> void:
 	energy_by_peer_id[peer_id] = energy
 	energy_changed.emit(peer_id, energy)
-	print("Energy update peer=%d energy=%d" % [peer_id, energy])
 
 
 ## Public: store a state snapshot for [param peer_id].
@@ -367,17 +352,6 @@ func _store_client_state(peer_id: int, state: Dictionary) -> void:
 	if not connected_peer_ids.has(peer_id):
 		return
 	_client_states[peer_id] = state
-	print(
-		(
-			"[Server] stored state from peer %d | tick=%d | traps=%d | balls=%d"
-			% [
-				peer_id,
-				state.get("tick", -1),
-				(state.get("traps", []) as Array).size(),
-				(state.get("energy_balls", []) as Array).size(),
-			]
-		)
-	)
 
 
 ## RPC: receive a state snapshot from a game client.

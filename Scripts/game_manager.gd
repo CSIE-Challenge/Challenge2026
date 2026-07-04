@@ -1,7 +1,5 @@
 extends Node2D
 
-const AGENT_NAME := "Agent1"
-
 @export var player: CharacterBody2D
 @export var camera: Camera2D
 @export var health_label: Label
@@ -130,7 +128,6 @@ func _bundle_platform_label() -> String:
 
 func _spawn_agents(bundle: String, agent_file: String) -> void:
 	var agent := GameAgent.new()
-	agent.name = AGENT_NAME
 	agent.game = self
 	agent.bundle_dir = bundle
 	agent.agent_file = agent_file
@@ -151,35 +148,21 @@ func request_spend_energy(amount: int, reason: String) -> void:
 
 
 func _connect_agent_action_signals() -> void:
-	agent_action_service.trap_request_submitted.connect(_on_trap_request_submitted)
 	agent_action_service.trap_request_rejected.connect(_on_trap_request_rejected)
 	agent_action_service.trap_approved.connect(_on_trap_approved)
 	agent_action_service.trap_rejected.connect(_on_trap_rejected)
 	agent_action_service.heal_used.connect(_on_heal_used)
 
 
-func _on_heal_used(heal_amount: int, energy_cost: int, heal_uses_left: int) -> void:
+func _on_heal_used(_heal_amount: int, _energy_cost: int, _heal_uses_left: int) -> void:
 	health_label.text = "Health: %d" % player.health
-	print("HEAL_USED heal=", heal_amount, " cost=", energy_cost, " uses_left=", heal_uses_left)
-
-
-func _on_trap_request_submitted(request: Dictionary) -> void:
-	print("SUBMITTED request_id=", request["request_id"], " trap=", request["trap_id"])
 
 
 func _on_trap_request_rejected(request: Dictionary, reason: String) -> void:
 	print("SUBMIT_REJECTED trap=", request["trap_id"], " reason=", reason)
 
 
-func _on_trap_approved(request: Dictionary, energy_cost: float) -> void:
-	print(
-		"APPROVED request_id=",
-		request["request_id"],
-		" trap=",
-		request["trap_id"],
-		" cost=",
-		energy_cost
-	)
+func _on_trap_approved(request: Dictionary, _energy_cost: float) -> void:
 	_spawn_trap_from_request(request)
 
 
@@ -281,7 +264,6 @@ func on_player_hit(damage: int) -> void:
 	if game_over or player_invincible:
 		return
 	_player_become_invincible()
-	print("玩家受到了", damage, "點傷害")
 	camera.shake_cam()
 	player.health = max(player.health - damage, 0.0)
 	health_label.text = "Health: %d" % player.health

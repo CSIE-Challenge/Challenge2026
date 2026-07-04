@@ -38,7 +38,6 @@ func _destroy_trap() -> void:
 	for body in get_overlapping_bodies():
 		if body == Global.game_manager.player:
 			_remove_ice_effect(body)
-			print("icefloor disappear")
 
 	var tween = create_tween()
 	tween.tween_property(juice_sprite.material, "shader_parameter/master_alpha", 0.0, 0.2)
@@ -64,13 +63,11 @@ func start_animation() -> void:
 
 func _on_body_entered(body: Node2D) -> void:
 	if body == Global.game_manager.player and not _is_destroying:
-		print("player entered icefloor")
 		_add_ice_effect(body)
 
 
 func _on_body_exited(body: Node2D) -> void:
 	if body == Global.game_manager.player and not _is_destroying:
-		print("player left icefloor")
 		_remove_ice_effect(body)
 
 

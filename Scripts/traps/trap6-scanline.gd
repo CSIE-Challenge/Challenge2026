@@ -29,7 +29,6 @@ static func initialize(dir0: Vector2, speed0: float) -> Trap6Scanline:
 
 func spawn(dir0: Vector2, speed0: float):
 	line_dir = _clamp_to_four_directions(dir0).normalized()
-	print(line_dir)
 	speed = speed0
 	velocity = line_dir * speed
 	position = -line_dir * LINE_SHIFT
@@ -69,5 +68,4 @@ func _physics_process(delta: float) -> void:
 
 
 func _on_body_entered(_body: Node2D) -> void:
-	print("player touched scan lines")
 	Global.player_hit.emit(damage)

@@ -144,11 +144,9 @@ func _calculate_aiming_line_end_point(origin: Vector2, dir: Vector2) -> Vector2:
 
 func _on_enter_wall(_body: CollisionObject2D, bullet_idx: int):
 	bullet_in_wall_counter[bullet_idx] += 1
-	print("bullet", bullet_idx, " entered wall, counter:", bullet_in_wall_counter[bullet_idx])
 
 
 func _on_exit_wall(_body: CollisionObject2D, bullet_idx: int):
 	bullet_in_wall_counter[bullet_idx] -= 1
-	print("bullet", bullet_idx, " exited wall, counter:", bullet_in_wall_counter[bullet_idx])
 	if bullet_in_wall_counter[bullet_idx] <= 0:
 		bullets[bullet_idx].collision_mask = PLAYER_COLLISION_LAYER | WALL_COLLISION_LAYER

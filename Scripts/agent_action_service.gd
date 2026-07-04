@@ -66,7 +66,6 @@ func _connect_scheduler_signal_once() -> void:
 
 	trap_request_scheduler.request_ready.connect(_on_request_ready)
 	_is_connected_to_scheduler = true
-	print("AgentActionService connected to TrapRequestScheduler.request_ready")
 
 
 # gdlint: disable=max-returns
@@ -164,8 +163,6 @@ func update_cooldowns(delta: float) -> void:
 
 
 func _on_request_ready(request: Dictionary) -> void:
-	print("AgentActionService received request_ready: ", request)
-
 	var trap_id: String = request["trap_id"]
 
 	if game == null:
