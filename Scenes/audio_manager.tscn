@@ -20,3 +20,4 @@ bus = &"SFX"
 [node name="ButtomPress" type="AudioStreamPlayer" parent="." unique_id=1962087828]
 stream = ExtResource("4_qixve")
 volume_db = -5.0
+bus = &"SFX"
