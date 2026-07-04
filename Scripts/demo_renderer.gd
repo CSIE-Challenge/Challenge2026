@@ -12,6 +12,9 @@ var _ghosts_b: Dictionary = {}
 
 
 func _ready() -> void:
+	# Resize window for dual 960×540 viewports side by side
+	DisplayServer.window_set_size(Vector2i(1920, 540))
+
 	var nm := get_node_or_null("/root/NetworkManager")
 	if not nm:
 		return
@@ -23,6 +26,12 @@ func _ready() -> void:
 	# Identify as demo to server — wait for connection to be ready
 	if nm.has_signal("connection_succeeded"):
 		nm.connection_succeeded.connect(_identify_as_demo.bind(nm))
+
+	# Draw arena walls on both stages
+	if stage_a:
+		_setup_walls(stage_a)
+	if stage_b:
+		_setup_walls(stage_b)
 
 
 func _identify_as_demo(nm: Node) -> void:
@@ -118,3 +127,69 @@ func _update_ghosts(ghosts: Dictionary, stage: Node2D, traps_array: Array) -> vo
 			if is_instance_valid(old_ghost):
 				old_ghost.queue_free()
 			ghosts.erase(trap_id)
+
+
+## Draws four thin wall rectangles on [param stage] to show the arena boundary.
+## Arena is 500×500 centered at the stage origin, matching gameplay walls at ±250.
+func _setup_walls(stage: Node2D) -> void:
+	const WALL_COLOR := Color(0.45, 0.45, 0.45, 0.9)
+	const ARENA_HALF := 250.0
+	const THICKNESS := 4.0
+
+	var walls_data := [
+		{
+			"name": "RightWall",
+			"points":
+			PackedVector2Array(
+				[
+					Vector2(ARENA_HALF - THICKNESS, -ARENA_HALF),
+					Vector2(ARENA_HALF, -ARENA_HALF),
+					Vector2(ARENA_HALF, ARENA_HALF),
+					Vector2(ARENA_HALF - THICKNESS, ARENA_HALF),
+				]
+			),
+		},
+		{
+			"name": "LeftWall",
+			"points":
+			PackedVector2Array(
+				[
+					Vector2(-ARENA_HALF, -ARENA_HALF),
+					Vector2(-ARENA_HALF + THICKNESS, -ARENA_HALF),
+					Vector2(-ARENA_HALF + THICKNESS, ARENA_HALF),
+					Vector2(-ARENA_HALF, ARENA_HALF),
+				]
+			),
+		},
+		{
+			"name": "UpWall",
+			"points":
+			PackedVector2Array(
+				[
+					Vector2(-ARENA_HALF, ARENA_HALF - THICKNESS),
+					Vector2(ARENA_HALF, ARENA_HALF - THICKNESS),
+					Vector2(ARENA_HALF, ARENA_HALF),
+					Vector2(-ARENA_HALF, ARENA_HALF),
+				]
+			),
+		},
+		{
+			"name": "DownWall",
+			"points":
+			PackedVector2Array(
+				[
+					Vector2(-ARENA_HALF, -ARENA_HALF),
+					Vector2(ARENA_HALF, -ARENA_HALF),
+					Vector2(ARENA_HALF, -ARENA_HALF + THICKNESS),
+					Vector2(-ARENA_HALF, -ARENA_HALF + THICKNESS),
+				]
+			),
+		},
+	]
+
+	for w in walls_data:
+		var wall := Polygon2D.new()
+		wall.name = w["name"]
+		wall.polygon = w["points"]
+		wall.color = WALL_COLOR
+		stage.add_child(wall)
