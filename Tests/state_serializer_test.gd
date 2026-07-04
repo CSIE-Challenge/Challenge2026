@@ -79,241 +79,128 @@ func _run_tests() -> void:
 	var invalid_state: Dictionary = serializer._serialize_player(null)
 	_assert_eq(invalid_state.size(), 0, "null player should return empty dict")
 
-	# ── Trap serialization tests ───────────────────────────────────
+	# ── v2 Trap serialization tests — generic dispatch ────────────
+
+	# TEST 7: _serialize_single_trap returns {} for node without script
+	var plain_node := Node2D.new()
+	plain_node.name = "PlainNode"
+	var plain_data: Dictionary = serializer._serialize_single_trap(plain_node)
+	_assert_eq(plain_data.size(), 0, "node without script should return empty dict")
+
+	# TEST 8: _serialize_single_trap returns {} for node without serialize_state
+	var noser_node := CharacterBody2D.new()
+	noser_node.name = "NoSerNode"
+	noser_node.set_script(MockPlayer)
+	var noser_data: Dictionary = serializer._serialize_single_trap(noser_node)
+	_assert_eq(noser_data.size(), 0, "node w/o serialize_state should return empty dict")
+
+	# TEST 9: _serialize_single_trap dispatches to trap's serialize_state()
+	var mine_node := Node2D.new()
+	mine_node.name = "MineTrap"
+	mine_node.set_script(FixtureMine)
+	mine_node.global_position = Vector2(300, 400)
+	mine_node.set("is_armed", true)
+	root.add_child(mine_node)
+
+	var mine_data: Dictionary = serializer._serialize_single_trap(mine_node)
+	# v2: verify the data was produced by serialize_state() dispatch (has _v2 marker)
+	# The v1 hardcoded code would NOT set _v2, proving dispatch works.
+	var expected_mine: Dictionary = mine_node.serialize_state()
+	_assert_eq(mine_data["_v2"], true, "mine has _v2 marker (proof of dispatch)")
+	_assert_eq(mine_data["type"], expected_mine["type"], "mine type via dispatch")
+	_assert_eq(mine_data["position"], expected_mine["position"], "mine position via dispatch")
+	_assert(mine_data.has("id"), "mine data should have id")
+	_assert(mine_data["id"] is int, "mine id should be int")
+
+	# TEST 10: same id on second call
+	var mine_data2: Dictionary = serializer._serialize_single_trap(mine_node)
+	_assert_eq(mine_data2["id"], mine_data["id"], "same node returns same id")
+
+	# ── All 10 trap types dispatch correctly ──────────────────────
+
+	var dispatch_tests := [
+		{
+			"name": "electric_ring",
+			"fixture": FixtureElectricRing,
+			"pos": Vector2(150, 250),
+			"type": "trap2-electric_ring"
+		},
+		{
+			"name": "tracing_bullet",
+			"fixture": FixtureTracingBullet,
+			"pos": Vector2(400, 100),
+			"type": "trap3-tracing_bullet"
+		},
+		{
+			"name": "conveyor",
+			"fixture": FixtureConveyor,
+			"pos": Vector2(0, 100),
+			"type": "trap4-conveyor"
+		},
+		{
+			"name": "icefloor",
+			"fixture": FixtureIceFloor,
+			"pos": Vector2(-100, 50),
+			"type": "trap5-icefloor"
+		},
+		{
+			"name": "scanline",
+			"fixture": FixtureScanline,
+			"pos": Vector2(200, 100),
+			"type": "trap6-scanline"
+		},
+		{
+			"name": "spreading_ripples",
+			"fixture": FixtureSpreadingRipples,
+			"pos": Vector2(50, 50),
+			"type": "trap7-spreading_ripples"
+		},
+		{
+			"name": "electric_arc",
+			"fixture": FixtureElectricArc,
+			"pos": Vector2(-50, -50),
+			"type": "trap8-electric_arc"
+		},
+		{
+			"name": "mortar",
+			"fixture": FixtureMortar,
+			"pos": Vector2(100, -100),
+			"type": "trap9-mortar"
+		},
+		{
+			"name": "shotgun",
+			"fixture": FixtureShotgun,
+			"pos": Vector2(200, 300),
+			"type": "trap10-shotgun"
+		},
+	]
 
 	var mock_stage := Node2D.new()
 	mock_stage.name = "MockStage"
 	root.add_child(mock_stage)
 	serializer.stage = mock_stage
 
-	# TEST 7: _serialize_traps returns empty array when no traps
-	var empty_traps: Array = serializer._serialize_traps()
-	_assert_eq(empty_traps.size(), 0, "no traps should return empty array")
+	for dt in dispatch_tests:
+		var trap_node: Node = dt["fixture"].new()
+		trap_node.name = "Trap_%s" % dt["name"]
+		trap_node.global_position = dt["pos"]
+		mock_stage.add_child(trap_node)
 
-	# TEST 8: non-trap nodes (no script) are skipped
-	var wall_node := StaticBody2D.new()
-	wall_node.name = "Wall"
-	mock_stage.add_child(wall_node)
-	var wall_traps: Array = serializer._serialize_traps()
-	_assert_eq(wall_traps.size(), 0, "non-trap node should be skipped")
+		var data: Dictionary = serializer._serialize_single_trap(trap_node)
+		_assert(data.size() > 0, "%s should produce non-empty data" % dt["name"])
+		_assert_eq(data["_v2"], true, "%s has _v2 marker (proof of dispatch)" % dt["name"])
+		_assert_eq(data["type"], dt["type"], "%s type" % dt["name"])
+		_assert_eq(data["position"], dt["pos"], "%s position" % dt["name"])
+		_assert(data.has("id"), "%s should have id" % dt["name"])
+		_assert(data["id"] is int, "%s id should be int" % dt["name"])
 
-	# TEST 9: _serialize_single_trap returns empty dict for node without trap script
-	var plain_node := Node2D.new()
-	plain_node.name = "PlainNode"
-	var plain_data: Dictionary = serializer._serialize_single_trap(plain_node)
-	_assert_eq(plain_data.size(), 0, "node without trap script should return empty dict")
-
-	# TEST 10: mine trap serialization
-	var mine_node := Node2D.new()
-	mine_node.name = "MineTrap"
-	mine_node.set_script(FixtureMine)
-	mine_node.global_position = Vector2(300, 400)
-	mine_node.visible = false
-	mine_node.set("is_armed", true)
-	var mine_body := Sprite2D.new()
-	mine_body.name = "MineBody"
-	mine_body.modulate = Color(1.0, 0.5, 0.2, 0.8)
-	mine_node.add_child(mine_body)
-	mock_stage.add_child(mine_node)
-
-	var mine_data: Dictionary = serializer._serialize_single_trap(mine_node)
-	_assert_eq(mine_data["type"], "mine", "mine type")
-	_assert_eq(mine_data["position"], Vector2(300, 400), "mine position")
-	_assert_eq(mine_data["visible"], false, "mine visible")
-	_assert_eq(mine_data["is_armed"], true, "mine is_armed")
-	_assert_eq(mine_data["phase"], "armed", "mine phase when armed")
-	_assert_float_eq(mine_data["modulate_r"], 1.0, 0.001, "mine modulate_r")
-	_assert_float_eq(mine_data["modulate_g"], 0.5, 0.001, "mine modulate_g")
-	_assert_float_eq(mine_data["modulate_b"], 0.2, 0.001, "mine modulate_b")
-	_assert_float_eq(mine_data["modulate_a"], 0.8, 0.001, "mine modulate_a")
-
-	# TEST 11: electric_ring trap serialization
-	var er_node := Node2D.new()
-	er_node.name = "ElectricRingTrap"
-	er_node.set_script(FixtureElectricRing)
-	er_node.global_position = Vector2(150, 250)
-	er_node.visible = true
-	er_node.set("radius", 120.0)
-	er_node.set("current_fill", 0.5)
-	er_node.set("electric_on", false)
-	er_node.set("current_stay_time", 2.0)
-	var warning_sprite := Sprite2D.new()
-	warning_sprite.name = "ElectricRingWarning"
-	warning_sprite.visible = true
-	er_node.add_child(warning_sprite)
-	var ring_sprite := Sprite2D.new()
-	ring_sprite.name = "ElectricRing"
-	ring_sprite.visible = false
-	ring_sprite.scale = Vector2(1.5, 1.5)
-	er_node.add_child(ring_sprite)
-	var anim := AnimationPlayer.new()
-	anim.name = "AnimationPlayer"
-	er_node.add_child(anim)
-	mock_stage.add_child(er_node)
-
-	var er_data: Dictionary = serializer._serialize_single_trap(er_node)
-	_assert_eq(er_data["type"], "electric_ring", "electric_ring type")
-	_assert_eq(er_data["radius"], 120.0, "electric_ring radius")
-	_assert_eq(er_data["current_fill"], 0.5, "electric_ring current_fill")
-	_assert_eq(er_data["electric_on"], false, "electric_ring electric_on")
-	_assert_eq(er_data["current_stay_time"], 2.0, "electric_ring current_stay_time")
-	_assert_eq(er_data["scale_x"], 1.5, "electric_ring scale_x")
-	_assert_eq(er_data["scale_y"], 1.5, "electric_ring scale_y")
-	_assert_eq(er_data["warning_visible"], true, "electric_ring warning_visible")
-	_assert_eq(er_data["ring_visible"], false, "electric_ring ring_visible")
-	_assert_eq(er_data["phase"], "warning", "electric_ring phase (fill>0, not on)")
-
-	# TEST 12: tracing_bullet trap serialization
-	var tb_node := Node2D.new()
-	tb_node.name = "TracingBulletTrap"
-	tb_node.set_script(FixtureTracingBullet)
-	tb_node.global_position = Vector2(400, 100)
-	tb_node.rotation = 0.785
-	tb_node.set("tracing", true)
-	mock_stage.add_child(tb_node)
-
-	var tb_data: Dictionary = serializer._serialize_single_trap(tb_node)
-	_assert_eq(tb_data["type"], "tracing_bullet", "tracing_bullet type")
-	_assert_eq(tb_data["position"], Vector2(400, 100), "tracing_bullet position")
-	_assert_float_eq(tb_data["rotation"], 0.785, 0.001, "tracing_bullet rotation")
-	_assert_eq(tb_data["tracing"], true, "tracing_bullet tracing")
-	_assert_eq(tb_data["phase"], "homing", "tracing_bullet phase when tracing")
-
-	# TEST 13: conveyor trap serialization
-	var cv_node := Node2D.new()
-	cv_node.name = "ConveyorTrap"
-	cv_node.set_script(FixtureConveyor)
-	cv_node.global_position = Vector2(0, 100)
-	cv_node.set("direction", Vector2(1, 0))
-	mock_stage.add_child(cv_node)
-
-	var cv_data: Dictionary = serializer._serialize_single_trap(cv_node)
-	_assert_eq(cv_data["type"], "conveyor", "conveyor type")
-	_assert_eq(cv_data["direction"], Vector2(1, 0), "conveyor direction")
-
-	# TEST 14: ice_floor trap serialization
-	var if_node := Node2D.new()
-	if_node.name = "IceFloorTrap"
-	if_node.set_script(FixtureIceFloor)
-	if_node.global_position = Vector2(-100, 50)
-	mock_stage.add_child(if_node)
-
-	var if_data: Dictionary = serializer._serialize_single_trap(if_node)
-	_assert_eq(if_data["type"], "ice_floor", "ice_floor type")
-	_assert_eq(if_data["position"], Vector2(-100, 50), "ice_floor position")
-
-	# TEST 15: scanline trap serialization
-	var sl_node := Area2D.new()
-	sl_node.name = "ScanlineTrap"
-	sl_node.set_script(FixtureScanline)
-	sl_node.global_position = Vector2(200, 100)
-	sl_node.set("line_dir", Vector2(0, 1))
-	var hulas := sl_node.get_node_or_null("Hulas")
-	if hulas:
-		hulas.position = Vector2(5, 0)
-	mock_stage.add_child(sl_node)
-
-	var sl_data: Dictionary = serializer._serialize_single_trap(sl_node)
-	_assert_eq(sl_data["type"], "scanline", "scanline type")
-	_assert_eq(sl_data["phase"], "active", "scanline phase")
-	_assert_eq(sl_data["line_dir"], Vector2(0, 1), "scanline line_dir")
-	_assert_float_eq(sl_data["oscillation_offset"], 5.0, 0.001, "scanline oscillation_offset")
-
-	# TEST 16: spreading_ripples trap serialization (warning phase)
-	var sr_node := Node2D.new()
-	sr_node.name = "SpreadingRipplesTrap"
-	sr_node.set_script(FixtureSpreadingRipples)
-	sr_node.set("is_expanding", false)
-	sr_node.set("max_radius", 1000.0)
-	mock_stage.add_child(sr_node)
-
-	var sr_data: Dictionary = serializer._serialize_single_trap(sr_node)
-	_assert_eq(sr_data["type"], "spreading_ripples", "spreading_ripples type")
-	_assert_eq(sr_data["phase"], "warning", "spreading_ripples phase (not expanding, r=0)")
-	_assert_float_eq(sr_data["expand_progress"], 0.0, 0.001, "spreading_ripples progress (0)")
-
-	# TEST 17: spreading_ripples expanding phase
-	sr_node.set("is_expanding", true)
-	var col := sr_node.get_node_or_null("CollisionShape2D") as CollisionShape2D
-	if col and col.shape is CircleShape2D:
-		(col.shape as CircleShape2D).radius = 500.0
-	var sr_data2: Dictionary = serializer._serialize_single_trap(sr_node)
-	_assert_eq(sr_data2["phase"], "expanding", "spreading_ripples phase (expanding)")
-	_assert_float_eq(sr_data2["expand_progress"], 0.5, 0.001, "spreading_ripples progress (0.5)")
-
-	# TEST 18: electric_arc trap serialization
-	var ea_node := Node2D.new()
-	ea_node.name = "ElectricArcTrap"
-	ea_node.set_script(FixtureElectricArc)
-	ea_node.set("activated", false)
-	ea_node.visible = true
-	mock_stage.add_child(ea_node)
-
-	var ea_data: Dictionary = serializer._serialize_single_trap(ea_node)
-	_assert_eq(ea_data["type"], "electric_arc", "electric_arc type")
-	_assert_eq(ea_data["phase"], "warning", "electric_arc phase (visible, not activated)")
-	var sp := ea_node.get_node_or_null("StartPoint")
-	_assert_eq(ea_data["start_pos"], sp.position if sp else Vector2.ZERO, "electric_arc start_pos")
-	var ep := ea_node.get_node_or_null("EndPoint")
-	_assert_eq(ea_data["end_pos"], ep.position if ep else Vector2.ZERO, "electric_arc end_pos")
-	_assert_float_eq(
-		ea_data["crack_progress"], 0.0, 0.001, "electric_arc crack_progress (no material)"
-	)
-
-	# TEST 19: mortar trap serialization (flying phase)
-	var mo_node := Node2D.new()
-	mo_node.name = "MortarTrap"
-	mo_node.set_script(FixtureMortar)
-	mo_node.set("flying", true)
-	mo_node.set("exploding", false)
-	var shell_shadow := mo_node.get_node_or_null("ShellShadow")
-	if shell_shadow:
-		shell_shadow.position = Vector2(200, 300)
-	var shell := mo_node.get_node_or_null("ShellShadow/Shell")
-	if shell:
-		shell.position = Vector2(0, -50)
-		shell.rotation = 1.57
-	mock_stage.add_child(mo_node)
-
-	var mo_data: Dictionary = serializer._serialize_single_trap(mo_node)
-	_assert_eq(mo_data["type"], "mortar", "mortar type")
-	_assert_eq(mo_data["phase"], "flying", "mortar phase (flying)")
-	_assert_eq(mo_data["shell_position"], Vector2(200, 300), "mortar shell_position")
-	_assert_float_eq(mo_data["shell_y_offset"], -50.0, 0.001, "mortar shell_y_offset")
-	_assert_float_eq(mo_data["shell_rotation"], 1.57, 0.001, "mortar shell_rotation")
-	_assert_eq(mo_data["explosion_visible"], false, "mortar explosion_visible")
-
-	# TEST 20: shotgun trap serialization (warning phase)
-	var sg_node := Node2D.new()
-	sg_node.name = "ShotgunTrap"
-	sg_node.set_script(FixtureShotgun)
-	sg_node.global_position = Vector2(200, 300)
-	sg_node.set("directions", [Vector2(1, 0), Vector2(0, 1), Vector2(-1, 0)])
-	sg_node.set("aiming", true)
-	sg_node.set("firing", false)
-	sg_node.set("aiming_time", 1.5)
-	var sg_timer := sg_node.get_node_or_null("Timer") as Timer
-	if sg_timer:
-		sg_timer.wait_time = 1.5
-		sg_timer.start(1.5)
-	mock_stage.add_child(sg_node)
-
-	var sg_data: Dictionary = serializer._serialize_single_trap(sg_node)
-	_assert_eq(sg_data["type"], "shotgun", "shotgun type")
-	var got_dirs = sg_data["directions"]
-	_assert(got_dirs is Array, "shotgun directions should be Array")
-	_assert_eq((got_dirs as Array).size(), 3, "shotgun directions count")
-	_assert_eq(sg_data["phase"], "warning", "shotgun phase (aiming)")
-	# warning_progress should be near 0 since timer just started
-	_assert_float_eq(sg_data["warning_progress"], 0.0, 0.1, "shotgun warning_progress (~0)")
-
-	# TEST 21: _serialize_traps collects all traps from stage
+	# TEST 20: _serialize_traps collects all traps from stage
 	var all_traps: Array = serializer._serialize_traps()
-	_assert(all_traps.size() >= 10, "should find at least 10 traps (got %d)" % all_traps.size())
+	_assert(all_traps.size() >= 9, "should find at least 9 traps (got %d)" % all_traps.size())
 
 	# ── Energy ball serialization tests ────────────────────────────
 
-	# TEST 22: _serialize_energy_balls returns empty array without energy ball nodes
+	# TEST 21: _serialize_energy_balls returns empty array without energy ball nodes
 	var clean_stage := Node2D.new()
 	clean_stage.name = "CleanStage"
 	root.add_child(clean_stage)
@@ -321,14 +208,14 @@ func _run_tests() -> void:
 	var no_balls: Array = serializer._serialize_energy_balls()
 	_assert_eq(no_balls.size(), 0, "no energy balls should return empty array")
 
-	# TEST 23: energy ball detection skips non-energy-ball scripts
+	# TEST 22: energy ball detection skips non-energy-ball scripts
 	serializer.stage = mock_stage
 	var balls_from_stage: Array = serializer._serialize_energy_balls()
 	_assert_eq(balls_from_stage.size(), 0, "stage w/o energy balls returns empty")
 
 	# ── Full state collection test ─────────────────────────────────
 
-	# TEST 24: _collect_state assembles complete state dictionary
+	# TEST 23: _collect_state assembles complete state dictionary
 	var mock_gm: Node = MockGameManager.new()
 	mock_gm.name = "MockGameManager"
 	root.add_child(mock_gm)
@@ -348,7 +235,14 @@ func _run_tests() -> void:
 	var player_section: Dictionary = state["player"]
 	_assert_eq(player_section["energy"], 42, "player energy in state")
 	_assert_eq(player_section["energy_ball_count"], 3, "energy_ball_count in state")
-	_assert(state["traps"].size() >= 10, "state should include at least 10 traps")
+	_assert(state["traps"].size() >= 9, "state should include at least 9 traps")
+
+	# TEST 24: v2 traps in collected state have correct structure
+	var collected_traps: Array = state["traps"]
+	for trap_data in collected_traps:
+		_assert(trap_data.has("type"), "trap state must have type")
+		_assert(trap_data.has("position"), "trap state must have position")
+		_assert(trap_data.has("id"), "trap state must have id")
 
 	# ── Cleanup ────────────────────────────────────────────────────
 	mock_player.queue_free()
@@ -356,6 +250,9 @@ func _run_tests() -> void:
 	clean_stage.queue_free()
 	mock_gm.queue_free()
 	serializer.queue_free()
+	for dt in dispatch_tests:
+		# Trap nodes are children of root/stage, freed with mock_stage above
+		pass
 	print("StateSerializer tests passed")
 	quit(0)
 

@@ -16,3 +16,11 @@ func _init():
 	var cr := Sprite2D.new()
 	cr.name = "Crack"
 	add_child(cr)
+
+
+func serialize_state() -> Dictionary:
+	return {
+		"_v2": true,
+		"type": "trap8-electric_arc",
+		"position": global_position,
+	}

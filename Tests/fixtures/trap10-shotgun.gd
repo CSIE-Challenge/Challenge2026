@@ -12,3 +12,11 @@ func _init():
 	t.name = "Timer"
 	t.wait_time = 1.5
 	add_child(t)
+
+
+func serialize_state() -> Dictionary:
+	return {
+		"_v2": true,
+		"type": "trap10-shotgun",
+		"position": global_position,
+	}

@@ -9,3 +9,11 @@ func _init():
 	hulas.name = "Hulas"
 	hulas.position = Vector2.ZERO
 	add_child(hulas)
+
+
+func serialize_state() -> Dictionary:
+	return {
+		"_v2": true,
+		"type": "trap6-scanline",
+		"position": global_position,
+	}

@@ -18,3 +18,11 @@ func _init():
 	exp.name = "Explosion"
 	exp.visible = false
 	add_child(exp)
+
+
+func serialize_state() -> Dictionary:
+	return {
+		"_v2": true,
+		"type": "trap9-mortar",
+		"position": global_position,
+	}

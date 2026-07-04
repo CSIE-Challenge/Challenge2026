@@ -13,3 +13,11 @@ func _init():
 	col.name = "CollisionShape2D"
 	col.shape = shape
 	add_child(col)
+
+
+func serialize_state() -> Dictionary:
+	return {
+		"_v2": true,
+		"type": "trap7-spreading_ripples",
+		"position": global_position,
+	}
