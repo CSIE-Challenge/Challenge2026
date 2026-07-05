@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bxj6outuppaq0"]
 
-[ext_resource type="Script" uid="uid://onn30eh2nvc" path="res://Scripts/audio_manager.gd" id="1_l04ps"]
+[ext_resource type="Script" uid="uid://onn30eh2nvc" path="res://Scripts/audio.gd" id="1_l04ps"]
 [ext_resource type="AudioStream" uid="uid://dely3vnv8n5jm" path="res://assets/audio/Title BGM.mp3" id="2_4thc6"]
 [ext_resource type="AudioStream" uid="uid://kwrrir3nslnh" path="res://assets/audio/Jump.mp3" id="2_c8j57"]
 [ext_resource type="AudioStream" uid="uid://dr7oxaje130i5" path="res://assets/audio/Press.mp3" id="2_y8l05"]
@@ -9,11 +9,13 @@
 
 [node name="Audio" type="Node" unique_id=664248620]
 script = ExtResource("1_l04ps")
-menu_bgm_tracks = Array[AudioStream]([ExtResource("2_4thc6")])
-gameplay_bgm_tracks = Array[AudioStream]([ExtResource("3_k46ri")])
-jump = ExtResource("2_c8j57")
-button_press = ExtResource("2_y8l05")
-energy_collected = ExtResource("4_pess6")
+menu_tracks = [ExtResource("2_4thc6")]
+gameplay_tracks = [ExtResource("3_k46ri")]
+hidden_game_tracks = []
+result_tracks = []
+jump_sfx = ExtResource("2_c8j57")
+button_press_sfx = ExtResource("2_y8l05")
+energy_collected_sfx = ExtResource("4_pess6")
 
 [node name="BgmPlayer" type="AudioStreamPlayer" parent="." unique_id=249781410]
 bus = &"Music"
