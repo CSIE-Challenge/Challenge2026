@@ -11,6 +11,7 @@ var fall_speed: float = 400.0
 var note_width: float = 80.0
 var target_height: float = 45.0  # 判定區的高度
 var player: Node2D
+var trail_timer: float = 0.0
 
 
 func init(
@@ -65,6 +66,32 @@ func _process(delta: float) -> void:
 
 	# 🌟 2. 【放射狀 3D 軌道】X 座標隨著接近判定線，從中心放射滑出到指定 X 落點
 	global_position.x = lerp(center_global_x, target_global_x, t)
+	# 生產流光拖尾 (殘影)，改回連續生成完美水平的矩形，以避免 Line2D 的法線傾斜問題
+	trail_timer += delta
+	if trail_timer >= 0.015:
+		trail_timer = 0.0
+		var phantom = ColorRect.new()
+		phantom.size = $ColorRect.size
+		phantom.position = $ColorRect.position
+		phantom.modulate = $ColorRect.modulate
+		phantom.modulate.a = 0.5
+
+		var ghost = Node2D.new()
+		ghost.add_child(phantom)
+		get_parent().add_child(ghost)
+
+		ghost.position = position
+		ghost.scale = scale
+
+		var tw = ghost.create_tween()
+		(
+			tw
+			. tween_property(ghost, "scale", Vector2(scale.x * 0.2, scale.y * 0.2), 0.3)
+			. set_trans(Tween.TRANS_CUBIC)
+			. set_ease(Tween.EASE_OUT)
+		)
+		tw.parallel().tween_property(phantom, "modulate:a", 0.0, 0.3)
+		tw.tween_callback(ghost.queue_free)
 
 	# 3. 當落鍵底部到達判定線時，觸發判定
 	# 因為高度會被 scale 縮放影響，所以此時的半高度是 9.0 * scale.y

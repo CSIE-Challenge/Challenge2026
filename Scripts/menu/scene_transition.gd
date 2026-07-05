@@ -1,9 +1,22 @@
 extends CanvasLayer
 
+var ach_max_width: float = 350.0
+var ach_margin_x: float = 20.0
+var ach_border_thickness: float = 4.0
+var ach_display_time: float = 3.0
+
+var ach_is_animating: bool = false
+var ach_queue: Array = []
+
 @onready var shader_rect = $ShaderRect
 @onready var top_bar = $TopBar
 @onready var bottom_bar = $BottomBar
 @onready var fade_rect = $FadeRect
+
+@onready var ach_control = $AchievementControl
+@onready var ach_white_rect = $AchievementControl/WhiteRect
+@onready var ach_black_rect = $AchievementControl/WhiteRect/BlackRect
+@onready var ach_label = $AchievementControl/WhiteRect/BlackRect/Label
 
 
 func _ready() -> void:
@@ -14,6 +27,82 @@ func _ready() -> void:
 	bottom_bar.anchor_top = 1.0
 	bottom_bar.anchor_bottom = 1.0
 	fade_rect.color.a = 0.0
+
+	# 成就顯示初始化
+	ach_white_rect.hide()
+	_ach_reset_rects()
+
+
+func _ach_reset_rects():
+	ach_white_rect.offset_right = -ach_margin_x
+	ach_white_rect.offset_left = -ach_margin_x
+
+	ach_black_rect.offset_right = -ach_border_thickness
+	ach_black_rect.offset_left = -ach_border_thickness
+
+
+func show_achievement(text: String):
+	if ach_is_animating:
+		ach_queue.append(text)
+		return
+
+	ach_is_animating = true
+	ach_label.text = text
+	_ach_reset_rects()
+	ach_white_rect.show()
+
+	var tween = create_tween()
+
+	# Entry animation
+	# 1. White rect expands
+	(
+		tween
+		. tween_property(ach_white_rect, "offset_left", -ach_margin_x - ach_max_width, 0.4)
+		. set_trans(Tween.TRANS_CUBIC)
+		. set_ease(Tween.EASE_OUT)
+	)
+
+	# 2. Black rect expands (starts slightly before white fully expands)
+	# Max width of black rect is slightly smaller so we have a white border on the left
+	(
+		tween
+		. parallel()
+		. tween_property(ach_black_rect, "offset_left", -ach_max_width + ach_border_thickness, 0.4)
+		. set_trans(Tween.TRANS_CUBIC)
+		. set_ease(Tween.EASE_OUT)
+		. set_delay(0.15)
+	)
+
+	# 3. Wait 3 seconds
+	tween.tween_interval(ach_display_time)
+
+	# 4. Exit animation
+	# First black rect shrinks
+	(
+		tween
+		. tween_property(ach_black_rect, "offset_left", -ach_border_thickness, 0.3)
+		. set_trans(Tween.TRANS_CUBIC)
+		. set_ease(Tween.EASE_IN)
+	)
+	# Then white rect shrinks
+	(
+		tween
+		. parallel()
+		. tween_property(ach_white_rect, "offset_left", -ach_margin_x, 0.3)
+		. set_trans(Tween.TRANS_CUBIC)
+		. set_ease(Tween.EASE_IN)
+		. set_delay(0.1)
+	)
+
+	tween.tween_callback(_ach_on_animation_finished)
+
+
+func _ach_on_animation_finished():
+	ach_white_rect.hide()
+	ach_is_animating = false
+	if ach_queue.size() > 0:
+		var next_text = ach_queue.pop_front()
+		show_achievement(next_text)
 
 
 func transition_to_fade(target_scene: String) -> void:

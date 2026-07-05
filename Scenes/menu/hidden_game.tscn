@@ -7,6 +7,15 @@
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="3_pger8"]
 [ext_resource type="Script" uid="uid://b1vu1u854wu0d" path="res://Scripts/menu/boss_controller.gd" id="5_pger8"]
 [ext_resource type="PackedScene" uid="uid://coibxbp8o7ax0" path="res://Scenes/menu/rocket_warning.tscn" id="7_i6agr"]
+[ext_resource type="Shader" uid="uid://cdsrngsn8ij2n" path="res://Shaders/hidden_game_bg.gdshader" id="100_bg"]
+[ext_resource type="Shader" uid="uid://ct0xwy4laxymf" path="res://Shaders/boss_hp_bar.gdshader" id="200_hp"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bg"]
+shader = ExtResource("100_bg")
+shader_parameter/time_scale = 1.0
+shader_parameter/base_color = Color(0.02, 0.01, 0.05, 1)
+shader_parameter/glow_color = Color(0.2, 0.05, 0.4, 1)
+shader_parameter/star_color = Color(0.9, 0.9, 1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wxxv2"]
 bg_color = Color(0.17880967, 0.17880964, 0.17880964, 1)
@@ -25,8 +34,22 @@ point_count = 3
 offsets = PackedFloat32Array(0, 0.39344263, 1)
 colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hp"]
+shader = ExtResource("200_hp")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hp_bg"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i6agr"]
 bg_color = Color(1, 0, 0, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [sub_resource type="Shader" id="Shader_edgefade"]
 code = "shader_type canvas_item;
@@ -49,8 +72,6 @@ font_size = 120
 font_color = Color(1, 0.843137, 0, 1)
 outline_size = 15
 outline_color = Color(0.4, 0.2, 0, 1)
-shadow_size = 10
-shadow_color = Color(0, 0, 0, 0.8)
 shadow_offset = Vector2(8, 8)
 
 [sub_resource type="Shader" id="Shader_shine"]
@@ -84,6 +105,7 @@ grow_vertical = 2
 script = ExtResource("1_ebyp3")
 
 [node name="Panel" type="Panel" parent="." unique_id=558493639]
+material = SubResource("ShaderMaterial_bg")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -204,6 +226,7 @@ autostart = true
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1199998352]
 
 [node name="BossHpBar" type="ProgressBar" parent="CanvasLayer" unique_id=900724363]
+material = SubResource("ShaderMaterial_hp")
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -212,6 +235,7 @@ offset_top = 15.0
 offset_right = 342.5
 offset_bottom = 42.0
 grow_horizontal = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_hp_bg")
 theme_override_styles/fill = SubResource("StyleBoxFlat_i6agr")
 value = 50.0
 show_percentage = false

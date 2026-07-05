@@ -124,6 +124,7 @@ func _run_phase_1() -> bool:
 	if is_aborted:
 		return true
 
+	SceneTransition.show_achievement("獲得成就：黃金傳說！")
 	if not seen_dialogues.has("intro_1"):
 		seen_dialogues["intro_1"] = true
 		Dialogue.start_dialogue(
@@ -385,6 +386,7 @@ func _run_phase_5_final() -> bool:
 			PlayerData.unlocked_skins.append("golden_skin")
 			PlayerData.save_data()
 			PlayerData.skin_unlocked.emit("golden_skin")
+			SceneTransition.show_achievement("獲得成就：黃金傳說！")
 			print("已解鎖隱藏皮膚：黃金傳說！")
 
 		# 播放死亡動畫
