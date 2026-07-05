@@ -21,12 +21,6 @@ func _run_tests() -> void:
 		"game manager player_invincibility_time should load from Data/game.json"
 	)
 	_assert_eq(
-		data["game_manager"]["energy_gain_per_ball"],
-		10,
-		"game manager energy_gain_per_ball should load from Data/game.json"
-	)
-
-	_assert_eq(
 		data["player"]["move_speed"], 300.0, "player move_speed should load from Data/game.json"
 	)
 	_assert_eq(

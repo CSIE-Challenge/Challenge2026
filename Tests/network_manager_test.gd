@@ -1,6 +1,6 @@
 extends SceneTree
 
-const NetworkManagerScript = preload("res://Scripts/network_manager.gd")
+const NetworkManagerScript = preload("res://Scripts/network/network_manager.gd")
 
 
 func _init() -> void:

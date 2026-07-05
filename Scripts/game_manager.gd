@@ -12,7 +12,6 @@ extends Node2D
 @export var walls: Array[Sprite2D]
 var energy_increase_period: Array
 var player_invincibility_time := 1.0
-var energy_gain_per_ball := 10
 var game_duration := 180.0
 
 var energy_ball_count := 0
@@ -77,7 +76,6 @@ func _reload_from_game_data() -> void:
 	var game_data := GameData.new()
 	energy_increase_period = game_data.data["game_manager"]["energy_increase_period"]
 	player_invincibility_time = game_data.data["game_manager"]["player_invincibility_time"]
-	energy_gain_per_ball = game_data.data["game_manager"]["energy_gain_per_ball"]
 	game_duration = game_data.data["game_manager"]["game_duration"]
 	max_level = game_data.data["game_manager"]["max_level"]
 	level_duration = game_data.data["game_manager"]["level_duration"]
