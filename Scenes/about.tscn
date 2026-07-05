@@ -2,6 +2,29 @@
 
 [ext_resource type="Script" uid="uid://cldwh66u3axjp" path="res://Scripts/about.gd" id="1_vbrdd"]
 [ext_resource type="Texture2D" uid="uid://bde0ubh1vo6a2" path="res://Assets/head1.png" id="2_0p54k"]
+[ext_resource type="Texture2D" uid="uid://cj7qg84x885gx" path="res://Assets/head2.png" id="3_m6yjq"]
+[ext_resource type="Texture2D" uid="uid://dj42o8yx7vws" path="res://Assets/head3.png" id="4_mi8yn"]
+[ext_resource type="Texture2D" uid="uid://pmokphyow5dk" path="res://Assets/effect.png" id="5_mi8yn"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_m6yjq"]
+blend_mode = 1
+particles_animation = true
+particles_anim_h_frames = 3
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Gradient" id="Gradient_mi8yn"]
+offsets = PackedFloat32Array(0, 0.5185185, 1)
+colors = PackedColorArray(0.82646006, 0.86, 0.18920003, 1, 1, 0.9333334, 0, 1, 1, 0.97733337, 0.65999997, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_mi8yn"]
+gradient = SubResource("Gradient_mi8yn")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_xifaj"]
+particle_flag_disable_z = true
+gravity = Vector3(0, 0, 0)
+color_ramp = SubResource("GradientTexture1D_mi8yn")
+anim_offset_max = 1.0
 
 [node name="About" type="Control" unique_id=1973538277]
 layout_mode = 3
@@ -120,7 +143,38 @@ text = "回到主畫面"
 visible = false
 texture = ExtResource("2_0p54k")
 
-[node name="CollectSfx" type="AudioStreamPlayer2D" parent="." unique_id=205524608]
+[node name="Head2" type="Sprite2D" parent="." unique_id=1820371873]
+visible = false
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("3_m6yjq")
+
+[node name="Head3" type="Sprite2D" parent="." unique_id=524326330]
+visible = false
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_mi8yn")
+
+[node name="FlyingLetter" type="Label" parent="." unique_id=1139308491]
+visible = false
+top_level = true
+layout_mode = 0
+offset_right = 16.0
+offset_bottom = 35.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_font_sizes/font_size = 25
+text = "C"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CollectEffect" type="GPUParticles2D" parent="FlyingLetter" unique_id=1640661442]
+material = SubResource("CanvasItemMaterial_m6yjq")
+position = Vector2(9, 18)
+amount = 6
+texture = ExtResource("5_mi8yn")
+randomness = 1.0
+fixed_fps = 0
+local_coords = true
+draw_order = 0
+process_material = SubResource("ParticleProcessMaterial_xifaj")
 
 [connection signal="meta_clicked" from="Panel/RichTextLabel" to="." method="_on_rich_text_label_meta_clicked"]
 [connection signal="pressed" from="Panel/Close" to="." method="_on_close_pressed"]
