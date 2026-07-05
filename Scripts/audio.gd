@@ -27,11 +27,18 @@ func _ready() -> void:
 
 
 func set_bgm(bgm: BGM) -> void:
+	var fade_out_tween = create_tween()
+	fade_out_tween.tween_property(bgm_player, "volume_db", -80.0, 1)
+	await fade_out_tween.finished
+
 	bgm_player.stop()
 	_bgm_playlist = _bgm_playlists.get(bgm, []) as Array[AudioStream]
 	_last_track_index = -1
 	_play_random_bgm_track()
 	print("playing BGM.%s playlist" % BGM.keys()[bgm])
+
+	var fade_in_tween = create_tween()
+	fade_in_tween.tween_property(bgm_player, "volume_db", 0.0, 1)
 
 
 func play_sfx(sfx: SFX) -> void:
@@ -47,6 +54,10 @@ func play_sfx(sfx: SFX) -> void:
 	# fallback to the first player
 	_sfx_players[0].stream = stream
 	_sfx_players[0].play()
+
+
+func bgm_is_playing() -> bool:
+	return bgm_player.playing
 
 
 func pause_bgm() -> void:
