@@ -11,8 +11,7 @@ const FILE_SELECTOR_SCENE := "res://Scenes/menu/file_selector.tscn"
 func _ready() -> void:
 	about_panel.visible = false
 	mode_panel.visible = false
-	if not AudioManager.menutheme.has_stream_playback():
-		AudioManager.menutheme.play()
+	Audio.set_bgm(Audio.BGM.MENU)
 
 
 # --- Main menu -------------------------------------------------------------

@@ -69,6 +69,8 @@ func _ready() -> void:
 
 	_wall_animation()
 
+	Audio.set_bgm(Audio.BGM.GAMEPLAY)
+
 	#_show_test_result_after_delay()
 
 

@@ -100,7 +100,8 @@ func _jump():
 	current_jump_velocity = jump_velocity
 	current_sprite_y = 0
 	_adjust_collision_layer()
-	AudioManager.jump.play()
+	_jump_invisiblility_toggle(true)
+	Audio.play_sfx(Audio.SFX.JUMP)
 
 
 func _jump_process(delta: float):

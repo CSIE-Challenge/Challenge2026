@@ -29,15 +29,15 @@ func close() -> void:
 
 
 func _on_save_button_button_up() -> void:
-	AudioManager.buttompress.play()
+	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	close()
 
 
 func _on_revert_button_button_up() -> void:
 	music_slider.value = temp_music_volume
 	sfx_slider.value = temp_sfx_volume
-	AudioManager.buttompress.play()
+	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 
 
 func _on_sfx_slider_drag_ended(_value_changed: bool) -> void:
-	AudioManager.buttompress.play()
+	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)

@@ -26,7 +26,7 @@ NetworkManager="*res://Scripts/network/network_manager.gd"
 SceneTransition="*uid://c0ld3cep1ugxl"
 Dialogue="*res://Scenes/menu/dialogue.tscn"
 Global="*res://Scripts/global.gd"
-AudioManager="*uid://bxj6outuppaq0"
+Audio="*uid://bxj6outuppaq0"
 
 [display]
 
