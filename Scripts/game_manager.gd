@@ -8,7 +8,9 @@ extends Node2D
 @export var energy_bar: Node2D
 @export var opponent_energy_bar_label: Label
 @export var result_screen: ResultScreen
-var energy_increase_period := 1.0
+@export var level_label: Label
+@export var walls: Array[Sprite2D]
+var energy_increase_period: Array
 var player_invincibility_time := 1.0
 var energy_gain_per_ball := 10
 var game_duration := 180.0
@@ -21,11 +23,15 @@ var player_invincible := false
 var game_over := false
 var survival_started_msec := 0
 var trap_data = TrapData.new().data
+var current_level := 0
+var max_level := 4
+var level_duration: Array
 
 @onready var energy_ball: Node2D = $"../SubViewport/Stage/EnergyBall"
 @onready var player_invincibility_timer = $PlayerInvincibilityTimer
 @onready var energy_increase_timer = $EnergyIncreaseTimer
 @onready var game_duration_timer = $GameDurationTimer
+@onready var level_up_timer = $LevelUpTimer
 @onready var trap_request_scheduler: TrapRequestScheduler = $"../TrapRequestScheduler"
 @onready var agent_action_service: AgentActionService = $"../AgentActionService"
 
@@ -49,7 +55,7 @@ func _ready() -> void:
 	agent_action_service.setup_services(self, trap_request_scheduler)
 	trap_request_scheduler.initialize()
 
-	energy_increase_timer.wait_time = energy_increase_period
+	energy_increase_timer.wait_time = energy_increase_period[current_level]
 
 	game_duration_timer.wait_time = game_duration
 	game_duration_timer.timeout.connect(_on_game_duration_timeout)
@@ -58,6 +64,11 @@ func _ready() -> void:
 	player_invincible = false
 
 	_begin_agents()
+
+	level_up_timer.timeout.connect(_on_level_up_timeout)
+	level_up_timer.start(level_duration[0])
+
+	_wall_animation()
 
 	#_show_test_result_after_delay()
 
@@ -68,6 +79,8 @@ func _reload_from_game_data() -> void:
 	player_invincibility_time = game_data.data["game_manager"]["player_invincibility_time"]
 	energy_gain_per_ball = game_data.data["game_manager"]["energy_gain_per_ball"]
 	game_duration = game_data.data["game_manager"]["game_duration"]
+	max_level = game_data.data["game_manager"]["max_level"]
+	level_duration = game_data.data["game_manager"]["level_duration"]
 
 
 func _physics_process(delta: float) -> void:
@@ -240,6 +253,18 @@ func _spawn_trap_from_request(request: Dictionary) -> void:
 
 
 #----------------------------------------------------------------------
+func _wall_animation() -> void:
+	for w in walls:
+		w.material.set_shader_parameter("offset", randf_range(0, 10))
+		var tween = create_tween()
+		(
+			tween
+			. tween_method(
+				func(value): w.material.set_shader_parameter("draw", value), -0.2, 1.0, 1.5
+			)
+			. set_trans(Tween.TRANS_SINE)
+			. set_ease(Tween.EASE_IN_OUT)
+		)
 
 
 func on_player_hit(damage: int) -> void:
@@ -252,6 +277,13 @@ func on_player_hit(damage: int) -> void:
 
 func _on_game_duration_timeout() -> void:
 	finish_game()
+
+
+func _on_level_up_timeout() -> void:
+	current_level = min(current_level + 1, max_level)
+	energy_ball.level_up()
+	level_up_timer.start(level_duration[current_level])
+	level_label.text = "Level: %d" % current_level
 
 
 func finish_game(authoritative_stats: Dictionary = {}) -> void:
@@ -283,10 +315,10 @@ func finish_game(authoritative_stats: Dictionary = {}) -> void:
 	)
 
 
-func _on_energyball_collected(multiplier: float) -> void:
+func _on_energyball_collected(energy_gain: int) -> void:
 	energy_ball_count += 1
 	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
-	NetworkManager.request_add_energy(energy_gain_per_ball * multiplier, "energy_ball")
+	NetworkManager.request_add_energy(energy_gain, "energy_ball")
 
 
 func _player_become_invincible() -> void:
@@ -302,6 +334,7 @@ func _on_player_invincibility_timer_timeout() -> void:
 
 func _on_energy_increase_timer_timeout() -> void:
 	NetworkManager.request_add_energy(1, "passive_regeneration")
+	energy_increase_timer.start(energy_increase_period[current_level])
 
 
 func _on_network_energy_changed(peer_id: int, energy: int) -> void:

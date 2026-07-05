@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://cuxjrdxtrso0m" path="res://Scripts/stage.gd" id="3_1qnfl"]
 [ext_resource type="Script" uid="uid://dkfqc5fwcbi7" path="res://Scripts/sand_tile_map.gd" id="4_jb71e"]
 [ext_resource type="Script" uid="uid://c8md8v3eeja45" path="res://Scripts/state_serializer.gd" id="4_ssg01"]
+[ext_resource type="Shader" uid="uid://flarch4chr80" path="res://Shaders/bounds.gdshader" id="7_r5xtw"]
 [ext_resource type="PackedScene" uid="uid://cwfs8yn4r4hjl" path="res://Scenes/energy_text.tscn" id="7_ra47u"]
 [ext_resource type="PackedScene" uid="uid://dukfpi8j30j5" path="res://Scenes/energy_bar/energy_bar.tscn" id="8_ltefv"]
 [ext_resource type="PackedScene" path="res://Scenes/result_screen.tscn" id="8_result"]
@@ -45,6 +46,38 @@ viewport_path = NodePath("SubViewport")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wbxth"]
 size = Vector2(135, 135)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_p1ih8"]
+shader = ExtResource("7_r5xtw")
+shader_parameter/thickness = 0.01
+shader_parameter/noise_strength = 0.2
+shader_parameter/color = Color(0.6485917, 0.57979304, 0.30508095, 1)
+shader_parameter/offset = 3.0
+shader_parameter/draw = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_r5xtw"]
+shader = ExtResource("7_r5xtw")
+shader_parameter/thickness = 0.01
+shader_parameter/noise_strength = 0.2
+shader_parameter/color = Color(0.6485917, 0.57979304, 0.30508095, 1)
+shader_parameter/offset = 0.0
+shader_parameter/draw = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_v2eey"]
+shader = ExtResource("7_r5xtw")
+shader_parameter/thickness = 0.01
+shader_parameter/noise_strength = 0.2
+shader_parameter/color = Color(0.6485917, 0.57979304, 0.30508095, 1)
+shader_parameter/offset = 0.0
+shader_parameter/draw = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_decfu"]
+shader = ExtResource("7_r5xtw")
+shader_parameter/thickness = 0.01
+shader_parameter/noise_strength = 0.25
+shader_parameter/color = Color(0.6485917, 0.57979304, 0.30508095, 1)
+shader_parameter/offset = 0.0
+shader_parameter/draw = 1.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_wbxth"]
 radius = 13.5
@@ -180,7 +213,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("ViewportTexture_puebw")
-expand_mode = 1
 
 [node name="SubViewport" type="SubViewport" parent="." unique_id=117532480]
 transparent_bg = true
@@ -210,7 +242,9 @@ collision_mask = 0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewport/Stage/Walls/RightWall" unique_id=1803080551]
 shape = SubResource("RectangleShape2D_wbxth")
 
-[node name="Sprite2D" type="Sprite2D" parent="SubViewport/Stage/Walls/RightWall" unique_id=979194276]
+[node name="Bound" type="Sprite2D" parent="SubViewport/Stage/Walls/RightWall" unique_id=1658145453]
+material = SubResource("ShaderMaterial_p1ih8")
+scale = Vector2(36, 1.05)
 texture = ExtResource("1_hf1ha")
 
 [node name="LeftWall" type="StaticBody2D" parent="SubViewport/Stage/Walls" unique_id=1969114939]
@@ -221,7 +255,9 @@ collision_layer = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewport/Stage/Walls/LeftWall" unique_id=1997183767]
 shape = SubResource("RectangleShape2D_wbxth")
 
-[node name="Sprite2D" type="Sprite2D" parent="SubViewport/Stage/Walls/LeftWall" unique_id=837949586]
+[node name="Bound" type="Sprite2D" parent="SubViewport/Stage/Walls/LeftWall" unique_id=1906432542]
+material = SubResource("ShaderMaterial_r5xtw")
+scale = Vector2(36, 1.05)
 texture = ExtResource("1_hf1ha")
 
 [node name="UpWall" type="StaticBody2D" parent="SubViewport/Stage/Walls" unique_id=2111640790]
@@ -233,7 +269,9 @@ collision_layer = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewport/Stage/Walls/UpWall" unique_id=1965035757]
 shape = SubResource("RectangleShape2D_wbxth")
 
-[node name="Sprite2D" type="Sprite2D" parent="SubViewport/Stage/Walls/UpWall" unique_id=861871332]
+[node name="Bound" type="Sprite2D" parent="SubViewport/Stage/Walls/UpWall" unique_id=2122710417]
+material = SubResource("ShaderMaterial_v2eey")
+scale = Vector2(36, 1.05)
 texture = ExtResource("1_hf1ha")
 
 [node name="DownWall" type="StaticBody2D" parent="SubViewport/Stage/Walls" unique_id=1774773014]
@@ -245,7 +283,9 @@ collision_layer = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewport/Stage/Walls/DownWall" unique_id=1515972845]
 shape = SubResource("RectangleShape2D_wbxth")
 
-[node name="Sprite2D" type="Sprite2D" parent="SubViewport/Stage/Walls/DownWall" unique_id=1985772243]
+[node name="Bound" type="Sprite2D" parent="SubViewport/Stage/Walls/DownWall" unique_id=1691341091]
+material = SubResource("ShaderMaterial_decfu")
+scale = Vector2(36, 1.05)
 texture = ExtResource("1_hf1ha")
 
 [node name="Player" type="CharacterBody2D" parent="SubViewport/Stage" unique_id=1716138881]
@@ -296,7 +336,7 @@ process_material = SubResource("ParticleProcessMaterial_5i20n")
 
 [node name="EnergyBar" parent="SubViewport" unique_id=339971714 instance=ExtResource("8_ltefv")]
 
-[node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "camera", "health_label", "energy_balls_label", "energy_bar_label", "energy_bar", "opponent_energy_bar_label", "result_screen")]
+[node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "camera", "health_label", "energy_balls_label", "energy_bar_label", "energy_bar", "opponent_energy_bar_label", "result_screen", "level_label", "walls")]
 script = ExtResource("1_kwrm5")
 player = NodePath("../SubViewport/Stage/Player")
 camera = NodePath("../GameCamera")
@@ -306,6 +346,8 @@ energy_bar_label = NodePath("../HUD/EnergyBarLabel")
 energy_bar = NodePath("../SubViewport/EnergyBar")
 opponent_energy_bar_label = NodePath("../HUD/OpponentEnergyBarLabel")
 result_screen = NodePath("../ResultScreen")
+level_label = NodePath("../HUD/LevelLabel")
+walls = [NodePath("../SubViewport/Stage/Walls/RightWall/Bound"), NodePath("../SubViewport/Stage/Walls/LeftWall/Bound"), NodePath("../SubViewport/Stage/Walls/UpWall/Bound"), NodePath("../SubViewport/Stage/Walls/DownWall/Bound")]
 
 [node name="EnergyIncreaseTimer" type="Timer" parent="GameManager" unique_id=1538767547]
 autostart = true
@@ -314,6 +356,8 @@ autostart = true
 
 [node name="GameDurationTimer" type="Timer" parent="GameManager" unique_id=1398851902]
 one_shot = true
+
+[node name="LevelUpTimer" type="Timer" parent="GameManager" unique_id=297683376]
 
 [node name="Stage#HealthLabel" type="Label" parent="." unique_id=1134340444]
 offset_left = -236.0
@@ -347,6 +391,14 @@ offset_right = 421.0
 offset_bottom = 130.0
 theme_override_font_sizes/font_size = 24
 text = "Opponent Energy: waiting"
+
+[node name="LevelLabel" type="Label" parent="HUD" unique_id=922069616]
+offset_left = 21.0
+offset_top = 136.0
+offset_right = 421.0
+offset_bottom = 170.00008
+theme_override_font_sizes/font_size = 24
+text = "Level: 0"
 
 [node name="HealthLabel" type="Label" parent="HUD" unique_id=2026114508]
 offset_left = 340.0

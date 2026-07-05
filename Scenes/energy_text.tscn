@@ -23,4 +23,5 @@ grow_vertical = 2
 text = "100"
 label_settings = SubResource("LabelSettings_bpbcx")
 horizontal_alignment = 1
+vertical_alignment = 1
 script = ExtResource("2_bpbcx")
