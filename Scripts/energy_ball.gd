@@ -31,9 +31,7 @@ func _ready() -> void:
 		return
 
 	_reload_from_game_data()
-
 	body_entered.connect(_on_body_entered)
-	energy_bar.spawn_eaten_coconut(self.global_position)
 	_respawn_energy_ball()
 
 
