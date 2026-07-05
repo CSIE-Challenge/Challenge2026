@@ -45,7 +45,7 @@ func _ready() -> void:
 	_start_from_command_line(OS.get_cmdline_user_args())
 
 	if multiplayer.is_server() and not _has_demo_flag(OS.get_cmdline_user_args()):
-		var collector: Node = load("res://Scripts/state_collector.gd").new()
+		var collector: Node = load("res://Scripts/network/state_collector.gd").new()
 		add_child(collector)
 
 

@@ -22,7 +22,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 ApiServer="*res://Scripts/api_server/api_server.gd"
-NetworkManager="*res://Scripts/network_manager.gd"
+NetworkManager="*res://Scripts/network/network_manager.gd"
 SceneTransition="*uid://c0ld3cep1ugxl"
 Dialogue="*res://Scenes/menu/dialogue.tscn"
 Global="*res://Scripts/global.gd"
