@@ -26,10 +26,12 @@ func _ready() -> void:
 
 
 func _on_choose_button_up() -> void:
+	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	_open_file_dialog()
 
 
 func _on_default_button_up() -> void:
+	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	selected_agent_file = ""
 	_save_last_selected_file("")
 	_mark_chosen()
@@ -41,12 +43,14 @@ func _mark_chosen() -> void:
 
 
 func _on_enter_game_button_up() -> void:
+	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	Global.single_player = true
 	Global.agent_file = selected_agent_file
 	SceneTransition.transition_to(GAMEPLAY_SCENE)
 
 
 func _on_back_button_up() -> void:
+	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	SceneTransition.transition_to(MENU_SCENE)
 
 

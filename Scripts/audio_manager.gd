@@ -1,34 +1,27 @@
 extends Node
 
-enum SFX { JUMP, BUTTON_PRESS }
+enum SFX { JUMP, BUTTON_PRESS, ENERGY_COLLECTED }
 enum BGM { MENU, GAMEPLAY, HIDDEN_GAME, RESULT }
 
 @export var sfx_pool_size := 8
 
-@export var menu_bgm_tracks: Array[AudioStream] = [
-	preload("res://assets/audio/SmashTheCoconuts.mp3"),
-]
+@export_group("BGM Tracks")
+@export var menu_bgm_tracks: Array[AudioStream] = []
 @export var gameplay_bgm_tracks: Array[AudioStream] = []
 @export var hidden_game_bgm_tracks: Array[AudioStream] = []
 @export var result_bgm_tracks: Array[AudioStream] = []
 
-@export var jump_effect: AudioStream = preload("res://assets/audio/Jump2.mp3")
-@export var button_press_effect: AudioStream = preload("res://assets/audio/Press1.mp3")
+@export_group("Sound Effects")
+@export var jump: AudioStream
+@export var button_press: AudioStream
+@export var energy_collected: AudioStream
 
 var _sfx_players: Array[AudioStreamPlayer] = []
 var _bgm_playlist: Array[AudioStream] = []
 var _last_track_index: int = -1
 
-var _sfx_streams: Dictionary = {
-	SFX.JUMP: jump_effect,
-	SFX.BUTTON_PRESS: button_press_effect,
-}
-var _bgm_playlists: Dictionary = {
-	BGM.MENU: menu_bgm_tracks,
-	BGM.GAMEPLAY: gameplay_bgm_tracks,
-	BGM.HIDDEN_GAME: hidden_game_bgm_tracks,
-	BGM.RESULT: result_bgm_tracks,
-}
+var _sfx_streams: Dictionary = {}
+var _bgm_playlists: Dictionary = {}
 
 @onready var bgm_player: AudioStreamPlayer = $BgmPlayer
 
@@ -41,6 +34,16 @@ func _ready() -> void:
 		_sfx_players.append(player)
 
 	bgm_player.finished.connect(_play_random_bgm_track)
+
+	_sfx_streams = {
+		SFX.JUMP: jump, SFX.BUTTON_PRESS: button_press, SFX.ENERGY_COLLECTED: energy_collected
+	}
+	_bgm_playlists = {
+		BGM.MENU: menu_bgm_tracks,
+		BGM.GAMEPLAY: gameplay_bgm_tracks,
+		BGM.HIDDEN_GAME: hidden_game_bgm_tracks,
+		BGM.RESULT: result_bgm_tracks,
+	}
 
 
 func set_bgm(bgm: BGM) -> void:

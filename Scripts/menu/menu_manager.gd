@@ -16,31 +16,38 @@ func _ready() -> void:
 
 # --- Main menu -------------------------------------------------------------
 func _on_start_button_button_up() -> void:
+	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	mode_panel.visible = true
 
 
 func _on_quit_button_button_up() -> void:
+	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	get_tree().quit()
 
 
 func _on_volume_button_button_up() -> void:
+	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	$VolumeSetting.open()
 
 
 func _on_invisible_button_up() -> void:
+	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	SceneTransition.transition_to("res://Scenes/menu/hidden_game.tscn")
 
 
 func _on_about_buttom_button_up() -> void:
+	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	about_panel.visible = true
 
 
 func _on_close_button_button_up() -> void:
+	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	about_panel.visible = false
 
 
 # --- Mode selection (toggle + confirm) -------------------------------------
 func _on_confirm_button_up() -> void:
+	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	if single_button.button_pressed:
 		# 單人模式: pick an agent script in the file selector scene.
 		Global.single_player = true
@@ -54,4 +61,5 @@ func _on_confirm_button_up() -> void:
 
 
 func _on_mode_back_button_up() -> void:
+	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	mode_panel.visible = false
