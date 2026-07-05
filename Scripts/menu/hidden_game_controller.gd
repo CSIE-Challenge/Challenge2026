@@ -124,7 +124,6 @@ func _run_phase_1() -> bool:
 	if is_aborted:
 		return true
 
-	SceneTransition.show_achievement("獲得成就：黃金傳說！")
 	if not seen_dialogues.has("intro_1"):
 		seen_dialogues["intro_1"] = true
 		Dialogue.start_dialogue(
