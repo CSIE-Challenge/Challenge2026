@@ -5,6 +5,8 @@ uniform float noise_strength = 0.05;
 uniform vec4 color : source_color;
 uniform float offset;
 uniform float draw;
+uniform float color_variation = 0.4;
+uniform int color_bands = 4;
 
 float rand(vec2 p){
     return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);
@@ -28,9 +30,11 @@ void fragment(){
     vec2 center = vec2(0.5,0.5);
     vec2 p = UV-center;
 
-    float n = noise(UV*8.0+offset);
+	float n = noise(UV*8.0+offset);
 	float x = p.x + (n-0.5)*noise_strength*0.05;
 	float show = abs(x) <= thickness? 1.0: 0.0;
 	float d = abs(p.y) <= draw? 1.0: 0.0;
-	COLOR = vec4(color.rgb, show * d);
+	float n_bands = floor(n * float(color_bands)) / float(color_bands);
+	vec3 noise_color = color.rgb * (1.0 - color_variation + color_variation * n_bands);
+	COLOR = vec4(noise_color, show * d);
 }

@@ -54,6 +54,8 @@ shader_parameter/noise_strength = 0.2
 shader_parameter/color = Color(0.6485917, 0.57979304, 0.30508095, 1)
 shader_parameter/offset = 3.0
 shader_parameter/draw = 1.0
+shader_parameter/color_variation = 0.2
+shader_parameter/color_bands = 3
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_r5xtw"]
 shader = ExtResource("7_r5xtw")
@@ -62,6 +64,8 @@ shader_parameter/noise_strength = 0.2
 shader_parameter/color = Color(0.6485917, 0.57979304, 0.30508095, 1)
 shader_parameter/offset = 0.0
 shader_parameter/draw = 1.0
+shader_parameter/color_variation = 0.2
+shader_parameter/color_bands = 3
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_v2eey"]
 shader = ExtResource("7_r5xtw")
@@ -70,6 +74,8 @@ shader_parameter/noise_strength = 0.2
 shader_parameter/color = Color(0.6485917, 0.57979304, 0.30508095, 1)
 shader_parameter/offset = 0.0
 shader_parameter/draw = 1.0
+shader_parameter/color_variation = 0.2
+shader_parameter/color_bands = 3
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_decfu"]
 shader = ExtResource("7_r5xtw")
@@ -78,6 +84,8 @@ shader_parameter/noise_strength = 0.25
 shader_parameter/color = Color(0.6485917, 0.57979304, 0.30508095, 1)
 shader_parameter/offset = 0.0
 shader_parameter/draw = 1.0
+shader_parameter/color_variation = 0.2
+shader_parameter/color_bands = 3
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_wbxth"]
 radius = 13.5
