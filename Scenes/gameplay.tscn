@@ -10,9 +10,8 @@
 [ext_resource type="Script" uid="uid://dkfqc5fwcbi7" path="res://Scripts/sand_tile_map.gd" id="4_jb71e"]
 [ext_resource type="Script" uid="uid://c8md8v3eeja45" path="res://Scripts/network/state_serializer.gd" id="4_ssg01"]
 [ext_resource type="Shader" uid="uid://flarch4chr80" path="res://Shaders/bounds.gdshader" id="7_r5xtw"]
-[ext_resource type="PackedScene" uid="uid://cir126h8l4wqw" path="res://Scenes/energy_text.tscn" id="7_ra47u"]
+[ext_resource type="PackedScene" uid="uid://cwfs8yn4r4hjl" path="res://Scenes/energy_text.tscn" id="7_ra47u"]
 [ext_resource type="PackedScene" uid="uid://dukfpi8j30j5" path="res://Scenes/energy_bar/energy_bar.tscn" id="8_ltefv"]
-[ext_resource type="PackedScene" uid="uid://qa2h3u661eeu" path="res://Scenes/energy_bar/opponent_energy_bar.tscn" id="10_oppeb"]
 [ext_resource type="PackedScene" path="res://Scenes/result_screen.tscn" id="8_result"]
 [ext_resource type="Texture2D" uid="uid://c1rj0im3pw7gd" path="res://Shapes/sand_background.png" id="8_rg35f"]
 [ext_resource type="Script" uid="uid://bs7ntuoxby0al" path="res://Scripts/trap_request_scheduler.gd" id="8_urrcd"]
@@ -20,6 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://f5ertr28h6kq" path="res://Shapes/feather.svg" id="15_feather"]
 [ext_resource type="Script" uid="uid://ddqb3djaesce4" path="res://Scripts/health_icon.gd" id="16_health_icon"]
 [ext_resource type="FontFile" uid="uid://besvarn3s1kyg" path="res://assets/fonts/DSEG7Classic-Bold.ttf" id="10_dseg"]
+[ext_resource type="PackedScene" uid="uid://qa2h3u661eeu" path="res://Scenes/energy_bar/opponent_energy_bar.tscn" id="10_oppeb"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jb71e"]
 texture = ExtResource("8_rg35f")
@@ -242,7 +242,7 @@ z_index = 15
 collision_mask = 8
 player_node = NodePath("../Player")
 energy_text = ExtResource("7_ra47u")
-energy_bar = NodePath("../../EnergyBar")
+energy_bar = NodePath("../../CoconutBar")
 
 [node name="Walls" type="Node2D" parent="SubViewport/Stage" unique_id=57048490]
 
@@ -348,11 +348,11 @@ one_shot = true
 explosiveness = 1.0
 process_material = SubResource("ParticleProcessMaterial_5i20n")
 
-[node name="EnergyBar" parent="SubViewport" unique_id=339971714 instance=ExtResource("8_ltefv")]
+[node name="CoconutBar" parent="SubViewport" unique_id=339971714 instance=ExtResource("8_ltefv")]
 
 [node name="OpponentEnergyBar" parent="SubViewport" unique_id=339971715 instance=ExtResource("10_oppeb")]
 
-[node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "camera", "health_label", "health_icon", "energy_balls_label", "energy_bar_label", "energy_bar", "opponent_energy_bar_label", "time_label", "result_screen", "level_label", "walls")]
+[node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "camera", "health_label", "health_icon", "energy_balls_label", "energy_bar_label", "coconut_bar", "opponent_energy_bar_label", "time_label", "opponent_energy_bar", "result_screen", "level_label", "walls")]
 script = ExtResource("1_kwrm5")
 player = NodePath("../SubViewport/Stage/Player")
 camera = NodePath("../GameCamera")
@@ -360,7 +360,7 @@ health_label = NodePath("../HUD/HealthLabel")
 health_icon = NodePath("../HUD/HealthIcons")
 energy_balls_label = NodePath("../HUD/EnergyBallsLabel")
 energy_bar_label = NodePath("../HUD/EnergyBarLabel")
-energy_bar = NodePath("../SubViewport/EnergyBar")
+coconut_bar = NodePath("../SubViewport/CoconutBar")
 opponent_energy_bar_label = NodePath("../HUD/OpponentEnergyBarLabel")
 time_label = NodePath("../HUD/TimeLabel")
 opponent_energy_bar = NodePath("../SubViewport/OpponentEnergyBar")

@@ -5,7 +5,7 @@ extends Node2D
 @export var health_label: Label
 @export var energy_balls_label: Label
 @export var energy_bar_label: Label
-@export var energy_bar: Node2D
+@export var coconut_bar: Node2D
 @export var opponent_energy_bar_label: Label
 @export var time_label: Label
 @export var opponent_energy_bar: Node2D
@@ -58,7 +58,6 @@ func _ready() -> void:
 	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
 	_update_energy_label()
 	_update_opponent_energy_label(0, 0)
-	_refresh_opponent_energy_bar()
 	_connect_agent_action_signals()
 
 	agent_action_service.setup_services(self, trap_request_scheduler)
@@ -320,6 +319,7 @@ func finish_game(authoritative_stats: Dictionary = {}) -> void:
 
 func _on_energyball_collected(energy_gain: int) -> void:
 	energy_ball_count += 1
+	coconut_bar.coconut_count = energy_ball_count
 	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
 	NetworkManager.request_add_energy(energy_gain, "energy_ball")
 
@@ -348,7 +348,6 @@ func _on_network_energy_changed(peer_id: int, energy: int) -> void:
 		_update_energy_label()
 
 	_update_opponent_energy_label(peer_id, energy)
-	_refresh_opponent_energy_bar()
 
 
 func _on_network_health_changed(peer_id: int, health: int) -> void:
@@ -375,7 +374,6 @@ func _update_time_label() -> void:
 
 func _update_energy_label() -> void:
 	energy_bar_label.text = "My Energy: %d" % energy_amount
-	energy_bar.energy = energy_amount
 
 
 func _update_opponent_energy_label(peer_id: int, energy: int) -> void:
