@@ -15,10 +15,12 @@ var speed := 0.0
 var tracing := true
 var flying := false
 var wall_counter := 0
+var is_demo := false
 @onready var feather_effect = $FeatherEffect
 @onready var leave_wall_detector = $Area2D
 @onready var wait_timer = $WaitTimer
 @onready var animation = $AnimationPlayer
+@onready var sprite = $AnimatedSprite2D
 
 
 static func initialize(pos: Vector2, dir: Vector2, speed: float) -> Trap3TracingBullet:
@@ -32,6 +34,8 @@ static func initialize(pos: Vector2, dir: Vector2, speed: float) -> Trap3Tracing
 
 
 func _ready() -> void:
+	if is_demo:
+		return
 	collision_layer = TRAP_COLLISION_LAYER
 	collision_mask = 0
 	leave_wall_detector.collision_mask = WALL_COLLISION_LAYER
@@ -104,3 +108,23 @@ func _on_wall_exited(_body: Node2D) -> void:
 	wall_counter -= 1
 	if wall_counter <= 0:
 		collision_mask = PLAYER_COLLISION_LAYER | WALL_COLLISION_LAYER
+
+
+#-------------------------
+
+
+func serialize_state() -> Dictionary:
+	return {
+		"type": "trap3-tracing_bullet",
+		"position": global_position,
+		"rotation": rotation,
+		"scale": sprite.scale,
+		"feather_effect": feather_effect.emitting
+	}
+
+
+func apply_demo_state(data: Dictionary) -> void:
+	global_position = data.get("position", Vector2.ZERO)
+	rotation = data.get("rotation", 0.0)
+	sprite.scale = data.get("scale", Vector2.ZERO)
+	feather_effect.emitting = data.get("feather_effect", false)

@@ -11,6 +11,7 @@ var speed = trap_data["trap4-conveyor"]["speed"]
 var lifetime = trap_data["trap4-conveyor"]["lifetime"]
 var area_scale = trap_data["trap4-conveyor"]["scale"]
 var direction: Vector2
+var is_demo: bool = false
 var _is_disappearing: bool = false
 
 @onready var wave_animation: AnimatedSprite2D = $AnimatedSprite2D
@@ -34,6 +35,8 @@ static func initialize(pos: Vector2, dir: Vector2) -> Trap4Conveyor:
 
 func _ready() -> void:
 	# Trap should expire after the configured lifetime.
+	if is_demo:
+		return
 	scale = Vector2(area_scale, area_scale)
 	await get_tree().create_timer(lifetime).timeout
 	_destroy_trap()
@@ -64,3 +67,21 @@ func _on_body_entered(body: Node2D) -> void:
 func _on_body_exited(body: Node2D) -> void:
 	if body == Global.game_manager.player and body is CharacterBody2D:
 		body.external_velocity -= speed * direction
+
+
+#-----------------------------------------
+func serialize_state() -> Dictionary:
+	return {
+		"type": "trap4-conveyor",
+		"position": global_position,
+		"rotation": rotation,
+		"scale": scale,
+		"shader_reveal": wave_animation.material.get_shader_parameter("reveal")
+	}
+
+
+func apply_demo_state(data: Dictionary) -> void:
+	global_position = data.get("position", Vector2.ZERO)
+	rotation = data.get("rotation", 0.0)
+	wave_animation.material.set_shader_parameter("reveal", data.get("shader_reveal", 1.0))
+	scale = data.get("scale", Vector2.ZERO)

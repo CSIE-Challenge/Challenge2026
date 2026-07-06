@@ -17,6 +17,7 @@ var velocity := Vector2(0, 0)
 var speed := 5.0
 var line_pos := Vector2(0, 0)
 var time := 0.0
+var is_demo := false
 
 @onready var visual_line = $Hulas
 
@@ -44,6 +45,8 @@ func _clamp_to_four_directions(dir: Vector2) -> Vector2:
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	if is_demo:
+		return
 	visible = true
 	visual_line.visible = true
 	body_entered.connect(_on_body_entered)
@@ -70,3 +73,26 @@ func _physics_process(delta: float) -> void:
 
 func _on_body_entered(_body: Node2D) -> void:
 	Global.player_hit.emit(damage)
+
+
+#-----------------------------------------
+func serialize_state() -> Dictionary:
+	return {
+		"type": "trap6-scanline",
+		"position": global_position,
+		"rotation": rotation,
+		"visual_line_modulate": visual_line.modulate,
+		"visual_line_position": visual_line.position,
+		"visual_line_scale": visual_line.scale,
+		"visual_line_rotation": visual_line.rotation
+	}
+
+
+func apply_demo_state(data: Dictionary) -> void:
+	global_position = data.get("position", Vector2.ZERO)
+	rotation = data.get("rotation", 0.0)
+	visual_line.modulate = data.get("visual_line_modulate", Color.WHITE)
+	visual_line.position = data.get("visual_line_position", Vector2.ZERO)
+	visual_line.scale = data.get("visual_line_scale", Vector2.ONE)
+	visual_line.rotation = data.get("visual_line_rotation", 0.0)
+	#rotate hulas one by one?
