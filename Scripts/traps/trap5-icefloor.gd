@@ -12,6 +12,7 @@ var damage = trap_data["trap5-icefloor"]["damage"]
 var energy_costs = trap_data["trap5-icefloor"]["energy_costs"]
 var lifetime = trap_data["trap5-icefloor"]["lifetime"]
 var area_scale = trap_data["trap5-icefloor"]["scale"]
+var is_demo := false
 
 var _is_destroying: bool = false
 
@@ -28,6 +29,8 @@ static func initialize(pos: Vector2) -> Trap5IceFloor:
 
 
 func _ready() -> void:
+	if is_demo:
+		return
 	scale = Vector2(area_scale, area_scale)
 	await get_tree().create_timer(lifetime).timeout
 	_destroy_trap()
@@ -91,3 +94,24 @@ func _remove_ice_effect(body: Node2D) -> void:
 
 func _apply_acceleration(body: Node2D, n: int) -> void:
 	body.acceleration = ICE_ACCELERATION_BASE / n if n > 0 else NORMAL_ACCELERATION
+
+
+func serialize_state() -> Dictionary:
+	return {
+		"type": "trap5-icefloor",
+		"position": global_position,
+		"scale": scale,
+		"glass_rotation": glass_sprite.rotation_degrees,
+		"glass_alpha": glass_sprite.self_modulate.a,
+		"juice_reveal": juice_sprite.material.get_shader_parameter("reveal_progress"),
+		"juice_alpha": juice_sprite.material.get_shader_parameter("master_alpha"),
+	}
+
+
+func apply_demo_state(data: Dictionary) -> void:
+	global_position = data.get("position", Vector2.ZERO)
+	scale = data.get("scale", Vector2.ONE)
+	glass_sprite.rotation_degrees = data.get("glass_rotation", 0.0)
+	glass_sprite.self_modulate.a = data.get("glass_alpha", 1.0)
+	juice_sprite.material.set_shader_parameter("reveal_progress", data.get("juice_reveal", 0.0))
+	juice_sprite.material.set_shader_parameter("master_alpha", data.get("juice_alpha", 1.0))

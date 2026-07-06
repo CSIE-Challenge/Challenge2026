@@ -12,6 +12,7 @@ var area_scale = trap_data["trap1-mine"]["scale"]
 var is_armed := false
 var isjumping_2_frame_ago := false
 var isjumping_1_frame_ago := false
+var is_demo := false
 
 @onready var mine_warning: Sprite2D = $MineWarning
 @onready var mine_body: Sprite2D = $MineBody
@@ -80,3 +81,32 @@ func _physics_process(_delta: float) -> void:
 
 	isjumping_2_frame_ago = isjumping_1_frame_ago
 	isjumping_1_frame_ago = player.isjumping
+
+
+func serialize_state() -> Dictionary:
+	return {
+		"type": "trap1-mine",
+		"position": global_position,
+		"is_armed": is_armed,
+		"body_scale": mine_body.scale.x,
+		"spawn_particle_on": spawn_particle.emitting,
+		"explosion_particle_on": explosion_particle.emitting,
+	}
+
+
+func apply_demo_state(data: Dictionary) -> void:
+	global_position = data.get("position", Vector2.ZERO)
+	var armed: bool = data.get("is_armed", false)
+	if armed:
+		mine_warning.visible = false
+		mine_body.visible = true
+		var sc: float = data.get("body_scale", 0.5)
+		mine_body.scale = Vector2(sc, sc)
+	else:
+		mine_warning.visible = true
+		mine_body.visible = false
+
+	if data.get("spawn_particle_on", false) and not spawn_particle.emitting:
+		spawn_particle.emitting = true
+	if data.get("explosion_particle_on", false) and not explosion_particle.emitting:
+		explosion_particle.emitting = true

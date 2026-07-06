@@ -20,6 +20,7 @@ var points_assigned_scale: Vector2
 var arc_assigned_width: float
 var arc_on: bool
 var activated: bool
+var is_demo := false
 
 @onready var player: CharacterBody2D = $"../Player"
 @onready var crack: Sprite2D = $Crack
@@ -38,6 +39,8 @@ static func initialize(start_pos: Vector2, end_pos: Vector2) -> Trap8ElectricArc
 
 
 func _ready():
+	if is_demo:
+		return
 	activated = false
 	visible = false
 
@@ -125,3 +128,43 @@ func _detect_player() -> void:
 		return
 	if raycast.is_colliding():
 		Global.player_hit.emit(damage)
+
+
+func serialize_state() -> Dictionary:
+	return {
+		"type": "trap8-electric_arc",
+		"start_pos": start_point.position,
+		"end_pos": end_point.position,
+		"visible": visible,
+		"crack_rot": crack.rotation,
+		"crack_scale": crack.scale,
+		"crack_progress": crack.material.get_shader_parameter("progress"),
+		"cone_s_alpha": start_cone.self_modulate.a,
+		"cone_s_pos": start_cone.position,
+		"cone_s_rot": start_cone.rotation_degrees,
+		"cone_e_alpha": end_cone.self_modulate.a,
+		"cone_e_pos": end_cone.position,
+		"cone_e_rot": end_cone.rotation_degrees,
+	}
+
+
+func apply_demo_state(data: Dictionary) -> void:
+	var start_pos: Vector2 = data.get("start_pos", Vector2.ZERO)
+	var end_pos: Vector2 = data.get("end_pos", Vector2.ZERO)
+	start_point.position = start_pos
+	end_point.position = end_pos
+	crack.position = start_pos
+
+	crack.rotation = data.get("crack_rot", 0.0)
+	crack.scale = data.get("crack_scale", Vector2.ONE)
+	crack.material.set_shader_parameter("progress", data.get("crack_progress", 0.0))
+
+	start_cone.self_modulate.a = data.get("cone_s_alpha", 0.0)
+	start_cone.position = data.get("cone_s_pos", Vector2(5, -8))
+	start_cone.rotation_degrees = data.get("cone_s_rot", 20.0)
+
+	end_cone.self_modulate.a = data.get("cone_e_alpha", 0.0)
+	end_cone.position = data.get("cone_e_pos", Vector2(5, -8))
+	end_cone.rotation_degrees = data.get("cone_e_rot", 20.0)
+
+	visible = data.get("visible", false)
