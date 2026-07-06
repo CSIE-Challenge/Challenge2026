@@ -1,6 +1,6 @@
 extends SceneTree
 
-const StateCollectorScript = preload("res://Scripts/state_collector.gd")
+const StateCollectorScript = preload("res://Scripts/network/state_collector.gd")
 const PUSH_INTERVAL := 1.0 / 30.0
 
 

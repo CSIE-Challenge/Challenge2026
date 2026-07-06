@@ -1,6 +1,6 @@
 extends SceneTree
 
-const StateSerializerScript = preload("res://Scripts/state_serializer.gd")
+const StateSerializerScript = preload("res://Scripts/network/state_serializer.gd")
 const PUSH_INTERVAL := 1.0 / 30.0
 
 # Fixtures
