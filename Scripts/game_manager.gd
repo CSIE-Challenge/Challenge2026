@@ -50,6 +50,7 @@ func _ready() -> void:
 	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
 	_update_energy_label()
 	_update_opponent_energy_label(0, 0)
+	_refresh_opponent_energy_bar()
 	_connect_agent_action_signals()
 
 	agent_action_service.setup_services(self, trap_request_scheduler)
@@ -346,6 +347,7 @@ func _on_network_energy_changed(peer_id: int, energy: int) -> void:
 		_update_energy_label()
 
 	_update_opponent_energy_label(peer_id, energy)
+	_refresh_opponent_energy_bar()
 
 
 func _on_network_health_changed(peer_id: int, health: int) -> void:
@@ -367,9 +369,7 @@ func _update_energy_label() -> void:
 func _update_opponent_energy_label(peer_id: int, energy: int) -> void:
 	if peer_id == 0:
 		opponent_energy_bar_label.text = "Opponent: waiting"
-		opponent_energy_bar.energy = 0
 		return
-	opponent_energy_bar.energy = energy
 	opponent_energy_bar_label.text = (
 		"Opponent (%d) Energy: %d Health: %d"
 		% [
@@ -378,3 +378,17 @@ func _update_opponent_energy_label(peer_id: int, energy: int) -> void:
 			NetworkManager.get_health(peer_id),
 		]
 	)
+
+
+## Drives the opponent tree from the true opponent's server-approved energy.
+## We must NOT use the peer_id/energy that fired energy_changed, because that
+## signal also fires for our own peer (see _on_network_energy_changed). Instead
+## we always read the authoritative cache for the actual opponent peer.
+func _refresh_opponent_energy_bar() -> void:
+	var opponent_peer_id := NetworkManager.get_opponent_peer_id()
+	# get_opponent_peer_id() returns -1 when no opponent is known yet, and
+	# aliases to our own id in offline mode; treat both as "no opponent".
+	if opponent_peer_id == -1 or opponent_peer_id == multiplayer.get_unique_id():
+		opponent_energy_bar.energy = 0
+		return
+	opponent_energy_bar.energy = NetworkManager.get_energy(opponent_peer_id)
