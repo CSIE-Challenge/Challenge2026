@@ -8,6 +8,7 @@ extends Node2D
 @export var energy_bar: Node2D
 @export var opponent_energy_bar_label: Label
 @export var time_label: Label
+@export var opponent_energy_bar: Node2D
 @export var result_screen: ResultScreen
 @export var level_label: Label
 @export var health_icon: HealthIcon
@@ -378,7 +379,9 @@ func _update_energy_label() -> void:
 func _update_opponent_energy_label(peer_id: int, energy: int) -> void:
 	if peer_id == 0:
 		opponent_energy_bar_label.text = "Opponent: waiting"
+		opponent_energy_bar.energy = 0
 		return
+	opponent_energy_bar.energy = energy
 	opponent_energy_bar_label.text = (
 		"Opponent (%d) Energy: %d Health: %d"
 		% [
