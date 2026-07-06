@@ -11,6 +11,7 @@ var cooldown_times = trap_data["trap5-icefloor"]["cooldown_times"]
 var damage = trap_data["trap5-icefloor"]["damage"]
 var energy_costs = trap_data["trap5-icefloor"]["energy_costs"]
 var lifetime = trap_data["trap5-icefloor"]["lifetime"]
+var area_scale = trap_data["trap5-icefloor"]["scale"]
 
 var _is_destroying: bool = false
 
@@ -27,6 +28,7 @@ static func initialize(pos: Vector2) -> Trap5IceFloor:
 
 
 func _ready() -> void:
+	scale = Vector2(area_scale, area_scale)
 	await get_tree().create_timer(lifetime).timeout
 	_destroy_trap()
 

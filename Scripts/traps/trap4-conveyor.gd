@@ -9,6 +9,7 @@ var damage = trap_data["trap4-conveyor"]["damage"]
 var energy_costs = trap_data["trap4-conveyor"]["energy_costs"]
 var speed = trap_data["trap4-conveyor"]["speed"]
 var lifetime = trap_data["trap4-conveyor"]["lifetime"]
+var area_scale = trap_data["trap4-conveyor"]["scale"]
 var direction: Vector2
 var _is_disappearing: bool = false
 
@@ -33,6 +34,7 @@ static func initialize(pos: Vector2, dir: Vector2) -> Trap4Conveyor:
 
 func _ready() -> void:
 	# Trap should expire after the configured lifetime.
+	scale = Vector2(area_scale, area_scale)
 	await get_tree().create_timer(lifetime).timeout
 	_destroy_trap()
 

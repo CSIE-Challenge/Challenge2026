@@ -7,6 +7,7 @@ var damage = trap_data["trap1-mine"]["damage"]
 var energy_costs = trap_data["trap1-mine"]["energy_costs"]
 var arming_time = trap_data["trap1-mine"]["arming_time"]
 # ▲How long it takes to turn completely red
+var area_scale = trap_data["trap1-mine"]["scale"]
 
 var is_armed := false
 var isjumping_2_frame_ago := false
@@ -30,6 +31,7 @@ static func initialize(pos: Vector2) -> Trap1Mine:
 func start_arming_sequence() -> void:
 	mine_warning.visible = true
 	mine_body.visible = false
+	scale = Vector2(area_scale, area_scale)
 
 	await get_tree().create_timer(arming_time).timeout
 	on_arming_complete()
