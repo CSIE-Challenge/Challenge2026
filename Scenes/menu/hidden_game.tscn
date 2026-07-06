@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://55q1cmku2arh" path="res://Scripts/menu/coconut_controller.gd" id="2_ebyp3"]
 [ext_resource type="Script" uid="uid://dv55d1s0ldngo" path="res://Scripts/menu/walls_controller.gd" id="2_qncmu"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="3_pger8"]
+[ext_resource type="Texture2D" uid="uid://b7rrv2ws3as1d" path="res://Shapes/boss.png" id="4_boss"]
 [ext_resource type="Script" uid="uid://b1vu1u854wu0d" path="res://Scripts/menu/boss_controller.gd" id="5_pger8"]
 [ext_resource type="PackedScene" uid="uid://coibxbp8o7ax0" path="res://Scenes/menu/rocket_warning.tscn" id="7_i6agr"]
 [ext_resource type="Shader" uid="uid://cdsrngsn8ij2n" path="res://Shaders/hidden_game_bg.gdshader" id="100_bg"]
@@ -122,14 +123,12 @@ position = Vector2(0, -300)
 script = ExtResource("5_pger8")
 
 [node name="Sprites" type="Node2D" parent="Panel/Stage/boss" unique_id=733336291]
-modulate = Color(1, 0, 0, 1)
 
-[node name="square" type="Sprite2D" parent="Panel/Stage/boss/Sprites" unique_id=1992438912]
-position = Vector2(0, 130)
-texture = ExtResource("1_tfqsm")
-
-[node name="circle" type="Sprite2D" parent="Panel/Stage/boss/Sprites" unique_id=1995987887]
-texture = ExtResource("3_pger8")
+[node name="boss_sprite" type="Sprite2D" parent="Panel/Stage/boss/Sprites" unique_id=1992438912]
+modulate = Color(0.61745477, 0.61745477, 0.6174547, 1)
+position = Vector2(0, 180)
+scale = Vector2(1e-05, 1e-05)
+texture = ExtResource("4_boss")
 
 [node name="Walls" type="AnimatableBody2D" parent="Panel/Stage" unique_id=1389870853 groups=["walls"]]
 position = Vector2(0, -50)

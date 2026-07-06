@@ -89,7 +89,7 @@ func run_hidden_game_sequence() -> void:
 		return
 	is_aborted = false
 
-	await get_tree().create_timer(1.0).timeout
+	await get_tree().create_timer(3.2).timeout
 
 	if has_reached_phase_2:
 		boss.invincible = false

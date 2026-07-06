@@ -14,6 +14,8 @@ const BOOMERANG_SCENE = preload("res://Scenes/menu/boomerang.tscn")
 const LASER_TRAP_SCENE = preload("res://Scenes/menu/laser_trap.tscn")
 const BOUNCING_SAW_SCENE = preload("res://Scenes/menu/bouncing_saw.tscn")
 
+const BASE_SCALE = Vector2(0.7, 0.7)
+
 # 記錄 Boss 的初始待機位置，以便招式施展後歸位
 var original_position: Vector2
 var is_attacking: bool = false
@@ -27,9 +29,10 @@ var current_attack_interrupted: bool = false
 var current_difficulty: int = 2
 var is_paused: bool = false
 
+var time_elapsed: float = 0.0
+
 @onready var boss = self
-@onready var boss_circle = $Sprites/circle
-@onready var boss_square = $Sprites/square
+@onready var boss_sprite = $Sprites/boss_sprite
 @onready var hidden_game = $"../../.."
 
 # 取得椰子玩家的參照
@@ -49,6 +52,22 @@ func _ready() -> void:
 	invincible = true
 	boss_hp = 100
 	boss_hp_bar.value = 100
+
+	# 動態載入並設定 shader
+	var shader = load("res://Shaders/boss_shader.gdshader")
+	if shader:
+		var mat = ShaderMaterial.new()
+		mat.shader = shader
+		boss_sprite.material = mat
+
+
+func _process(delta: float) -> void:
+	if not is_dead and not invincible:
+		time_elapsed += delta
+		# 待機動作：上下漂浮 (微調頻率為 2.0，振幅為 12.0)
+		sprites.position.y = sin(time_elapsed * 2.0) * 12.0
+	else:
+		sprites.position.y = 0.0
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -794,147 +813,128 @@ func sneak_attack() -> void:
 
 # by gemini
 func boss_appear_animation():
-	if not boss or not boss_circle or not boss_square:
+	if not boss or not boss_sprite:
 		return
 
-	# ==================== 動態參數設定區 (方便您在此統一調整) ====================
-	# 1. 圓形與方形的基礎尺寸 (取代原本的 Vector2(0.2, 0.2))
-	var base_circle_scale := Vector2(1.0, 1.0)
-	var base_square_scale := Vector2(1.0, 1.0)
+	invincible = true
 
-	# 2. 各階段動畫的持續時間 (秒)
-	var fly_in_duration: float = 0.6  # 飛入時間
-	var squash_duration: float = 0.06  # 撞擊擠壓變形時間
-	var stretch_duration: float = 0.1  # 彈開拉長變形時間
-	var settle_duration: float = 0.15  # 回歸正常尺寸時間
+	# 初始狀態：從宇宙深處遠處 (極小尺寸且透明)
+	boss_sprite.scale = Vector2(0.001, 0.001)
+	sprites.modulate.a = 0.0
 
-	# 3. 變形倍率 (會自動與基礎尺寸相乘)
-	var start_scale_mult: float = 4.0  # 出現時的放大倍數 (4.0 倍即原先的 0.8 比例)
-	var squash_mult := Vector2(1.75, 0.4)  # 撞擊擠壓比例 (原先的 0.35, 0.08)
-	var stretch_mult := Vector2(0.6, 1.4)  # 彈開拉長比例 (原先的 0.12, 0.28)
+	var mat = boss_sprite.material as ShaderMaterial
+	if mat:
+		mat.set_shader_parameter("distortion_strength", 0.0)
+		mat.set_shader_parameter("hit_flash_strength", 0.0)
 
-	# 4. 畫面震動強度與時間
-	var shake_power: float = 20.0  # 震動強度
-	var shake_time: float = 0.3  # 震動時長
-	# ============================================================================
+	var tween = create_tween().set_parallel(true)
 
-	# 1. 準備狀態：記錄原本位置，並將組件拉遠、變大、變透明
-	var orig_circle_pos = boss_circle.position
-	var orig_square_pos = boss_square.position
-
-	boss_circle.position = orig_circle_pos + Vector2(0, -500)  # 圓形移到上方螢幕外
-	boss_square.position = orig_square_pos + Vector2(0, 500)  # 方形移到下方螢幕外
-
-	boss_circle.modulate.a = 0.0
-	boss_square.modulate.a = 0.0
-
-	# 放大元件，營造遠近立體感 (使用設定的變數)
-	boss_circle.scale = base_circle_scale * start_scale_mult
-	boss_square.scale = base_square_scale * start_scale_mult
-
-	var tween = create_tween()
-
-	# ===== 階段一：兩者相向高速旋轉墜入，並縮小至基準尺寸 =====
+	# 緩慢變大 (從 0.001 變回 BASE_SCALE，耗時 3.0 秒，使用 EaseOut)
 	(
 		tween
-		. tween_property(boss_circle, "position", orig_circle_pos, fly_in_duration)
+		. tween_property(boss_sprite, "scale", BASE_SCALE, 3.0)
 		. set_trans(Tween.TRANS_CUBIC)
 		. set_ease(Tween.EASE_OUT)
 	)
-	tween.parallel().tween_property(boss_circle, "modulate:a", 1.0, fly_in_duration * 0.5)
-	tween.parallel().tween_property(boss_circle, "rotation", PI * 2, fly_in_duration)
-	tween.parallel().tween_property(boss_circle, "scale", base_circle_scale, fly_in_duration)
 
-	(
-		tween
-		. parallel()
-		. tween_property(boss_square, "position", orig_square_pos, fly_in_duration)
-		. set_trans(Tween.TRANS_CUBIC)
-		. set_ease(Tween.EASE_OUT)
-	)
-	tween.parallel().tween_property(boss_square, "modulate:a", 1.0, fly_in_duration * 0.5)
-	tween.parallel().tween_property(boss_square, "rotation", -PI * 2, fly_in_duration)
-	tween.parallel().tween_property(boss_square, "scale", base_square_scale, fly_in_duration)
-
-	# ===== 階段二：相撞瞬間 (Slam Impact) =====
-	tween.tween_callback(
-		func():
-			# A. 播放極限擠壓變形 (基準尺寸 * 擠壓倍率)
-			var s_tween = create_tween().set_parallel(true)
-			s_tween.tween_property(
-				boss_circle, "scale", base_circle_scale * squash_mult, squash_duration
-			)
-			s_tween.tween_property(
-				boss_square, "scale", base_square_scale * squash_mult, squash_duration
-			)
-
-			# B. 畫面劇烈震動
-			hidden_game.shake_screen(shake_time, shake_power)
-
-			# C. 瞬間閃白光
-			boss_circle.modulate = Color(2, 2, 2, 1)  # HDR 超白光
-			boss_square.modulate = Color(2, 2, 2, 1)
-	)
-	tween.tween_interval(squash_duration)
-
-	# ===== 階段三：反彈回縮 (基準尺寸 * 拉伸倍率) =====
-	tween.tween_callback(
-		func():
-			var r_tween = create_tween().set_parallel(true)
-			r_tween.tween_property(
-				boss_circle, "scale", base_circle_scale * stretch_mult, stretch_duration
-			)
-			r_tween.tween_property(
-				boss_square, "scale", base_square_scale * stretch_mult, stretch_duration
-			)
-			# 顏色漸變回原本顏色
-			r_tween.tween_property(sprites, "modulate", Color(1, 0, 0, 1), 0.2)
-			r_tween.tween_property(boss_circle, "modulate", Color(1.0, 1.0, 1.0, 1.0), 0.2)
-			r_tween.tween_property(boss_square, "modulate", Color(1.0, 1.0, 1.0, 1.0), 0.2)
-	)
-	tween.tween_interval(stretch_duration)
-
-	# ===== 階段四：平滑彈性回歸正常大小 =====
-	tween.tween_property(boss_circle, "scale", base_circle_scale, settle_duration).set_trans(
-		Tween.TRANS_SINE
-	)
-	(
-		tween
-		. parallel()
-		. tween_property(boss_square, "scale", base_square_scale, settle_duration)
-		. set_trans(Tween.TRANS_SINE)
+	# 緩慢顯現
+	tween.tween_property(sprites, "modulate:a", 1.0, 2.5).set_trans(Tween.TRANS_SINE).set_ease(
+		Tween.EASE_IN_OUT
 	)
 
-	# ===== 階段五：Boss 蓄力咆哮抖動 =====
-	# ===== 階段五：Boss 蓄力咆哮抖動 =====
-	for i in range(8):
-		var offset = Vector2(randf_range(-6.0, 6.0), randf_range(-3.0, 3.0))
-		tween.tween_property(boss, "position", original_position + offset, 0.02)
-	tween.tween_property(boss, "position", original_position, 0.05)
+	# 等待動畫完成
+	await tween.finished
+
+	# 獵手降臨的畫面微震
+	hidden_game.shake_screen(0.3, 10.0)
 
 	invincible = false
 
 
 func play_death_animation():
+	var mat = boss_sprite.material as ShaderMaterial
 	var death_tween = create_tween()
 	death_tween.set_parallel(true)
 
-	# 劇烈震動與變紅
-	var shake_duration = 3.0
-	var original_pos = position
-	sprites.modulate = Color(2, 0, 0, 1)  # 深紅色
+	var shake_duration = 2.0
+	var orig_sprites_pos = sprites.position
 
-	for i in range(30):
-		var offset = Vector2(randf_range(-15, 15), randf_range(-15, 15))
-		death_tween.tween_property(self, "position", original_pos + offset, 0.1).set_delay(i * 0.1)
+	# 1. 劇烈抖動：對 sprites 容器在 2.0 秒內做高頻隨機位移
+	var steps = int(shake_duration / 0.05)
+	var jitter_tween = create_tween()
+	for i in range(steps):
+		var offset = Vector2(randf_range(-18, 18), randf_range(-18, 18))
+		var mult = 1.0 + (float(i) / steps) * 0.5
+		jitter_tween.tween_property(sprites, "position", orig_sprites_pos + offset * mult, 0.05)
+	jitter_tween.tween_property(sprites, "position", orig_sprites_pos, 0.05)
 
-	# 逐漸膨脹
-	death_tween.tween_property(sprites, "scale", Vector2(1.5, 1.5), shake_duration)
+	# 2. 扭曲著縮小：在 2.0 秒內將 shader distortion 扭曲度拉高，並將 boss_sprite 縮小至零
+	if mat:
+		(
+			death_tween
+			. tween_property(mat, "shader_parameter/distortion_strength", 40.0, shake_duration)
+			. set_trans(Tween.TRANS_CUBIC)
+			. set_ease(Tween.EASE_IN)
+		)
 
-	# 最後爆炸消失
-	death_tween.chain().tween_property(sprites, "scale", Vector2(2.5, 2.5), 0.2)
-	death_tween.parallel().tween_property(sprites, "modulate", Color(10, 0, 0, 0), 0.2)
-	death_tween.chain().tween_callback(func(): queue_free())
+	(
+		death_tween
+		. tween_property(boss_sprite, "scale", Vector2.ZERO, shake_duration)
+		. set_trans(Tween.TRANS_BACK)
+		. set_ease(Tween.EASE_IN)
+	)
+
+	# 3. 縮小到極點後爆開
+	death_tween.chain().tween_callback(
+		func():
+			hidden_game.shake_screen(0.8, 35.0)
+
+			# 產生爆開粒子效果
+			var explosion = CPUParticles2D.new()
+			explosion.amount = 120
+			explosion.explosiveness = 1.0
+			explosion.lifetime = 1.2
+			explosion.one_shot = true
+			explosion.spread = 180.0
+			explosion.gravity = Vector2.ZERO
+			explosion.initial_velocity_min = 180.0
+			explosion.initial_velocity_max = 450.0
+			explosion.scale_amount_min = 10.0
+			explosion.scale_amount_max = 28.0
+
+			var circle_tex = load("res://Shapes/Circle.svg")
+			if circle_tex:
+				explosion.texture = circle_tex
+
+			var grad = Gradient.new()
+			grad.set_colors(
+				PackedColorArray(
+					[
+						Color(2.0, 2.0, 1.5, 1.0),
+						Color(1.0, 0.5, 0.0, 1.0),
+						Color(0.8, 0.0, 0.0, 1.0),
+						Color(0.2, 0.0, 0.0, 0.0)
+					]
+				)
+			)
+			grad.set_offsets(PackedFloat32Array([0.0, 0.25, 0.6, 1.0]))
+
+			var curve = Curve.new()
+			curve.add_point(Vector2(0.0, 1.0))
+			curve.add_point(Vector2(0.6, 0.7))
+			curve.add_point(Vector2(1.0, 0.0))
+
+			explosion.color_ramp = grad
+			explosion.scale_amount_curve = curve
+
+			get_parent().add_child(explosion)
+			explosion.global_position = global_position
+			explosion.emitting = true
+
+			explosion.finished.connect(explosion.queue_free)
+
+			queue_free()
+	)
 
 
 func interruptible_wait(time: float) -> bool:
@@ -1008,11 +1008,14 @@ func deal_damage(damage: int):
 
 
 func _play_hit_flash():
+	var mat = boss_sprite.material as ShaderMaterial
+	if not mat:
+		return
 	var flash_tween = create_tween()
-	sprites.modulate = Color(1, 0, 0, 1)
-	flash_tween.tween_property(sprites, "modulate", Color(1, 0, 0, 1), 0.008)
-	flash_tween.tween_property(sprites, "modulate", Color(3, 3, 3, 1), 0.05)
-	flash_tween.tween_property(sprites, "modulate", Color(1, 0, 0, 1), 0.05)
+	mat.set_shader_parameter("hit_flash_strength", 1.0)
+	flash_tween.tween_property(mat, "shader_parameter/hit_flash_strength", 0.0, 0.05)
+	flash_tween.tween_property(mat, "shader_parameter/hit_flash_strength", 1.0, 0.05)
+	flash_tween.tween_property(mat, "shader_parameter/hit_flash_strength", 0.0, 0.08)
 
 
 # 在場地半徑 radius 處，以 angle 角度（rad）生成飛劍，指向圓心，並在 wait 秒後以 speed 速度飛向對角

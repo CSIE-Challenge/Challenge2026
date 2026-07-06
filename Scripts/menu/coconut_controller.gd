@@ -88,5 +88,5 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
 		match event.keycode:
 			KEY_J:
-				# is_immutable = !is_immutable
-				pass
+				is_immutable = !is_immutable
+				#pass
