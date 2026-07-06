@@ -34,7 +34,7 @@ void fragment(){
 	float x = p.x + (n-0.5)*noise_strength*0.05;
 	float show = abs(x) <= thickness? 1.0: 0.0;
 	float d = abs(p.y) <= draw? 1.0: 0.0;
-	float n_bands = floor(n * float(color_bands)) / float(color_bands);
+	float n_bands = floor(n * float(color_bands)) / float(max(color_bands - 1, 1));
 	vec3 noise_color = color.rgb * (1.0 - color_variation + color_variation * n_bands);
 	COLOR = vec4(noise_color, show * d);
 }
