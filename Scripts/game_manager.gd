@@ -7,6 +7,7 @@ extends Node2D
 @export var energy_bar_label: Label
 @export var energy_bar: Node2D
 @export var opponent_energy_bar_label: Label
+@export var time_label: Label
 @export var result_screen: ResultScreen
 @export var level_label: Label
 @export var health_icon: HealthIcon
@@ -66,6 +67,7 @@ func _ready() -> void:
 	game_duration_timer.wait_time = game_duration
 	game_duration_timer.timeout.connect(_on_game_duration_timeout)
 	game_duration_timer.start()
+	_update_time_label()
 
 	player_invincible = false
 
@@ -86,6 +88,7 @@ func _physics_process(delta: float) -> void:
 	# Energy regen is NOT here -- it ticks discretely via EnergyIncreaseTimer.
 	if game_over:
 		return
+	_update_time_label()
 	agent_action_service.update_cooldowns(delta)
 	trap_request_scheduler.process_requests()
 
@@ -355,6 +358,14 @@ func _on_network_health_changed(peer_id: int, health: int) -> void:
 		return
 
 	_update_opponent_energy_label(peer_id, NetworkManager.get_energy(peer_id))
+
+
+func _update_time_label() -> void:
+	# Show whole seconds still remaining (counts down game_duration -> 0).
+	# The label uses right alignment, so digits stay anchored at the right edge
+	# (e.g. "180", "99", "1" all keep the ones digit in the same spot).
+	var seconds_left := int(ceil(game_duration_timer.time_left))
+	time_label.text = str(seconds_left)
 
 
 func _update_energy_label() -> void:

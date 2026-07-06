@@ -18,6 +18,7 @@
 [ext_resource type="Script" uid="uid://c8r5j40yj4je7" path="res://Scripts/agent_action_service.gd" id="9_puebw"]
 [ext_resource type="Texture2D" uid="uid://f5ertr28h6kq" path="res://Shapes/feather.svg" id="15_feather"]
 [ext_resource type="Script" uid="uid://ddqb3djaesce4" path="res://Scripts/health_icon.gd" id="16_health_icon"]
+[ext_resource type="FontFile" uid="uid://besvarn3s1kyg" path="res://assets/fonts/DSEG7Classic-Bold.ttf" id="10_dseg"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jb71e"]
 texture = ExtResource("8_rg35f")
@@ -348,7 +349,7 @@ process_material = SubResource("ParticleProcessMaterial_5i20n")
 
 [node name="EnergyBar" parent="SubViewport" unique_id=339971714 instance=ExtResource("8_ltefv")]
 
-[node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "camera", "health_label", "health_icon", "energy_balls_label", "energy_bar_label", "energy_bar", "opponent_energy_bar_label", "result_screen", "level_label", "walls")]
+[node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "camera", "health_label", "health_icon", "energy_balls_label", "energy_bar_label", "energy_bar", "opponent_energy_bar_label", "time_label", "result_screen", "level_label", "walls")]
 script = ExtResource("1_kwrm5")
 player = NodePath("../SubViewport/Stage/Player")
 camera = NodePath("../GameCamera")
@@ -358,6 +359,7 @@ energy_balls_label = NodePath("../HUD/EnergyBallsLabel")
 energy_bar_label = NodePath("../HUD/EnergyBarLabel")
 energy_bar = NodePath("../SubViewport/EnergyBar")
 opponent_energy_bar_label = NodePath("../HUD/OpponentEnergyBarLabel")
+time_label = NodePath("../HUD/TimeLabel")
 result_screen = NodePath("../ResultScreen")
 level_label = NodePath("../HUD/LevelLabel")
 walls = [NodePath("../SubViewport/Stage/Walls/RightWall/Bound"), NodePath("../SubViewport/Stage/Walls/LeftWall/Bound"), NodePath("../SubViewport/Stage/Walls/UpWall/Bound"), NodePath("../SubViewport/Stage/Walls/DownWall/Bound")]
@@ -429,6 +431,17 @@ offset_right = -32.0
 offset_bottom = 48.0
 script = ExtResource("16_health_icon")
 unit_icon = ExtResource("15_feather")
+
+[node name="TimeLabel" type="Label" parent="HUD"]
+offset_left = 21.0
+offset_top = 178.0
+offset_right = 171.0
+offset_bottom = 238.0
+theme_override_colors/font_color = Color(0.11764706, 0.11764706, 0.13725491, 1)
+theme_override_font_sizes/font_size = 44
+theme_override_fonts/font = ExtResource("10_dseg")
+text = "180"
+horizontal_alignment = 2
 
 [node name="TrapRequestScheduler" type="Node" parent="." unique_id=578271909]
 script = ExtResource("8_urrcd")
