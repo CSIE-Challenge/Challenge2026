@@ -6,7 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://cwcgxf140mcg3" path="res://Scenes/energy_bar/coconut.tscn" id="4_me4vp"]
 
 [node name="OpponentEnergyBar" type="Node2D" unique_id=339971715]
-scale = Vector2(1, -1)
 script = ExtResource("1_lviin")
 trunk = ExtResource("2_hj7k3")
 leaf = ExtResource("3_pgbhh")

@@ -1,11 +1,12 @@
 extends Node2D
 # Opponent variant of the coconut tree energy bar.
-# Differences from the player's own energy_bar.gd:
-#   1. Every part is tinted a cool blue (`tint`) via modulate.
-#   2. Coconuts never fly to the tree; coconut_count is derived directly from
-#      energy, so there is no eaten_coconut / spawn_eaten_coconut path at all.
-#   3. The tree grows top -> down: the scene root is flipped (scale.y = -1) and
-#      anchored near the top of the screen, so the trunk/canopy hang downward.
+# It grows bottom -> up exactly like the player's own energy_bar.gd; the only
+# intended visual difference is the color (`tint`). It is anchored on the LEFT,
+# mirroring the player's tree on the right.
+#
+# Note: the opponent never collects orbs on our screen, so there is no source
+# position to fly a coconut from. coconut_count is therefore derived directly
+# from the opponent's energy and there is no eaten_coconut path at all.
 const TRUNK_HEIGHT_PIXEL = 36
 
 @export var trunk: PackedScene
@@ -16,7 +17,7 @@ const TRUNK_HEIGHT_PIXEL = 36
 @export var energy: int = 0
 @export var coconut_count: int = 0
 @export var tree_height: float
-@export var tree_root_position: Vector2 = Vector2(172, 130)
+@export var tree_root_position: Vector2 = Vector2(172, 512)
 var trunks: Array[Node2D]
 var leaves: Array[Node2D]
 var coconuts: Array[Node2D]
