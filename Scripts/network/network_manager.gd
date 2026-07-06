@@ -25,7 +25,7 @@ signal demo_disconnected
 signal demo_state_received(data: Dictionary)
 
 const MAX_ENERGY := 100
-const MAX_HEALTH := 100
+const MAX_HEALTH := 5
 const DEFAULT_PORT := 7777
 const DEFAULT_SERVER_ADDRESS := "127.0.0.1"
 const MAX_CLIENTS := 3
@@ -34,6 +34,7 @@ var connected_peer_ids: Array[int] = []
 var energy_by_peer_id: Dictionary = {}
 var health_by_peer_id: Dictionary = {}
 var demo_peer_id: int = -1  # -1 when no demo is connected
+var max_health: int = MAX_HEALTH
 var _client_states: Dictionary = {}  # peer_id → state snapshot Dictionary
 var _server_receive_count: int = 0
 var _demo_push_count: int = 0
@@ -42,6 +43,7 @@ var _demo_push_count: int = 0
 ## Called on startup. Connects multiplayer signals and handles command-line launch.
 func _ready() -> void:
 	_connect_multiplayer_signals()
+	max_health = _load_max_health_from_game_json()
 	_start_from_command_line(OS.get_cmdline_user_args())
 
 	if multiplayer.is_server() and not _has_demo_flag(OS.get_cmdline_user_args()):
@@ -146,7 +148,25 @@ func get_energy(peer_id: int) -> int:
 
 ## Returns the server-approved health for [param peer_id].
 func get_health(peer_id: int) -> int:
-	return int(health_by_peer_id.get(peer_id, MAX_HEALTH))
+	return int(health_by_peer_id.get(peer_id, max_health))
+
+
+## Returns the configured gameplay health cap loaded from Data/game.json.
+func get_max_health() -> int:
+	return max_health
+
+
+func _load_max_health_from_game_json() -> int:
+	var game_data: Dictionary = GameData.new().data
+	if typeof(game_data) != TYPE_DICTIONARY:
+		return MAX_HEALTH
+
+	var player_data: Dictionary = game_data.get("player", {})
+	if typeof(player_data) != TYPE_DICTIONARY:
+		return MAX_HEALTH
+
+	var configured := int(player_data.get("max_health", MAX_HEALTH))
+	return max(1, configured)
 
 
 ## Returns every peer for which this client has authoritative status cache.
@@ -240,9 +260,9 @@ func _on_peer_connected(peer_id: int) -> void:
 	if not connected_peer_ids.has(peer_id):
 		connected_peer_ids.append(peer_id)
 	energy_by_peer_id[peer_id] = 0
-	health_by_peer_id[peer_id] = MAX_HEALTH
+	health_by_peer_id[peer_id] = max_health
 	_broadcast_energy(peer_id, 0)
-	_broadcast_health(peer_id, MAX_HEALTH)
+	_broadcast_health(peer_id, max_health)
 	_sync_energy_to_peer(peer_id)
 	_sync_health_to_peer(peer_id)
 
@@ -536,7 +556,7 @@ func _server_change_health(peer_id: int, delta: int, reason := "", reject_peer_i
 		return false
 
 	var old_health := get_health(peer_id)
-	var new_health := clampi(old_health + delta, 0, MAX_HEALTH)
+	var new_health := clampi(old_health + delta, 0, max_health)
 
 	health_by_peer_id[peer_id] = new_health
 	_broadcast_health(peer_id, new_health)
@@ -594,7 +614,7 @@ func _ensure_local_peer_state() -> void:
 	if not energy_by_peer_id.has(peer_id):
 		energy_by_peer_id[peer_id] = 0
 	if not health_by_peer_id.has(peer_id):
-		health_by_peer_id[peer_id] = MAX_HEALTH
+		health_by_peer_id[peer_id] = max_health
 
 
 ## Public: store a state snapshot for [param peer_id].

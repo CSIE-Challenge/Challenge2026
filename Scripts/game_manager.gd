@@ -28,8 +28,6 @@ var current_level := 0
 var max_level := 4
 var level_duration: Array
 var _health_icon_ready := false
-var _last_local_network_health := 0
-var _has_local_health_network_seed := false
 
 @onready var energy_ball: Node2D = $"../SubViewport/Stage/EnergyBall"
 @onready var player_invincibility_timer = $PlayerInvincibilityTimer
@@ -358,8 +356,7 @@ func _on_network_energy_changed(peer_id: int, energy: int) -> void:
 
 func _on_network_health_changed(peer_id: int, health: int) -> void:
 	if peer_id == multiplayer.get_unique_id():
-		var normalized_health: int = _normalize_network_health(health)
-		_update_health_display(normalized_health)
+		_update_health_display(clampi(health, 0, max_health))
 		if player == null:
 			return
 		if player.health <= 0:
@@ -395,32 +392,7 @@ func _setup_health_ui() -> void:
 	if health_icon != null:
 		health_icon.set_max_health(max_health)
 		_health_icon_ready = true
-	# Seed the normalization baseline with raw network health so the first
-	# subsequent network update maps to exactly one local health step.
-	var local_peer_id: int = multiplayer.get_unique_id()
-	_last_local_network_health = NetworkManager.get_health(local_peer_id)
-	_has_local_health_network_seed = true
 	_update_health_display(clampi(start_health, 0, max_health))
-
-
-# TEMPORARY: keeps gameplay stable while trap damage/heal values are still
-# being tuned. Network APIs remain untouched; we normalize all network health
-# updates to +/-1 deltas for local display/logic.
-func _normalize_network_health(raw_health: int) -> int:
-	if player == null:
-		return clampi(raw_health, 0, max_health)
-	if not _has_local_health_network_seed:
-		_last_local_network_health = raw_health
-		_has_local_health_network_seed = true
-		return clampi(player.health, 0, max_health)
-
-	var target_health: int = int(player.health)
-	if raw_health > _last_local_network_health:
-		target_health += 1
-	elif raw_health < _last_local_network_health:
-		target_health -= 1
-	_last_local_network_health = raw_health
-	return clampi(target_health, 0, max_health)
 
 
 func _update_health_display(health: int) -> void:

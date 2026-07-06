@@ -14,7 +14,7 @@
 	"trap2-electric_ring": {
 		"path": "res://Scenes/traps/trap2-electric_ring.tscn",
 		"cooldown_times": 3.0,
-		"damage": 2,
+		"damage": 1,
 		"energy_costs": 10,
 		"standard_radius": 54.0,
 		"player_radius": 13.5,
@@ -28,7 +28,7 @@
 	"trap3-tracing_bullet": {
 		"path": "res://Scenes/traps/trap3-tracing_bullet.tscn",
 		"cooldown_times": 3.0,
-		"damage": 3,
+		"damage": 1,
 		"energy_costs": 5,
 		"turn_rate": 2.0,
 		"max_speed": 300.0,
@@ -40,7 +40,7 @@
 	"trap4-conveyor": {
 		"path": "res://Scenes/traps/trap4-conveyor.tscn",
 		"cooldown_times": 3.0,
-		"damage": 4,
+		"damage": 1,
 		"energy_costs": 10,
 		"speed": 100,
 		"lifetime": 5.0,
@@ -53,7 +53,7 @@
 	"trap5-icefloor": {
 		"path": "res://Scenes/traps/trap5-icefloor.tscn",
 		"cooldown_times": 3.0,
-		"damage": 5,
+		"damage": 1,
 		"energy_costs": 10,
 		"lifetime": 5.0,
 		"scale": 1.0,
@@ -65,7 +65,7 @@
 	"trap6-scanline": {
 		"path": "res://Scenes/traps/trap6-scanline.tscn",
 		"cooldown_times": 3.0,
-		"damage": 4,
+		"damage": 1,
 		"energy_costs": 10,
 		"min_speed": 120,
 		"max_speed": 250
@@ -73,7 +73,7 @@
 	"trap7-spreading_ripples": {
 		"path": "res://Scenes/traps/trap7-spreading_ripples.tscn",
 		"cooldown_times": 3.0,
-		"damage": 10,
+		"damage": 1,
 		"energy_costs": 10,
 		"warning_time": 1.5,
 		"max_radius": 1000.0,
@@ -88,7 +88,7 @@
 	"trap8-electric_arc": {
 		"path": "res://Scenes/traps/trap8-electric_arc.tscn",
 		"cooldown_times": 3.0,
-		"damage": 8,
+		"damage": 1,
 		"energy_costs": 10,
 		"points_radius": 10,
 		"points_default_scale": [
@@ -107,7 +107,7 @@
 	"trap9-mortar": {
 		"path": "res://Scenes/traps/trap9-mortar.tscn",
 		"cooldown_times": 3.0,
-		"damage": 20,
+		"damage": 1,
 		"energy_costs": 10,
 		"max_height": 300.0,
 		"gravity": 200.0,
@@ -124,7 +124,7 @@
 	"trap10-shotgun": {
 		"path": "res://Scenes/traps/trap10-shotgun.tscn",
 		"cooldown_times": 3.0,
-		"damage": 5.0,
+		"damage": 1,
 		"energy_costs": 10,
 		"bullet_speed": 700.0,
 		"aiming_time": 1.5,
