@@ -5,7 +5,7 @@ var cooldown_times = trap_data["trap2-electric_ring"]["cooldown_times"]
 var damage = trap_data["trap2-electric_ring"]["damage"]
 var energy_costs = trap_data["trap2-electric_ring"]["energy_costs"]
 var standard_radius = trap_data["trap2-electric_ring"]["standard_radius"]
-# sprite scale=1 时场景中实际的电圈半径
+# ▲sprite的scale為1時，場景中實際的電圈半徑
 var player_radius = trap_data["trap2-electric_ring"]["player_radius"]
 var stay_time = trap_data["trap2-electric_ring"]["stay_time"]
 var ring_thickness = trap_data["trap2-electric_ring"]["ring_thickness"]
