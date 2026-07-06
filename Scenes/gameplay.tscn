@@ -348,11 +348,12 @@ process_material = SubResource("ParticleProcessMaterial_5i20n")
 
 [node name="EnergyBar" parent="SubViewport" unique_id=339971714 instance=ExtResource("8_ltefv")]
 
-[node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "camera", "health_label", "energy_balls_label", "energy_bar_label", "energy_bar", "opponent_energy_bar_label", "result_screen", "level_label", "walls")]
+[node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "camera", "health_label", "health_icon", "energy_balls_label", "energy_bar_label", "energy_bar", "opponent_energy_bar_label", "result_screen", "level_label", "walls")]
 script = ExtResource("1_kwrm5")
 player = NodePath("../SubViewport/Stage/Player")
 camera = NodePath("../GameCamera")
 health_label = NodePath("../HUD/HealthLabel")
+health_icon = NodePath("../HUD/HealthIcons")
 energy_balls_label = NodePath("../HUD/EnergyBallsLabel")
 energy_bar_label = NodePath("../HUD/EnergyBarLabel")
 energy_bar = NodePath("../SubViewport/EnergyBar")
@@ -418,7 +419,7 @@ offset_top = 88.0
 offset_right = 380.0
 offset_bottom = 111.0
 
-[node name="HealthIcons" type="HBoxContainer" parent="HUD" unique_id=2042111127 node_paths=PackedStringArray("player")]
+[node name="HealthIcons" type="HBoxContainer" parent="HUD" unique_id=2042111127]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -427,7 +428,6 @@ offset_top = 16.0
 offset_right = -32.0
 offset_bottom = 48.0
 script = ExtResource("16_health_icon")
-player = NodePath("../../SubViewport/Stage/Player")
 unit_icon = ExtResource("15_feather")
 
 [node name="TrapRequestScheduler" type="Node" parent="." unique_id=578271909]

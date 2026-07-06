@@ -3,30 +3,41 @@ extends HBoxContainer
 
 signal depleted
 
-@export var player: CharacterBody2D
 @export var life_capacity: int = 5
 @export var unit_icon: Texture2D
 @export var icon_size: Vector2 = Vector2(24, 24)
 @export var inactive_alpha: float = 0.25
 
 var _icons: Array[TextureRect] = []
-var _remaining_lives: int = 0
-var _last_player_health: int = 0
+var _current_health: int = 0
+var _max_health: int = 0
 
 
 func _ready() -> void:
-	if life_capacity < 0:
-		life_capacity = 0
+	_set_max_health_safely(life_capacity)
 	if unit_icon == null:
 		unit_icon = preload("res://Shapes/feather.svg")
 
 	_ensure_icons()
-	_remaining_lives = life_capacity
-	if player != null:
-		_last_player_health = int(player.health)
+	set_health(_max_health)
+
+
+func set_max_health(max_hp: int) -> void:
+	_set_max_health_safely(max_hp)
+	_ensure_icons()
+	if _current_health > _max_health:
+		_current_health = _max_health
 	_refresh_display()
-	if not Global.player_hit.is_connected(_on_player_hit):
-		Global.player_hit.connect(_on_player_hit)
+
+
+func set_health(current_health: int) -> void:
+	var new_health: int = clampi(current_health, 0, _max_health)
+	if new_health == _current_health:
+		return
+	_current_health = new_health
+	_refresh_display()
+	if _current_health <= 0:
+		depleted.emit()
 
 
 func _ensure_icons() -> void:
@@ -34,8 +45,8 @@ func _ensure_icons() -> void:
 		icon.queue_free()
 	_icons = []
 
-	for _i in range(life_capacity):
-		var icon := TextureRect.new()
+	for _i in range(_max_health):
+		var icon: TextureRect = TextureRect.new()
 		icon.custom_minimum_size = icon_size
 		icon.size = icon_size
 		icon.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -47,36 +58,16 @@ func _ensure_icons() -> void:
 		_icons.append(icon)
 
 
-func _on_player_hit(_damage: int) -> void:
-	if life_capacity <= 0:
-		return
-	if player == null:
-		return
-
-	var current_health: int = int(player.health)
-	if current_health >= _last_player_health:
-		_last_player_health = current_health
-		return
-	_last_player_health = current_health
-
-	_remaining_lives = max(_remaining_lives - 1, 0)
-	_refresh_display()
-	if _remaining_lives <= 0:
-		depleted.emit()
-
-
-func _exit_tree() -> void:
-	if Global.player_hit.is_connected(_on_player_hit):
-		Global.player_hit.disconnect(_on_player_hit)
-
-
 func _refresh_display() -> void:
-	if player == null:
+	if _max_health <= 0:
 		return
-	if life_capacity <= 0:
-		return
-	var remaining: int = _remaining_lives
 
+	var remaining: int = _current_health
 	for i in range(_icons.size()):
 		var alpha: float = 1.0 if i < remaining else inactive_alpha
 		_icons[i].modulate = Color(1, 1, 1, alpha)
+
+
+func _set_max_health_safely(value: int) -> void:
+	_max_health = max(0, int(value))
+	life_capacity = _max_health

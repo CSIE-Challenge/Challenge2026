@@ -9,10 +9,12 @@ extends Node2D
 @export var opponent_energy_bar_label: Label
 @export var result_screen: ResultScreen
 @export var level_label: Label
+@export var health_icon: HealthIcon
 @export var walls: Array[Sprite2D]
 var energy_increase_period: Array
 var player_invincibility_time := 1.0
 var game_duration := 180.0
+var max_health := 5
 
 var energy_ball_count := 0
 var energy_amount := 0
@@ -25,6 +27,9 @@ var trap_data = TrapData.new().data
 var current_level := 0
 var max_level := 4
 var level_duration: Array
+var _health_icon_ready := false
+var _last_local_network_health := 0
+var _has_local_health_network_seed := false
 
 @onready var energy_ball: Node2D = $"../SubViewport/Stage/EnergyBall"
 @onready var player_invincibility_timer = $PlayerInvincibilityTimer
@@ -37,6 +42,9 @@ var level_duration: Array
 
 func _ready() -> void:
 	_reload_from_game_data()
+	if player != null:
+		player.max_health = max_health
+		player.health = max_health
 
 	survival_started_msec = Time.get_ticks_msec()
 	Global.player_hit.connect(on_player_hit)
@@ -45,7 +53,7 @@ func _ready() -> void:
 	player_invincibility_timer.timeout.connect(_on_player_invincibility_timer_timeout)
 	NetworkManager.energy_changed.connect(_on_network_energy_changed)
 	NetworkManager.health_changed.connect(_on_network_health_changed)
-	health_label.text = "Health: %d" % player.max_health
+	_setup_health_ui()
 	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
 	_update_energy_label()
 	_update_opponent_energy_label(0, 0)
@@ -79,6 +87,7 @@ func _reload_from_game_data() -> void:
 	energy_increase_period = game_data.data["game_manager"]["energy_increase_period"]
 	player_invincibility_time = game_data.data["game_manager"]["player_invincibility_time"]
 	game_duration = game_data.data["game_manager"]["game_duration"]
+	max_health = int(game_data.data["player"]["max_health"])
 	max_level = game_data.data["game_manager"]["max_level"]
 	level_duration = game_data.data["game_manager"]["level_duration"]
 
@@ -154,7 +163,7 @@ func _connect_agent_action_signals() -> void:
 
 
 func _on_heal_used(_heal_amount: int, _energy_cost: int, _heal_uses_left: int) -> void:
-	health_label.text = "Health: %d" % player.health
+	_update_health_display(player.health)
 
 
 func _on_trap_approved(request: Dictionary, _energy_cost: float) -> void:
@@ -349,9 +358,11 @@ func _on_network_energy_changed(peer_id: int, energy: int) -> void:
 
 func _on_network_health_changed(peer_id: int, health: int) -> void:
 	if peer_id == multiplayer.get_unique_id():
-		player.health = health
-		health_label.text = "Health: %d" % player.health
-		if player.health <= 0.0:
+		var normalized_health: int = _normalize_network_health(health)
+		_update_health_display(normalized_health)
+		if player == null:
+			return
+		if player.health <= 0:
 			finish_game()
 		return
 
@@ -375,3 +386,51 @@ func _update_opponent_energy_label(peer_id: int, energy: int) -> void:
 			NetworkManager.get_health(peer_id),
 		]
 	)
+
+
+func _setup_health_ui() -> void:
+	var start_health: int = max_health
+	if player != null:
+		start_health = int(player.health)
+	if health_icon != null:
+		health_icon.set_max_health(max_health)
+		_health_icon_ready = true
+	# Seed the normalization baseline with raw network health so the first
+	# subsequent network update maps to exactly one local health step.
+	var local_peer_id: int = multiplayer.get_unique_id()
+	_last_local_network_health = NetworkManager.get_health(local_peer_id)
+	_has_local_health_network_seed = true
+	_update_health_display(clampi(start_health, 0, max_health))
+
+
+# TEMPORARY: keeps gameplay stable while trap damage/heal values are still
+# being tuned. Network APIs remain untouched; we normalize all network health
+# updates to +/-1 deltas for local display/logic.
+func _normalize_network_health(raw_health: int) -> int:
+	if player == null:
+		return clampi(raw_health, 0, max_health)
+	if not _has_local_health_network_seed:
+		_last_local_network_health = raw_health
+		_has_local_health_network_seed = true
+		return clampi(player.health, 0, max_health)
+
+	var target_health: int = int(player.health)
+	if raw_health > _last_local_network_health:
+		target_health += 1
+	elif raw_health < _last_local_network_health:
+		target_health -= 1
+	_last_local_network_health = raw_health
+	return clampi(target_health, 0, max_health)
+
+
+func _update_health_display(health: int) -> void:
+	if player == null:
+		return
+	var current_health: int = clampi(health, 0, max_health)
+	player.health = current_health
+	health_label.text = "Health: %d" % current_health
+	if health_icon != null:
+		if not _health_icon_ready:
+			health_icon.set_max_health(max_health)
+			_health_icon_ready = true
+		health_icon.set_health(current_health)

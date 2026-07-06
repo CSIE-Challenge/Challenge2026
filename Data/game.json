@@ -32,7 +32,7 @@
 		"jump_velocity": 750.0,
 		"jump_gravity": 2500.0,
 		"jump_fall_multiplier": 1.5,
-		"max_health": 100,
+		"max_health": 5,
 		"invincibility_flicker_period": 8
 	},
 	"heal": {
