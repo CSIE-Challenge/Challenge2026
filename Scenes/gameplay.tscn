@@ -8,9 +8,9 @@
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_wbxth"]
 [ext_resource type="Script" uid="uid://cuxjrdxtrso0m" path="res://Scripts/stage.gd" id="3_1qnfl"]
 [ext_resource type="Script" uid="uid://dkfqc5fwcbi7" path="res://Scripts/sand_tile_map.gd" id="4_jb71e"]
-[ext_resource type="Script" uid="uid://c8md8v3eeja45" path="res://Scripts/state_serializer.gd" id="4_ssg01"]
+[ext_resource type="Script" uid="uid://c8md8v3eeja45" path="res://Scripts/network/state_serializer.gd" id="4_ssg01"]
 [ext_resource type="Shader" uid="uid://flarch4chr80" path="res://Shaders/bounds.gdshader" id="7_r5xtw"]
-[ext_resource type="PackedScene" uid="uid://cwfs8yn4r4hjl" path="res://Scenes/energy_text.tscn" id="7_ra47u"]
+[ext_resource type="PackedScene" uid="uid://cir126h8l4wqw" path="res://Scenes/energy_text.tscn" id="7_ra47u"]
 [ext_resource type="PackedScene" uid="uid://dukfpi8j30j5" path="res://Scenes/energy_bar/energy_bar.tscn" id="8_ltefv"]
 [ext_resource type="PackedScene" path="res://Scenes/result_screen.tscn" id="8_result"]
 [ext_resource type="Texture2D" uid="uid://c1rj0im3pw7gd" path="res://Shapes/sand_background.png" id="8_rg35f"]
@@ -235,6 +235,7 @@ stage_bounds = Rect2(-220, -220, 440, 440)
 
 [node name="EnergyBall" parent="SubViewport/Stage" unique_id=1714624484 node_paths=PackedStringArray("player_node", "energy_bar") instance=ExtResource("2_ap8xm")]
 z_index = 15
+collision_mask = 8
 player_node = NodePath("../Player")
 energy_text = ExtResource("7_ra47u")
 energy_bar = NodePath("../../EnergyBar")
@@ -298,6 +299,7 @@ texture = ExtResource("1_hf1ha")
 
 [node name="Player" type="CharacterBody2D" parent="SubViewport/Stage" unique_id=1716138881]
 position = Vector2(35, 35)
+collision_layer = 9
 collision_mask = 2
 motion_mode = 1
 script = ExtResource("2_m34ki")

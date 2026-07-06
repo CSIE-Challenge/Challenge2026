@@ -131,9 +131,9 @@ func _invincible_flicker() -> void:
 
 func _adjust_collision_layer() -> void:
 	if isjumping or isinvincible:
-		collision_layer = 0
+		collision_layer = 0 | 8
 	else:
-		collision_layer = 1
+		collision_layer = 1 | 8
 
 
 func invincibility_toggle(on: bool):
