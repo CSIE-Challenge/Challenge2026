@@ -1,0 +1,117 @@
+name: Release Build
+
+# Builds everything the launcher downloads from a release:
+#   - agent-<os>-<arch>.zip   Python agent bundles, built natively per platform
+#   - <tag>_<GAME_NAME>_*     game builds, cross-exported from one Linux runner
+# Asset names must match launcher.gd in CSIE-Challenge/Challenge2026-Launcher.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  GAME_NAME: Challenge2026
+
+jobs:
+  agent:
+    name: agent (${{ matrix.label }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-latest
+            label: linux-x86_64
+          - runner: windows-latest
+            label: windows-x86_64
+          - runner: macos-latest
+            label: macos-aarch64
+    runs-on: ${{ matrix.runner }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: agent
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: agent/uv.lock
+
+      - name: Build bundle
+        run: ./build_agent_bundle.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: agent-${{ matrix.label }}
+          path: agent/build/agent-${{ matrix.label }}.zip
+          if-no-files-found: error
+
+  game:
+    name: game (linux, windows, macos)
+    runs-on: ubuntu-latest
+    env:
+      GODOT_VERSION: "4.6.2"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Godot and export templates
+        run: |
+          base="https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable"
+          curl -fsSLO "$base/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          unzip -q "Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          sudo mv "Godot_v${GODOT_VERSION}-stable_linux.x86_64" /usr/local/bin/godot
+          curl -fsSLO "$base/Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
+          mkdir -p "$HOME/.local/share/godot/export_templates"
+          unzip -q "Godot_v${GODOT_VERSION}-stable_export_templates.tpz" -d /tmp/godot-templates
+          mv /tmp/godot-templates/templates \
+             "$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable"
+          godot --version
+
+      - name: Import project
+        run: godot --headless --import
+
+      - name: Export game builds
+        run: |
+          TAG="${GITHUB_REF_NAME//\//-}"
+          mkdir -p export
+          godot --headless --export-release "Linux" \
+            "export/${TAG}_${GAME_NAME}_linux.x86_64"
+          godot --headless --export-release "Windows Desktop" \
+            "export/${TAG}_${GAME_NAME}_windows.exe"
+          # Export under the bare game name so the .app inside the zip is
+          # <GAME_NAME>.app (the launcher moves it by that name), then rename.
+          godot --headless --export-release "macOS" "export/${GAME_NAME}.zip"
+          mv "export/${GAME_NAME}.zip" "export/${TAG}_${GAME_NAME}_macos.zip"
+          ls -lh export
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: game-builds
+          path: export/
+          if-no-files-found: error
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: [agent, game]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Upload assets to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 \
+            || gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" \
+                 --title "$GITHUB_REF_NAME" \
+                 --notes "Auto-built release. The launcher downloads the game build and agent bundle for your platform from these assets."
+          gh release upload "$GITHUB_REF_NAME" dist/* \
+            --repo "$GITHUB_REPOSITORY" --clobber
