@@ -99,7 +99,7 @@ func _jump():
 	jump_count += 1
 	current_jump_velocity = jump_velocity
 	current_sprite_y = 0
-	_jump_invisiblility_toggle(true)
+	_adjust_collision_layer()
 	AudioManager.jump.play()
 
 
@@ -112,7 +112,7 @@ func _jump_process(delta: float):
 	if current_sprite_y <= 0:
 		isjumping = false
 		body_sprite.position.y = 0
-		_jump_invisiblility_toggle(false)
+		_adjust_collision_layer()
 		land_particle.restart()
 		land_particle.emitting = true
 	else:
@@ -129,8 +129,8 @@ func _invincible_flicker() -> void:
 		modulate.a = 1
 
 
-func _jump_invisiblility_toggle(on: bool):
-	if on:
+func _adjust_collision_layer() -> void:
+	if isjumping or isinvincible:
 		collision_layer = 0
 	else:
 		collision_layer = 1
@@ -138,5 +138,6 @@ func _jump_invisiblility_toggle(on: bool):
 
 func invincibility_toggle(on: bool):
 	isinvincible = on
+	_adjust_collision_layer()
 	if not on:
 		modulate.a = 1

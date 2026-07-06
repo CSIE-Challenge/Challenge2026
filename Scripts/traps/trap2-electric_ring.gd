@@ -26,14 +26,8 @@ var died: bool
 static func initialize(time: float, radius: float) -> Trap2ElectricRing:
 	var trap := preload("res://Scenes/traps/trap2-electric_ring.tscn").instantiate()
 	Global.stage.add_child(trap)
-	trap.spawn(radius, time, Global.game_manager.player)
+	trap.spawn(radius, time)
 	return trap
-
-
-func _ready():
-	#if not test_player == null:
-	player = null
-	spawn(randf_range(75, 150), randf_range(1.0, 2.0), player)
 
 
 func _physics_process(delta: float) -> void:
@@ -57,9 +51,9 @@ func _physics_process(delta: float) -> void:
 			_detect_player()
 
 
-func spawn(set_radius: float, delay_time: float, target_player: CharacterBody2D):
-	if player == null:
-		player = target_player
+func spawn(set_radius: float, delay_time: float):
+	player = Global.game_manager.player
+	position = player.position
 	radius = set_radius
 	died = false
 	warning_sprite.visible = true
