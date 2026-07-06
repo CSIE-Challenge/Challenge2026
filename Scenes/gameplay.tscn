@@ -12,6 +12,7 @@
 [ext_resource type="Shader" uid="uid://flarch4chr80" path="res://Shaders/bounds.gdshader" id="7_r5xtw"]
 [ext_resource type="PackedScene" uid="uid://cir126h8l4wqw" path="res://Scenes/energy_text.tscn" id="7_ra47u"]
 [ext_resource type="PackedScene" uid="uid://dukfpi8j30j5" path="res://Scenes/energy_bar/energy_bar.tscn" id="8_ltefv"]
+[ext_resource type="PackedScene" uid="uid://qa2h3u661eeu" path="res://Scenes/energy_bar/opponent_energy_bar.tscn" id="10_oppeb"]
 [ext_resource type="PackedScene" path="res://Scenes/result_screen.tscn" id="8_result"]
 [ext_resource type="Texture2D" uid="uid://c1rj0im3pw7gd" path="res://Shapes/sand_background.png" id="8_rg35f"]
 [ext_resource type="Script" uid="uid://bs7ntuoxby0al" path="res://Scripts/trap_request_scheduler.gd" id="8_urrcd"]
@@ -346,7 +347,9 @@ process_material = SubResource("ParticleProcessMaterial_5i20n")
 
 [node name="EnergyBar" parent="SubViewport" unique_id=339971714 instance=ExtResource("8_ltefv")]
 
-[node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "camera", "health_label", "energy_balls_label", "energy_bar_label", "energy_bar", "opponent_energy_bar_label", "result_screen", "level_label", "walls")]
+[node name="OpponentEnergyBar" parent="SubViewport" unique_id=339971715 instance=ExtResource("10_oppeb")]
+
+[node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "camera", "health_label", "energy_balls_label", "energy_bar_label", "energy_bar", "opponent_energy_bar_label", "opponent_energy_bar", "result_screen", "level_label", "walls")]
 script = ExtResource("1_kwrm5")
 player = NodePath("../SubViewport/Stage/Player")
 camera = NodePath("../GameCamera")
@@ -355,6 +358,7 @@ energy_balls_label = NodePath("../HUD/EnergyBallsLabel")
 energy_bar_label = NodePath("../HUD/EnergyBarLabel")
 energy_bar = NodePath("../SubViewport/EnergyBar")
 opponent_energy_bar_label = NodePath("../HUD/OpponentEnergyBarLabel")
+opponent_energy_bar = NodePath("../SubViewport/OpponentEnergyBar")
 result_screen = NodePath("../ResultScreen")
 level_label = NodePath("../HUD/LevelLabel")
 walls = [NodePath("../SubViewport/Stage/Walls/RightWall/Bound"), NodePath("../SubViewport/Stage/Walls/LeftWall/Bound"), NodePath("../SubViewport/Stage/Walls/UpWall/Bound"), NodePath("../SubViewport/Stage/Walls/DownWall/Bound")]
