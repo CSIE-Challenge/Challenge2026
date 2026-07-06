@@ -133,12 +133,13 @@ script = ExtResource("1_y6cpx")
 
 [node name="ElectricRingWarning" type="Sprite2D" parent="." unique_id=1091487232]
 visible = false
+z_index = 10
 material = SubResource("ShaderMaterial_1qnfl")
 texture = ExtResource("3_wkdym")
 
 [node name="ElectricRing" type="Sprite2D" parent="." unique_id=622337439]
 visible = false
-z_index = -1
+z_index = 10
 material = SubResource("ShaderMaterial_rlidi")
 texture = ExtResource("3_wkdym")
 

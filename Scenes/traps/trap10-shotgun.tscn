@@ -491,6 +491,7 @@ _data = {
 }
 
 [node name="ShotgunTrap" type="Node2D" unique_id=936726986]
+z_index = 10
 script = ExtResource("1_oluei")
 
 [node name="Timer" type="Timer" parent="." unique_id=2062558811]

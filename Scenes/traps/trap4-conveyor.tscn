@@ -14,9 +14,6 @@
 resource_local_to_scene = true
 size = Vector2(100, 100)
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_d7757"]
-size = Vector2(100, 100)
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_iq5co"]
 shader = ExtResource("2_jabnn")
 shader_parameter/reveal = 1.0
@@ -62,13 +59,8 @@ script = ExtResource("1_d7757")
 scale = Vector2(1.5, 1.5)
 shape = SubResource("RectangleShape2D_k3tq1")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2126618245]
-visible = false
-modulate = Color(0.65481544, 0.13069847, 0.16253066, 1)
-z_index = -2
-texture = SubResource("PlaceholderTexture2D_d7757")
-
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1507092653]
+z_index = 5
 material = SubResource("ShaderMaterial_iq5co")
 position = Vector2(0, -8.583069e-06)
 scale = Vector2(0.078125, 0.078125)

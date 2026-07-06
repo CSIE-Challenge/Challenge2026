@@ -273,6 +273,7 @@ energy_text = ExtResource("7_ra47u")
 coconut_bar = NodePath("../../CoconutBar")
 
 [node name="Walls" type="Node2D" parent="SubViewport/Stage" unique_id=57048490]
+z_index = 5
 
 [node name="RightWall" type="StaticBody2D" parent="SubViewport/Stage/Walls" unique_id=1255417381]
 position = Vector2(250, 0)

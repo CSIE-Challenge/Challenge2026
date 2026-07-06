@@ -24,13 +24,14 @@ collision_mask = 9
 script = ExtResource("1_j7spk")
 
 [node name="SpilledJuice" type="Sprite2D" parent="." unique_id=2135560715]
-z_index = -2
+z_index = 5
 material = SubResource("ShaderMaterial_rkeu5")
 position = Vector2(1.9073486e-06, -1.2874603e-05)
 scale = Vector2(1.25, 1.2499999)
 texture = ExtResource("3_rvr82")
 
 [node name="JuiceGlass" type="Sprite2D" parent="." unique_id=1268785805]
+z_index = 25
 position = Vector2(72, -56.000008)
 rotation = -1.0471976
 scale = Vector2(0.7, 0.7)
