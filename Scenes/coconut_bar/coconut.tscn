@@ -1,19 +1,19 @@
 [gd_scene format=3 uid="uid://cwcgxf140mcg3"]
 
-[ext_resource type="Script" uid="uid://bdaatdtv7ly1d" path="res://Scripts/energy_bar/coconut.gd" id="1_3clr0"]
-[ext_resource type="Texture2D" uid="uid://d3jafh5p5cfo0" path="res://Shapes/coconut_tree/Coconut.png" id="2_q3pyi"]
+[ext_resource type="Script" uid="uid://bdaatdtv7ly1d" path="res://Scripts/coconut_bar/coconut.gd" id="1_el074"]
+[ext_resource type="Texture2D" uid="uid://d3jafh5p5cfo0" path="res://Shapes/coconut_tree/Coconut.png" id="2_d21fp"]
 
 [node name="Coconut" type="Node2D" unique_id=1302771476]
 z_index = 2
-script = ExtResource("1_3clr0")
+script = ExtResource("1_el074")
 
 [node name="FruitStalk" type="Marker2D" parent="." unique_id=168248056]
 
 [node name="Coconut" type="Sprite2D" parent="FruitStalk" unique_id=1570972638]
 position = Vector2(0, 19)
-texture = ExtResource("2_q3pyi")
+texture = ExtResource("2_d21fp")
 
 [node name="Brightness" type="Sprite2D" parent="FruitStalk" unique_id=1245848407]
 modulate = Color(18.892157, 18.892157, 18.892157, 1)
 position = Vector2(0, 19)
-texture = ExtResource("2_q3pyi")
+texture = ExtResource("2_d21fp")
