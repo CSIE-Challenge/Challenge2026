@@ -55,7 +55,7 @@ jobs:
     name: game (linux, windows, macos)
     runs-on: ubuntu-latest
     env:
-      GODOT_VERSION: "4.6.2"
+      GODOT_VERSION: "4.6.3"
     steps:
       - uses: actions/checkout@v4
 
@@ -83,8 +83,6 @@ jobs:
             "export/${TAG}_${GAME_NAME}_linux.x86_64"
           godot --headless --export-release "Windows Desktop" \
             "export/${TAG}_${GAME_NAME}_windows.exe"
-          # Export under the bare game name so the .app inside the zip is
-          # <GAME_NAME>.app (the launcher moves it by that name), then rename.
           godot --headless --export-release "macOS" "export/${GAME_NAME}.zip"
           mv "export/${GAME_NAME}.zip" "export/${TAG}_${GAME_NAME}_macos.zip"
           ls -lh export
