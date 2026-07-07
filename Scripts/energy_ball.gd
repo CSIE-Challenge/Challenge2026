@@ -2,7 +2,7 @@ extends Area2D
 
 @export var player_node: Node2D
 @export var energy_text: PackedScene
-@export var energy_bar: Node2D
+@export var coconut_bar: Node2D
 
 var is_demo := false
 var energy_ball_spawn_bounds := Rect2(Vector2(-220, -220), Vector2(440, 440))
@@ -22,7 +22,7 @@ var rng := RandomNumberGenerator.new()
 @onready var stage_layer = get_node_or_null("../../../StageLayer")
 @onready var collision_shape = $CollisionShape2D
 @onready var twinkle_particle = $TwinkleParticle
-@onready var eaten_coconut = preload("res://Scenes/energy_bar/eaten_coconut.tscn")
+@onready var eaten_coconut = preload("res://Scenes/coconut_bar/eaten_coconut.tscn")
 
 
 func _ready() -> void:
@@ -57,7 +57,7 @@ func _on_body_entered(body: Node2D) -> void:
 	Audio.play_sfx(Audio.SFX.ENERGY_COLLECTED)
 	_spawn_energy_text()
 	now_combo = min(now_combo + 1, energy_gain[energy_ball_level].size() - 1)
-	energy_bar.spawn_eaten_coconut(self.global_position)
+	coconut_bar.spawn_eaten_coconut(self.global_position)
 	_respawn_energy_ball()
 
 

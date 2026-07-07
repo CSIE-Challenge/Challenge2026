@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://cwcgxf140mcg3" path="res://Scenes/coconut_bar/coconut.tscn" id="4_dm3mp"]
 [ext_resource type="PackedScene" uid="uid://ccsek587w7nqo" path="res://Scenes/coconut_bar/eaten_coconut.tscn" id="5_uqnti"]
 
-[node name="EnergyBar" type="Node2D" unique_id=339971714]
+[node name="CoconutBar" type="Node2D" unique_id=339971714]
 script = ExtResource("1_vw16d")
 trunk = ExtResource("2_qf87j")
 leaf = ExtResource("3_wia73")

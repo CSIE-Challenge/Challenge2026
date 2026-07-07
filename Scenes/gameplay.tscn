@@ -236,12 +236,12 @@ position = Vector2(576, 324)
 script = ExtResource("3_1qnfl")
 stage_bounds = Rect2(-220, -220, 440, 440)
 
-[node name="EnergyBall" parent="SubViewport/Stage" unique_id=1714624484 node_paths=PackedStringArray("player_node", "energy_bar") instance=ExtResource("2_ap8xm")]
+[node name="EnergyBall" parent="SubViewport/Stage" unique_id=1714624484 node_paths=PackedStringArray("player_node", "coconut_bar") instance=ExtResource("2_ap8xm")]
 z_index = 15
 collision_mask = 8
 player_node = NodePath("../Player")
 energy_text = ExtResource("7_ra47u")
-energy_bar = NodePath("../../CoconutBar")
+coconut_bar = NodePath("../../CoconutBar")
 
 [node name="Walls" type="Node2D" parent="SubViewport/Stage" unique_id=57048490]
 

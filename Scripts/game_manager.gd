@@ -8,7 +8,6 @@ extends Node2D
 @export var coconut_bar: Node2D
 @export var opponent_energy_bar_label: Label
 @export var time_label: Label
-@export var opponent_energy_bar: Node2D
 @export var result_screen: ResultScreen
 @export var level_label: Label
 @export var health_icon: HealthIcon
@@ -411,16 +410,3 @@ func _update_health_display(health: int) -> void:
 			health_icon.set_max_health(max_health)
 			_health_icon_ready = true
 		health_icon.set_health(current_health)
-
-## Drives the opponent tree from the true opponent's server-approved energy.
-## We must NOT use the peer_id/energy that fired energy_changed, because that
-## signal also fires for our own peer (see _on_network_energy_changed). Instead
-## we always read the authoritative cache for the actual opponent peer.
-func _refresh_opponent_energy_bar() -> void:
-	var opponent_peer_id := NetworkManager.get_opponent_peer_id()
-	# get_opponent_peer_id() returns -1 when no opponent is known yet, and
-	# aliases to our own id in offline mode; treat both as "no opponent".
-	if opponent_peer_id == -1 or opponent_peer_id == multiplayer.get_unique_id():
-		opponent_energy_bar.energy = 0
-		return
-	opponent_energy_bar.energy = NetworkManager.get_energy(opponent_peer_id)
