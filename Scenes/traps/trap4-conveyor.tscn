@@ -50,6 +50,7 @@ animations = [{
 }]
 
 [node name="Conveyor" type="Area2D" unique_id=745938423]
+collision_mask = 9
 script = ExtResource("1_d7757")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1023844829]

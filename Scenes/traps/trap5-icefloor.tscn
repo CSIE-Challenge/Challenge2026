@@ -20,6 +20,7 @@ shader_parameter/reveal_origin = Vector2(0.745, 0.24)
 shader_parameter/master_alpha = 1.0
 
 [node name="IceFloor" type="Area2D" unique_id=1192991918]
+collision_mask = 9
 script = ExtResource("1_j7spk")
 
 [node name="SpilledJuice" type="Sprite2D" parent="." unique_id=2135560715]
