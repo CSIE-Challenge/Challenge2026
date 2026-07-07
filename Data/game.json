@@ -37,7 +37,7 @@
 	},
 	"heal": {
 		"uses": 2,
-		"amount": 1,
+		"amount": 2,
 		"energy_cost": 40
 	}
 }

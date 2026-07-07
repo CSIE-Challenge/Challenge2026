@@ -11,10 +11,14 @@ extends Node2D
 @export var level_label: Label
 @export var health_icon: HealthIcon
 @export var walls: Array[Sprite2D]
-var energy_increase_period: Array
-var player_invincibility_time := 1.0
-var game_duration := 180.0
-var max_health := 5
+
+var game_data: Dictionary = GameData.new().data
+var energy_increase_period = game_data["game_manager"]["energy_increase_period"]
+var player_invincibility_time = game_data["game_manager"]["player_invincibility_time"]
+var game_duration = game_data["game_manager"]["game_duration"]
+var max_health = int(game_data["player"]["max_health"])
+var max_level = game_data["game_manager"]["max_level"]
+var level_duration = game_data["game_manager"]["level_duration"]
 
 var energy_ball_count := 0
 var energy_amount := 0
@@ -25,8 +29,6 @@ var game_over := false
 var survival_started_msec := 0
 var trap_data = TrapData.new().data
 var current_level := 0
-var max_level := 4
-var level_duration: Array
 var _health_icon_ready := false
 
 @onready var energy_ball: Node2D = $"../SubViewport/Stage/EnergyBall"
@@ -39,7 +41,6 @@ var _health_icon_ready := false
 
 
 func _ready() -> void:
-	_reload_from_game_data()
 	if player != null:
 		player.max_health = max_health
 		player.health = max_health
@@ -78,16 +79,6 @@ func _ready() -> void:
 	Audio.set_bgm(Audio.BGM.GAMEPLAY)
 
 	#_show_test_result_after_delay()
-
-
-func _reload_from_game_data() -> void:
-	var game_data := GameData.new()
-	energy_increase_period = game_data.data["game_manager"]["energy_increase_period"]
-	player_invincibility_time = game_data.data["game_manager"]["player_invincibility_time"]
-	game_duration = game_data.data["game_manager"]["game_duration"]
-	max_health = int(game_data.data["player"]["max_health"])
-	max_level = game_data.data["game_manager"]["max_level"]
-	level_duration = game_data.data["game_manager"]["level_duration"]
 
 
 func _physics_process(delta: float) -> void:
