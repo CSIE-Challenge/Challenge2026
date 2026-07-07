@@ -130,6 +130,8 @@ func _resolve_initial_directory() -> String:
 		return ProjectSettings.globalize_path("res://")
 
 	var executable_base_dir := OS.get_executable_path().get_base_dir()
+	if OS.has_feature("macos"):
+		executable_base_dir = executable_base_dir.get_base_dir().get_base_dir().get_base_dir()
 	var runtime_candidate := executable_base_dir.path_join(DEFAULT_AGENT_DIR)
 	if DirAccess.dir_exists_absolute(runtime_candidate):
 		return runtime_candidate
