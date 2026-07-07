@@ -35,6 +35,7 @@ static func initialize(pos: Vector2, dir: Vector2) -> Trap4Conveyor:
 
 
 func _ready() -> void:
+	$AnimatedSprite2D.z_index = Util.LAYERS["Trap4Conveyor/AnimatedSprite2D"]
 	# Trap should expire after the configured lifetime.
 	if is_demo:
 		return

@@ -29,6 +29,9 @@ static func initialize(pos: Vector2, expand_rate: float) -> Trap7SpreadingRipple
 
 
 func _ready() -> void:
+	z_index = Util.LAYERS["Trap7SpreadingRipples/SpreadingRipples"]
+	$WarningSprite.z_index = Util.LAYERS["Trap7SpreadingRipples/WarningSprite"]
+	$WaterParticles.z_index = Util.LAYERS["Trap7SpreadingRipples/WaterParticles"]
 	warning_sprite.position = Vector2.ZERO
 	$CollisionShape2D.shape = $CollisionShape2D.shape.duplicate()
 	collision_shape = $CollisionShape2D.shape

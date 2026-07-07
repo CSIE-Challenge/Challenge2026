@@ -39,24 +39,20 @@ shadow_flicker_frequency = 10.0
 [node name="ShellShadow" type="Node2D" parent="." unique_id=991638851]
 
 [node name="Shadow" type="Sprite2D" parent="ShellShadow" unique_id=1302802765]
-z_index = 25
 self_modulate = Color(0, 0, 0, 1)
 scale = Vector2(0.175, 0.175)
 texture = ExtResource("2_w0shn")
 
 [node name="Shell" type="Sprite2D" parent="ShellShadow" unique_id=1326917978]
-z_index = 30
 scale = Vector2(0.19999999, 0.19999999)
 texture = ExtResource("2_w0shn")
 
 [node name="Explosion" type="Sprite2D" parent="." unique_id=227206667]
 visible = false
-z_index = 5
 scale = Vector2(0.9, 0.9)
 texture = ExtResource("3_w0shn")
 
 [node name="GPUParticles2D" type="GPUParticles2D" parent="Explosion" unique_id=941548827]
-z_index = 0
 emitting = false
 amount = 16
 texture = ExtResource("2_rqlhk")

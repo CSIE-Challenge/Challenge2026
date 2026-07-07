@@ -39,6 +39,12 @@ var is_demo := false
 @onready var effect: GPUParticles2D = $Explosion/GPUParticles2D
 
 
+func _ready() -> void:
+	$ShellShadow/Shell.z_index = Util.LAYERS["Trap9Mortar/Shell"]
+	$ShellShadow/Shadow.z_index = Util.LAYERS["Trap9Mortar/Shadow"]
+	$Explosion.z_index = Util.LAYERS["Trap9Mortar/Explosion"]
+
+
 static func initialize(start_pos: Vector2, end_pos: Vector2, air_time: float) -> Trap9Mortar:
 	var trap := preload("res://Scenes/traps/trap9-mortar.tscn").instantiate()
 	Global.stage.add_child(trap)

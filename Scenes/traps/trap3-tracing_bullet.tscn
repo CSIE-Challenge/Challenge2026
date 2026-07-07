@@ -91,7 +91,7 @@ length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("AnimatedSprite2D:scale")
+tracks/0/path = NodePath("Seagull:scale")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -106,7 +106,7 @@ resource_name = "spawn"
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("AnimatedSprite2D:scale")
+tracks/0/path = NodePath("Seagull:scale")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -130,8 +130,7 @@ script = ExtResource("1_uwr5t")
 position = Vector2(1.505, 0)
 shape = SubResource("RectangleShape2D_njlgp")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=520801098]
-z_index = 30
+[node name="Seagull" type="AnimatedSprite2D" parent="." unique_id=520801098]
 material = SubResource("ShaderMaterial_3ko3v")
 rotation = 1.5707964
 scale = Vector2(0.05, 0.07)
@@ -140,7 +139,6 @@ autoplay = "default"
 frame_progress = 0.2636138
 
 [node name="FeatherEffect" type="GPUParticles2D" parent="." unique_id=1778232538]
-z_index = 30
 emitting = false
 texture = ExtResource("8_njlgp")
 lifetime = 0.6

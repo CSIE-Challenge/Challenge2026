@@ -23,6 +23,11 @@ var died: bool
 @onready var animation = $AnimationPlayer
 
 
+func _ready() -> void:
+	$ElectricRingWarning.z_index = Util.LAYERS["Trap2ElectricRing/ElectricRingWarning"]
+	$ElectricRing.z_index = Util.LAYERS["Trap2ElectricRing/ElectricRing"]
+
+
 static func initialize(time: float, radius: float) -> Trap2ElectricRing:
 	var trap := preload("res://Scenes/traps/trap2-electric_ring.tscn").instantiate()
 	Global.stage.add_child(trap)

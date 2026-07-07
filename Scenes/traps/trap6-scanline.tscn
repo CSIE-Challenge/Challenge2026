@@ -17,115 +17,94 @@ shape = SubResource("RectangleShape2D_wwt1h")
 [node name="Hulas" type="Node2D" parent="." unique_id=990402230]
 
 [node name="Hula1" type="Sprite2D" parent="Hulas" unique_id=2082295006]
-z_index = 20
 position = Vector2(-300, 0)
 texture = ExtResource("2_1w6og")
 
 [node name="Hula2" type="Sprite2D" parent="Hulas" unique_id=514545164]
-z_index = 20
 position = Vector2(-270, 0)
 texture = ExtResource("2_1w6og")
 flip_h = true
 
 [node name="Hula3" type="Sprite2D" parent="Hulas" unique_id=623698252]
-z_index = 20
 position = Vector2(-240, 0)
 texture = ExtResource("2_1w6og")
 
 [node name="Hula4" type="Sprite2D" parent="Hulas" unique_id=1168251216]
-z_index = 20
 position = Vector2(-210, 0)
 texture = ExtResource("2_1w6og")
 flip_h = true
 
 [node name="Hula5" type="Sprite2D" parent="Hulas" unique_id=310575029]
-z_index = 20
 position = Vector2(-180, 0)
 texture = ExtResource("2_1w6og")
 
 [node name="Hula6" type="Sprite2D" parent="Hulas" unique_id=1754453307]
-z_index = 20
 position = Vector2(-150, 0)
 texture = ExtResource("2_1w6og")
 flip_h = true
 
 [node name="Hula7" type="Sprite2D" parent="Hulas" unique_id=515346004]
-z_index = 20
 position = Vector2(-120, 0)
 texture = ExtResource("2_1w6og")
 
 [node name="Hula8" type="Sprite2D" parent="Hulas" unique_id=896626624]
-z_index = 20
 position = Vector2(-90, 0)
 texture = ExtResource("2_1w6og")
 flip_h = true
 
 [node name="Hula9" type="Sprite2D" parent="Hulas" unique_id=1372205985]
-z_index = 20
 position = Vector2(-60, 0)
 texture = ExtResource("2_1w6og")
 
 [node name="Hula10" type="Sprite2D" parent="Hulas" unique_id=1715335798]
-z_index = 20
 position = Vector2(-30, 0)
 texture = ExtResource("2_1w6og")
 flip_h = true
 
 [node name="Hula11" type="Sprite2D" parent="Hulas" unique_id=437081398]
-z_index = 20
 texture = ExtResource("2_1w6og")
 
 [node name="Hula12" type="Sprite2D" parent="Hulas" unique_id=468496938]
-z_index = 20
 position = Vector2(30, 0)
 texture = ExtResource("2_1w6og")
 flip_h = true
 
 [node name="Hula13" type="Sprite2D" parent="Hulas" unique_id=142016075]
-z_index = 20
 position = Vector2(60, 0)
 texture = ExtResource("2_1w6og")
 
 [node name="Hula14" type="Sprite2D" parent="Hulas" unique_id=647926868]
-z_index = 20
 position = Vector2(90, 0)
 texture = ExtResource("2_1w6og")
 flip_h = true
 
 [node name="Hula15" type="Sprite2D" parent="Hulas" unique_id=886492664]
-z_index = 20
 position = Vector2(120, 0)
 texture = ExtResource("2_1w6og")
 
 [node name="Hula16" type="Sprite2D" parent="Hulas" unique_id=1735219685]
-z_index = 20
 position = Vector2(150, 0)
 texture = ExtResource("2_1w6og")
 flip_h = true
 
 [node name="Hula17" type="Sprite2D" parent="Hulas" unique_id=1445568659]
-z_index = 20
 position = Vector2(180, 0)
 texture = ExtResource("2_1w6og")
 
 [node name="Hula18" type="Sprite2D" parent="Hulas" unique_id=1855792135]
-z_index = 20
 position = Vector2(210, 0)
 texture = ExtResource("2_1w6og")
 flip_h = true
 
 [node name="Hula19" type="Sprite2D" parent="Hulas" unique_id=974411267]
-z_index = 20
 position = Vector2(240, 0)
 texture = ExtResource("2_1w6og")
 
 [node name="Hula20" type="Sprite2D" parent="Hulas" unique_id=23160113]
-z_index = 20
 position = Vector2(270, 0)
 texture = ExtResource("2_1w6og")
 flip_h = true
 
 [node name="Hula21" type="Sprite2D" parent="Hulas" unique_id=378376064]
-z_index = 20
 position = Vector2(300, 0)
 texture = ExtResource("2_1w6og")

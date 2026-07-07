@@ -23,7 +23,6 @@ shader_parameter/colors = SubResource("GradientTexture1D_fuds7")
 script = ExtResource("1_fbvbf")
 
 [node name="Crack" type="Sprite2D" parent="." unique_id=1970214108]
-z_index = 0
 material = SubResource("ShaderMaterial_nnf58")
 texture = ExtResource("4_fuds7")
 centered = false
@@ -32,7 +31,6 @@ offset = Vector2(-129, -1)
 [node name="StartPoint" type="Node2D" parent="." unique_id=881093858]
 
 [node name="Cone" type="Sprite2D" parent="StartPoint" unique_id=86275766]
-z_index = 10
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("5_fuds7")
 offset = Vector2(0, -30)
@@ -40,7 +38,6 @@ offset = Vector2(0, -30)
 [node name="EndPoint" type="Node2D" parent="." unique_id=2101499371]
 
 [node name="Cone" type="Sprite2D" parent="EndPoint" unique_id=384667784]
-z_index = 10
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("5_fuds7")
 offset = Vector2(0, -30)

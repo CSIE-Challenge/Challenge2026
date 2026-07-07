@@ -46,6 +46,7 @@ func _clamp_to_four_directions(dir: Vector2) -> Vector2:
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	$Hulas.z_index = Util.LAYERS["Trap6Scanline/Hulas"]
 	if is_demo:
 		return
 	visible = true

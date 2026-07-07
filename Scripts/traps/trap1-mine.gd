@@ -21,6 +21,13 @@ var is_demo := false
 @onready var explosion_area: Area2D = $ExplosionArea
 
 
+func _ready() -> void:
+	$MineWarning.z_index = Util.LAYERS["Trap1Mine/MineWarning"]
+	$MineBody.z_index = Util.LAYERS["Trap1Mine/MineBody"]
+	$SpawnParticle.z_index = Util.LAYERS["Trap1Mine/SpawnParticle"]
+	$ExplosionParticle.z_index = Util.LAYERS["Trap1Mine/ExplosionParticle"]
+
+
 static func initialize(pos: Vector2) -> Trap1Mine:
 	var trap := preload("res://Scenes/traps/trap1-mine.tscn").instantiate()
 	Global.stage.add_child(trap)

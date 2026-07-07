@@ -32,6 +32,8 @@ static func initialize(pos: Vector2, dir: Vector2, speed: float) -> Trap3Tracing
 
 
 func _ready() -> void:
+	$Seagull.z_index = Util.LAYERS["Trap3TracingBullet/Seagull"]
+	$FeatherEffect.z_index = Util.LAYERS["Trap3TracingBullet/FeatherEffect"]
 	if is_demo:
 		return
 	feather_effect.finished.connect(feather_effect.queue_free)

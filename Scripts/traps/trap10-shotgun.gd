@@ -35,8 +35,14 @@ static func initialize(pos: Vector2, dir1: Vector2, dir2: Vector2, dir3: Vector2
 
 
 func _ready() -> void:
+	$AimingLines.z_index = Util.LAYERS["Trap10Shotgun/AimingLines"]
+	$Bullets.z_index = Util.LAYERS["Trap10Shotgun/Bullets"]
+	$Baskets.z_index = Util.LAYERS["Trap10Shotgun/Baskets"]
 	if is_demo:
 		return
+	visible = false
+	bullets_container.visible = false
+	set_physics_process(false)
 
 
 func activate(pos: Vector2, dir1: Vector2, dir2: Vector2, dir3: Vector2) -> void:

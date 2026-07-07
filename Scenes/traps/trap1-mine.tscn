@@ -70,13 +70,11 @@ color_ramp = SubResource("GradientTexture1D_dme0h")
 script = ExtResource("1_lts3b")
 
 [node name="MineWarning" type="Sprite2D" parent="." unique_id=1725543231]
-z_index = 25
 material = SubResource("ShaderMaterial_x741d")
 scale = Vector2(1.6, 1.6)
 texture = ExtResource("3_rv0bw")
 
 [node name="MineBody" type="Sprite2D" parent="." unique_id=99312446]
-z_index = 10
 material = SubResource("ShaderMaterial_a250w")
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("3_5q35q")
@@ -88,7 +86,6 @@ visible = false
 shape = SubResource("CircleShape2D_5q35q")
 
 [node name="SpawnParticle" type="GPUParticles2D" parent="." unique_id=233435850]
-z_index = 10
 emitting = false
 amount = 16
 lifetime = 0.5
@@ -97,7 +94,6 @@ explosiveness = 0.9
 process_material = SubResource("ParticleProcessMaterial_g6b3o")
 
 [node name="ExplosionParticle" type="GPUParticles2D" parent="." unique_id=1226084622]
-z_index = 25
 emitting = false
 amount = 3
 texture = ExtResource("4_dme0h")

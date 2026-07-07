@@ -39,6 +39,9 @@ static func initialize(start_pos: Vector2, end_pos: Vector2) -> Trap8ElectricArc
 
 
 func _ready():
+	$Crack.z_index = Util.LAYERS["Trap8ElectricArc/Crack"]
+	$StartPoint/Cone.z_index = Util.LAYERS["Trap8ElectricArc/Cone"]
+	$EndPoint/Cone.z_index = Util.LAYERS["Trap8ElectricArc/Cone"]
 	if is_demo:
 		return
 	activated = false

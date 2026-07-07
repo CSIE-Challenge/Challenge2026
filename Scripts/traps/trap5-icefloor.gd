@@ -29,6 +29,8 @@ static func initialize(pos: Vector2) -> Trap5IceFloor:
 
 
 func _ready() -> void:
+	$SpilledJuice.z_index = Util.LAYERS["Trap5IceFloor/SpilledJuice"]
+	$JuiceGlass.z_index = Util.LAYERS["Trap5IceFloor/JuiceGlass"]
 	if is_demo:
 		return
 	scale = Vector2(area_scale, area_scale)

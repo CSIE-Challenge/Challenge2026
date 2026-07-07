@@ -60,7 +60,6 @@ scale = Vector2(1.5, 1.5)
 shape = SubResource("RectangleShape2D_k3tq1")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1507092653]
-z_index = 5
 material = SubResource("ShaderMaterial_iq5co")
 position = Vector2(0, -8.583069e-06)
 scale = Vector2(0.078125, 0.078125)
