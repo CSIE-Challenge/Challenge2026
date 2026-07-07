@@ -2,12 +2,12 @@
 
 [ext_resource type="Script" uid="uid://lu6b56ud55qw" path="res://Scripts/traps/trap3-tracing_bullet.gd" id="1_uwr5t"]
 [ext_resource type="Shader" uid="uid://c8yqa2f7jk3wo" path="res://Shaders/outline.gdshader" id="2_s34uc"]
-[ext_resource type="Texture2D" uid="uid://b5v6w6ngu1pfs" path="res://Shapes/Seagull/seagull_1.svg" id="3_njlgp"]
-[ext_resource type="Texture2D" uid="uid://3i0ndflw4dk0" path="res://Shapes/Seagull/seagull_2.svg" id="4_s34uc"]
-[ext_resource type="Texture2D" uid="uid://lxwo4n1swa1c" path="res://Shapes/Seagull/seagull_3.svg" id="5_3ko3v"]
-[ext_resource type="Texture2D" uid="uid://beqway58ycb5d" path="res://Shapes/Seagull/seagull_4.svg" id="6_w7crh"]
-[ext_resource type="Texture2D" uid="uid://bu10wmmm55xa4" path="res://Shapes/Seagull/seagull_5.svg" id="7_epjbo"]
-[ext_resource type="Texture2D" uid="uid://bhp4ck5346ba5" path="res://Shapes/Seagull/seagull_6.svg" id="8_6k4re"]
+[ext_resource type="Texture2D" uid="uid://b5v6w6ngu1pfs" path="res://Shapes/seagull/seagull_1.svg" id="3_njlgp"]
+[ext_resource type="Texture2D" uid="uid://3i0ndflw4dk0" path="res://Shapes/seagull/seagull_2.svg" id="4_s34uc"]
+[ext_resource type="Texture2D" uid="uid://lxwo4n1swa1c" path="res://Shapes/seagull/seagull_3.svg" id="5_3ko3v"]
+[ext_resource type="Texture2D" uid="uid://beqway58ycb5d" path="res://Shapes/seagull/seagull_4.svg" id="6_w7crh"]
+[ext_resource type="Texture2D" uid="uid://bu10wmmm55xa4" path="res://Shapes/seagull/seagull_5.svg" id="7_epjbo"]
+[ext_resource type="Texture2D" uid="uid://bhp4ck5346ba5" path="res://Shapes/seagull/seagull_6.svg" id="8_6k4re"]
 [ext_resource type="Texture2D" uid="uid://f5ertr28h6kq" path="res://Shapes/feather.svg" id="8_njlgp"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_njlgp"]
