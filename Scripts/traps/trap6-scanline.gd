@@ -18,6 +18,7 @@ var speed := 5.0
 var line_pos := Vector2(0, 0)
 var time := 0.0
 var is_demo := false
+var hula_rotate := false
 
 @onready var visual_line = $Hulas
 
@@ -55,6 +56,7 @@ func _ready() -> void:
 	if abs(line_dir.x) > 0.1:
 		rotation = PI / 2
 		var hulas = visual_line.get_children()
+		hula_rotate = true
 		for hula in hulas:
 			hula.rotation = -PI / 2
 
@@ -84,7 +86,8 @@ func serialize_state() -> Dictionary:
 		"visual_line_modulate": visual_line.modulate,
 		"visual_line_position": visual_line.position,
 		"visual_line_scale": visual_line.scale,
-		"visual_line_rotation": visual_line.rotation
+		"visual_line_rotation": visual_line.rotation,
+		"hula_rotate": hula_rotate
 	}
 
 
@@ -95,4 +98,8 @@ func apply_demo_state(data: Dictionary) -> void:
 	visual_line.position = data.get("visual_line_position", Vector2.ZERO)
 	visual_line.scale = data.get("visual_line_scale", Vector2.ONE)
 	visual_line.rotation = data.get("visual_line_rotation", 0.0)
-	#rotate hulas one by one?
+	if !hula_rotate and data.get("hula_rotate", false):
+		hula_rotate = true
+		var hulas = visual_line.get_children()
+		for hula in hulas:
+			hula.rotation = -PI / 2
