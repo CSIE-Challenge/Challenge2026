@@ -28,6 +28,7 @@ var exploding: bool = false
 var explosion_radius: float = 0.0
 var shell_vertical_speed: float = 0.0
 var my_shell_rotate_speed: float
+var is_demo := false
 
 @onready var shell: Sprite2D = $ShellShadow/Shell
 @onready var shell_shadow: Node2D = $ShellShadow
@@ -35,6 +36,7 @@ var my_shell_rotate_speed: float
 @onready var explosion: Sprite2D = $Explosion
 @onready var explosion_area: Area2D = $ExplosionArea
 @onready var explosion_shape: CollisionShape2D = $ExplosionArea/CollisionShape2D
+@onready var effect: GPUParticles2D = $Explosion/GPUParticles2D
 
 
 static func initialize(start_pos: Vector2, end_pos: Vector2, air_time: float) -> Trap9Mortar:
@@ -45,6 +47,8 @@ static func initialize(start_pos: Vector2, end_pos: Vector2, air_time: float) ->
 
 
 func _ready() -> void:
+	if is_demo:
+		return
 	shell.z_index = 1
 	shadow.z_index = 0
 
@@ -87,7 +91,6 @@ func activate(
 	explosion_area.monitoring = false
 
 	explosion.visible = false
-	var effect = explosion.get_node("GPUParticles2D") as GPUParticles2D
 	effect.lifetime = stay_time
 
 	shell.position = Vector2.ZERO
@@ -125,3 +128,31 @@ func _fade_out():
 	tween.tween_property(self, "modulate", Color(1, 1, 1, 0), stay_time / 2.5)
 	await tween.finished
 	queue_free()
+
+
+#--------------------------------------
+func serialize_state() -> Dictionary:
+	return {
+		"type": "trap9-mortar",
+		"position": global_position,
+		"shadow_position": shell_shadow.global_position,
+		"shell_y": shell.position.y,
+		"shell_rotation": shell.rotation,
+		"shadow_modulate": shadow.self_modulate,
+		"explosion_visibility": explosion.visible,
+		"modulate": modulate,
+		"particle_emitting": effect.emitting
+	}
+
+
+func apply_demo_state(data: Dictionary) -> void:
+	shell_shadow.global_position = data.get("shadow_position", Vector2.ZERO)
+	global_position = data.get("position", Vector2.ZERO)
+	shell.position.y = data.get("shell_y", 0.0)
+	shell.rotation = data.get("shell_rotation", 0.0)
+	shadow.rotation = shell.rotation
+	shadow.self_modulate = data.get("shadow_modulate", Color.BLACK)
+	explosion.visible = data.get("explosion_visibility", false)
+	shell_shadow.visible = !explosion.visible
+	modulate = data.get("modulate", Color.WHITE)
+	effect.emitting = data.get("particle_emitting", false)

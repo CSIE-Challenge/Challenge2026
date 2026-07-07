@@ -33,7 +33,6 @@ color = Color(1, 0.26, 0.26, 1)
 
 [node name="MortarTrap" type="Node2D" unique_id=1443506904]
 script = ExtResource("1_kwi2t")
-gravity = 500.0
 shell_rotate_speed = 5.0
 shadow_flicker_frequency = 10.0
 

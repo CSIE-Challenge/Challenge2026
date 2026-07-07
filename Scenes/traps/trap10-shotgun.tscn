@@ -444,10 +444,16 @@ one_shot = true
 [node name="AimingLines" type="Node2D" parent="." unique_id=1096219692]
 
 [node name="Line1" type="Line2D" parent="AimingLines" unique_id=1285080951]
+points = PackedVector2Array(0, 0, 0, 0)
+default_color = Color(1, 0.87058824, 0.06666667, 1)
 
 [node name="Line2" type="Line2D" parent="AimingLines" unique_id=1109717698]
+points = PackedVector2Array(0, 0, 0, 0)
+default_color = Color(1, 0.78039217, 0, 1)
 
 [node name="Line3" type="Line2D" parent="AimingLines" unique_id=91096076]
+points = PackedVector2Array(0, 0, 0, 0)
+default_color = Color(0.5019608, 0, 0.8980392, 1)
 
 [node name="Bullets" type="Node2D" parent="." unique_id=876130518]
 
