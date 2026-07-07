@@ -16,6 +16,7 @@ var tracing := true
 var flying := false
 var wall_counter := 0
 var is_demo := false
+var effect_reparented := false
 @onready var feather_effect = $FeatherEffect
 @onready var leave_wall_detector = $Area2D
 @onready var wait_timer = $WaitTimer
@@ -49,6 +50,8 @@ func _ready() -> void:
 
 
 func _destroy() -> void:
+	$CollisionShape2D.set_deferred("disabled", true)
+	await get_tree().create_timer(0.1).timeout
 	queue_free()
 
 
@@ -128,3 +131,7 @@ func apply_demo_state(data: Dictionary) -> void:
 	rotation = data.get("rotation", 0.0)
 	sprite.scale = data.get("scale", Vector2.ZERO)
 	feather_effect.emitting = data.get("feather_effect", false)
+	feather_effect.global_position = global_position
+	if !effect_reparented:
+		effect_reparented = true
+		feather_effect.reparent($"..")
