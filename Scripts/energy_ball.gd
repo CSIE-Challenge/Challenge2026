@@ -19,7 +19,7 @@ var energy_ball_level: int = 0
 var rng := RandomNumberGenerator.new()
 
 @onready var coconut_sprite = $Coconut
-@onready var stage_layer = $"../../../StageLayer"
+@onready var stage_layer = get_node_or_null("../../../StageLayer")
 @onready var collision_shape = $CollisionShape2D
 @onready var twinkle_particle = $TwinkleParticle
 @onready var eaten_coconut = preload("res://Scenes/energy_bar/eaten_coconut.tscn")
@@ -125,7 +125,7 @@ func _get_random_spawn_position() -> Vector2:
 
 
 func _physics_process(delta: float) -> void:
-	if player_node.isjumping:
+	if not is_demo and player_node.isjumping:
 		now_combo = 0
 	time_elapsed += delta
 	var rotate = coconut_rotate_amplitude * sin(time_elapsed * TAU * coconut_rotate_frequency)
