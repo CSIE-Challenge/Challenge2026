@@ -1,4 +1,4 @@
-extends CollisionShape2D
+extends Node2D
 
 # 基礎縮放大小
 var base_scale: Vector2 = Vector2(0.1, 0.1)
@@ -41,14 +41,7 @@ func init(start_pos: Vector2, target_pos: Vector2, speed: float, wait_time: floa
 		tween.tween_interval(wait_time - 0.15)
 
 	# 2. 飛行階段：開始起飛
-	tween.tween_callback(
-		func():
-			# 飛行開始時，套用速度拉伸效果 (拉長 X，壓扁 Y，維持視覺體積)
-			if sprite:
-				var stretch = 1.0 + speed * stretch_factor
-				sprite.scale.x = base_sprite_scale.x * stretch
-				sprite.scale.y = base_sprite_scale.y / (1.0 + (stretch - 1.0) * 0.5)
-	)
+	tween.tween_callback(_apply_stretch.bind(speed))
 
 	# 移動到對角目標點
 	tween.tween_property(self, "position", target_pos, fly_duration)
@@ -61,3 +54,11 @@ func init(start_pos: Vector2, target_pos: Vector2, speed: float, wait_time: floa
 	)
 	tween.tween_property(self, "scale", Vector2.ZERO, 0.1)
 	tween.tween_callback(queue_free)
+
+
+func _apply_stretch(speed: float):
+	# 飛行開始時，套用速度拉伸效果 (拉長 X，壓扁 Y，維持視覺體積)
+	if sprite:
+		var stretch = 1.0 + speed * stretch_factor
+		sprite.scale.x = base_sprite_scale.x * stretch
+		sprite.scale.y = base_sprite_scale.y / (1.0 + (stretch - 1.0) * 0.5)
