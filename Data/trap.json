@@ -1,9 +1,9 @@
 {
 	"trap1-mine": {
 		"path": "res://Scenes/traps/trap1-mine.tscn",
-		"cooldown_times": 3.0,
+		"cooldown_times": 0.2,
 		"damage": 1,
-		"energy_costs": 10,
+		"energy_costs": 5,
 		"arming_time": 3.0,
 		"scale": 1,
 		"position_min_x": -225.0,
@@ -15,7 +15,7 @@
 		"path": "res://Scenes/traps/trap2-electric_ring.tscn",
 		"cooldown_times": 3.0,
 		"damage": 1,
-		"energy_costs": 10,
+		"energy_costs": 15,
 		"standard_radius": 54.0,
 		"player_radius": 13.5,
 		"stay_time": 1.8,
@@ -27,7 +27,7 @@
 	},
 	"trap3-tracing_bullet": {
 		"path": "res://Scenes/traps/trap3-tracing_bullet.tscn",
-		"cooldown_times": 3.0,
+		"cooldown_times": 0.0,
 		"damage": 1,
 		"energy_costs": 5,
 		"turn_rate": 2.0,
@@ -52,7 +52,7 @@
 	},
 	"trap5-icefloor": {
 		"path": "res://Scenes/traps/trap5-icefloor.tscn",
-		"cooldown_times": 3.0,
+		"cooldown_times": 2.0,
 		"damage": 1,
 		"energy_costs": 10,
 		"lifetime": 5.0,
@@ -64,17 +64,17 @@
 	},
 	"trap6-scanline": {
 		"path": "res://Scenes/traps/trap6-scanline.tscn",
-		"cooldown_times": 3.0,
+		"cooldown_times": 0.5,
 		"damage": 1,
-		"energy_costs": 10,
+		"energy_costs": 15,
 		"min_speed": 120,
 		"max_speed": 250
 	},
 	"trap7-spreading_ripples": {
 		"path": "res://Scenes/traps/trap7-spreading_ripples.tscn",
-		"cooldown_times": 3.0,
+		"cooldown_times": 1.0,
 		"damage": 1,
-		"energy_costs": 10,
+		"energy_costs": 15,
 		"warning_time": 1.5,
 		"max_radius": 1000.0,
 		"ring_thickness": 10.0,
@@ -87,9 +87,9 @@
 	},
 	"trap8-electric_arc": {
 		"path": "res://Scenes/traps/trap8-electric_arc.tscn",
-		"cooldown_times": 3.0,
+		"cooldown_times": 1.0,
 		"damage": 1,
-		"energy_costs": 10,
+		"energy_costs": 15,
 		"points_radius": 10,
 		"points_default_scale": [
 			0.15,
@@ -106,9 +106,9 @@
 	},
 	"trap9-mortar": {
 		"path": "res://Scenes/traps/trap9-mortar.tscn",
-		"cooldown_times": 3.0,
+		"cooldown_times": 0.5,
 		"damage": 1,
-		"energy_costs": 10,
+		"energy_costs": 8,
 		"max_height": 300.0,
 		"gravity": 200.0,
 		"explosion_max_radius": 100.0,
@@ -123,7 +123,7 @@
 	},
 	"trap10-shotgun": {
 		"path": "res://Scenes/traps/trap10-shotgun.tscn",
-		"cooldown_times": 3.0,
+		"cooldown_times": 1.0,
 		"damage": 1,
 		"energy_costs": 10,
 		"bullet_speed": 700.0,
