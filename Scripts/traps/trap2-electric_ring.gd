@@ -97,6 +97,9 @@ func serialize_state() -> Dictionary:
 		"scale": ring_sprite.scale.x,
 		"current_fill": current_fill,
 		"electric_on": electric_on,
+		"ring_offset": ring_sprite.material.get_shader_parameter("ring_offset"),
+		"noise_strength": ring_sprite.material.get_shader_parameter("noise_strength"),
+		"ring_thickness": ring_sprite.material.get_shader_parameter("thickness"),
 		"died": died,
 	}
 
@@ -109,12 +112,9 @@ func apply_demo_state(data: Dictionary) -> void:
 	warning_sprite.scale = Vector2(sc, sc)
 
 	warning_sprite.material.set_shader_parameter("thickness", ring_thickness / sc)
-	ring_sprite.material.set_shader_parameter("thickness", ring_thickness / sc)
-
 	var is_on: bool = data.get("electric_on", false)
 	var fill: float = data.get("current_fill", 0.0)
 	var has_died: bool = data.get("died", false)
-
 	if has_died:
 		ring_sprite.visible = false
 		warning_sprite.visible = false
@@ -125,6 +125,12 @@ func apply_demo_state(data: Dictionary) -> void:
 		warning_sprite.visible = true
 		ring_sprite.visible = false
 		warning_sprite.material.set_shader_parameter("fill", fill)
+	var ring_thickness = data.get("ring_thickness", 0.0)
+	var ring_offset = data.get("ring_offset", 0.0)
+	var noise_strength = data.get("noise_strength", 0.0)
+	ring_sprite.material.set_shader_parameter("ring_offset", ring_offset)
+	ring_sprite.material.set_shader_parameter("thickness", ring_thickness)
+	ring_sprite.material.set_shader_parameter("noise_strength", noise_strength)
 
 
 func _die():
