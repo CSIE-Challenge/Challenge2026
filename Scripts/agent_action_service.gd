@@ -66,6 +66,17 @@ func _connect_scheduler_signal_once() -> void:
 	_is_connected_to_scheduler = true
 
 
+func reset_for_scene_exit() -> void:
+	if trap_request_scheduler != null and _is_connected_to_scheduler:
+		if trap_request_scheduler.request_ready.is_connected(_on_request_ready):
+			trap_request_scheduler.request_ready.disconnect(_on_request_ready)
+	_is_connected_to_scheduler = false
+	trap_request_scheduler = null
+	game = null
+	trap_cooldowns.clear()
+	heal_uses_left = default_heal_uses
+
+
 # gdlint: disable=max-returns
 # For Game Manager tests
 func submit_trap_request(trap_id: String, params: Dictionary = {}) -> int:

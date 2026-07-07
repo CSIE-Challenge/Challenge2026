@@ -9,6 +9,7 @@ extends Node2D
 @export var opponent_energy_bar_label: Label
 @export var time_label: Label
 @export var result_screen: ResultScreen
+@export var pause_menu: PauseMenu
 @export var level_label: Label
 @export var health_icon: HealthIcon
 @export var walls: Array[Sprite2D]
@@ -31,6 +32,8 @@ var survival_started_msec := 0
 var trap_data = TrapData.new().data
 var current_level := 0
 var _health_icon_ready := false
+var _is_paused := false
+var _is_shutting_down := false
 
 @onready var energy_ball: Node2D = $"../SubViewport/Stage/EnergyBall"
 @onready var player_invincibility_timer = $PlayerInvincibilityTimer
@@ -58,6 +61,7 @@ func _ready() -> void:
 	_update_energy_label()
 	_update_opponent_energy_label(0, 0)
 	_connect_agent_action_signals()
+	_connect_pause_menu()
 
 	agent_action_service.setup_services(self, trap_request_scheduler)
 	trap_request_scheduler.initialize()
@@ -83,6 +87,10 @@ func _ready() -> void:
 	#_show_test_result_after_delay()
 
 
+func _exit_tree() -> void:
+	_shutdown_gameplay_for_scene_change()
+
+
 func _physics_process(delta: float) -> void:
 	# Real-time per frame: spawn queued traps promptly + count down cooldowns.
 	# Energy regen is NOT here -- it ticks discretely via EnergyIncreaseTimer.
@@ -91,6 +99,23 @@ func _physics_process(delta: float) -> void:
 	_update_time_label()
 	agent_action_service.update_cooldowns(delta)
 	trap_request_scheduler.process_requests()
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("pause"):
+		_handle_pause_toggle()
+
+
+func _handle_pause_toggle() -> void:
+	if game_over:
+		return
+	if pause_menu == null:
+		return
+
+	if _is_paused:
+		_resume_gameplay()
+	else:
+		_pause_gameplay()
 
 
 func _begin_agents() -> void:
@@ -152,6 +177,29 @@ func _connect_agent_action_signals() -> void:
 	agent_action_service.trap_approved.connect(_on_trap_approved)
 	agent_action_service.trap_rejected.connect(_on_trap_rejected)
 	agent_action_service.heal_used.connect(_on_heal_used)
+
+
+func _connect_pause_menu() -> void:
+	if pause_menu == null:
+		return
+	pause_menu.resume_requested.connect(_on_pause_resume_requested)
+	pause_menu.main_menu_requested.connect(_on_pause_main_menu_requested)
+	pause_menu.exit_requested.connect(_on_pause_exit_requested)
+	pause_menu.close()
+
+
+func _on_pause_resume_requested() -> void:
+	_resume_gameplay()
+
+
+func _on_pause_main_menu_requested() -> void:
+	_shutdown_gameplay_for_scene_change()
+	SceneTransition.transition_to("res://Scenes/menu.tscn")
+
+
+func _on_pause_exit_requested() -> void:
+	_shutdown_gameplay_for_scene_change()
+	get_tree().quit()
 
 
 func _on_heal_used(_heal_amount: int, _energy_cost: int, _heal_uses_left: int) -> void:
@@ -290,11 +338,15 @@ func _on_level_up_timeout() -> void:
 func finish_game(authoritative_stats: Dictionary = {}) -> void:
 	if game_over:
 		return
+	_close_pause_overlay_for_finish()
 	game_over = true
 	get_tree().paused = true
 	energy_increase_timer.stop()
 	player_invincibility_timer.stop()
 	game_duration_timer.stop()
+	level_up_timer.stop()
+	if trap_request_scheduler != null:
+		trap_request_scheduler.clear()
 	player.set_physics_process(false)
 	player.collision_layer = 0
 	player.collision_mask = 0
@@ -314,6 +366,95 @@ func finish_game(authoritative_stats: Dictionary = {}) -> void:
 			}
 		)
 	)
+
+
+func _pause_gameplay() -> void:
+	if get_tree() == null:
+		return
+	if game_over or _is_paused:
+		return
+
+	_is_paused = true
+	if pause_menu != null:
+		pause_menu.open()
+	get_tree().paused = true
+	Audio.pause_bgm()
+
+
+func _resume_gameplay() -> void:
+	if get_tree() == null:
+		return
+	if not _is_paused:
+		return
+
+	_is_paused = false
+	get_tree().paused = false
+	Audio.resume_bgm()
+	if pause_menu != null:
+		pause_menu.close()
+
+
+func _close_pause_overlay_for_finish() -> void:
+	if _is_paused:
+		_resume_gameplay()
+	elif pause_menu != null:
+		pause_menu.close()
+
+
+func _shutdown_gameplay_for_scene_change() -> void:
+	if _is_shutting_down:
+		return
+	_is_shutting_down = true
+
+	if get_tree() != null and get_tree().paused:
+		get_tree().paused = false
+
+	_is_paused = false
+	game_over = true
+
+	if pause_menu != null:
+		pause_menu.close()
+
+	_stop_gameplay_timers()
+	_clear_gameplay_backend_state()
+	_disconnect_runtime_signals()
+	_shutdown_running_agents()
+	NetworkManager.stop_network()
+
+	if player != null:
+		player.set_physics_process(false)
+
+
+func _stop_gameplay_timers() -> void:
+	energy_increase_timer.stop()
+	player_invincibility_timer.stop()
+	game_duration_timer.stop()
+	level_up_timer.stop()
+
+
+func _clear_gameplay_backend_state() -> void:
+	if agent_action_service != null:
+		agent_action_service.reset_for_scene_exit()
+	if trap_request_scheduler != null:
+		trap_request_scheduler.clear()
+
+
+func _disconnect_runtime_signals() -> void:
+	if Global.player_hit.is_connected(on_player_hit):
+		Global.player_hit.disconnect(on_player_hit)
+	if Global.energyball_collected.is_connected(_on_energyball_collected):
+		Global.energyball_collected.disconnect(_on_energyball_collected)
+
+	if NetworkManager.energy_changed.is_connected(_on_network_energy_changed):
+		NetworkManager.energy_changed.disconnect(_on_network_energy_changed)
+	if NetworkManager.health_changed.is_connected(_on_network_health_changed):
+		NetworkManager.health_changed.disconnect(_on_network_health_changed)
+
+
+func _shutdown_running_agents() -> void:
+	for child in get_children():
+		if child is GameAgent:
+			child.queue_free()
 
 
 func _on_energyball_collected(energy_gain: int) -> void:
