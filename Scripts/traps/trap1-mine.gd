@@ -63,6 +63,7 @@ func on_arming_complete() -> void:
 
 func explode() -> void:
 	Global.player_hit.emit.call_deferred(damage)  #Replace this with the actual damage
+	Audio.play_sfx(Audio.SFX.TRAP1_MINE_EXPLODE)
 
 	# explode animation
 	set_process(false)
@@ -75,6 +76,7 @@ func explode() -> void:
 
 
 func disarm() -> void:
+	Audio.play_sfx(Audio.SFX.TRAP1_MINE_DISARM)
 	queue_free()
 
 

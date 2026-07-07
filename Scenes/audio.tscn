@@ -5,17 +5,26 @@
 [ext_resource type="AudioStream" uid="uid://kwrrir3nslnh" path="res://Assets/audio/Jump.mp3" id="2_c8j57"]
 [ext_resource type="AudioStream" uid="uid://dr7oxaje130i5" path="res://Assets/audio/Press.mp3" id="2_y8l05"]
 [ext_resource type="AudioStream" uid="uid://vt6orx0x3g2m" path="res://Assets/audio/Battle BGM (Normal).mp3" id="3_k46ri"]
-[ext_resource type="AudioStream" uid="uid://dkfrvkcpmh6cu" path="res://Assets/audio/Get_coconut.mp3" id="4_pess6"]
+[ext_resource type="AudioStream" uid="uid://mi12das237oh" path="res://Assets/audio/get_coconut_2.mp3" id="6_fkw8n"]
+[ext_resource type="AudioStream" uid="uid://korupvo2rheb" path="res://Assets/audio/take_damage.mp3" id="7_e0u3b"]
+[ext_resource type="AudioStream" uid="uid://c67kpqx4keuyf" path="res://Assets/audio/set_trap.mp3" id="8_tyt1w"]
+[ext_resource type="AudioStream" uid="uid://bi01vm7qcutil" path="res://Assets/audio/trap_1_landmine_explode.mp3" id="10_38mwv"]
+[ext_resource type="AudioStream" uid="uid://oa1tcs2ewa07" path="res://Assets/audio/trap_1_remove_bananapeel.mp3" id="11_7stf1"]
 
 [node name="Audio" type="Node" unique_id=664248620]
 script = ExtResource("1_l04ps")
-menu_tracks = [ExtResource("2_4thc6")]
-gameplay_tracks = [ExtResource("3_k46ri")]
-hidden_game_tracks = []
-result_tracks = []
+menu_tracks = Array[AudioStream]([ExtResource("2_4thc6")])
+gameplay_tracks = Array[AudioStream]([ExtResource("3_k46ri")])
+hidden_game_tracks = Array[AudioStream]([])
+result_tracks = Array[AudioStream]([])
 jump_sfx = ExtResource("2_c8j57")
 button_press_sfx = ExtResource("2_y8l05")
-energy_collected_sfx = ExtResource("4_pess6")
+energy_collected_sfx = ExtResource("6_fkw8n")
+take_damage_sfx = ExtResource("7_e0u3b")
+set_trap_sfx = ExtResource("8_tyt1w")
+trap1_mine_explode_sfx = ExtResource("10_38mwv")
+trap1_mine_disarm_sfx = ExtResource("11_7stf1")
+trap3_bullet_hit_wall_sfx = ExtResource("11_7stf1")
 
 [node name="BgmPlayer" type="AudioStreamPlayer" parent="." unique_id=249781410]
 bus = &"Music"

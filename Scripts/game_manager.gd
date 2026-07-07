@@ -259,6 +259,8 @@ func _spawn_trap_from_request(request: Dictionary) -> void:
 	var trap_id: String = request["trap_id"]
 	var params: Dictionary = request["params"]
 
+	Audio.play_sfx(Audio.SFX.SET_TRAP)
+
 	match trap_id:
 		"trap1-mine":
 			if not params.has("position"):
@@ -355,6 +357,7 @@ func on_player_hit(damage: int) -> void:
 	_player_become_invincible()
 	camera.shake_cam()
 	NetworkManager.request_damage_health(damage, "player_hit")
+	Audio.play_sfx(Audio.SFX.TAKE_DAMAGE)
 
 
 func _on_game_duration_timeout() -> void:

@@ -11,44 +11,54 @@ func _input(event: InputEvent):
 				var dict = _generate_trap1_dictionary()
 				Clamper.clamp_trap1(trap_data, dict)
 				Trap1Mine.initialize(dict["position"])
+				Audio.play_sfx(Audio.SFX.SET_TRAP)
 			KEY_2:
 				var dict = _generate_trap2_dictionary()
 				Clamper.clamp_trap2(trap_data, dict)
 				Trap2ElectricRing.initialize(dict["delay_time"], dict["radius"])
+				Audio.play_sfx(Audio.SFX.SET_TRAP)
 			KEY_3:
 				var dict = _generate_trap3_dictionary()
 				Clamper.clamp_trap3(trap_data, dict)
 				Trap3TracingBullet.initialize(dict["position"], dict["direction"], dict["speed"])
+				Audio.play_sfx(Audio.SFX.SET_TRAP)
 			KEY_4:
 				var dict = _generate_trap4_dictionary()
 				Clamper.clamp_trap4(trap_data, dict)
 				Trap4Conveyor.initialize(dict["position"], dict["direction"])
+				Audio.play_sfx(Audio.SFX.SET_TRAP)
 			KEY_5:
 				var dict = _generate_trap5_dictionary()
 				Clamper.clamp_trap5(trap_data, dict)
 				Trap5IceFloor.initialize(dict["position"])
+				Audio.play_sfx(Audio.SFX.SET_TRAP)
 			KEY_6:
 				var dict = _generate_trap6_dictionary()
 				Clamper.clamp_trap6(trap_data, dict)
 				Trap6Scanline.initialize(dict["direction"], dict["speed"])
+				Audio.play_sfx(Audio.SFX.SET_TRAP)
 			KEY_7:
 				var dict = _generate_trap7_dictionary()
 				Clamper.clamp_trap7(trap_data, dict)
 				Trap7SpreadingRipples.initialize(dict["position"], dict["expand_rate"])
+				Audio.play_sfx(Audio.SFX.SET_TRAP)
 			KEY_8:
 				var dict = _generate_trap8_dictionary()
 				Clamper.clamp_trap8(trap_data, dict)
 				Trap8ElectricArc.initialize(dict["start_position"], dict["end_position"])
+				Audio.play_sfx(Audio.SFX.SET_TRAP)
 			KEY_9:
 				var dict = _generate_trap9_dictionary()
 				Clamper.clamp_trap9(trap_data, dict)
 				Trap9Mortar.initialize(
 					dict["start_position"], dict["end_position"], dict["air_time"]
 				)
+				Audio.play_sfx(Audio.SFX.SET_TRAP)
 			KEY_0:
 				var dict = _generate_trap10_dictionary()
 				Clamper.clamp_trap10(trap_data, dict)
 				Trap10Shotgun.initialize(dict["position"], dict["dir1"], dict["dir2"], dict["dir3"])
+				Audio.play_sfx(Audio.SFX.SET_TRAP)
 
 
 func _random_pos() -> Vector2:

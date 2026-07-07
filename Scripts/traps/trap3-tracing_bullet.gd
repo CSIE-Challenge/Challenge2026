@@ -74,6 +74,7 @@ func _physics_process(delta):
 			var collider := collision.get_collider()
 			if collider and collider == target:
 				Global.player_hit.emit(damage)
+				Audio.play_sfx(Audio.SFX.TRAP3_BULLET_HIT_WALL)
 				_destroy()
 		else:
 			_destroy()
