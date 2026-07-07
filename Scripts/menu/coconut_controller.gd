@@ -17,7 +17,7 @@ var skin_instance = null
 
 func _ready() -> void:
 	# 1. 根據玩家目前裝備的 ID，動態組合出 .tres 的路徑
-	var skin_path = "res://Data/Skins/" + PlayerData.equipped_skin + ".tres"
+	var skin_path = "res://Assets/skins/" + PlayerData.equipped_skin + ".tres"
 	var skin_data = load(skin_path)
 
 	if skin_data and skin_data.skin_prefab:

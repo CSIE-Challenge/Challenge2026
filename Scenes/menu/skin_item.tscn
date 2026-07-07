@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://bjlmutp7h585m"]
+[gd_scene format=3 uid="uid://bjlmutp7h585m"]
 
 [ext_resource type="Script" uid="uid://dvkvsved733vi" path="res://Scripts/menu/skin_item.gd" id="1_mpx8h"]
 

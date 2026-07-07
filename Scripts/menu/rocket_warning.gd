@@ -5,8 +5,8 @@ extends Node2D
 var warning_pos: Vector2
 var duriation: float
 
-@onready var circle = $Sprite2D
-@onready var label = $Label
+@onready var circle = $WarningCircle
+@onready var label = $WarningLabel
 
 
 func init(pos: Vector2, wait_duration: float):
