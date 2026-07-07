@@ -365,7 +365,9 @@ func _update_time_label() -> void:
 	# The label uses right alignment, so digits stay anchored at the right edge
 	# (e.g. "180", "99", "1" all keep the ones digit in the same spot).
 	var seconds_left := int(ceil(game_duration_timer.time_left))
-	time_label.text = str(seconds_left)
+	var minute = seconds_left / 60
+	var second = seconds_left % 60
+	time_label.text = "%02d:%02d" % [minute, second]
 
 
 func _update_energy_label() -> void:
