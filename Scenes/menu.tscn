@@ -165,8 +165,8 @@ text = "返回"
 [node name="VolumeSetting" parent="." unique_id=709368218 instance=ExtResource("2_xhh6f")]
 
 [connection signal="button_up" from="Panel/VBoxContainer/StartButton" to="." method="_on_start_button_button_up"]
-[connection signal="pressed" from="Panel/VBoxContainer/AboutButton" to="." method="_on_about_button_pressed"]
 [connection signal="button_up" from="Panel/VBoxContainer/SkinShopButton" to="." method="_on_skin_shop_button_button_up"]
+[connection signal="pressed" from="Panel/VBoxContainer/AboutButton" to="." method="_on_about_button_pressed"]
 [connection signal="button_up" from="Panel/VBoxContainer/VolumeButton" to="." method="_on_volume_button_button_up"]
 [connection signal="button_up" from="Panel/VBoxContainer/QuitButton" to="." method="_on_quit_button_button_up"]
 [connection signal="button_up" from="Panel/invisible" to="." method="_on_invisible_button_up"]

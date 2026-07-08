@@ -36,7 +36,7 @@ grow_horizontal = 2
 grow_vertical = 0
 color = Color(0, 0, 0, 1)
 
-[node name="FadeRect" type="ColorRect" parent="."]
+[node name="FadeRect" type="ColorRect" parent="." unique_id=578224941]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -45,7 +45,7 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0)
 
-[node name="AchievementControl" type="Control" parent="."]
+[node name="AchievementControl" type="Control" parent="." unique_id=1559269839]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -54,7 +54,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="WhiteRect" type="ColorRect" parent="AchievementControl"]
+[node name="WhiteRect" type="ColorRect" parent="AchievementControl" unique_id=861210671]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -68,9 +68,8 @@ offset_bottom = -20.0
 grow_horizontal = 0
 grow_vertical = 0
 mouse_filter = 2
-color = Color(1, 1, 1, 1)
 
-[node name="BlackRect" type="ColorRect" parent="AchievementControl/WhiteRect"]
+[node name="BlackRect" type="ColorRect" parent="AchievementControl/WhiteRect" unique_id=148349588]
 clip_contents = true
 layout_mode = 1
 anchors_preset = 11
@@ -86,7 +85,7 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 1)
 
-[node name="Label" type="Label" parent="AchievementControl/WhiteRect/BlackRect"]
+[node name="Label" type="Label" parent="AchievementControl/WhiteRect/BlackRect" unique_id=1359671494]
 layout_mode = 1
 anchors_preset = 11
 anchor_left = 1.0

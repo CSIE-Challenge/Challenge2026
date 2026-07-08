@@ -75,7 +75,7 @@ func die():
 		await get_tree().create_timer(0.5).timeout
 
 	if auto_restart:
-		SceneTransition.transition_to("")
+		SceneTransition.transition_to_distortion("")
 	queue_free()
 
 

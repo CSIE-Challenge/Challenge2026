@@ -8,6 +8,8 @@ var ach_display_time: float = 3.0
 var ach_is_animating: bool = false
 var ach_queue: Array = []
 
+var wave_noise_tex: NoiseTexture2D
+
 @onready var shader_rect = $ShaderRect
 @onready var top_bar = $TopBar
 @onready var bottom_bar = $BottomBar
@@ -27,6 +29,18 @@ func _ready() -> void:
 	bottom_bar.anchor_top = 1.0
 	bottom_bar.anchor_bottom = 1.0
 	fade_rect.color.a = 0.0
+
+	# 生成海浪轉場用的無縫雜訊貼圖
+	var noise = FastNoiseLite.new()
+	noise.noise_type = FastNoiseLite.TYPE_SIMPLEX
+	noise.fractal_type = FastNoiseLite.FRACTAL_FBM
+	noise.fractal_octaves = 4
+	noise.frequency = 0.015
+	wave_noise_tex = NoiseTexture2D.new()
+	wave_noise_tex.noise = noise
+	wave_noise_tex.seamless = true
+	wave_noise_tex.width = 512
+	wave_noise_tex.height = 512
 
 	# 成就顯示初始化
 	ach_white_rect.hide()
@@ -152,6 +166,124 @@ func transition_shop(target_scene: String) -> void:
 
 
 func transition_to(target_scene: String) -> void:
+	var root = Control.new()
+	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	root.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(root)
+
+	# 1. World Environment for Glow
+	var env = Environment.new()
+	env.background_mode = Environment.BG_CANVAS
+	env.glow_enabled = true
+	env.glow_intensity = 0.0  # 會漸變淡入
+	env.glow_strength = 1.2
+	env.glow_bloom = 0.5
+	env.glow_blend_mode = Environment.GLOW_BLEND_MODE_SCREEN
+	var world_env = WorldEnvironment.new()
+	world_env.environment = env
+	root.add_child(world_env)
+
+	# 2. Wave Shader Rect
+	var wave_rect = ColorRect.new()
+	wave_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	wave_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	var mat = ShaderMaterial.new()
+	mat.shader = load("res://Shaders/wave_transition.gdshader")
+	mat.set_shader_parameter("cover_progress", -0.2)
+	mat.set_shader_parameter("recede_progress", -0.2)
+	mat.set_shader_parameter("noise_tex", wave_noise_tex)
+	wave_rect.material = mat
+	root.add_child(wave_rect)
+
+	# 3. Foam Particles
+	var vp_size = get_viewport().get_visible_rect().size
+	var particles = CPUParticles2D.new()
+	particles.emitting = true
+	particles.amount = 150
+	particles.lifetime = 0.6
+	particles.one_shot = false
+	particles.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	particles.emission_rect_extents = Vector2(20.0, vp_size.y / 2.0)
+	particles.position = Vector2(-0.2 * vp_size.x, vp_size.y / 2.0)
+	particles.gravity = Vector2(0, 98)
+	particles.initial_velocity_min = 50.0
+	particles.initial_velocity_max = 150.0
+	particles.direction = Vector2(-1, 0)
+	particles.spread = 45.0
+	particles.scale_amount_min = 2.0
+	particles.scale_amount_max = 8.0
+	particles.color = Color(1.2, 1.4, 2.0, 1.0)  # HDR Glow for particles
+
+	var curve = Curve.new()
+	curve.add_point(Vector2(0, 1))
+	curve.add_point(Vector2(1, 0))
+	particles.scale_amount_curve = curve
+	root.add_child(particles)
+
+	var tween = create_tween().set_speed_scale(1)
+
+	# 第一波海浪從左往右蓋滿，粒子跟隨波浪邊緣，同時泛光特效淡入
+	tween.tween_property(env, "glow_intensity", 1.5, 0.4).set_trans(Tween.TRANS_SINE).set_ease(
+		Tween.EASE_IN_OUT
+	)
+	(
+		tween
+		. parallel()
+		. tween_property(mat, "shader_parameter/cover_progress", 1.2, 0.8)
+		. set_trans(Tween.TRANS_SINE)
+		. set_ease(Tween.EASE_IN_OUT)
+	)
+	(
+		tween
+		. parallel()
+		. tween_property(particles, "position:x", 1.2 * vp_size.x, 0.8)
+		. set_trans(Tween.TRANS_SINE)
+		. set_ease(Tween.EASE_IN_OUT)
+	)
+
+	tween.tween_callback(
+		func():
+			if target_scene == "":
+				get_tree().reload_current_scene()
+			else:
+				get_tree().change_scene_to_file(target_scene)
+	)
+	tween.tween_interval(0.1)
+
+	# 退潮準備：粒子發射器回到左側
+	tween.tween_callback(func(): particles.position.x = -0.2 * vp_size.x)
+	tween.tween_callback(func(): particles.direction = Vector2(-1, 0))
+
+	# 另一波海浪從左邊打過來，帶著退潮
+	(
+		tween
+		. tween_property(mat, "shader_parameter/recede_progress", 1.2, 0.8)
+		. set_trans(Tween.TRANS_SINE)
+		. set_ease(Tween.EASE_IN_OUT)
+	)
+	(
+		tween
+		. parallel()
+		. tween_property(particles, "position:x", 1.2 * vp_size.x, 0.8)
+		. set_trans(Tween.TRANS_SINE)
+		. set_ease(Tween.EASE_IN_OUT)
+	)
+
+	# 退潮快結束時泛光特效淡出
+	(
+		tween
+		. parallel()
+		. tween_property(env, "glow_intensity", 0.0, 0.4)
+		. set_trans(Tween.TRANS_SINE)
+		. set_ease(Tween.EASE_IN_OUT)
+		. set_delay(0.4)
+	)
+
+	tween.tween_callback(root.queue_free)
+
+
+func transition_to_distortion(target_scene: String) -> void:
 	shader_rect.show()
 
 	# 重設 Shader 參數
