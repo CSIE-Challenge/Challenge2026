@@ -20,7 +20,7 @@ enum BGM {
 	GAMEPLAY_PHASE_2,
 	GAMEPLAY_PHASE_3,
 	GAMEPLAY_PHASE_4,
-	RESULT,
+	RESULT_SCREEN,
 	HIDDEN_GAME,
 }
 
@@ -49,6 +49,7 @@ func _ready() -> void:
 
 func set_bgm(bgm: BGM) -> void:
 	var fade_out_tween = create_tween()
+	fade_out_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)  # run even if game is paused
 	fade_out_tween.tween_property(bgm_player, "volume_db", -80.0, bgm_fade_out_time)
 	await fade_out_tween.finished
 

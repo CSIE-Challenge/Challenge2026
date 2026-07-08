@@ -20,4 +20,6 @@ func show_results(results: Dictionary) -> void:
 	)
 	remaining_health_label.text = ("Remaining Health: %d" % int(results.get("remaining_health", 0)))
 	trap_count_label.text = "Traps Placed: %d" % int(results.get("trap_count", 0))
+
+	Audio.set_bgm(Audio.BGM.RESULT_SCREEN)
 	show()
