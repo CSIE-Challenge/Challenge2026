@@ -1,4 +1,4 @@
-extends Node2D
+extends CollisionShape2D
 
 # 基礎縮放大小
 var base_scale: Vector2 = Vector2(0.1, 0.1)
