@@ -200,13 +200,6 @@ func _start_from_command_line(args: Array) -> void:
 	var port := get_server_port(args)
 	print("[NetworkManager] startup mode=%s port=%d args=%s" % [mode, port, args])
 
-	if _has_test_trap_flag(args):
-		var connect_addr := _extract_connect_address(args)
-		if connect_addr.is_empty():
-			connect_addr = DEFAULT_SERVER_ADDRESS
-		_do_test_trap_start.call_deferred(connect_addr)
-		return
-
 	if _has_demo_flag(args):
 		var connect_addr := _extract_connect_address(args)
 		if connect_addr.is_empty():
@@ -218,22 +211,6 @@ func _start_from_command_line(args: Array) -> void:
 		start_server(port)
 	elif mode == "client":
 		join_server(get_server_address(args), port)
-
-
-## Returns true if [param args] contains the --test-trap flag.
-func _has_test_trap_flag(args: Array) -> bool:
-	return args.has("--test-trap")
-
-
-## Loads the trap_test scene and optionally joins the server.
-## Called deferred to avoid change_scene_to_file during _ready() tree setup.
-func _do_test_trap_start(connect_addr: String) -> void:
-	get_tree().change_scene_to_file("res://Scenes/trap_test.tscn")
-	# Only connect if --connect was explicitly provided.
-	# We re-read args here because _extract_connect_address returns
-	# DEFAULT_SERVER_ADDRESS when --connect is absent.
-	if _find_arg_value(OS.get_cmdline_user_args(), "--connect") != "":
-		join_server(connect_addr)
 
 
 ## Returns true if [param args] contains the --demo flag.
