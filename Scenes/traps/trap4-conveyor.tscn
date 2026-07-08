@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://bveqe5yf4in5y" path="res://Shapes/wave/wave_7.png" id="8_hvgkg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k3tq1"]
+resource_local_to_scene = true
 size = Vector2(100, 100)
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_d7757"]
@@ -69,7 +70,7 @@ position = Vector2(0, -8.583069e-06)
 scale = Vector2(0.078125, 0.078125)
 sprite_frames = SubResource("SpriteFrames_37j6j")
 autoplay = "default"
-frame_progress = 0.4143334
+frame_progress = 0.73287386
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_body_exited"]

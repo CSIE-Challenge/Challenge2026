@@ -15,6 +15,7 @@ var is_demo: bool = false
 var _is_disappearing: bool = false
 
 @onready var wave_animation: AnimatedSprite2D = $AnimatedSprite2D
+@onready var collision_shape: CollisionShape2D = $CollisionShape2D
 
 
 static func initialize(pos: Vector2, dir: Vector2) -> Trap4Conveyor:
@@ -44,9 +45,14 @@ func _ready() -> void:
 
 func play_spawn():
 	wave_animation.material.set_shader_parameter("reveal", 0.0)
-
+	var rect_shape = collision_shape.shape as RectangleShape2D
+	rect_shape.size = Vector2(100, 0)
+	collision_shape.position = Vector2(0, -75)
 	var tween = create_tween()
+	tween.set_parallel(true)
 	tween.tween_property(wave_animation.material, "shader_parameter/reveal", 1.0, 0.5)
+	tween.tween_property(rect_shape, "size", Vector2(100, 100), 0.5)
+	tween.tween_property(collision_shape, "position", Vector2(0, 0), 0.5)
 
 
 func _destroy_trap() -> void:
