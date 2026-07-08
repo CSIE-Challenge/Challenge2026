@@ -186,6 +186,84 @@ class GameClientBase:
         """
         return self._call(protocol.Cmd.GET_OPPONENT_ENERGY_BALL_POSITION)
 
+    def get_opponent_player_velocity(self) -> list[float]:
+        """
+        # Get Opponent Player Velocity
+        取得對手玩家的當前速度向量（單人模式下即為自己）。
+
+        ## Parameters
+        無參數
+
+        ## Returns
+        回傳一個 ``[x, y]`` 陣列（list[float]）。
+        """
+        return self._call(protocol.Cmd.GET_OPPONENT_PLAYER_VELOCITY)
+
+    def get_remaining_time(self) -> float:
+        """
+        # Get Remaining Time
+        取得目前關卡剩餘秒數（非負）。
+
+        ## Parameters
+        無參數
+
+        ## Returns
+        以秒為單位的 float。
+        """
+        return self._call(protocol.Cmd.GET_REMAINING_TIME)
+
+    def get_opponent_combo(self) -> int:
+        """
+        # Get Opponent Combo
+        取得對手能量球combo數（單人模式下即為自己）。
+
+        ## Parameters
+        無參數
+
+        ## Returns
+        回傳一個整數。
+        """
+        return self._call(protocol.Cmd.GET_OPPONENT_COMBO)
+
+    def get_level(self) -> int:
+        """
+        # Get Level
+        取得目前關卡難度等級。
+
+        ## Parameters
+        無參數
+
+        ## Returns
+        回傳整數關卡等級。
+        """
+        return self._call(protocol.Cmd.GET_LEVEL)
+
+    def get_available_traps(self) -> list[str]:
+        """
+        # Get Available Traps
+        取得目前可立即發送的陷阱清單（照目前能量、冷卻與排程狀態過濾）。
+
+        ## Parameters
+        無參數
+
+        ## Returns
+        陷阱 ID 字串陣列（例如 ``["trap1-mine", ...]``）。
+        """
+        return self._call(protocol.Cmd.GET_AVAILABLE_TRAPS)
+
+    def get_cool_down_time(self, trap_id: str) -> float:
+        """
+        # Get Cooldown Time
+        查詢指定陷阱剩餘冷卻秒數。
+
+        ## Parameters
+        - `trap_id` (str): 陷阱 ID，例如 ``"trap1-mine"``。
+
+        ## Returns
+        回傳剩餘冷卻秒數；若參數或陷阱 ID 無效，回傳`-1.0`
+        """
+        return self._call(protocol.Cmd.GET_COOL_DOWN_TIME, {"trap_id": trap_id})
+
     def heal(self) -> dict[str, Any]:
         """
         # Heal

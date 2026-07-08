@@ -98,6 +98,12 @@ func _register_commands() -> void:
 	register_command("get_my_health", _cmd_get_my_health)
 	register_command("get_opponent_player_position", _cmd_get_opponent_player_position)
 	register_command("get_opponent_energy_ball_position", _cmd_get_opponent_energy_ball_position)
+	register_command("get_opponent_player_velocity", _cmd_get_opponent_player_velocity)
+	register_command("get_remaining_time", _cmd_get_remaining_time)
+	register_command("get_opponent_combo", _cmd_get_opponent_combo)
+	register_command("get_level", _cmd_get_level)
+	register_command("get_available_traps", _cmd_get_available_traps)
+	register_command("get_cool_down_time", _cmd_get_cool_down_time)
 
 
 func register_command(cmd_name: String, handler: Callable) -> void:
@@ -146,6 +152,16 @@ func _read_required_float(args: Dictionary, key: String) -> Dictionary:
 		return {"ok": false, "value": 0.0, "reason": "invalid_" + key}
 
 	return {"ok": true, "value": float(args[key]), "reason": ""}
+
+
+func _read_required_string(args: Dictionary, key: String) -> Dictionary:
+	if not args.has(key):
+		return {"ok": false, "value": "", "reason": "missing_" + key}
+
+	if typeof(args[key]) != TYPE_STRING:
+		return {"ok": false, "value": "", "reason": "invalid_" + key}
+
+	return {"ok": true, "value": str(args[key]), "reason": ""}
 
 
 func _submit_trap(trap_id: String, params: Dictionary) -> Dictionary:
@@ -278,6 +294,37 @@ func _cmd_get_opponent_player_position(_args: Dictionary) -> Dictionary:
 func _cmd_get_opponent_energy_ball_position(_args: Dictionary) -> Dictionary:
 	var pos: Vector2 = game.energy_ball.position
 	return ApiServer.ok([pos.x, pos.y])
+
+
+func _cmd_get_opponent_player_velocity(_args: Dictionary) -> Dictionary:
+	var vel: Vector2 = game.get_opponent_player_velocity()
+	return ApiServer.ok([vel.x, vel.y])
+
+
+func _cmd_get_remaining_time(_args: Dictionary) -> Dictionary:
+	return ApiServer.ok(game.get_remaining_time())
+
+
+func _cmd_get_opponent_combo(_args: Dictionary) -> Dictionary:
+	return ApiServer.ok(game.get_opponent_combo())
+
+
+func _cmd_get_level(_args: Dictionary) -> Dictionary:
+	return ApiServer.ok(game.get_level())
+
+
+func _cmd_get_available_traps(_args: Dictionary) -> Dictionary:
+	var action_service: AgentActionService = game.get_agent_action_service()
+	return ApiServer.ok(action_service.get_available_traps())
+
+
+func _cmd_get_cool_down_time(args: Dictionary) -> Dictionary:
+	var req := _read_required_string(args, "trap_id")
+	if not req["ok"]:
+		return ApiServer.ok(-1.0)
+	var action_service: AgentActionService = game.get_agent_action_service()
+	var cooldown: float = action_service.get_cool_down_time(req["value"])
+	return ApiServer.ok(cooldown)
 
 
 func _cmd_heal(_args: Dictionary) -> Dictionary:

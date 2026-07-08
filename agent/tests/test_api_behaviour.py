@@ -43,3 +43,42 @@ def test_heal_reports_real_player_health(client: GameClientBase) -> None:
     result = client.heal()
     assert result["health"] == before
     assert client.get_my_health() == before
+
+
+def test_get_opponent_velocity_shape(client: GameClientBase) -> None:
+    velocity = client.get_opponent_player_velocity()
+    assert isinstance(velocity, list)
+    assert len(velocity) == 2
+
+
+def test_get_remaining_time_and_level(client: GameClientBase) -> None:
+    remaining = client.get_remaining_time()
+    level = client.get_level()
+    assert isinstance(remaining, (int, float))
+    assert remaining >= 0
+    assert isinstance(level, int)
+    assert level >= 0
+
+
+def test_get_opponent_combo_and_available_traps(client: GameClientBase) -> None:
+    combo = client.get_opponent_combo()
+    assert isinstance(combo, int)
+    assert combo >= 0
+
+    traps = client.get_available_traps()
+    assert isinstance(traps, list)
+    for trap_id in traps:
+        assert isinstance(trap_id, str)
+        assert trap_id.startswith("trap")
+
+
+def test_get_cool_down_time(client: GameClientBase) -> None:
+    result = client.get_cool_down_time("trap1-mine")
+    assert isinstance(result, (int, float))
+    assert result >= 0.0
+
+
+def test_get_cool_down_time_invalid_trap_id_is_negative(client: GameClientBase) -> None:
+    result = client.get_cool_down_time("not-a-trap")
+    assert isinstance(result, (int, float))
+    assert result < 0

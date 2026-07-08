@@ -174,6 +174,29 @@ func get_agent_action_service() -> AgentActionService:
 	return agent_action_service
 
 
+func get_opponent_player_velocity() -> Vector2:
+	var current_player: CharacterBody2D = player
+	if current_player == null:
+		return Vector2.ZERO
+	return current_player.velocity
+
+
+func get_remaining_time() -> float:
+	if game_duration_timer == null:
+		return 0.0
+	return maxf(0.0, game_duration_timer.time_left)
+
+
+func get_opponent_combo() -> int:
+	if energy_ball == null:
+		return 0
+	return energy_ball.get_combo()
+
+
+func get_level() -> int:
+	return current_level
+
+
 func _connect_agent_action_signals() -> void:
 	agent_action_service.trap_approved.connect(_on_trap_approved)
 	agent_action_service.trap_rejected.connect(_on_trap_rejected)

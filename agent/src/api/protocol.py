@@ -37,6 +37,12 @@ class Cmd:
     GET_MY_HEALTH = "get_my_health"
     GET_OPPONENT_PLAYER_POSITION = "get_opponent_player_position"
     GET_OPPONENT_ENERGY_BALL_POSITION = "get_opponent_energy_ball_position"
+    GET_OPPONENT_PLAYER_VELOCITY = "get_opponent_player_velocity"
+    GET_REMAINING_TIME = "get_remaining_time"
+    GET_OPPONENT_COMBO = "get_opponent_combo"
+    GET_LEVEL = "get_level"
+    GET_AVAILABLE_TRAPS = "get_available_traps"
+    GET_COOL_DOWN_TIME = "get_cool_down_time"
 
 
 class Status:

@@ -134,6 +134,33 @@ func submit_trap_request_result(trap_id: String, params: Dictionary = {}) -> Dic
 # gdlint: enable=max-returns
 
 
+func get_available_traps() -> Array:
+	var available_traps: Array = []
+	if game == null or trap_request_scheduler == null:
+		return available_traps
+
+	for trap_id in trap_energy_costs.keys():
+		if not _is_known_trap(trap_id):
+			continue
+		if _is_trap_on_cooldown(trap_id):
+			continue
+		if not _has_enough_energy(trap_id):
+			continue
+		if not trap_request_scheduler.can_accept_request():
+			continue
+		available_traps.append(trap_id)
+
+	available_traps.sort()
+	return available_traps
+
+
+func get_cool_down_time(trap_id: String) -> float:
+	if not _is_known_trap(trap_id):
+		return -1.0
+
+	return _get_cooldown_remaining(trap_id)
+
+
 func update_cooldowns(delta: float) -> void:
 	if delta <= 0.0:
 		return

@@ -136,3 +136,7 @@ func _physics_process(delta: float) -> void:
 	coconut_sprite.material.set_shader_parameter("outline_color", color)
 	var process_mat = twinkle_particle.process_material as ParticleProcessMaterial
 	process_mat.color = color + Color(0, 0.2, 0.2, 1)
+
+
+func get_combo() -> int:
+	return now_combo
