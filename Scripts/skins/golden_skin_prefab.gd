@@ -57,7 +57,7 @@ func play_land():
 func _spawn_golden_ring():
 	var ring = ColorRect.new()
 	ring.size = Vector2(120, 120)
-	ring.position = -ring.size / 2.0
+	ring.top_level = true
 
 	var mat = ShaderMaterial.new()
 	mat.shader = GOLDEN_RING_SHADER
@@ -67,6 +67,7 @@ func _spawn_golden_ring():
 	ring.material = mat
 
 	add_child(ring)
+	ring.global_position = self.global_position - ring.size / 2.0
 
 	# 外緣會在 0.2 秒內到達自身大小 2 倍的位置 (半徑約 51.2，在 120 的矩形中對應 UV 約 0.43)
 	var r_tween = create_tween()

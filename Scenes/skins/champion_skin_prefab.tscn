@@ -39,6 +39,7 @@ scale = Vector2(0.18, 0.18)
 texture = ExtResource("2_square")
 
 [node name="Confetti" type="CPUParticles2D" parent="."]
+local_coords = false
 emitting = false
 amount = 30
 lifetime = 1.0

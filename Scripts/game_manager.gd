@@ -540,6 +540,7 @@ func _on_network_health_changed(peer_id: int, health: int) -> void:
 		if player == null:
 			return
 		if player.health <= 0:
+			await player.die()
 			finish_game()
 		return
 

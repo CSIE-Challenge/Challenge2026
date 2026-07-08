@@ -19,6 +19,7 @@ scale = Vector2(0.22, 0.18)
 texture = ExtResource("2_circle")
 
 [node name="SplashParticles" type="CPUParticles2D" parent="."]
+local_coords = false
 emitting = false
 amount = 20
 lifetime = 0.5

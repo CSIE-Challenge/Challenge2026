@@ -68,7 +68,9 @@ func play_jump():
 	ripple.texture = sprite.texture
 	ripple.modulate = Color(0.6, 0.1, 1.0, 0.5)
 	ripple.scale = Vector2(0.2, 0.2)
+	ripple.top_level = true
 	add_child(ripple)
+	ripple.global_position = self.global_position
 	var rt = create_tween()
 	rt.tween_property(ripple, "scale", Vector2(0.6, 0.6), 0.3).set_trans(Tween.TRANS_EXPO).set_ease(
 		Tween.EASE_OUT
@@ -78,6 +80,8 @@ func play_jump():
 
 
 func play_land():
+	suck_particles.top_level = true
+	suck_particles.global_position = self.global_position
 	suck_particles.restart()
 	suck_particles.emitting = true
 
@@ -85,6 +89,8 @@ func play_land():
 	tween.tween_property(sprite, "scale", Vector2(0.3, 0.1), 0.1).set_trans(Tween.TRANS_BACK)
 	tween.tween_property(sprite, "scale", Vector2(0.2, 0.2), 0.15)
 
+	shockwave.top_level = true
+	shockwave.global_position = self.global_position + Vector2(-150, -15)
 	shockwave.visible = true
 	shockwave.scale = Vector2(0.1, 1.0)
 	shockwave.modulate.a = 0.8

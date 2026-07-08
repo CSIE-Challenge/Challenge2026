@@ -42,7 +42,7 @@ func _process(delta):
 
 	if not is_flying:
 		# 走路動畫
-		var parent = get_parent()
+		var parent = get_meta("player") if has_meta("player") else get_parent()
 		# 當它是 coconut 時才有 velocity 屬性
 		if parent and "velocity" in parent:
 			var vel = parent.velocity

@@ -23,6 +23,7 @@ scale_amount_max = 0.03
 color = Color(0.8, 0.95, 1.0, 0.5)
 
 [node name="SnowParticles" type="CPUParticles2D" parent="."]
+local_coords = false
 emitting = false
 amount = 30
 lifetime = 0.8

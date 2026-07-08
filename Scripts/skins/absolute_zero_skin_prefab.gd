@@ -89,7 +89,7 @@ func play_land():
 
 		# Spread them along the bottom
 		var offset_x = (i - 2) * 12.0
-		spike.position = Vector2(offset_x, 0)
+		spike.top_level = true
 
 		# Angle outward slightly
 		spike.rotation = offset_x * 0.02
@@ -97,6 +97,7 @@ func play_land():
 		# Start small
 		spike.scale = Vector2(1.0, 0.0)
 		spikes_container.add_child(spike)
+		spike.global_position = self.global_position + Vector2(offset_x, 0)
 
 		var st = create_tween()
 		var delay = randf_range(0.0, 0.05)

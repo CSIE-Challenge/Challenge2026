@@ -20,6 +20,7 @@ var jump_count := 0
 var distance_traveled := 0.0
 var all_sand_tiles: Array[Vector2i] = []
 var last_stepped_cell = Vector2i(-1, -1)
+var skin_instance: Node2D = null
 
 @onready var body_sprite = $BodySprite
 @onready var sand_tilemap = $"../../../BackGroundLayer/SandTileMap"
@@ -30,11 +31,31 @@ var last_stepped_cell = Vector2i(-1, -1)
 
 func _ready() -> void:
 	_reload_from_game_data()
-
 	health = max_health
 	for x in range(4):
 		for y in range(4):
 			all_sand_tiles.append(Vector2i(x, y))
+	var skin_path = "res://Assets/skins/" + PlayerData.equipped_skin + ".tres"
+	var skin_data = load(skin_path)
+	if skin_data and skin_data.skin_prefab:
+		skin_instance = skin_data.skin_prefab.instantiate()
+		skin_instance.z_index = 20
+		skin_instance.set_meta("player", self)
+		var hd_skin_layer = CanvasLayer.new()
+		hd_skin_layer.layer = 100
+		hd_skin_layer.follow_viewport_enabled = true
+		var my_viewport = get_viewport()
+		if my_viewport and my_viewport.get_parent():
+			my_viewport.get_parent().add_child.call_deferred(hd_skin_layer)
+		else:
+			get_tree().current_scene.add_child.call_deferred(hd_skin_layer)
+		hd_skin_layer.add_child.call_deferred(skin_instance)
+		body_sprite.hide()
+		if skin_instance.has_method("play_spawn"):
+			if not skin_instance.is_node_ready():
+				await skin_instance.ready
+			skin_instance.play_spawn()
+		Global.energyball_collected.connect(_on_energy_ball_collected)
 
 
 func _reload_from_game_data() -> void:
@@ -62,6 +83,11 @@ func _physics_process(delta: float) -> void:
 		_update_sand_tilemap()
 	else:
 		walk_particle.emitting = false
+
+
+func _process(_delta: float) -> void:
+	if is_instance_valid(skin_instance):
+		skin_instance.global_position = self.global_position + Vector2(0, -current_sprite_y)
 
 
 func move(dir: Vector2, speed: float, delta: float):
@@ -101,6 +127,8 @@ func _jump():
 	current_sprite_y = 0
 	_adjust_collision_layer()
 	Audio.play_sfx(Audio.SFX.JUMP)
+	if is_instance_valid(skin_instance) and skin_instance.has_method("play_jump"):
+		skin_instance.play_jump()
 
 
 func _jump_process(delta: float):
@@ -111,10 +139,15 @@ func _jump_process(delta: float):
 	current_sprite_y += current_jump_velocity * delta
 	if current_sprite_y <= 0:
 		isjumping = false
+		current_sprite_y = 0
 		body_sprite.position.y = 0
 		_adjust_collision_layer()
 		land_particle.restart()
 		land_particle.emitting = true
+		if is_instance_valid(skin_instance):
+			skin_instance.global_position = self.global_position
+			if skin_instance.has_method("play_land"):
+				skin_instance.play_land()
 	else:
 		body_sprite.position.y = -current_sprite_y
 
@@ -143,3 +176,14 @@ func invincibility_toggle(on: bool):
 	_adjust_collision_layer()
 	if not on:
 		modulate.a = 1
+
+
+func _on_energy_ball_collected(_energy_amount: int) -> void:
+	if is_instance_valid(skin_instance) and skin_instance.has_method("play_eat_ball"):
+		skin_instance.play_eat_ball()
+
+
+func die():
+	$ShadowSprite.hide()
+	if is_instance_valid(skin_instance) and skin_instance.has_method("play_die"):
+		await skin_instance.play_die()

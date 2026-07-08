@@ -25,6 +25,7 @@ scale = Vector2(1.0, 0.2)
 texture = ExtResource("2_square")
 
 [node name="SmokeParticles" type="CPUParticles2D" parent="."]
+local_coords = false
 emitting = false
 amount = 20
 lifetime = 0.5

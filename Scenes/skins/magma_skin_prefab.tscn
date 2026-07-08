@@ -40,6 +40,7 @@ scale_amount_curve = SubResource("Curve_magma")
 color = Color(1, 0.8, 0, 1)
 
 [node name="SplashParticles" type="CPUParticles2D" parent="."]
+local_coords = false
 emitting = false
 amount = 20
 lifetime = 0.6

@@ -26,7 +26,7 @@ func _process(delta):
 
 	if not is_flying:
 		# 走路動畫
-		var parent = get_parent()
+		var parent = get_meta("player") if has_meta("player") else get_parent()
 		# 讀取 coconut 節點的 velocity 屬性
 		if parent and "velocity" in parent:
 			var vel = parent.velocity
@@ -117,8 +117,8 @@ func play_eat_ball():
 	if is_dead:
 		return
 	var tween = create_tween()
-	tween.tween_property(sprite, "scale", Vector2(0.08, 0.08), 0.1)
-	tween.tween_property(sprite, "scale", Vector2(0.06, 0.06), 0.1)
+	tween.tween_property(sprite, "scale", Vector2(0.12, 0.12), 0.1)
+	tween.tween_property(sprite, "scale", Vector2(0.1, 0.1), 0.1)
 
 
 func play_die():
