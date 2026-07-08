@@ -40,7 +40,7 @@ class Cmd:
     GET_OPPONENT_PLAYER_VELOCITY = "get_opponent_player_velocity"
     GET_REMAINING_TIME = "get_remaining_time"
     GET_OPPONENT_COMBO = "get_opponent_combo"
-    GET_LEVEL = "get_level"
+    GET_PHASE = "get_phase"
     GET_AVAILABLE_TRAPS = "get_available_traps"
     GET_COOL_DOWN_TIME = "get_cool_down_time"
 

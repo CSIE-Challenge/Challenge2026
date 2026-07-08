@@ -225,9 +225,9 @@ class GameClientBase:
         """
         return self._call(protocol.Cmd.GET_OPPONENT_COMBO)
 
-    def get_level(self) -> int:
+    def get_phase(self) -> int:
         """
-        # Get Level
+        # Get Phase
         取得目前關卡難度等級。
 
         ## Parameters
@@ -236,7 +236,7 @@ class GameClientBase:
         ## Returns
         回傳整數關卡等級。
         """
-        return self._call(protocol.Cmd.GET_LEVEL)
+        return self._call(protocol.Cmd.GET_PHASE)
 
     def get_available_traps(self) -> list[str]:
         """

@@ -193,8 +193,8 @@ func get_opponent_combo() -> int:
 	return energy_ball.get_combo()
 
 
-func get_level() -> int:
-	return current_level
+func get_phase() -> int:
+	return current_phase
 
 
 func _connect_agent_action_signals() -> void:

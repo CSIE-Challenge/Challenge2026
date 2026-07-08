@@ -51,13 +51,13 @@ def test_get_opponent_velocity_shape(client: GameClientBase) -> None:
     assert len(velocity) == 2
 
 
-def test_get_remaining_time_and_level(client: GameClientBase) -> None:
+def test_get_remaining_time_and_phase(client: GameClientBase) -> None:
     remaining = client.get_remaining_time()
-    level = client.get_level()
+    phase = client.get_phase()
     assert isinstance(remaining, (int, float))
     assert remaining >= 0
-    assert isinstance(level, int)
-    assert level >= 0
+    assert isinstance(phase, int)
+    assert phase >= 0
 
 
 def test_get_opponent_combo_and_available_traps(client: GameClientBase) -> None:
