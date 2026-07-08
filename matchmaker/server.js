@@ -106,6 +106,33 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  if (method === "POST" && url.pathname === "/join") {
+    const body = await parseBody(req);
+    const code = body.code?.toUpperCase?.() || "";
+
+    if (!roomCodes.has(code)) {
+      res.writeHead(404);
+      res.end(JSON.stringify({ error: "room not found" }));
+      return;
+    }
+
+    const timer = expireTimers.get(code);
+    if (!timer) {
+      res.writeHead(410);
+      res.end(JSON.stringify({ error: "room expired" }));
+      return;
+    }
+
+    clearTimeout(timer);
+    expireTimers.delete(code);
+
+    const port = roomCodes.get(code);
+    console.log(`[Matchmaker] Room ${code} joined on port ${port}`);
+    res.writeHead(200);
+    res.end(JSON.stringify({ port }));
+    return;
+  }
+
   res.writeHead(404);
   res.end(JSON.stringify({ error: "not found" }));
 });
