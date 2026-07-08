@@ -8,7 +8,7 @@ const TRUNK_HEIGHT_PIXEL = 36
 
 @export var coconut_count: int = 0
 @export var tree_height: float
-@export var tree_root_position: Vector2 = Vector2(980, 512)
+@export var tree_root_position: Vector2 = Vector2(984, 556)
 var trunks: Array[Node2D]
 var leaves: Array[Node2D]
 var coconuts: Array[Node2D]
