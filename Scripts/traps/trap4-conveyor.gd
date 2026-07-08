@@ -40,11 +40,19 @@ func _ready() -> void:
 		return
 	scale = Vector2(area_scale, area_scale)
 	await get_tree().create_timer(lifetime).timeout
+	var rectshape = collision_shape.shape as RectangleShape2D
+	var tween = create_tween()  #despawn animation
+	tween.set_parallel(true)
+	tween.tween_property(wave_animation.material, "shader_parameter/reverse_reveal", 0.0, 0.5)
+	tween.tween_property(rectshape, "size", Vector2(100, 0), 0.5)
+	tween.tween_property(collision_shape, "position", Vector2(75, 0), 0.5)
+	await tween.finished
 	_destroy_trap()
 
 
 func play_spawn():
 	wave_animation.material.set_shader_parameter("reveal", 0.0)
+	wave_animation.material.set_shader_parameter("reverse_reveal", 1.0)
 	var rect_shape = collision_shape.shape as RectangleShape2D
 	rect_shape.size = Vector2(100, 0)
 	collision_shape.position = Vector2(0, -75)
@@ -82,7 +90,8 @@ func serialize_state() -> Dictionary:
 		"position": global_position,
 		"rotation": rotation,
 		"scale": scale,
-		"shader_reveal": wave_animation.material.get_shader_parameter("reveal")
+		"shader_reveal": wave_animation.material.get_shader_parameter("reveal"),
+		"shader_reverse_reveal": wave_animation.material.get_shader_parameter("reverse_reveal")
 	}
 
 
@@ -91,3 +100,6 @@ func apply_demo_state(data: Dictionary) -> void:
 	rotation = data.get("rotation", 0.0)
 	wave_animation.material.set_shader_parameter("reveal", data.get("shader_reveal", 1.0))
 	scale = data.get("scale", Vector2.ZERO)
+	wave_animation.material.set_shader_parameter(
+		"reverse_reveal", data.get("shader_reverse_reveal", 1.0)
+	)

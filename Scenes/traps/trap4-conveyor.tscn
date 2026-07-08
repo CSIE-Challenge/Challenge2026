@@ -19,7 +19,11 @@ size = Vector2(100, 100)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_iq5co"]
 shader = ExtResource("2_jabnn")
-shader_parameter/reveal = 0.0
+shader_parameter/reveal = 1.0
+shader_parameter/reverse_reveal = 1.0
+shader_parameter/wave_amplitude = 0.010000000475
+shader_parameter/wave_frequency = 20.0000009025
+shader_parameter/wave_speed = -10.0
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_37j6j"]
 animations = [{

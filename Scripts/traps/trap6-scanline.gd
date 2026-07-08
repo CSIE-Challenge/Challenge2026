@@ -59,6 +59,9 @@ func _ready() -> void:
 		hula_rotate = true
 		for hula in hulas:
 			hula.rotation = -PI / 2
+	scale = Vector2(0, 1)
+	var tween = create_tween()
+	tween.tween_property(self, "scale", Vector2(1, 1), 0.15)
 
 
 func _physics_process(delta: float) -> void:
@@ -81,6 +84,7 @@ func _on_body_entered(_body: Node2D) -> void:
 func serialize_state() -> Dictionary:
 	return {
 		"type": "trap6-scanline",
+		"scale_x": scale.x,
 		"position": global_position,
 		"rotation": rotation,
 		"visual_line_modulate": visual_line.modulate,
@@ -93,6 +97,7 @@ func serialize_state() -> Dictionary:
 
 func apply_demo_state(data: Dictionary) -> void:
 	global_position = data.get("position", Vector2.ZERO)
+	scale.x = data.get("scale_x", 1.0)
 	rotation = data.get("rotation", 0.0)
 	visual_line.modulate = data.get("visual_line_modulate", Color.WHITE)
 	visual_line.position = data.get("visual_line_position", Vector2.ZERO)
