@@ -10,7 +10,7 @@ extends Node2D
 @export var time_label: Label
 @export var result_screen: ResultScreen
 @export var pause_menu: PauseMenu
-@export var level_label: Label
+@export var phase_label: Label
 @export var health_icon: HealthIcon
 @export var walls: Array[Sprite2D]
 
@@ -19,8 +19,8 @@ var energy_increase_period = game_data["game_manager"]["energy_increase_period"]
 var player_invincibility_time = game_data["game_manager"]["player_invincibility_time"]
 var game_duration = game_data["game_manager"]["game_duration"]
 var max_health = int(game_data["player"]["max_health"])
-var max_level = game_data["game_manager"]["max_level"]
-var level_duration = game_data["game_manager"]["level_duration"]
+var max_phase = game_data["game_manager"]["max_phase"]
+var phase_duration = game_data["game_manager"]["phase_duration"]
 var max_energy = game_data["game_manager"]["max_energy"]
 
 var energy_ball_count := 0
@@ -31,7 +31,7 @@ var player_invincible := false
 var game_over := false
 var survival_started_msec := 0
 var trap_data = TrapData.new().data
-var current_level := 0
+var current_phase := 0
 var _health_icon_ready := false
 var _is_paused := false
 var _is_shutting_down := false
@@ -40,7 +40,7 @@ var _is_shutting_down := false
 @onready var player_invincibility_timer = $PlayerInvincibilityTimer
 @onready var energy_increase_timer = $EnergyIncreaseTimer
 @onready var game_duration_timer = $GameDurationTimer
-@onready var level_up_timer = $LevelUpTimer
+@onready var phase_timer = $PhaseTimer
 @onready var trap_request_scheduler: TrapRequestScheduler = $"../TrapRequestScheduler"
 @onready var agent_action_service: AgentActionService = $"../AgentActionService"
 
@@ -67,7 +67,7 @@ func _ready() -> void:
 	agent_action_service.setup_services(self, trap_request_scheduler)
 	trap_request_scheduler.initialize()
 
-	energy_increase_timer.wait_time = energy_increase_period[current_level]
+	energy_increase_timer.wait_time = energy_increase_period[current_phase]
 
 	game_duration_timer.wait_time = game_duration
 	game_duration_timer.timeout.connect(_on_game_duration_timeout)
@@ -78,8 +78,8 @@ func _ready() -> void:
 
 	_begin_agents()
 
-	level_up_timer.timeout.connect(_on_level_up_timeout)
-	level_up_timer.start(level_duration[0])
+	phase_timer.timeout.connect(_on_phase_timeout)
+	phase_timer.start(phase_duration[0])
 
 	_wall_animation()
 
@@ -329,16 +329,16 @@ func _on_game_duration_timeout() -> void:
 	finish_game()
 
 
-func _on_level_up_timeout() -> void:
-	current_level = min(current_level + 1, max_level)
-	energy_ball.level_up()
-	level_up_timer.start(level_duration[current_level])
-	level_label.text = "%d" % current_level
+func _on_phase_timeout() -> void:
+	current_phase = min(current_phase + 1, max_phase)
+	energy_ball.advance_phase()
+	phase_timer.start(phase_duration[current_phase])
+	phase_label.text = "%d" % current_phase
 	_update_max_energy()
 
 
 func _update_max_energy() -> void:
-	var max = max_energy[min(current_level, max_energy.size() - 1)]
+	var max = max_energy[min(current_phase, max_energy.size() - 1)]
 	NetworkManager.update_max_energy(max)
 
 
@@ -351,7 +351,7 @@ func finish_game(authoritative_stats: Dictionary = {}) -> void:
 	energy_increase_timer.stop()
 	player_invincibility_timer.stop()
 	game_duration_timer.stop()
-	level_up_timer.stop()
+	phase_timer.stop()
 	if trap_request_scheduler != null:
 		trap_request_scheduler.clear()
 	player.set_physics_process(false)
@@ -436,7 +436,7 @@ func _stop_gameplay_timers() -> void:
 	energy_increase_timer.stop()
 	player_invincibility_timer.stop()
 	game_duration_timer.stop()
-	level_up_timer.stop()
+	phase_timer.stop()
 
 
 func _clear_gameplay_backend_state() -> void:
@@ -484,7 +484,7 @@ func _on_player_invincibility_timer_timeout() -> void:
 
 func _on_energy_increase_timer_timeout() -> void:
 	NetworkManager.request_add_energy(1, "passive_regeneration")
-	energy_increase_timer.start(energy_increase_period[current_level])
+	energy_increase_timer.start(energy_increase_period[current_phase])
 
 
 func _on_network_energy_changed(peer_id: int, energy: int) -> void:

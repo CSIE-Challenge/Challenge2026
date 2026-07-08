@@ -14,7 +14,7 @@ var coconut_rotate_amplitude := 0.1
 var now_combo := 0
 var time_elapsed := 0.0
 var energy_gain: Array
-var energy_ball_level: int = 0
+var energy_ball_phase: int = 0
 
 var rng := RandomNumberGenerator.new()
 
@@ -53,10 +53,10 @@ func _on_body_entered(body: Node2D) -> void:
 	if collision_shape.disabled or body != player_node:
 		return
 	collision_shape.set_deferred("disabled", true)
-	Global.energyball_collected.emit(energy_gain[energy_ball_level][now_combo])
+	Global.energyball_collected.emit(energy_gain[energy_ball_phase][now_combo])
 	Audio.play_sfx(Audio.SFX.ENERGY_COLLECTED)
 	_spawn_energy_text()
-	now_combo = min(now_combo + 1, energy_gain[energy_ball_level].size() - 1)
+	now_combo = min(now_combo + 1, energy_gain[energy_ball_phase].size() - 1)
 	coconut_bar.spawn_eaten_coconut(self.global_position)
 	_respawn_energy_ball()
 
@@ -64,13 +64,13 @@ func _on_body_entered(body: Node2D) -> void:
 func _spawn_energy_text() -> void:
 	var text = energy_text.instantiate()
 	stage_layer.add_child(text)
-	text.text = "+%d" % energy_gain[energy_ball_level][now_combo]
+	text.text = "+%d" % energy_gain[energy_ball_phase][now_combo]
 	text.position = position + Vector2(552, 324)
 	text.initialize(now_combo)
 
 
-func level_up() -> void:
-	energy_ball_level = min(energy_ball_level + 1, energy_gain.size() - 1)
+func advance_phase() -> void:
+	energy_ball_phase = min(energy_ball_phase + 1, energy_gain.size() - 1)
 
 
 func _respawn_energy_ball() -> void:
