@@ -37,6 +37,7 @@ static func initialize(pos: Vector2, dir: Vector2, speed: float) -> Trap3Tracing
 func _ready() -> void:
 	if is_demo:
 		return
+	feather_effect.finished.connect(feather_effect.queue_free)
 	collision_layer = TRAP_COLLISION_LAYER
 	collision_mask = 0
 	leave_wall_detector.collision_mask = WALL_COLLISION_LAYER
@@ -73,7 +74,6 @@ func _physics_process(delta):
 
 	if collision or abs(position.x) > 1000 or abs(position.y) > 1000:
 		feather_effect.emitting = true
-		feather_effect.finished.connect(feather_effect.queue_free)
 		feather_effect.reparent(Global.stage)
 		if collision != null:
 			var collider := collision.get_collider()

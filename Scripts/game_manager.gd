@@ -332,7 +332,7 @@ func _on_level_up_timeout() -> void:
 	current_level = min(current_level + 1, max_level)
 	energy_ball.level_up()
 	level_up_timer.start(level_duration[current_level])
-	level_label.text = "Level: %d" % current_level
+	level_label.text = "%d" % current_level
 
 
 func finish_game(authoritative_stats: Dictionary = {}) -> void:
