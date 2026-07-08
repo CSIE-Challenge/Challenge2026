@@ -25,5 +25,6 @@ agent/requirements.lock
 
 # misc
 .DS_Store
+.env
 
 /export/

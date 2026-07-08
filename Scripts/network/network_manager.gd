@@ -28,6 +28,7 @@ const MAX_HEALTH := 5
 const DEFAULT_PORT := 7777
 const DEFAULT_SERVER_ADDRESS := "127.0.0.1"
 const MAX_CLIENTS := 3
+const READY_TIMEOUT_SECONDS := 90.0
 
 var max_energy = GameData.new().data["game_manager"]["max_energy"][0]
 var connected_peer_ids: Array[int] = []
@@ -38,6 +39,7 @@ var max_health: int = MAX_HEALTH
 var _client_states: Dictionary = {}  # peer_id → state snapshot Dictionary
 var _server_receive_count: int = 0
 var _demo_push_count: int = 0
+var _ready_timeout_timer: Timer = null
 
 
 ## Called on startup. Connects multiplayer signals and handles command-line launch.
@@ -273,6 +275,17 @@ func _on_peer_connected(peer_id: int) -> void:
 	player_connected.emit(peer_id)
 	print("Peer connected: %d (%d/%d)" % [peer_id, connected_peer_ids.size(), MAX_CLIENTS])
 
+	if connected_peer_ids.size() == 2 and peer_id != demo_peer_id:
+		if _ready_timeout_timer == null:
+			_ready_timeout_timer = Timer.new()
+			_ready_timeout_timer.name = "ReadyTimeoutTimer"
+			_ready_timeout_timer.one_shot = true
+			_ready_timeout_timer.wait_time = READY_TIMEOUT_SECONDS
+			_ready_timeout_timer.timeout.connect(_on_ready_timeout)
+			add_child(_ready_timeout_timer)
+		_ready_timeout_timer.start()
+		print("[NetworkManager] Ready timeout started (90s) — 2 players connected")
+
 
 ## Removes a disconnected peer from the tracked list and emits [signal player_disconnected].
 func _on_peer_disconnected(peer_id: int) -> void:
@@ -281,11 +294,26 @@ func _on_peer_disconnected(peer_id: int) -> void:
 	health_by_peer_id.erase(peer_id)
 	_client_states.erase(peer_id)
 
+	if connected_peer_ids.size() < 2 and _ready_timeout_timer != null:
+		_ready_timeout_timer.stop()
+		print("[NetworkManager] Ready timeout cancelled — not enough players")
+
 	if peer_id == demo_peer_id:
 		_unregister_demo()
 
 	player_disconnected.emit(peer_id)
 	print("Peer disconnected: %d" % peer_id)
+
+
+func _on_ready_timeout() -> void:
+	print("[NetworkManager] Ready timeout reached — exiting server")
+	get_tree().quit(0)
+
+
+func cancel_ready_timeout() -> void:
+	if _ready_timeout_timer != null:
+		_ready_timeout_timer.stop()
+		print("[NetworkManager] Ready timeout cancelled by player readiness")
 
 
 ## Called when this client successfully connects to a server.
