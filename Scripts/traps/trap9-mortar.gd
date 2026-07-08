@@ -40,6 +40,8 @@ var is_demo := false
 
 
 func _ready() -> void:
+	if is_demo:
+		return
 	$ShellShadow/Shell.z_index = Util.LAYERS["Trap9Mortar/Shell"]
 	$ShellShadow/Shadow.z_index = Util.LAYERS["Trap9Mortar/Shadow"]
 	$Explosion.z_index = Util.LAYERS["Trap9Mortar/Explosion"]
@@ -50,13 +52,6 @@ static func initialize(start_pos: Vector2, end_pos: Vector2, air_time: float) ->
 	Global.stage.add_child(trap)
 	trap.activate(start_pos, end_pos, air_time)
 	return trap
-
-
-func _ready() -> void:
-	if is_demo:
-		return
-	shell.z_index = 1
-	shadow.z_index = 0
 
 
 func _physics_process(delta: float) -> void:
