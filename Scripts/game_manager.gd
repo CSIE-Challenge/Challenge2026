@@ -87,6 +87,14 @@ func _ready() -> void:
 
 	#_show_test_result_after_delay()
 
+	player.get_node("ShadowSprite").z_index = Util.LAYERS["Player/ShadowSprite"]
+	player.get_node("BodySprite").z_index = Util.LAYERS["Player/BodySprite"]
+	player.get_node("WalkParticle").z_index = Util.LAYERS["Player/WalkParticle"]
+	player.get_node("JumpParticle").z_index = Util.LAYERS["Player/JumpParticle"]
+	player.get_node("LandParticle").z_index = Util.LAYERS["Player/LandParticle"]
+	energy_ball.z_index = Util.LAYERS["EnergyBall"]
+	$"../SubViewport/Stage/Walls".z_index = Util.LAYERS["Walls"]
+
 
 func _exit_tree() -> void:
 	_shutdown_gameplay_for_scene_change()

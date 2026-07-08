@@ -246,7 +246,7 @@ func _create_player_ghost(stage: Node2D) -> Node2D:
 	ghost.name = "PlayerGhost"
 	ghost.texture = preload("res://Shapes/Circle.svg")
 	ghost.scale = Vector2(0.2, 0.2)
-	ghost.z_index = 20
+	ghost.z_index = Util.LAYERS["Player/BodySprite"]
 	ghost.modulate = Color(0.2, 0.6, 1.0, 1.0)  # Blue tint to distinguish from energy balls
 	stage.add_child(ghost)
 	return ghost
