@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://bpmlo3pvuor0n"]
+
+[ext_resource type="Texture2D" uid="uid://brbafk37x0dkc" path="res://Shapes/coconutWater.svg" id="1_1sc8f"]
+[ext_resource type="Script" uid="uid://cixrnnv3qmqnr" path="res://Scripts/energy_label.gd" id="1_7ngp7"]
+
+[sub_resource type="FontVariation" id="FontVariation_7ngp7"]
+
+[node name="EnergyLabel" type="Node2D" unique_id=695396229]
+script = ExtResource("1_7ngp7")
+
+[node name="Marker" type="Marker2D" parent="." unique_id=1673381379]
+rotation = 0.050614547
+
+[node name="CoconutWater" type="Sprite2D" parent="Marker" unique_id=762824227]
+position = Vector2(-56, 16)
+rotation = -0.08726645
+texture = ExtResource("1_1sc8f")
+
+[node name="Label" type="Label" parent="." unique_id=1570185173]
+offset_left = 46.0
+offset_top = -30.0
+offset_right = 190.0
+offset_bottom = 25.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("FontVariation_7ngp7")
+theme_override_font_sizes/font_size = 40
+text = "0"

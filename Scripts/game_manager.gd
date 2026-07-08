@@ -12,6 +12,7 @@ extends Node2D
 @export var level_label: Label
 @export var health_icon: HealthIcon
 @export var walls: Array[Sprite2D]
+@export var energy_label: Node2D
 
 var game_data: Dictionary = GameData.new().data
 var energy_increase_period = game_data["game_manager"]["energy_increase_period"]
@@ -373,6 +374,7 @@ func _update_time_label() -> void:
 
 func _update_energy_label() -> void:
 	energy_bar_label.text = "My Energy: %d" % energy_amount
+	energy_label._update_energy(energy_amount)
 
 
 func _update_opponent_energy_label(peer_id: int, energy: int) -> void:
