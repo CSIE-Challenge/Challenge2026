@@ -350,6 +350,8 @@ process_material = SubResource("ParticleProcessMaterial_5i20n")
 
 [node name="CoconutBar" parent="SubViewport" unique_id=339971714 instance=ExtResource("8_ltefv")]
 
+[node name="EnergyLabel" parent="SubViewport" unique_id=695396229 instance=ExtResource("12_ifha0")]
+
 [node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "camera", "health_label", "energy_balls_label", "energy_bar_label", "coconut_bar", "opponent_energy_bar_label", "time_label", "result_screen", "level_label", "health_icon", "walls", "energy_label")]
 script = ExtResource("1_kwrm5")
 player = NodePath("../SubViewport/Stage/Player")
@@ -364,7 +366,7 @@ result_screen = NodePath("../ResultScreen")
 level_label = NodePath("../HUD/LevelLabel")
 health_icon = NodePath("../HUD/HealthIcons")
 walls = [NodePath("../SubViewport/Stage/Walls/RightWall/Bound"), NodePath("../SubViewport/Stage/Walls/LeftWall/Bound"), NodePath("../SubViewport/Stage/Walls/UpWall/Bound"), NodePath("../SubViewport/Stage/Walls/DownWall/Bound")]
-energy_label = NodePath("EnergyLabel")
+energy_label = NodePath("../SubViewport/EnergyLabel")
 
 [node name="EnergyIncreaseTimer" type="Timer" parent="GameManager" unique_id=1538767547]
 autostart = true
@@ -375,8 +377,6 @@ autostart = true
 one_shot = true
 
 [node name="LevelUpTimer" type="Timer" parent="GameManager" unique_id=297683376]
-
-[node name="EnergyLabel" parent="GameManager" unique_id=695396229 instance=ExtResource("12_ifha0")]
 
 [node name="Stage#HealthLabel" type="Label" parent="." unique_id=1134340444]
 offset_left = -236.0
