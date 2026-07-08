@@ -113,7 +113,7 @@ const server = http.createServer(async (req, res) => {
 
     res.setHeader("Content-Type", "application/json");
 
-    if (method === "POST" && url.pathname === "/room") {
+    if (method === "POST" && url.pathname === "/qiaohu/room") {
         if (freePorts.size === 0) {
             res.writeHead(503);
             res.end(JSON.stringify({ error: "no free ports" }));
@@ -149,7 +149,7 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    if (method === "POST" && url.pathname === "/join") {
+    if (method === "POST" && url.pathname === "/qiaohu/join") {
         const body = await parseBody(req);
         const code = body.code?.toUpperCase?.() || "";
 
