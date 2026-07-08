@@ -83,7 +83,7 @@ func _ready() -> void:
 
 	_wall_animation()
 
-	Audio.set_bgm(Audio.BGM.GAMEPLAY)
+	Audio.set_phase_bgm(0)
 
 	#_show_test_result_after_delay()
 
@@ -375,6 +375,8 @@ func _on_phase_timeout() -> void:
 func _update_max_energy() -> void:
 	var max = max_energy[min(current_phase, max_energy.size() - 1)]
 	NetworkManager.update_max_energy(max)
+
+	Audio.set_phase_bgm(current_phase)
 
 
 func finish_game(authoritative_stats: Dictionary = {}) -> void:

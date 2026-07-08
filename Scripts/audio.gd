@@ -5,6 +5,7 @@ enum SFX {
 	JUMP,
 	BUTTON_PRESS,
 	ENERGY_COLLECTED,
+	GAMEPLAY_PHASE_CHANGE,
 	TAKE_DAMAGE,
 	SET_TRAP,
 	TRAP1_MINE_EXPLODE,
@@ -12,9 +13,19 @@ enum SFX {
 	TRAP3_BULLET_HIT_WALL
 }
 
-enum BGM { MENU, GAMEPLAY, HIDDEN_GAME, RESULT }
+enum BGM {
+	MENU,
+	GAMEPLAY_PHASE_0,
+	GAMEPLAY_PHASE_1,
+	GAMEPLAY_PHASE_2,
+	GAMEPLAY_PHASE_3,
+	GAMEPLAY_PHASE_4,
+	RESULT,
+	HIDDEN_GAME,
+}
 
 @export var sfx_pool_size := 8
+@export var bgm_fade_out_time := 0.3125
 
 var _sfx_players: Array[AudioStreamPlayer] = []
 var _bgm_playlist: Array[AudioStream] = []
@@ -38,17 +49,15 @@ func _ready() -> void:
 
 func set_bgm(bgm: BGM) -> void:
 	var fade_out_tween = create_tween()
-	fade_out_tween.tween_property(bgm_player, "volume_db", -80.0, 1)
+	fade_out_tween.tween_property(bgm_player, "volume_db", -80.0, bgm_fade_out_time)
 	await fade_out_tween.finished
 
 	bgm_player.stop()
 	_bgm_playlist = _bgm_playlists.get(bgm, []) as Array[AudioStream]
 	_last_track_index = -1
 	_play_random_bgm_track()
+	bgm_player.volume_db = 0
 	print("playing BGM.%s playlist" % BGM.keys()[bgm])
-
-	var fade_in_tween = create_tween()
-	fade_in_tween.tween_property(bgm_player, "volume_db", 0.0, 1)
 
 
 func play_sfx(sfx: SFX) -> AudioStreamPlayer:
@@ -79,6 +88,21 @@ func pause_bgm() -> void:
 func resume_bgm() -> void:
 	if bgm_player.stream != null and not bgm_player.playing:
 		bgm_player.play()
+
+
+func set_phase_bgm(phase: int) -> void:
+	play_sfx(SFX.GAMEPLAY_PHASE_CHANGE)
+	match phase:
+		0:
+			set_bgm(BGM.GAMEPLAY_PHASE_0)
+		1:
+			set_bgm(BGM.GAMEPLAY_PHASE_1)
+		2:
+			set_bgm(BGM.GAMEPLAY_PHASE_2)
+		3:
+			set_bgm(BGM.GAMEPLAY_PHASE_3)
+		4:
+			set_bgm(BGM.GAMEPLAY_PHASE_4)
 
 
 func _play_random_bgm_track() -> void:
