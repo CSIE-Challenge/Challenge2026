@@ -24,12 +24,12 @@ signal demo_connected(peer_id: int)
 signal demo_disconnected
 signal demo_state_received(data: Dictionary)
 
-const MAX_ENERGY := 100
 const MAX_HEALTH := 5
 const DEFAULT_PORT := 7777
 const DEFAULT_SERVER_ADDRESS := "127.0.0.1"
 const MAX_CLIENTS := 3
 
+var max_energy = GameData.new().data["game_manager"]["max_energy"][0]
 var connected_peer_ids: Array[int] = []
 var energy_by_peer_id: Dictionary = {}
 var health_by_peer_id: Dictionary = {}
@@ -87,6 +87,10 @@ func join_server(address := DEFAULT_SERVER_ADDRESS, port := DEFAULT_PORT) -> Err
 	client_started.emit(address, port)
 	print("Connecting to %s:%d" % [address, port])
 	return OK
+
+
+func update_max_energy(new_max_energy: int) -> void:
+	max_energy = new_max_energy
 
 
 ## Closes the current connection and resets the multiplayer peer to offline mode.
@@ -512,7 +516,7 @@ func _server_add_energy(peer_id: int, amount: int, _reason := "") -> void:
 		return
 
 	var old_energy := get_energy(peer_id)
-	var new_energy := clampi(old_energy + amount, 0, MAX_ENERGY)
+	var new_energy := clampi(old_energy + amount, 0, max_energy)
 
 	energy_by_peer_id[peer_id] = new_energy
 	_broadcast_energy(peer_id, new_energy)

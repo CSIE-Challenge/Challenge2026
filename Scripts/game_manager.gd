@@ -21,6 +21,7 @@ var game_duration = game_data["game_manager"]["game_duration"]
 var max_health = int(game_data["player"]["max_health"])
 var max_level = game_data["game_manager"]["max_level"]
 var level_duration = game_data["game_manager"]["level_duration"]
+var max_energy = game_data["game_manager"]["max_energy"]
 
 var energy_ball_count := 0
 var energy_amount := 0
@@ -333,6 +334,12 @@ func _on_level_up_timeout() -> void:
 	energy_ball.level_up()
 	level_up_timer.start(level_duration[current_level])
 	level_label.text = "%d" % current_level
+	_update_max_energy()
+
+
+func _update_max_energy() -> void:
+	var max = max_energy[min(current_level, max_energy.size() - 1)]
+	NetworkManager.update_max_energy(max)
 
 
 func finish_game(authoritative_stats: Dictionary = {}) -> void:
