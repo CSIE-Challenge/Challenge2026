@@ -1,0 +1,76 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Scripts/menu/multiplayer_ready.gd" id="1_ready"]
+
+[node name="MultiplayerReady" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ready")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -360.0
+offset_top = -190.0
+offset_right = 360.0
+offset_bottom = 190.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 24
+
+[node name="TitleLabel" type="Label" parent="Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "雙人模式 Ready"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StatusLabel" type="Label" parent="Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+text = "連線中..."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DetailLabel" type="Label" parent="Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "等待連線到 server。"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="ReadyButton" type="Button" parent="Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+disabled = true
+text = "Ready"
+
+[node name="BackButton" type="Button" parent="Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 55)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "返回"
+
+[connection signal="button_up" from="Panel/VBoxContainer/ReadyButton" to="." method="_on_ready_button_button_up"]
+[connection signal="button_up" from="Panel/VBoxContainer/BackButton" to="." method="_on_back_button_button_up"]

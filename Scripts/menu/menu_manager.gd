@@ -1,6 +1,7 @@
 extends Control
 
 const FILE_SELECTOR_SCENE := "res://Scenes/menu/file_selector.tscn"
+const MULTIPLAYER_READY_SCENE := "res://Scenes/menu/multiplayer_ready.tscn"
 
 @onready var mode_panel = $Panel/ModePanel
 @onready var single_button: Button = $Panel/ModePanel/VBoxContainer/ToggleRow/SingleButton
@@ -45,10 +46,9 @@ func _on_confirm_button_up() -> void:
 		Global.agent_file = ""
 		SceneTransition.transition_to(FILE_SELECTOR_SCENE)
 	else:
-		# 雙人模式: no dedicated scene yet (placeholder).
 		Global.single_player = false
 		Global.agent_file = ""
-		print("[Menu] 雙人模式 selected (not implemented yet)")
+		SceneTransition.transition_to(MULTIPLAYER_READY_SCENE)
 
 
 func _on_mode_back_button_up() -> void:

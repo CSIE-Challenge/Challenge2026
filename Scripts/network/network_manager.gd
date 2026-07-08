@@ -23,17 +23,23 @@ signal health_rejected(peer_id: int, reason: String)
 signal demo_connected(peer_id: int)
 signal demo_disconnected
 signal demo_state_received(data: Dictionary)
+signal multiplayer_player_count_changed(player_count: int)
+signal multiplayer_ready_changed(peer_id: int, is_ready: bool)
+signal multiplayer_match_started
 
 const MAX_HEALTH := 5
 const DEFAULT_PORT := 7777
 const DEFAULT_SERVER_ADDRESS := "127.0.0.1"
 const MAX_CLIENTS := 3
 const READY_TIMEOUT_SECONDS := 90.0
+const REQUIRED_READY_PLAYERS := 2
 
 var max_energy = GameData.new().data["game_manager"]["max_energy"][0]
 var connected_peer_ids: Array[int] = []
 var energy_by_peer_id: Dictionary = {}
 var health_by_peer_id: Dictionary = {}
+var ready_peer_ids: Array[int] = []
+var multiplayer_player_count := 0
 var demo_peer_id: int = -1  # -1 when no demo is connected
 var max_health: int = MAX_HEALTH
 var _client_states: Dictionary = {}  # peer_id → state snapshot Dictionary
@@ -68,6 +74,8 @@ func start_server(port := DEFAULT_PORT) -> Error:
 	connected_peer_ids.clear()
 	energy_by_peer_id.clear()
 	health_by_peer_id.clear()
+	ready_peer_ids.clear()
+	multiplayer_player_count = 0
 	_client_states.clear()
 	server_started.emit(port)
 	print("Network server started on UDP port %d, max clients: %d" % [port, MAX_CLIENTS])
@@ -104,6 +112,8 @@ func stop_network() -> void:
 	connected_peer_ids.clear()
 	energy_by_peer_id.clear()
 	health_by_peer_id.clear()
+	ready_peer_ids.clear()
+	multiplayer_player_count = 0
 	_client_states.clear()
 
 
@@ -145,6 +155,20 @@ func is_running_server() -> bool:
 ## Returns the number of currently connected clients.
 func get_connected_client_count() -> int:
 	return connected_peer_ids.size()
+
+
+## Returns the number of gameplay players in the multiplayer lobby.
+## On clients this is the latest server-broadcast value.
+func get_multiplayer_player_count() -> int:
+	if multiplayer.is_server():
+		return _get_gameplay_peer_count()
+
+	return multiplayer_player_count
+
+
+## Returns true once the two gameplay players are connected.
+func has_required_multiplayer_players() -> bool:
+	return get_multiplayer_player_count() >= REQUIRED_READY_PLAYERS
 
 
 ## Returns the server-approved energy for [param peer_id].
@@ -271,8 +295,10 @@ func _on_peer_connected(peer_id: int) -> void:
 	_broadcast_health(peer_id, max_health)
 	_sync_energy_to_peer(peer_id)
 	_sync_health_to_peer(peer_id)
+	_sync_ready_to_peer(peer_id)
 
 	player_connected.emit(peer_id)
+	_broadcast_multiplayer_player_count()
 	print("Peer connected: %d (%d/%d)" % [peer_id, connected_peer_ids.size(), MAX_CLIENTS])
 
 	if connected_peer_ids.size() == 2 and peer_id != demo_peer_id:
@@ -292,6 +318,7 @@ func _on_peer_disconnected(peer_id: int) -> void:
 	connected_peer_ids.erase(peer_id)
 	energy_by_peer_id.erase(peer_id)
 	health_by_peer_id.erase(peer_id)
+	ready_peer_ids.erase(peer_id)
 	_client_states.erase(peer_id)
 
 	if connected_peer_ids.size() < 2 and _ready_timeout_timer != null:
@@ -301,6 +328,7 @@ func _on_peer_disconnected(peer_id: int) -> void:
 	if peer_id == demo_peer_id:
 		_unregister_demo()
 
+	_broadcast_multiplayer_player_count()
 	player_disconnected.emit(peer_id)
 	print("Peer disconnected: %d" % peer_id)
 
@@ -314,6 +342,18 @@ func cancel_ready_timeout() -> void:
 	if _ready_timeout_timer != null:
 		_ready_timeout_timer.stop()
 		print("[NetworkManager] Ready timeout cancelled by player readiness")
+
+
+## Marks this client ready in the multiplayer lobby. The server starts the match
+## after both gameplay clients have connected and reported ready.
+func request_multiplayer_ready() -> void:
+	if not _can_process_local_network_request():
+		return
+
+	if multiplayer.is_server():
+		_server_mark_peer_ready(multiplayer.get_unique_id())
+	else:
+		rpc_id(1, "_server_request_multiplayer_ready")
 
 
 ## Called when this client successfully connects to a server.
@@ -345,6 +385,95 @@ func _find_arg_value(args: Array, arg_name: String) -> String:
 			return arg.substr(arg_name.length() + 1)
 
 	return ""
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func _server_request_multiplayer_ready() -> void:
+	if not multiplayer.is_server():
+		return
+
+	var sender_id := multiplayer.get_remote_sender_id()
+	if not connected_peer_ids.has(sender_id):
+		return
+
+	_server_mark_peer_ready(sender_id)
+
+
+func _server_mark_peer_ready(peer_id: int) -> void:
+	if not ready_peer_ids.has(peer_id):
+		ready_peer_ids.append(peer_id)
+
+	_broadcast_ready(peer_id, true)
+	print(
+		(
+			"[NetworkManager] peer %d ready (%d/%d)"
+			% [
+				peer_id,
+				ready_peer_ids.size(),
+				REQUIRED_READY_PLAYERS,
+			]
+		)
+	)
+
+	if (
+		connected_peer_ids.size() >= REQUIRED_READY_PLAYERS
+		and ready_peer_ids.size() >= REQUIRED_READY_PLAYERS
+	):
+		cancel_ready_timeout()
+		_start_multiplayer_match()
+
+
+func _start_multiplayer_match() -> void:
+	print("[NetworkManager] all players ready, starting match")
+	multiplayer_match_started.emit()
+	rpc("_client_start_multiplayer_match")
+
+
+func _broadcast_ready(peer_id: int, is_ready: bool) -> void:
+	multiplayer_ready_changed.emit(peer_id, is_ready)
+	rpc("_client_set_peer_ready", peer_id, is_ready)
+
+
+func _sync_ready_to_peer(target_peer_id: int) -> void:
+	for peer_id in ready_peer_ids:
+		_client_set_peer_ready.rpc_id(target_peer_id, peer_id, true)
+
+
+func _get_gameplay_peer_count() -> int:
+	var player_count := 0
+	for peer_id in connected_peer_ids:
+		if peer_id != demo_peer_id:
+			player_count += 1
+	return player_count
+
+
+func _broadcast_multiplayer_player_count() -> void:
+	var player_count := _get_gameplay_peer_count()
+	multiplayer_player_count = player_count
+	multiplayer_player_count_changed.emit(player_count)
+	rpc("_client_set_multiplayer_player_count", player_count)
+
+
+@rpc("authority", "call_remote", "reliable")
+func _client_set_multiplayer_player_count(player_count: int) -> void:
+	multiplayer_player_count = player_count
+	multiplayer_player_count_changed.emit(player_count)
+
+
+@rpc("authority", "call_remote", "reliable")
+func _client_set_peer_ready(peer_id: int, is_ready: bool) -> void:
+	if is_ready:
+		if not ready_peer_ids.has(peer_id):
+			ready_peer_ids.append(peer_id)
+	else:
+		ready_peer_ids.erase(peer_id)
+
+	multiplayer_ready_changed.emit(peer_id, is_ready)
+
+
+@rpc("authority", "call_remote", "reliable")
+func _client_start_multiplayer_match() -> void:
+	multiplayer_match_started.emit()
 
 
 func request_add_energy(amount: int, reason := "") -> void:
@@ -692,6 +821,7 @@ func _register_demo(peer_id: int) -> bool:
 
 	demo_peer_id = peer_id
 	demo_connected.emit(peer_id)
+	_broadcast_multiplayer_player_count()
 	print("[Demo] Demo registered as peer %d" % peer_id)
 	return true
 
@@ -705,6 +835,7 @@ func _unregister_demo() -> void:
 	demo_peer_id = -1
 	_client_states.clear()
 	demo_disconnected.emit()
+	_broadcast_multiplayer_player_count()
 	print("[Demo] Demo disconnected (was peer %d)" % old_peer)
 
 
