@@ -1,5 +1,22 @@
+import fs from "node:fs";
 import http from "node:http";
 import { spawn, execSync } from "node:child_process";
+
+// Load .env file if present (zero-dependency; Node.js stdlib only)
+const envPath = new URL(".env", import.meta.url).pathname;
+if (fs.existsSync(envPath)) {
+  for (const line of fs.readFileSync(envPath, "utf8").split("\n")) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+    const eq = trimmed.indexOf("=");
+    if (eq === -1) continue;
+    const key = trimmed.slice(0, eq).trim();
+    const value = trimmed.slice(eq + 1).trim();
+    if (key && !process.env[key]) {
+      process.env[key] = value;
+    }
+  }
+}
 
 const HTTP_PORT = parseInt(process.env.HTTP_PORT || "3000", 10);
 const PORT_START = parseInt(process.env.PORT_RANGE_START || "7777", 10);
