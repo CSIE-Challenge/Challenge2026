@@ -28,6 +28,7 @@ const MAX_HEALTH := 5
 const DEFAULT_PORT := 7777
 const DEFAULT_SERVER_ADDRESS := "127.0.0.1"
 const MAX_CLIENTS := 3
+const READY_TIMEOUT_SECONDS := 90.0
 
 var max_energy = GameData.new().data["game_manager"]["max_energy"][0]
 var connected_peer_ids: Array[int] = []
@@ -274,12 +275,12 @@ func _on_peer_connected(peer_id: int) -> void:
 	player_connected.emit(peer_id)
 	print("Peer connected: %d (%d/%d)" % [peer_id, connected_peer_ids.size(), MAX_CLIENTS])
 
-	if connected_peer_ids.size() == 2:
+	if connected_peer_ids.size() == 2 and peer_id != demo_peer_id:
 		if _ready_timeout_timer == null:
 			_ready_timeout_timer = Timer.new()
 			_ready_timeout_timer.name = "ReadyTimeoutTimer"
 			_ready_timeout_timer.one_shot = true
-			_ready_timeout_timer.wait_time = 90.0
+			_ready_timeout_timer.wait_time = READY_TIMEOUT_SECONDS
 			_ready_timeout_timer.timeout.connect(_on_ready_timeout)
 			add_child(_ready_timeout_timer)
 		_ready_timeout_timer.start()

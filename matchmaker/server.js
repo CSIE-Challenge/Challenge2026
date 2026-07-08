@@ -1,5 +1,5 @@
 import http from "node:http";
-import { spawn } from "node:child_process";
+import { spawn, execSync } from "node:child_process";
 
 const HTTP_PORT = parseInt(process.env.HTTP_PORT || "3000", 10);
 const PORT_START = parseInt(process.env.PORT_RANGE_START || "7777", 10);
@@ -56,6 +56,9 @@ function spawnGodot(port) {
   proc.stderr.on("data", (data) => {
     console.error(`[Godot:${port}] ${data.toString().trim()}`);
   });
+  proc.on("error", (err) => {
+    console.error(`[Matchmaker] Godot process error on port ${port}: ${err.message}`);
+  });
   proc.on("exit", (exitCode) => {
     const code = findRoomCodeByProcess(proc);
     if (code) {
@@ -102,7 +105,17 @@ const server = http.createServer(async (req, res) => {
     freePorts.delete(port);
     const code = generateCode();
 
-    const proc = spawnGodot(port);
+    let proc;
+    try {
+      proc = spawnGodot(port);
+    } catch (err) {
+      console.error(`[Matchmaker] Failed to spawn Godot: ${err.message}`);
+      freePorts.add(port);
+      roomCodes.delete(code);
+      res.writeHead(500);
+      res.end(JSON.stringify({ error: "failed to start game server" }));
+      return;
+    }
     children.set(code, proc);
     roomCodes.set(code, port);
 
@@ -159,7 +172,9 @@ function cleanupRoom(code) {
     clearTimeout(timer);
     expireTimers.delete(code);
   }
-  console.log(`[Matchmaker] Room ${code} cleaned up, port ${port} freed`);
+  if (port !== undefined) {
+    console.log(`[Matchmaker] Room ${code} cleaned up, port ${port} freed`);
+  }
 }
 
 function findRoomCodeByProcess(proc) {
@@ -197,6 +212,14 @@ process.on("SIGINT", () => {
   }
   process.exit(0);
 });
+
+console.log("[Matchmaker] Clearing any orphaned Godot processes from previous run...");
+try {
+  execSync("pkill -f 'godot.*--server'", { timeout: 3000 });
+  console.log("[Matchmaker] Orphan cleanup complete");
+} catch {
+  // pkill exits non-zero when no matching processes — that's fine
+}
 
 server.listen(HTTP_PORT, () => {
   console.log(`[Matchmaker] HTTP server listening on port ${HTTP_PORT}`);
