@@ -23,6 +23,8 @@ signal health_rejected(peer_id: int, reason: String)
 signal demo_connected(peer_id: int)
 signal demo_disconnected
 signal demo_state_received(data: Dictionary)
+## Server-broadcast lobby player count used by the ready screen.
+## This excludes the optional demo spectator.
 signal multiplayer_player_count_changed(player_count: int)
 signal multiplayer_ready_changed(peer_id: int, is_ready: bool)
 signal multiplayer_match_started
@@ -39,6 +41,8 @@ var connected_peer_ids: Array[int] = []
 var energy_by_peer_id: Dictionary = {}
 var health_by_peer_id: Dictionary = {}
 var ready_peer_ids: Array[int] = []
+## Cached on clients from the server because client-side peer lists do not include
+## every gameplay player early enough for lobby UI decisions.
 var multiplayer_player_count := 0
 var demo_peer_id: int = -1  # -1 when no demo is connected
 var max_health: int = MAX_HEALTH
@@ -399,6 +403,8 @@ func _server_request_multiplayer_ready() -> void:
 	_server_mark_peer_ready(sender_id)
 
 
+## Server-side ready gate. A match starts after two gameplay players have
+## connected and both have explicitly pressed Ready.
 func _server_mark_peer_ready(peer_id: int) -> void:
 	if not ready_peer_ids.has(peer_id):
 		ready_peer_ids.append(peer_id)
@@ -439,6 +445,8 @@ func _sync_ready_to_peer(target_peer_id: int) -> void:
 		_client_set_peer_ready.rpc_id(target_peer_id, peer_id, true)
 
 
+## Demo clients may connect to the same server, but they must not count as
+## gameplay players for the two-player ready gate.
 func _get_gameplay_peer_count() -> int:
 	var player_count := 0
 	for peer_id in connected_peer_ids:
@@ -447,6 +455,8 @@ func _get_gameplay_peer_count() -> int:
 	return player_count
 
 
+## Pushes the authoritative lobby player count to clients. The ready screen uses
+## this instead of get_opponent_peer_id(), which depends on gameplay state sync.
 func _broadcast_multiplayer_player_count() -> void:
 	var player_count := _get_gameplay_peer_count()
 	multiplayer_player_count = player_count

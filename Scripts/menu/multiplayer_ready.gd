@@ -122,6 +122,9 @@ func _on_back_button_button_up() -> void:
 func _update_status() -> void:
 	var peer := multiplayer.multiplayer_peer
 	var connected := peer.get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTED
+	# The lobby should trust the server-broadcast player count here. Gameplay
+	# opponent lookup depends on synchronized health/energy caches and can lag
+	# behind the connection lifecycle.
 	var player_count := NetworkManager.get_multiplayer_player_count()
 	var has_required_players := connected and NetworkManager.has_required_multiplayer_players()
 
