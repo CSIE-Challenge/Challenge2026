@@ -503,7 +503,7 @@ func _shutdown_running_agents() -> void:
 
 
 func _on_energyball_collected(energy_gain: int) -> void:
-	energy_ball_count += 10
+	energy_ball_count += 1
 	coconut_bar.coconut_count = energy_ball_count
 	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
 	NetworkManager.request_add_energy(energy_gain, "energy_ball")

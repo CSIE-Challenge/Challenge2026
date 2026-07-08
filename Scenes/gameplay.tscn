@@ -17,7 +17,7 @@
 [ext_resource type="Script" uid="uid://bs7ntuoxby0al" path="res://Scripts/trap_request_scheduler.gd" id="8_urrcd"]
 [ext_resource type="Script" uid="uid://c8r5j40yj4je7" path="res://Scripts/agent_action_service.gd" id="9_puebw"]
 [ext_resource type="Shader" uid="uid://ciml8236dkjoe" path="res://Shaders/dashboard.gdshader" id="12_ifha0"]
-[ext_resource type="PackedScene" uid="uid://cfqo7i5tygq4w" path="res://Scenes/energy_label.tscn" id="14_1ff3a"]
+[ext_resource type="PackedScene" path="res://Scenes/energy_label.tscn" id="14_1ff3a"]
 [ext_resource type="Texture2D" uid="uid://f5ertr28h6kq" path="res://Shapes/feather.svg" id="15_feather"]
 [ext_resource type="Script" uid="uid://ddqb3djaesce4" path="res://Scripts/health_icon.gd" id="16_health_icon"]
 [ext_resource type="FontFile" uid="uid://hp5u4fxb5ifw" path="res://Assets/fonts/PixeloidSans-Bold.ttf" id="16_ifha0"]
