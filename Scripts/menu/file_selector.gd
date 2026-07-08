@@ -18,11 +18,8 @@ var _file_dialog: FileDialog
 
 func _ready() -> void:
 	selected_agent_file = _load_last_selected_file()
-	if selected_agent_file != "":
-		_mark_chosen()
+	_mark_chosen()
 	_update_selected_label()
-	if selected_agent_file == "":
-		enter_button.disabled = true
 
 
 func _on_choose_button_up() -> void:
