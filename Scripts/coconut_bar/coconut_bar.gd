@@ -43,7 +43,6 @@ func rearrange_trunks() -> void:
 	var scale: float = 0.18 + len * 0.02
 	tree_height = 0
 	for i in len:
-		trunks[i].z_index = 0
 		trunks[i].relocate(Vector2(0, tree_height))
 		trunks[i].resize(scale)
 		tree_height -= TRUNK_HEIGHT_PIXEL * scale
@@ -75,7 +74,6 @@ func rearrange_leaves() -> void:
 		leaf_cut()
 	var len: int = leaves.size()
 	for i in len:
-		leaves[i].z_index = 2
 		leaves[i].relocate(Vector2(0, tree_height))
 		leaves[i].resize(sqrt(coconut_count) * 0.036)
 		leaves[i].set_direction((75 - 5 * len) * (i - len / 2))
@@ -110,7 +108,6 @@ func rearrange_coconuts() -> void:
 		coconut_cut()
 	var len = coconuts.size()
 	for i in len:
-		coconuts[i].z_index = 1
 		coconuts[i].relocate(
 			(
 				Vector2(0, tree_height + sqrt(coconut_count))

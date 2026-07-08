@@ -10,6 +10,7 @@ var time: float
 
 
 func _ready() -> void:
+	z_index = Util.LAYERS["CoconutBar/Leaf"]
 	time = randf_range(0, PI)
 
 

@@ -4,7 +4,6 @@
 [ext_resource type="Texture2D" uid="uid://d3jafh5p5cfo0" path="res://Shapes/coconut_tree/Coconut.png" id="2_d21fp"]
 
 [node name="Coconut" type="Node2D" unique_id=1302771476]
-z_index = 2
 script = ExtResource("1_el074")
 
 [node name="FruitStalk" type="Marker2D" parent="." unique_id=168248056]

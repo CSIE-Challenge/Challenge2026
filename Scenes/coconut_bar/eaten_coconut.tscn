@@ -16,7 +16,6 @@ texture = ExtResource("2_2ioo2")
 
 [node name="Particles" type="CPUParticles2D" parent="." unique_id=1197273263]
 modulate = Color(18.892157, 18.892157, 18.892157, 1)
-z_index = 20
 amount = 32
 texture = ExtResource("2_2ioo2")
 lifetime = 0.5

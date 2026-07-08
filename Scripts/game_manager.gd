@@ -94,6 +94,7 @@ func _ready() -> void:
 	player.get_node("LandParticle").z_index = Util.LAYERS["Player/LandParticle"]
 	energy_ball.z_index = Util.LAYERS["EnergyBall"]
 	$"../SubViewport/Stage/Walls".z_index = Util.LAYERS["Walls"]
+	coconut_bar.z_index = Util.LAYERS["CoconutBar/CoconutBar"]
 
 
 func _exit_tree() -> void:

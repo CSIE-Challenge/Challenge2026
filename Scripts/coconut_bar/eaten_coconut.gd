@@ -5,6 +5,8 @@ const SLIDING_RATE: float = 15
 
 
 func _ready() -> void:
+	z_index = Util.LAYERS["CoconutBar/EatenCoconut"]
+	$Particles.z_index = Util.LAYERS["CoconutBar/EatenCoconut/Particles"]
 	bright_sprite.modulate.a = 0.5
 	scale = Vector2(0.1, 0.1)
 

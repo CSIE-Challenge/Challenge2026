@@ -24,7 +24,6 @@ texture = ExtResource("3_stcbp")
 
 [node name="TopLeaf" type="Sprite2D" parent="Leafstalk" unique_id=1898559226]
 visible = false
-z_index = 10
 position = Vector2(9.536743e-07, -120.000015)
 rotation = 0.08726646
 texture = ExtResource("4_y4mc4")

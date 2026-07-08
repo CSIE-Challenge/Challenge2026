@@ -10,6 +10,7 @@ var time: float
 
 
 func _ready() -> void:
+	z_index = Util.LAYERS["CoconutBar/Coconut"]
 	brightness.modulate.a = 1
 	time = randf_range(0, PI)
 

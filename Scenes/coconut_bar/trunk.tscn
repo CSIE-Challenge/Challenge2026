@@ -51,7 +51,6 @@ animations = [{
 }]
 
 [node name="Trunk" type="Node2D" unique_id=1902424513]
-z_index = -1
 script = ExtResource("1_c44nr")
 
 [node name="AnimationSprite" type="AnimatedSprite2D" parent="." unique_id=1295794723]

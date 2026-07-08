@@ -2,9 +2,15 @@ class_name Util
 
 ##### This part is for layer #####
 const LAYERS = {
+	"CoconutBar/EatenCoconut/Particles": 20,  # +25 relative to its parent CoconutBar
 	"Trap3TracingBullet/Seagull": 30,
 	"Trap3TracingBullet/FeatherEffect": 30,
 	"Trap9Mortar/Shell": 30,
+	"CoconutBar/Leaf": 2,  # +25 relative to its parent CoconutBar
+	"CoconutBar/Coconut": 1,  # +25 relative to its parent CoconutBar
+	"CoconutBar/EatenCoconut": 0,  # +25 relative to its parent CoconutBar
+	"CoconutBar/Trunk": 0,  # +25 relative to its parent CoconutBar
+	"CoconutBar/CoconutBar": 25,
 	"Trap1Mine/MineWarning": 25,
 	"Trap1Mine/ExplosionParticle": 25,
 	"Trap5IceFloor/JuiceGlass": 25,
