@@ -45,10 +45,10 @@
 		"speed": 100,
 		"lifetime": 5.0,
 		"scale": 2.0,
-		"position_min_x": -195.0,
-		"position_max_x": 195.0,
-		"position_min_y": -195.0,
-		"position_max_y": 195.0
+		"position_min_x": -100.0,
+		"position_max_x": 100.0,
+		"position_min_y": -100.0,
+		"position_max_y": 100.0
 	},
 	"trap5-icefloor": {
 		"path": "res://Scenes/traps/trap5-icefloor.tscn",
