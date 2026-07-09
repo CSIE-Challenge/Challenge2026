@@ -210,7 +210,7 @@ func _start_from_command_line(args: Array) -> void:
 		var connect_addr := _extract_connect_address(args)
 		if connect_addr.is_empty():
 			connect_addr = DEFAULT_SERVER_ADDRESS
-		_do_demo_start.call_deferred(connect_addr)
+		_do_demo_start.call_deferred(connect_addr, port)
 		return
 
 	if mode == "server":
@@ -226,9 +226,9 @@ func _has_demo_flag(args: Array) -> bool:
 
 ## Loads the demo scene and joins the server. Called deferred to avoid
 ## change_scene_to_file during _ready() tree setup.
-func _do_demo_start(connect_addr: String) -> void:
+func _do_demo_start(connect_addr: String, port := DEFAULT_PORT) -> void:
 	get_tree().change_scene_to_file("res://Scenes/demo.tscn")
-	join_server(connect_addr)
+	join_server(connect_addr, port)
 
 
 ## Extracts the --connect address from [param args] that may also contain --demo.
