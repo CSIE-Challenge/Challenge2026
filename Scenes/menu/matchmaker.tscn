@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dmatchmaker001"]
 
-[ext_resource type="Script" uid="uid://dmatchmaker002" path="res://Scripts/menu/matchmaker_manager.gd" id="1_mm"]
+[ext_resource type="Script" path="res://Scripts/menu/matchmaker_manager.gd" id="1_mm"]
 
 [node name="Matchmaker" type="Control" unique_id=2000000001]
 layout_mode = 3
