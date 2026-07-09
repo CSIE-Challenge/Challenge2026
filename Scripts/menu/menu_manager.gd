@@ -20,7 +20,7 @@ func _on_start_button_button_up() -> void:
 
 
 func _on_quit_button_button_up() -> void:
-	var player := Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
+	var player: AudioStreamPlayer = Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	await player.finished
 	get_tree().quit()
 
