@@ -19,6 +19,15 @@ func _ready() -> void:
 	_exit_button.button_up.connect(_on_exit_button_up)
 
 
+func _unhandled_input(event: InputEvent) -> void:
+	if not visible:
+		return
+	if event.is_action_pressed("pause"):
+		# Esc / pause key is the expected shortcut while paused.
+		get_viewport().set_input_as_handled()
+		_emit_resume_requested()
+
+
 func open() -> void:
 	visible = true
 	_resume_button.grab_focus()
