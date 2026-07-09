@@ -30,6 +30,43 @@ from api.client_base import GameClientBase
 _PORT_WAIT_SEC = 30.0
 _PROBE_INTERVAL_SEC = 0.3
 _HEARTBEAT_SEC = 2.0
+_LOG_NAME = "agent.log"
+
+
+class _Tee:
+    def __init__(self, stream, log):
+        self._stream = stream
+        self._log = log
+
+    def write(self, data: str) -> int:
+        self._stream.write(data)
+        self._log.write(data)
+        self._log.flush()
+        return len(data)
+
+    def flush(self) -> None:
+        self._stream.flush()
+        self._log.flush()
+
+    def isatty(self) -> bool:
+        return self._stream.isatty()
+
+
+def _tee_output_to_log() -> None:
+    """Mirror stdout/stderr into agent.log next to this file.
+
+    The game sets CHALLENGE_AGENT_LOG.
+    Only single player and not default agent will print to LOG.
+    """
+    if not os.environ.get("CHALLENGE_AGENT_LOG"):
+        return
+    log_path = Path(__file__).resolve().parent / _LOG_NAME
+    try:
+        log = open(log_path, "w", encoding="utf-8", buffering=1)
+    except OSError:
+        return
+    sys.stdout = _Tee(sys.stdout, log)
+    sys.stderr = _Tee(sys.stderr, log)
 
 
 def _wait_for_port(host: str, port: int, timeout: float) -> None:
@@ -111,6 +148,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
 
+    _tee_output_to_log()
     client = _build_client(args)
     _wait_for_port(client.host, client.port, _PORT_WAIT_SEC)
     client.connect()

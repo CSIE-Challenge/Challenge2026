@@ -57,6 +57,10 @@ func _spawn_agent_process(token: String) -> void:
 		OS.set_environment("CHALLENGE_AGENT_PATH", agent_file)
 	else:
 		OS.unset_environment("CHALLENGE_AGENT_PATH")
+	if (Global.single_player) and agent_file != "":
+		OS.set_environment("CHALLENGE_AGENT_LOG", "1")
+	else:
+		OS.unset_environment("CHALLENGE_AGENT_LOG")
 
 	_agent_pid = OS.create_process(python, ["-s", runner], true)
 	print("[API Server] agent process pid: %d" % _agent_pid)

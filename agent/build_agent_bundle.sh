@@ -96,7 +96,7 @@ ok "dependencies installed"
 # python-build-standalone for the target.
 
 step "Vendoring api SDK"
-cp -r "$AGENT_DIR/src/api" "$BUNDLE_DIR/libs/api"
+cp -r "$AGENT_DIR/src/api" "$BUNDLE_DIR/api"
 pkg "api"
 
 if [[ -f "$AGENT_DIR/runner.py" ]]; then
@@ -110,7 +110,7 @@ if [[ -f "$AGENT_DIR/agent.py" ]]; then
 fi
 
 step "Verifying bundle"
-PYTHONPATH="$BUNDLE_DIR/libs" "$PY_BIN" -s -c 'import websockets, api' \
+( cd "$BUNDLE_DIR" && PYTHONPATH=libs "$PY_BIN" -s -c 'import websockets, api' ) \
   || die "bundle verification failed: import websockets, api"
 ok "import websockets, api"
 
