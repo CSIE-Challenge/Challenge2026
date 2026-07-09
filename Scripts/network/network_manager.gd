@@ -304,6 +304,10 @@ func _on_peer_disconnected(peer_id: int) -> void:
 	player_disconnected.emit(peer_id)
 	print("Peer disconnected: %d" % peer_id)
 
+	if multiplayer.is_server() and connected_peer_ids.is_empty():
+		print("[NetworkManager] All peers disconnected — exiting server")
+		get_tree().quit(0)
+
 
 func _on_ready_timeout() -> void:
 	print("[NetworkManager] Ready timeout reached — exiting server")
