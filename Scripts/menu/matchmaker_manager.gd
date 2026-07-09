@@ -14,7 +14,7 @@ var _game_ip := ""
 var _game_port := 0
 var _player_id := ""
 var _selected_agent := ""
-var _ready := false
+var _confirmed := false
 
 var _file_dialog: FileDialog
 
@@ -288,7 +288,7 @@ func _enter_panel_d() -> void:
 	_update_agent_label()
 	ready_button.disabled = false
 	ready_button.text = "確認"
-	_ready = false
+	_confirmed = false
 	_countdown_timer.start()
 	_poll_timer.start()
 
@@ -298,7 +298,7 @@ func _update_countdown_label_d() -> void:
 
 
 func _update_status_label() -> void:
-	if _ready:
+	if _confirmed:
 		status_label.text = "已確認，等待對手..."
 	else:
 		status_label.text = "等待雙方確認..."
@@ -324,7 +324,7 @@ func _on_default_agent_button_up() -> void:
 
 func _on_ready_button_up() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
-	_ready = true
+	_confirmed = true
 	ready_button.disabled = true
 	ready_button.text = "已確認"
 	_update_status_label()
