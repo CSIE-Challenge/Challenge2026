@@ -39,5 +39,8 @@ trap1_mine_explode_sfx = ExtResource("10_38mwv")
 trap1_mine_disarm_sfx = ExtResource("11_7stf1")
 trap3_bullet_hit_wall_sfx = ExtResource("11_7stf1")
 
-[node name="BgmPlayer" type="AudioStreamPlayer" parent="." unique_id=249781410]
+[node name="BgmPlayer1" type="AudioStreamPlayer" parent="." unique_id=249781410]
+bus = &"Music"
+
+[node name="BgmPlayer2" type="AudioStreamPlayer" parent="." unique_id=1060374281]
 bus = &"Music"

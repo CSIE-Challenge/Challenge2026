@@ -35,7 +35,12 @@ var _last_track_index: int = -1
 var _sfx_streams: Dictionary = {}
 var _bgm_playlists: Dictionary = {}
 
-@onready var bgm_player: AudioStreamPlayer = $BgmPlayer
+var _current_player: AudioStreamPlayer
+var _next_player: AudioStreamPlayer
+var _fade_tween: Tween
+
+@onready var bgm_player: AudioStreamPlayer = $BgmPlayer1
+@onready var bgm_player2: AudioStreamPlayer = $BgmPlayer2
 
 
 func _ready() -> void:
@@ -45,20 +50,33 @@ func _ready() -> void:
 		add_child(player)
 		_sfx_players.append(player)
 
-	bgm_player.finished.connect(_play_random_bgm_track)
+	_current_player = bgm_player
+	_next_player = bgm_player2
+	_current_player.finished.connect(_play_random_bgm_track.bind(_current_player))
+	_next_player.finished.connect(_play_random_bgm_track.bind(_next_player))
 
 
 func set_bgm(bgm: BGM) -> void:
-	var fade_out_tween = create_tween()
-	fade_out_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)  # run even if game is paused
-	fade_out_tween.tween_property(bgm_player, "volume_db", -80.0, bgm_fade_out_time)
-	await fade_out_tween.finished
+	if _fade_tween and _fade_tween.is_running():
+		_fade_tween.kill()
 
-	bgm_player.stop()
+	_fade_tween = create_tween()
+	_fade_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)  # run even if game is paused
+	_fade_tween.tween_property(_current_player, "volume_db", -80.0, bgm_fade_out_time)
+
 	_bgm_playlist = _bgm_playlists.get(bgm, []) as Array[AudioStream]
 	_last_track_index = -1
-	_play_random_bgm_track()
-	bgm_player.volume_db = 0
+	_play_random_bgm_track(_next_player)
+
+	await _fade_tween.finished
+	_current_player.stop()
+	_current_player.volume_db = 0
+
+	# swap available players
+	var tmp = _current_player
+	_current_player = _next_player
+	_next_player = tmp
+
 	print("playing BGM.%s playlist" % BGM.keys()[bgm])
 
 
@@ -79,17 +97,19 @@ func play_sfx(sfx: SFX) -> AudioStreamPlayer:
 
 
 func bgm_is_playing() -> bool:
-	return bgm_player.playing
+	return _current_player.playing or _next_player.playing
 
 
 func pause_bgm() -> void:
-	if bgm_player.playing:
-		bgm_player.stop()
+	if _current_player.playing:
+		_current_player.stop()
+	if _next_player.playing:
+		_next_player.stop()
 
 
 func resume_bgm() -> void:
-	if bgm_player.stream != null and not bgm_player.playing:
-		bgm_player.play()
+	if _current_player.stream != null and not _current_player.playing:
+		_current_player.play()
 
 
 func set_phase_bgm(phase: int) -> void:
@@ -109,10 +129,10 @@ func set_phase_bgm(phase: int) -> void:
 			set_bgm(BGM.GAMEPLAY_PHASE_5)
 
 
-func _play_random_bgm_track() -> void:
+func _play_random_bgm_track(player: AudioStreamPlayer) -> void:
 	var count := _bgm_playlist.size()
 	if count == 0:
-		bgm_player.stream = null
+		player.stream = null
 		return
 	if count == 1:
 		_last_track_index = 0
@@ -121,8 +141,9 @@ func _play_random_bgm_track() -> void:
 		while index == _last_track_index:
 			index = randi() % count
 		_last_track_index = index
-	bgm_player.stream = _bgm_playlist[_last_track_index]
-	bgm_player.play()
+	player.stream = _bgm_playlist[_last_track_index]
+	player.volume_db = 0
+	player.play()
 
 
 func _get_property_list() -> Array[Dictionary]:
