@@ -52,6 +52,7 @@ func _ready() -> void:
 		player.health = max_health
 
 	survival_started_msec = Time.get_ticks_msec()
+	NetworkManager.cancel_ready_timeout.rpc_id(1)
 	Global.player_hit.connect(on_player_hit)
 	Global.energyball_collected.connect(_on_energyball_collected)
 	Global.game_manager = self

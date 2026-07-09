@@ -314,7 +314,10 @@ func _on_ready_timeout() -> void:
 	get_tree().quit(0)
 
 
+@rpc("any_peer", "call_remote", "reliable")
 func cancel_ready_timeout() -> void:
+	if not multiplayer.is_server():
+		return
 	if _ready_timeout_timer != null:
 		_ready_timeout_timer.stop()
 		print("[NetworkManager] Ready timeout cancelled by player readiness")
