@@ -3,10 +3,9 @@ import http from "node:http";
 import crypto from "node:crypto";
 import { spawn, execSync } from "node:child_process";
 
-// Load .env file if present
-const envPath = new URL(".env", import.meta.url).pathname;
-if (fs.existsSync(envPath)) {
-    for (const line of fs.readFileSync(envPath, "utf8").split("\n")) {
+function loadEnvFile(path) {
+    if (!fs.existsSync(path)) return;
+    for (const line of fs.readFileSync(path, "utf8").split("\n")) {
         const trimmed = line.trim();
         if (!trimmed || trimmed.startsWith("#")) continue;
         const eq = trimmed.indexOf("=");
@@ -18,6 +17,12 @@ if (fs.existsSync(envPath)) {
         }
     }
 }
+
+// Load .env from project root (Docker) or matchmaker/ (local dev)
+const rootEnvPath = new URL("../.env", import.meta.url).pathname;
+const localEnvPath = new URL(".env", import.meta.url).pathname;
+loadEnvFile(rootEnvPath);
+loadEnvFile(localEnvPath);
 
 const HTTP_PORT = parseInt(process.env.HTTP_PORT || "3000", 10);
 const PORT_START = parseInt(process.env.PORT_RANGE_START || "7777", 10);
