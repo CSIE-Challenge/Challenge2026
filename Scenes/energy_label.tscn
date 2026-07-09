@@ -8,6 +8,9 @@
 font = ExtResource("3_46qr4")
 font_size = 40
 
+[sub_resource type="LabelSettings" id="LabelSettings_46qr4"]
+font = ExtResource("3_46qr4")
+
 [node name="EnergyLabel" type="Node2D" unique_id=695396229]
 script = ExtResource("1_7ngp7")
 
@@ -19,7 +22,7 @@ position = Vector2(-56, 16)
 rotation = -0.08726645
 texture = ExtResource("1_1sc8f")
 
-[node name="Label" type="Label" parent="." unique_id=1570185173]
+[node name="EnergyLabel" type="Label" parent="." unique_id=1570185173]
 offset_left = 52.0
 offset_top = -24.0
 offset_right = 212.0
@@ -27,3 +30,9 @@ offset_bottom = 36.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "0"
 label_settings = SubResource("LabelSettings_6srxx")
+
+[node name="LimitationLabel" type="Label" parent="." unique_id=369878157]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "/1203"
+label_settings = SubResource("LabelSettings_46qr4")

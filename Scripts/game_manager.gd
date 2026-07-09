@@ -375,6 +375,7 @@ func _on_phase_timeout() -> void:
 
 func _update_max_energy() -> void:
 	var max = max_energy[min(current_phase, max_energy.size() - 1)]
+	energy_label._update_max_energy(max)
 	NetworkManager.update_max_energy(max)
 
 	Audio.set_phase_bgm(current_phase)
