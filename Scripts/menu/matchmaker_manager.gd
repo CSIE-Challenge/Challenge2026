@@ -383,6 +383,7 @@ func _on_poll_status_response(data: Dictionary) -> void:
 
 	if game_started:
 		_stop_all_timers()
+		NetworkManager.cancel_ready_timeout()
 		Global.single_player = false
 		Global.agent_file = _selected_agent
 		Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
