@@ -58,7 +58,7 @@ func _spawn_agent_process(token: String) -> void:
 	else:
 		OS.unset_environment("CHALLENGE_AGENT_PATH")
 
-	_agent_pid = OS.create_process(python, ["-s", runner])
+	_agent_pid = OS.create_process(python, ["-s", runner], true)
 	print("[API Server] agent process pid: %d" % _agent_pid)
 
 
