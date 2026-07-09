@@ -1,6 +1,6 @@
 extends Control
 
-enum Panel { A, B, C, D }
+enum Page { A, B, C, D }
 
 const MENU_SCENE := "res://Scenes/menu.tscn"
 const GAMEPLAY_SCENE := "res://Scenes/gameplay.tscn"
@@ -18,7 +18,7 @@ var _confirmed := false
 
 var _file_dialog: FileDialog
 
-var _current_panel := Panel.A
+var _current_panel := Page.A
 
 var _timer_b: int = 60
 var _timer_d: int = 90
@@ -64,7 +64,7 @@ func _ready() -> void:
 	_countdown_timer.timeout.connect(_on_countdown_tick)
 	add_child(_countdown_timer)
 
-	_show_panel(Panel.A)
+	_show_panel(Page.A)
 
 	http_request.request_completed.connect(_on_request_completed)
 
@@ -91,10 +91,10 @@ func _save_ip(ip: String) -> void:
 
 func _show_panel(panel: Panel) -> void:
 	_current_panel = panel
-	panel_a.visible = (panel == Panel.A)
-	panel_b.visible = (panel == Panel.B)
-	panel_c.visible = (panel == Panel.C)
-	panel_d.visible = (panel == Panel.D)
+	panel_a.visible = (panel == Page.A)
+	panel_b.visible = (panel == Page.B)
+	panel_c.visible = (panel == Page.C)
+	panel_d.visible = (panel == Page.D)
 
 
 func _post(path: String, body: Dictionary, tag: String) -> void:
@@ -107,7 +107,7 @@ func _post(path: String, body: Dictionary, tag: String) -> void:
 		_handle_error("HTTP request failed")
 
 
-func _get(path: String, tag: String) -> void:
+func _http_get(path: String, tag: String) -> void:
 	_pending_request = tag
 	var url := "http://" + _matchmaker_ip + path
 	var err := http_request.request(url)
@@ -117,9 +117,9 @@ func _get(path: String, tag: String) -> void:
 
 func _handle_error(msg: String) -> void:
 	match _current_panel:
-		Panel.A:
+		Page.A:
 			error_label_a.text = msg
-		Panel.C:
+		Page.C:
 			error_label_c.text = msg
 		_:
 			printerr("[Matchmaker] ", msg)
@@ -192,7 +192,7 @@ func _on_create_room_response(data: Dictionary) -> void:
 	code_label.text = _room_code
 	_timer_b = 60
 	_update_countdown_label_b()
-	_show_panel(Panel.B)
+	_show_panel(Page.B)
 	_countdown_timer.start()
 	_poll_timer.start()
 
@@ -201,7 +201,7 @@ func _on_join_room_button_up() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	error_label_a.text = ""
 	code_input.text = ""
-	_show_panel(Panel.C)
+	_show_panel(Page.C)
 
 
 func _on_back_button_up() -> void:
@@ -221,7 +221,7 @@ func _on_back_b_button_up() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	_stop_all_timers()
 	NetworkManager.stop_network()
-	_show_panel(Panel.A)
+	_show_panel(Page.A)
 
 
 func _on_expire_b() -> void:
@@ -230,7 +230,7 @@ func _on_expire_b() -> void:
 	countdown_b.text = "房間已過期"
 	await get_tree().create_timer(3.0).timeout
 	NetworkManager.stop_network()
-	_show_panel(Panel.A)
+	_show_panel(Page.A)
 
 
 # ── Panel C ────────────────────────────────────────────────────────────────
@@ -268,14 +268,14 @@ func _on_join_room_response(data: Dictionary) -> void:
 	_timer_d = 90
 	_update_countdown_label_d()
 	_update_status_label()
-	_show_panel(Panel.D)
+	_show_panel(Page.D)
 	_countdown_timer.start()
 	_poll_timer.start()
 
 
 func _on_back_c_button_up() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
-	_show_panel(Panel.A)
+	_show_panel(Page.A)
 
 
 # ── Panel D ────────────────────────────────────────────────────────────────
@@ -332,7 +332,7 @@ func _on_ready_button_up() -> void:
 
 
 func _on_ready_response(data: Dictionary) -> void:
-	var status := data.get("status", "")
+	var status: String = data.get("status", "")
 	if status == "start":
 		# Both ready — wait for next poll to trigger game start
 		pass
@@ -342,7 +342,7 @@ func _on_back_d_button_up() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	_stop_all_timers()
 	NetworkManager.stop_network()
-	_show_panel(Panel.A)
+	_show_panel(Page.A)
 
 
 func _on_expire_d() -> void:
@@ -351,7 +351,7 @@ func _on_expire_d() -> void:
 	countdown_d.text = "配對逾時"
 	await get_tree().create_timer(3.0).timeout
 	NetworkManager.stop_network()
-	_show_panel(Panel.A)
+	_show_panel(Page.A)
 
 
 # ── Polling ────────────────────────────────────────────────────────────────
@@ -360,7 +360,7 @@ func _on_expire_d() -> void:
 func _on_poll_tick() -> void:
 	if _pending_request != "":
 		return
-	_get("/qiaohu/status?code=" + _room_code, "poll_status")
+	_http_get("/qiaohu/status?code=" + _room_code, "poll_status")
 
 
 func _on_poll_status_response(data: Dictionary) -> void:
@@ -370,13 +370,13 @@ func _on_poll_status_response(data: Dictionary) -> void:
 			_stop_all_timers()
 			_handle_error("房間已失效")
 			NetworkManager.stop_network()
-			_show_panel(Panel.A)
+			_show_panel(Page.A)
 		return
 
 	var player_count: int = data.get("player_count", 0)
 	var game_started: bool = data.get("game_started", false)
 
-	if _current_panel == Panel.B and player_count >= 2:
+	if _current_panel == Page.B and player_count >= 2:
 		_poll_timer.stop()
 		_enter_panel_d()
 
@@ -392,13 +392,13 @@ func _on_poll_status_response(data: Dictionary) -> void:
 
 
 func _on_countdown_tick() -> void:
-	if _current_panel == Panel.B:
+	if _current_panel == Page.B:
 		_timer_b -= 1
 		_update_countdown_label_b()
 		if _timer_b <= 0:
 			_countdown_timer.stop()
 			_on_expire_b()
-	elif _current_panel == Panel.D:
+	elif _current_panel == Page.D:
 		_timer_d -= 1
 		_update_countdown_label_d()
 		if _timer_d <= 0:
@@ -409,13 +409,13 @@ func _on_countdown_tick() -> void:
 
 
 func _on_server_disconnected() -> void:
-	if _current_panel == Panel.A:
+	if _current_panel == Page.A:
 		return
 	_stop_all_timers()
 	match _current_panel:
-		Panel.B, Panel.C, Panel.D:
+		Page.B, Page.C, Page.D:
 			_handle_error("連線中斷")
-			_show_panel(Panel.A)
+			_show_panel(Page.A)
 
 
 # ── Agent file dialog ──────────────────────────────────────────────────────
