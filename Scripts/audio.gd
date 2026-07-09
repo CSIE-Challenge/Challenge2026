@@ -20,6 +20,7 @@ enum BGM {
 	GAMEPLAY_PHASE_2,
 	GAMEPLAY_PHASE_3,
 	GAMEPLAY_PHASE_4,
+	GAMEPLAY_PHASE_5,
 	RESULT_SCREEN,
 	HIDDEN_GAME,
 }
@@ -104,6 +105,8 @@ func set_phase_bgm(phase: int) -> void:
 			set_bgm(BGM.GAMEPLAY_PHASE_3)
 		4:
 			set_bgm(BGM.GAMEPLAY_PHASE_4)
+		5:
+			set_bgm(BGM.GAMEPLAY_PHASE_5)
 
 
 func _play_random_bgm_track() -> void:
