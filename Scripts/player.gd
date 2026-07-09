@@ -23,6 +23,7 @@ var last_stepped_cell = Vector2i(-1, -1)
 var skin_instance: Node2D = null
 
 @onready var body_sprite = $BodySprite
+@onready var shadow_sprite = $ShadowSprite
 @onready var sand_tilemap = $"../../../BackGroundLayer/SandTileMap"
 @onready var walk_particle = $WalkParticle
 @onready var jump_particle = $JumpParticle
@@ -141,6 +142,8 @@ func _jump_process(delta: float):
 		isjumping = false
 		current_sprite_y = 0
 		body_sprite.position.y = 0
+		shadow_sprite.scale = Vector2(0.2, 0.2)
+		shadow_sprite.modulate.a = 0.5
 		_adjust_collision_layer()
 		land_particle.restart()
 		land_particle.emitting = true
@@ -150,6 +153,9 @@ func _jump_process(delta: float):
 				skin_instance.play_land()
 	else:
 		body_sprite.position.y = -current_sprite_y
+		var jump_ratio = clamp(current_sprite_y / 120.0, 0.0, 1.0)
+		shadow_sprite.scale = Vector2.ONE * lerp(0.2, 0.1, jump_ratio)
+		shadow_sprite.modulate.a = lerp(0.5, 0.15, jump_ratio)
 
 
 func _invincible_flicker() -> void:
