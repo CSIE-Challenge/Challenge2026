@@ -48,7 +48,6 @@ USER godot
 RUN godot --headless --import --path /app
 
 EXPOSE 3000/tcp
-EXPOSE 7777-7791/udp
 
 ENV GODOT_BIN=godot
 ENV GODOT_PROJECT_PATH=/app
