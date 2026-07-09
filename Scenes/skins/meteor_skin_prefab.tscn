@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://meteorskin"]
 
-[ext_resource type="Script" uid="uid://b3lo1iay87j4s" path="res://Scenes/Skins/meteor_skin_prefab.gd" id="1_meteor"]
+[ext_resource type="Script" uid="uid://b3lo1iay87j4s" path="res://Scripts/skins/meteor_skin_prefab.gd" id="1_meteor"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_circle"]
 
 [sub_resource type="Curve" id="Curve_meteor_trail"]

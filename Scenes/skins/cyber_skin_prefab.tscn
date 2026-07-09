@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cyberskin"]
 
-[ext_resource type="Script" path="res://Scenes/Skins/cyber_skin_prefab.gd" id="1_cyber"]
-[ext_resource type="Shader" path="res://Scenes/Skins/glitch.gdshader" id="2_shader"]
+[ext_resource type="Script" uid="uid://dx7fsahyl6hoa" path="res://Scripts/skins/cyber_skin_prefab.gd" id="1_cyber"]
+[ext_resource type="Shader" uid="uid://ojahded6osr5" path="res://Shaders/glitch.gdshader" id="2_shader"]
 [ext_resource type="Texture2D" uid="uid://dle4xt8upfg42" path="res://Shapes/Square.svg" id="3_square"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_glitch"]

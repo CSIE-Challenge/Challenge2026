@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://phantomskin"]
 
-[ext_resource type="Script" path="res://Scenes/Skins/phantom_skin_prefab.gd" id="1_phantom"]
+[ext_resource type="Script" uid="uid://5rdwvjtk40m7" path="res://Scripts/skins/phantom_skin_prefab.gd" id="1_phantom"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_circle"]
 
 [sub_resource type="Curve" id="Curve_phantom"]

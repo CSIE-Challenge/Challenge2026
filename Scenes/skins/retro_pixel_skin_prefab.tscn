@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://c3k4712lvhatx"]
 
-[ext_resource type="Script" path="res://Scenes/Skins/retro_pixel_skin_prefab.gd" id="1_retro"]
+[ext_resource type="Script" uid="uid://bn6xf44kol226" path="res://Scripts/skins/retro_pixel_skin_prefab.gd" id="1_retro"]
 
 [node name="RetroPixelSkinPrefab" type="Node2D"]
 script = ExtResource("1_retro")

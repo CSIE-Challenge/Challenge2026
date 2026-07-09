@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://chickenskin"]
 
-[ext_resource type="Script" uid="uid://cabtop6poui4q" path="res://Scenes/Skins/chicken_skin_prefab.gd" id="1_chicken"]
+[ext_resource type="Script" uid="uid://cabtop6poui4q" path="res://Scripts/skins/chicken_skin_prefab.gd" id="1_chicken"]
 
 [node name="ChickenSkinPrefab" type="Node2D" unique_id=33461519]
 script = ExtResource("1_chicken")

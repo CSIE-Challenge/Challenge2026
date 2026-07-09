@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://choe7qk61cgan"]
 
-[ext_resource type="Script" uid="uid://dsh5dbr08ie17" path="res://Scenes/Skins/singularity_skin_prefab.gd" id="1_sing"]
+[ext_resource type="Script" uid="uid://dsh5dbr08ie17" path="res://Scripts/skins/singularity_skin_prefab.gd" id="1_sing"]
 [ext_resource type="Shader" uid="uid://bo5o76rrqf6l4" path="res://Shaders/blackhole.gdshader" id="2_shader"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="3_circle"]
 

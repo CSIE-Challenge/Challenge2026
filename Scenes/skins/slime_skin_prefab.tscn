@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://slimeskin"]
 
-[ext_resource type="Script" path="res://Scenes/Skins/slime_skin_prefab.gd" id="1_slime"]
+[ext_resource type="Script" uid="uid://ukdqj68d7wbd" path="res://Scripts/skins/slime_skin_prefab.gd" id="1_slime"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_circle"]
 
 [sub_resource type="Curve" id="Curve_splash"]

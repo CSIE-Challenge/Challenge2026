@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://mongusskin"]
 
-[ext_resource type="Script" uid="uid://ccq118brpqmer" path="res://Scenes/Skins/among_us_skin_prefab.gd" id="1_amongus"]
+[ext_resource type="Script" uid="uid://ccq118brpqmer" path="res://Scripts/skins/among_us_skin_prefab.gd" id="1_amongus"]
 
 [node name="AmongUsSkinPrefab" type="Node2D" unique_id=139175558]
 script = ExtResource("1_amongus")

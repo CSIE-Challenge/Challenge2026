@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://bs0eroskinres"]
 
 [ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_abs"]
-[ext_resource type="PackedScene" uid="uid://bs0eroskin" path="res://Scenes/Skins/absolute_zero_skin_prefab.tscn" id="2_prefab"]
+[ext_resource type="PackedScene" uid="uid://bs0eroskin" path="res://Scenes/skins/absolute_zero_skin_prefab.tscn" id="2_prefab"]
 
 [resource]
 script = ExtResource("1_abs")

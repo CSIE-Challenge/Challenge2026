@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://goldenskin"]
 
-[ext_resource type="Script" path="res://Scenes/Skins/golden_skin_prefab.gd" id="1_gold"]
-[ext_resource type="Shader" path="res://Scenes/Skins/golden_shine.gdshader" id="2_shader"]
+[ext_resource type="Script" uid="uid://bf5d30mmspnlx" path="res://Scripts/skins/golden_skin_prefab.gd" id="1_gold"]
+[ext_resource type="Shader" uid="uid://cfqwjf78ukjip" path="res://Shaders/golden_shine.gdshader" id="2_shader"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="3_circle"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gold"]

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bs0eroskin"]
 
-[ext_resource type="Script" path="res://Scenes/Skins/absolute_zero_skin_prefab.gd" id="1_abs"]
+[ext_resource type="Script" uid="uid://dtvfnt485ahwe" path="res://Scripts/skins/absolute_zero_skin_prefab.gd" id="1_abs"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_circle"]
 
 [node name="AbsoluteZeroSkinPrefab" type="Node2D"]

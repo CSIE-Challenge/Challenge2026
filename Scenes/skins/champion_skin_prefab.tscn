@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://championskin"]
 
-[ext_resource type="Script" path="res://Scenes/Skins/champion_skin_prefab.gd" id="1_champ"]
+[ext_resource type="Script" uid="uid://c6410eacanqwe" path="res://Scripts/skins/champion_skin_prefab.gd" id="1_champ"]
 [ext_resource type="Texture2D" uid="uid://dle4xt8upfg42" path="res://Shapes/Square.svg" id="2_square"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="3_circle"]
 

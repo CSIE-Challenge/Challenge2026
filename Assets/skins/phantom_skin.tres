@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="1_circle"]
 [ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_skindata"]
-[ext_resource type="PackedScene" uid="uid://phantomskin" path="res://Scenes/Skins/phantom_skin_prefab.tscn" id="2_prefab"]
+[ext_resource type="PackedScene" uid="uid://phantomskin" path="res://Scenes/skins/phantom_skin_prefab.tscn" id="2_prefab"]
 
 [resource]
 script = ExtResource("1_skindata")
