@@ -148,7 +148,7 @@ func _run_phase_1() -> bool:
 			await Dialogue.dialogue_finished
 		else:
 			await get_tree().create_timer(1.0).timeout
-		SceneTransition.transition_to_distortion("res://Scenes/menu/hidden_game.tscn")
+		SceneTransition.transition_to_distortion(HIDDEN_SCENE_PATH)
 		return true
 
 	return false
