@@ -7,6 +7,10 @@ agent/build
 agent/dist
 agent/.pytest_cache
 
+matchmaker/.env
+matchmaker/node_modules
+
 **/__pycache__
 **/.pytest_cache
 **/*.tmp
+**/node_modules
