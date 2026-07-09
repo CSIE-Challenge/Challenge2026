@@ -3,11 +3,66 @@
 [ext_resource type="Script" uid="uid://cgyg8jq3g472r" path="res://Scripts/traps/trap10-shotgun.gd" id="1_oluei"]
 [ext_resource type="Script" uid="uid://ct2iq2u7jq2l1" path="res://Scenes/traps/trap10-shotgun_bullet.gd" id="2_gtrg3"]
 [ext_resource type="Texture2D" uid="uid://beilvq8t7d8iy" path="res://Shapes/banana_bullet.svg" id="2_il5d0"]
+[ext_resource type="Texture2D" uid="uid://bpfm5x8s50ikq" path="res://Shapes/dashed_line.svg" id="2_u2tcx"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_wov31"]
 [ext_resource type="Texture2D" uid="uid://bcxda587p87ol" path="res://Shapes/pineapple.svg" id="3_i7n8k"]
 [ext_resource type="Texture2D" uid="uid://dtyns3y74ppmo" path="res://Shapes/grape.svg" id="4_eitjp"]
 [ext_resource type="Texture2D" uid="uid://bbhdml57ys8i0" path="res://Shapes/basket.svg" id="6_my68g"]
 [ext_resource type="Texture2D" uid="uid://cloqbfcgyrhli" path="res://Shapes/empty_basket.svg" id="7_gtrg3"]
+
+[sub_resource type="Shader" id="Shader_t1byb"]
+code = "shader_type canvas_item;
+uniform vec4 line_color: source_color;
+uniform float speed = 3.0;
+
+void fragment() {
+	vec2 moving_uv = vec2(UV.x - TIME * speed, UV.y);
+	vec4 tex = texture(TEXTURE, moving_uv);
+	tex.rgb = line_color.rgb;
+	COLOR = tex;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8fuxe"]
+shader = SubResource("Shader_t1byb")
+shader_parameter/line_color = Color(1, 0.87058824, 0.06666667, 1)
+shader_parameter/speed = 3.0
+
+[sub_resource type="Shader" id="Shader_7ukhr"]
+code = "shader_type canvas_item;
+uniform vec4 line_color: source_color;
+uniform float speed = 3.0;
+
+void fragment() {
+	vec2 moving_uv = vec2(UV.x - TIME * speed, UV.y);
+	vec4 tex = texture(TEXTURE, moving_uv);
+	tex.rgb = line_color.rgb;
+	COLOR = tex;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sf0ol"]
+shader = SubResource("Shader_7ukhr")
+shader_parameter/line_color = Color(1, 0.78039217, 0, 1)
+shader_parameter/speed = 3.0
+
+[sub_resource type="Shader" id="Shader_wqi4w"]
+code = "shader_type canvas_item;
+uniform vec4 line_color: source_color;
+uniform float speed = 3.0;
+
+void fragment() {
+	vec2 moving_uv = vec2(UV.x - TIME * speed, UV.y);
+	vec4 tex = texture(TEXTURE, moving_uv);
+	tex.rgb = line_color.rgb;
+	COLOR = tex;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_drgio"]
+shader = SubResource("Shader_wqi4w")
+shader_parameter/line_color = Color(0.5019608, 0, 0.8980392, 1)
+shader_parameter/speed = 3.0
 
 [sub_resource type="Shader" id="Shader_my68g"]
 code = "shader_type canvas_item;
@@ -444,22 +499,42 @@ one_shot = true
 [node name="AimingLines" type="Node2D" parent="." unique_id=1096219692]
 
 [node name="Line1" type="Line2D" parent="AimingLines" unique_id=1285080951]
+texture_filter = 1
+texture_repeat = 2
+material = SubResource("ShaderMaterial_8fuxe")
 points = PackedVector2Array(0, 0, 0, 0)
+width = 20.0
 default_color = Color(1, 0.87058824, 0.06666667, 1)
+texture = ExtResource("2_u2tcx")
+texture_mode = 1
+sharp_limit = 0.0
 
 [node name="Line2" type="Line2D" parent="AimingLines" unique_id=1109717698]
+texture_filter = 1
+texture_repeat = 2
+material = SubResource("ShaderMaterial_sf0ol")
 points = PackedVector2Array(0, 0, 0, 0)
+width = 20.0
 default_color = Color(1, 0.78039217, 0, 1)
+texture = ExtResource("2_u2tcx")
+texture_mode = 1
+sharp_limit = 0.0
 
 [node name="Line3" type="Line2D" parent="AimingLines" unique_id=91096076]
+texture_filter = 1
+texture_repeat = 2
+material = SubResource("ShaderMaterial_drgio")
 points = PackedVector2Array(0, 0, 0, 0)
+width = 20.0
 default_color = Color(0.5019608, 0, 0.8980392, 1)
+texture = ExtResource("2_u2tcx")
+texture_mode = 1
+sharp_limit = 0.0
 
 [node name="Bullets" type="Node2D" parent="." unique_id=876130518]
 
 [node name="Bullet1" type="Area2D" parent="Bullets" unique_id=1893491073]
 collision_layer = 4
-collision_mask = 3
 script = ExtResource("2_gtrg3")
 
 [node name="Sprite2D" type="Sprite2D" parent="Bullets/Bullet1" unique_id=508732407]
@@ -492,7 +567,6 @@ shape = SubResource("CircleShape2D_my68g")
 
 [node name="Bullet2" type="Area2D" parent="Bullets" unique_id=96416200]
 collision_layer = 4
-collision_mask = 3
 script = ExtResource("2_gtrg3")
 
 [node name="Sprite2D" type="Sprite2D" parent="Bullets/Bullet2" unique_id=1287761530]
@@ -525,7 +599,6 @@ shape = SubResource("CircleShape2D_gtrg3")
 
 [node name="Bullet3" type="Area2D" parent="Bullets" unique_id=262295554]
 collision_layer = 4
-collision_mask = 3
 script = ExtResource("2_gtrg3")
 
 [node name="Sprite2D" type="Sprite2D" parent="Bullets/Bullet3" unique_id=1854657220]

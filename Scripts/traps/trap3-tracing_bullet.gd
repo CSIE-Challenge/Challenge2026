@@ -1,9 +1,6 @@
 class_name Trap3TracingBullet
 extends CharacterBody2D
 
-const PLAYER_COLLISION_LAYER := 1
-const WALL_COLLISION_LAYER := 2
-const TRAP_COLLISION_LAYER := 4
 var trap_data = TrapData.new().data
 var cooldown_times = trap_data["trap3-tracing_bullet"]["cooldown_times"]
 var damage = trap_data["trap3-tracing_bullet"]["damage"]
@@ -38,19 +35,15 @@ func _ready() -> void:
 	if is_demo:
 		return
 	feather_effect.finished.connect(feather_effect.queue_free)
-	collision_layer = TRAP_COLLISION_LAYER
-	collision_mask = 0
-	leave_wall_detector.collision_mask = WALL_COLLISION_LAYER
 	tracing = true
 	set_physics_process(true)
 	wait_timer.timeout.connect(_on_wait_timer_out)
 	wait_timer.start(wait_time)
-	leave_wall_detector.body_entered.connect(_on_wall_entered)
-	leave_wall_detector.body_exited.connect(_on_wall_exited)
 	animation.play("spawn")
 
 
 func _destroy() -> void:
+	visible = false
 	$CollisionShape2D.set_deferred("disabled", true)
 	await get_tree().create_timer(0.1).timeout
 	queue_free()
@@ -80,8 +73,6 @@ func _physics_process(delta):
 			if collider and collider == target:
 				Global.player_hit.emit(damage)
 				_destroy()
-			elif (collider.collision_layer & WALL_COLLISION_LAYER) != 0:
-				_destroy()
 		else:
 			_destroy()
 
@@ -101,16 +92,6 @@ func target_passed_stop_line() -> bool:
 
 func _on_wait_timer_out():
 	flying = true
-
-
-func _on_wall_entered(_body: Node2D) -> void:
-	wall_counter += 1
-
-
-func _on_wall_exited(_body: Node2D) -> void:
-	wall_counter -= 1
-	if wall_counter <= 0:
-		collision_mask = PLAYER_COLLISION_LAYER | WALL_COLLISION_LAYER
 
 
 #-------------------------

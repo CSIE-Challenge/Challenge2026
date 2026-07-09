@@ -1,9 +1,6 @@
 class_name Trap10Shotgun
 extends Node2D
 
-const PLAYER_COLLISION_LAYER = 1
-const WALL_COLLISION_LAYER = 2
-
 var trap_data = TrapData.new().data
 var cooldown_times = trap_data["trap10-shotgun"]["cooldown_times"]
 var damage = trap_data["trap10-shotgun"]["damage"]
@@ -56,13 +53,10 @@ func activate(pos: Vector2, dir1: Vector2, dir2: Vector2, dir3: Vector2) -> void
 		var local_intersect = to_local(intersect)
 		var line = lines[i]
 		line.set_point_position(0, Vector2.ZERO)
-		line.set_point_position(1, local_intersect)
-		print(line.get_point_position(1))
-
-		line.width = 8.0
+		line.set_point_position(1, Vector2.ZERO)
+		animate_line(line, local_intersect)
 
 		var bullet = bullets[i]
-		bullet.collision_mask = PLAYER_COLLISION_LAYER
 		bullet.position = Vector2.ZERO
 		bullet.rotation = directions[i].angle()
 		bullet.visible = false
@@ -70,13 +64,26 @@ func activate(pos: Vector2, dir1: Vector2, dir2: Vector2, dir3: Vector2) -> void
 		bullet.body_entered.connect(_on_bullet_body_entered.bind(bullet))
 		bullet.collision_shape.set_deferred("disabled", false)
 		var wall_detector = bullet.wall_exit_detector as Area2D
-		wall_detector.body_entered.connect(_on_enter_wall.bind(i))
-		wall_detector.body_exited.connect(_on_exit_wall.bind(i))
 	aiming = true
 	visible = true
 	timer.start(aiming_time)
 	if not timer.timeout.is_connected(_on_aiming_timeout):
 		timer.timeout.connect(_on_aiming_timeout)
+
+
+func animate_line(line: Line2D, pos: Vector2) -> void:
+	var tween = create_tween()
+	(
+		tween
+		. tween_method(
+			func(current_pos: Vector2): line.set_point_position(1, current_pos),
+			Vector2.ZERO,
+			pos,
+			0.5
+		)
+		. set_trans(Tween.TRANS_CUBIC)
+		. set_ease(Tween.EASE_OUT)
+	)
 
 
 func deactivate():
@@ -149,16 +156,6 @@ func _calculate_aiming_line_end_point(origin: Vector2, dir: Vector2) -> Vector2:
 	var t_exit = min(t_exit_x, t_exit_y)
 
 	return origin + dir * t_exit
-
-
-func _on_enter_wall(_body: CollisionObject2D, bullet_idx: int):
-	bullet_in_wall_counter[bullet_idx] += 1
-
-
-func _on_exit_wall(_body: CollisionObject2D, bullet_idx: int):
-	bullet_in_wall_counter[bullet_idx] -= 1
-	if bullet_in_wall_counter[bullet_idx] <= 0:
-		bullets[bullet_idx].collision_mask = PLAYER_COLLISION_LAYER | WALL_COLLISION_LAYER
 
 
 #------------------------------------------------
