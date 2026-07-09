@@ -47,7 +47,9 @@ USER godot
 
 RUN godot --headless --import --path /app
 
+# Actual port range set via PORT_RANGE_START/END env vars (see docker-compose.yml)
 EXPOSE 3000/tcp
+EXPOSE 7777-7791/udp
 
 ENV GODOT_BIN=godot
 ENV GODOT_PROJECT_PATH=/app
