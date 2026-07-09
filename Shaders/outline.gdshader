@@ -1,7 +1,8 @@
 shader_type canvas_item;
 
 uniform vec4 outline_color:source_color = vec4(0.6,0.6,0.6,1); 
-uniform float outline_width = 20.0;            
+uniform float outline_width = 20.0;    
+uniform float a: hint_range(0.0, 1.0);        
 
 void fragment() {
     vec4 texture_color = texture(TEXTURE, UV);
@@ -19,7 +20,7 @@ void fragment() {
 
     vec4 final_color = mix(outline_color, texture_color, texture_color.a);
     
-    final_color.a = clamp(alpha, 0.0, 1.0);
+    final_color.a = clamp(alpha, 0.0, 1.0) * a;
     
     COLOR = final_color;
 }

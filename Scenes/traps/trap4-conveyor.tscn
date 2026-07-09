@@ -67,5 +67,7 @@ sprite_frames = SubResource("SpriteFrames_37j6j")
 autoplay = "default"
 frame_progress = 0.73287386
 
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
+[connection signal="area_exited" from="." to="." method="_on_area_exited"]
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_body_exited"]

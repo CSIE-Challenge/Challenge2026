@@ -79,6 +79,18 @@ func _on_body_exited(body: Node2D) -> void:
 		_remove_ice_effect(body)
 
 
+func _on_area_entered(area: Area2D) -> void:
+	if area.is_in_group("player"):
+		Global.game_manager.player.juice_count += 1
+		Global.game_manager.player.adjust_particle()
+
+
+func _on_area_exited(area: Area2D) -> void:
+	if area.is_in_group("player"):
+		Global.game_manager.player.juice_count -= 1
+		Global.game_manager.player.adjust_particle()
+
+
 func _add_ice_effect(body: Node2D) -> void:
 	var n: int = _ice_overlap_count.get(body, 0) + 1
 	_ice_overlap_count[body] = n

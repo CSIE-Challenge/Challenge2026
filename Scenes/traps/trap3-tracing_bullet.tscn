@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://bmd5f51xmki4l"]
 
 [ext_resource type="Script" uid="uid://lu6b56ud55qw" path="res://Scripts/traps/trap3-tracing_bullet.gd" id="1_uwr5t"]
-[ext_resource type="Shader" uid="uid://c8yqa2f7jk3wo" path="res://Shaders/outline.gdshader" id="2_s34uc"]
 [ext_resource type="Texture2D" uid="uid://b5v6w6ngu1pfs" path="res://Shapes/seagull/seagull_1.svg" id="3_njlgp"]
 [ext_resource type="Texture2D" uid="uid://3i0ndflw4dk0" path="res://Shapes/seagull/seagull_2.svg" id="4_s34uc"]
 [ext_resource type="Texture2D" uid="uid://lxwo4n1swa1c" path="res://Shapes/seagull/seagull_3.svg" id="5_3ko3v"]
@@ -13,10 +12,39 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_njlgp"]
 size = Vector2(12.335, 31.215)
 
+[sub_resource type="Shader" id="Shader_njlgp"]
+code = "shader_type canvas_item;
+
+uniform vec4 outline_color:source_color = vec4(0.6,0.6,0.6,1); 
+uniform float outline_width = 20.0;    
+uniform float a: hint_range(0.0, 1.0);        
+
+void fragment() {
+    vec4 texture_color = texture(TEXTURE, UV);
+    vec2 size = TEXTURE_PIXEL_SIZE * outline_width;
+    
+    float alpha = texture_color.a;
+    alpha += texture(TEXTURE, UV + vec2(0.0, size.y)).a;  
+    alpha += texture(TEXTURE, UV - vec2(0.0, size.y)).a;  
+    alpha += texture(TEXTURE, UV - vec2(size.x, 0.0)).a;  
+    alpha += texture(TEXTURE, UV + vec2(size.x, 0.0)).a; 
+	alpha += texture(TEXTURE, UV + size).a;
+	alpha += texture(TEXTURE, UV - size).a;
+	alpha += texture(TEXTURE, UV + vec2(size.x, -size.y)).a;  
+    alpha += texture(TEXTURE, UV - vec2(size.x, -size.y)).a; 
+
+    vec4 final_color = mix(outline_color, texture_color, texture_color.a);
+    
+    final_color.a = clamp(alpha, 0.0, 1.0) * a;
+    
+    COLOR = final_color;
+}"
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3ko3v"]
-shader = ExtResource("2_s34uc")
+shader = SubResource("Shader_njlgp")
 shader_parameter/outline_color = Color(0.4014601, 0.40146014, 0.40146002, 1)
 shader_parameter/outline_width = 25.0
+shader_parameter/a = 1.0
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_i0wcx"]
 animations = [{

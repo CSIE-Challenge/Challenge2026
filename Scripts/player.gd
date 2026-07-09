@@ -2,6 +2,9 @@ class_name Player
 extends CharacterBody2D
 
 @export var health: int
+@export var sand_particle: GradientTexture1D
+@export var water_particle: GradientTexture1D
+@export var juice_particle: GradientTexture1D
 
 var acceleration := 100.0
 var move_speed := 300.0
@@ -21,6 +24,8 @@ var distance_traveled := 0.0
 var all_sand_tiles: Array[Vector2i] = []
 var last_stepped_cell = Vector2i(-1, -1)
 var skin_instance: Node2D = null
+var is_in_water := false
+var juice_count := 0
 
 @onready var body_sprite = $BodySprite
 @onready var shadow_sprite = $ShadowSprite
@@ -32,6 +37,10 @@ var skin_instance: Node2D = null
 
 func _ready() -> void:
 	_reload_from_game_data()
+	walk_particle.process_material.set("color_initial_ramp", sand_particle)
+	land_particle.process_material.set("color_initial_ramp", sand_particle)
+	jump_particle.process_material.set("color_initial_ramp", sand_particle)
+
 	health = max_health
 	for x in range(4):
 		for y in range(4):
@@ -193,3 +202,64 @@ func die():
 	$ShadowSprite.hide()
 	if is_instance_valid(skin_instance) and skin_instance.has_method("play_die"):
 		await skin_instance.play_die()
+func adjust_particle() -> void:
+	adjust_walk_particle()
+	adjust_jump_particle()
+	adjust_land_particle()
+
+
+func adjust_walk_particle() -> void:
+	var old_particle = walk_particle
+	var new_particle = old_particle.duplicate() as GPUParticles2D
+	old_particle.get_parent().add_child(new_particle)
+	new_particle.global_position = old_particle.global_position
+	old_particle.emitting = false
+	old_particle.finished.connect(old_particle.queue_free)
+	var mat = new_particle.process_material.duplicate() as ParticleProcessMaterial
+	if juice_count > 0:
+		mat.color_initial_ramp = juice_particle
+	elif is_in_water:
+		mat.color_initial_ramp = water_particle
+	else:
+		mat.color_initial_ramp = sand_particle
+	new_particle.process_material = mat
+	new_particle.emitting = false
+	walk_particle = new_particle
+
+
+func adjust_jump_particle() -> void:
+	var old_particle = jump_particle
+	var new_particle = old_particle.duplicate() as GPUParticles2D
+	old_particle.get_parent().add_child(new_particle)
+	new_particle.global_position = old_particle.global_position
+	old_particle.emitting = false
+	old_particle.finished.connect(old_particle.queue_free)
+	var mat = new_particle.process_material.duplicate() as ParticleProcessMaterial
+	if juice_count > 0:
+		mat.color_initial_ramp = juice_particle
+	elif is_in_water:
+		mat.color_initial_ramp = water_particle
+	else:
+		mat.color_initial_ramp = sand_particle
+	new_particle.process_material = mat
+	new_particle.emitting = false
+	jump_particle = new_particle
+
+
+func adjust_land_particle() -> void:
+	var old_particle = land_particle
+	var new_particle = old_particle.duplicate() as GPUParticles2D
+	old_particle.get_parent().add_child(new_particle)
+	new_particle.global_position = old_particle.global_position
+	old_particle.emitting = false
+	old_particle.finished.connect(old_particle.queue_free)
+	var mat = new_particle.process_material.duplicate() as ParticleProcessMaterial
+	if juice_count > 0:
+		mat.color_initial_ramp = juice_particle
+	elif is_in_water:
+		mat.color_initial_ramp = water_particle
+	else:
+		mat.color_initial_ramp = sand_particle
+	new_particle.process_material = mat
+	new_particle.emitting = false
+	land_particle = new_particle

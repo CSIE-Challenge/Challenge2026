@@ -93,14 +93,35 @@ shader_parameter/draw = 1.0
 shader_parameter/color_variation = 0.1
 shader_parameter/color_bands = 3
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_wbxth"]
-radius = 13.5
-
 [sub_resource type="Gradient" id="Gradient_5i20n"]
 colors = PackedColorArray(0.79905266, 0.7251527, 0.4327446, 1, 0.77568465, 0.70158905, 0.40794194, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_ra47u"]
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_kj63f"]
 gradient = SubResource("Gradient_5i20n")
+
+[sub_resource type="Gradient" id="Gradient_fe56y"]
+colors = PackedColorArray(0, 0.3882353, 1, 1, 0.16470589, 0.68235296, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_icchp"]
+gradient = SubResource("Gradient_fe56y")
+
+[sub_resource type="Gradient" id="Gradient_5fmf4"]
+colors = PackedColorArray(1, 0.7019608, 0.5019608, 1, 0.9224753, 0.47343725, 1.1358858e-05, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_8ipd1"]
+gradient = SubResource("Gradient_5fmf4")
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_wbxth"]
+radius = 13.5
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_gb8q7"]
+radius = 13.5
+
+[sub_resource type="Gradient" id="Gradient_8ipd1"]
+colors = PackedColorArray(0.79905266, 0.7251527, 0.4327446, 1, 0.77568465, 0.70158905, 0.40794194, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_lavkw"]
+gradient = SubResource("Gradient_8ipd1")
 
 [sub_resource type="Curve" id="Curve_jb71e"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.9889197, 0), -3.187469, 0.0, 0, 0]
@@ -123,13 +144,13 @@ gravity = Vector3(0, 0, 0)
 scale_min = 0.03
 scale_max = 0.049999997
 scale_curve = SubResource("CurveTexture_5i20n")
-color_initial_ramp = SubResource("GradientTexture1D_ra47u")
+color_initial_ramp = SubResource("GradientTexture1D_lavkw")
 
-[sub_resource type="Gradient" id="Gradient_jb71e"]
-colors = PackedColorArray(0.9150383, 0.8585898, 0.6476534, 1, 1, 1, 1, 1)
+[sub_resource type="Gradient" id="Gradient_gb8q7"]
+colors = PackedColorArray(0.79905266, 0.7251527, 0.4327446, 1, 0.77568465, 0.70158905, 0.40794194, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_5i20n"]
-gradient = SubResource("Gradient_jb71e")
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_1ff3a"]
+gradient = SubResource("Gradient_gb8q7")
 
 [sub_resource type="Curve" id="Curve_5i20n"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0]
@@ -165,8 +186,13 @@ gravity = Vector3(0, 0, 0)
 scale_min = 0.03
 scale_max = 0.049999997
 scale_curve = SubResource("CurveTexture_5i20n")
-color = Color(0.90854853, 0.8522231, 0.6334674, 1)
-color_initial_ramp = SubResource("GradientTexture1D_5i20n")
+color_initial_ramp = SubResource("GradientTexture1D_1ff3a")
+
+[sub_resource type="Gradient" id="Gradient_kj63f"]
+colors = PackedColorArray(0.79905266, 0.7251527, 0.4327446, 1, 0.77568465, 0.70158905, 0.40794194, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_bsu20"]
+gradient = SubResource("Gradient_kj63f")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_5i20n"]
 lifetime_randomness = 0.5
@@ -190,8 +216,7 @@ gravity = Vector3(0, 300, 0)
 scale_min = 0.03
 scale_max = 0.049999997
 scale_curve = SubResource("CurveTexture_5i20n")
-color = Color(0.90854853, 0.8522231, 0.6334674, 1)
-color_initial_ramp = SubResource("GradientTexture1D_5i20n")
+color_initial_ramp = SubResource("GradientTexture1D_bsu20")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gb8q7"]
 shader = ExtResource("12_ifha0")
@@ -332,6 +357,9 @@ collision_layer = 9
 collision_mask = 2
 motion_mode = 1
 script = ExtResource("2_m34ki")
+sand_particle = SubResource("GradientTexture1D_kj63f")
+water_particle = SubResource("GradientTexture1D_icchp")
+juice_particle = SubResource("GradientTexture1D_8ipd1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewport/Stage/Player" unique_id=1018866415]
 shape = SubResource("CircleShape2D_wbxth")
@@ -345,6 +373,12 @@ texture = ExtResource("2_wbxth")
 [node name="BodySprite" type="Sprite2D" parent="SubViewport/Stage/Player" unique_id=842198229]
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("2_wbxth")
+
+[node name="LiquidDetector" type="Area2D" parent="SubViewport/Stage/Player" unique_id=1349170278 groups=["player"]]
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewport/Stage/Player/LiquidDetector" unique_id=465604807]
+shape = SubResource("CircleShape2D_gb8q7")
 
 [node name="WalkParticle" type="GPUParticles2D" parent="SubViewport/Stage/Player" unique_id=283549780]
 texture = ExtResource("1_hf1ha")

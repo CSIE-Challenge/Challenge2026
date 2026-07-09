@@ -58,7 +58,7 @@ func on_arming_complete() -> void:
 	# Check if the player is already standing inside the hitbox when arming finishes
 	var player = Global.game_manager.player
 	if explosion_area.overlaps_body(player) and not player.isjumping:
-		disarm()
+		disarm((position - player.position).normalized())
 
 
 func explode() -> void:
@@ -75,8 +75,16 @@ func explode() -> void:
 	queue_free()
 
 
-func disarm() -> void:
+func disarm(direction: Vector2) -> void:
 	Audio.play_sfx(Audio.SFX.TRAP1_MINE_DISARM)
+	set_process(false)
+	set_physics_process(false)
+	var end_pos = position + direction * 50
+	var tween = create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(self, "position", end_pos, 0.2)
+	tween.tween_property(mine_body.material, "shader_parameter/a", 0.0, 0.2)
+	await tween.finished
 	queue_free()
 
 
@@ -86,7 +94,7 @@ func _physics_process(_delta: float) -> void:
 		if isjumping_2_frame_ago and not player.isjumping:
 			explode()
 		elif not player.isjumping:
-			disarm()
+			disarm((position - player.position).normalized())
 
 	isjumping_2_frame_ago = isjumping_1_frame_ago
 	isjumping_1_frame_ago = player.isjumping

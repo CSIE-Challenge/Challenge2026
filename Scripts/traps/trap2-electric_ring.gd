@@ -51,7 +51,7 @@ func _physics_process(delta: float) -> void:
 	else:
 		current_stay_time -= delta
 		if current_stay_time <= 0.0:
-			animation.play("electric_ring_die")
+			_die()
 		else:
 			_detect_player()
 
@@ -74,6 +74,9 @@ func spawn(set_radius: float, delay_time: float):
 
 
 func _die():
+	var tween = create_tween()
+	tween.tween_property(ring_sprite.material, "shader_parameter/thickness", 0.0, 0.4)
+	await tween.finished
 	queue_free()
 
 
