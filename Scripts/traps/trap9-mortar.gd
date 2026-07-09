@@ -113,8 +113,6 @@ func explode() -> void:
 	explosion_area.monitoring = true
 
 	var effect = explosion.get_node("GPUParticles2D") as GPUParticles2D
-	if not effect.finished.is_connected(effect.queue_free):
-		effect.finished.connect(effect.queue_free)
 	effect.emitting = true
 	exploding = true
 	explosion_radius = 0.0
