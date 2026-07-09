@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import http from "node:http";
+import crypto from "node:crypto";
 import { spawn, execSync } from "node:child_process";
 
 // Load .env file if present
@@ -21,6 +22,7 @@ if (fs.existsSync(envPath)) {
 const HTTP_PORT = parseInt(process.env.HTTP_PORT || "3000", 10);
 const PORT_START = parseInt(process.env.PORT_RANGE_START || "7777", 10);
 const PORT_END = parseInt(process.env.PORT_RANGE_END || "7791", 10);
+const GAME_IP = process.env.GAME_IP || "127.0.0.1";
 
 /** @type {Set<number>} */
 const freePorts = new Set();
@@ -34,8 +36,20 @@ console.log(
 const CODE_CHARS = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"; // no 0/O/1/I/L
 const CODE_LENGTH = 6;
 
-/** @type {Map<string, number>} */ // code → port
-const roomCodes = new Map();
+/**
+ * @typedef {Object} Room
+ * @property {string} code
+ * @property {number} port
+ * @property {string[]} playerIds
+ * @property {Set<string>} readyPlayerIds
+ * @property {boolean} gameStarted
+ * @property {import("child_process").ChildProcess} process
+ * @property {ReturnType<typeof setTimeout>} expireTimer
+ * @property {ReturnType<typeof setTimeout>|null} readyTimer
+ */
+
+/** @type {Map<string, Room>} */
+const rooms = new Map();
 
 function generateCode() {
     let code;
@@ -44,12 +58,13 @@ function generateCode() {
         for (let i = 0; i < CODE_LENGTH; i++) {
             code += CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)];
         }
-    } while (roomCodes.has(code));
+    } while (rooms.has(code));
     return code;
 }
 
-/** @type {Map<string, import("child_process").ChildProcess>} */
-const children = new Map();
+function generatePlayerId() {
+    return crypto.randomUUID();
+}
 
 const GODOT_BIN = process.env.GODOT_BIN || "godot";
 
@@ -90,9 +105,6 @@ function spawnGodot(port) {
     return proc;
 }
 
-/** @type {Map<string, ReturnType<typeof setTimeout>>} */
-const expireTimers = new Map();
-
 function parseBody(req) {
     return new Promise((resolve) => {
         let body = "";
@@ -107,12 +119,60 @@ function parseBody(req) {
     });
 }
 
+function expireRoom(code) {
+    console.log(`[Matchmaker] Room ${code} expired (60s), killing Godot`);
+    const room = rooms.get(code);
+    if (!room) return;
+    if (room.process) {
+        room.process.kill("SIGTERM");
+        const forceKill = setTimeout(() => {
+            if (room.process.exitCode === null) room.process.kill("SIGKILL");
+        }, 5000);
+        room.process.on("exit", () => clearTimeout(forceKill));
+    }
+    cleanupRoom(code);
+}
+
+function expireReady(code) {
+    console.log(`[Matchmaker] Room ${code} ready timer expired (90s), cleaning up`);
+    const room = rooms.get(code);
+    if (!room) return;
+    if (room.process) {
+        room.process.kill("SIGTERM");
+    }
+    cleanupRoom(code);
+}
+
+function cleanupRoom(code) {
+    const room = rooms.get(code);
+    if (!room) return;
+    if (room.port !== undefined) {
+        freePorts.add(room.port);
+    }
+    if (room.expireTimer) {
+        clearTimeout(room.expireTimer);
+    }
+    if (room.readyTimer) {
+        clearTimeout(room.readyTimer);
+    }
+    rooms.delete(code);
+    console.log(`[Matchmaker] Room ${code} cleaned up, port ${room.port} freed`);
+}
+
+function findRoomCodeByProcess(proc) {
+    for (const [code, room] of rooms) {
+        if (room.process === proc) return code;
+    }
+    return null;
+}
+
 const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host}`);
     const method = req.method;
 
     res.setHeader("Content-Type", "application/json");
 
+    // ── POST /qiaohu/room ──────────────────────────────────────────
     if (method === "POST" && url.pathname === "/qiaohu/room") {
         if (freePorts.size === 0) {
             res.writeHead(503);
@@ -123,6 +183,7 @@ const server = http.createServer(async (req, res) => {
         const port = freePorts.values().next().value;
         freePorts.delete(port);
         const code = generateCode();
+        const playerId = generatePlayerId();
 
         let proc;
         try {
@@ -130,49 +191,136 @@ const server = http.createServer(async (req, res) => {
         } catch (err) {
             console.error(`[Matchmaker] Failed to spawn Godot: ${err.message}`);
             freePorts.add(port);
-            roomCodes.delete(code);
             res.writeHead(500);
             res.end(JSON.stringify({ error: "failed to start game server" }));
             return;
         }
-        children.set(code, proc);
-        roomCodes.set(code, port);
 
-        const timer = setTimeout(() => expireRoom(code), 60_000);
-        expireTimers.set(code, timer);
+        const room = {
+            code,
+            port,
+            playerIds: [playerId],
+            readyPlayerIds: new Set(),
+            gameStarted: false,
+            process: proc,
+            expireTimer: setTimeout(() => expireRoom(code), 60_000),
+            readyTimer: null,
+        };
+        rooms.set(code, room);
 
         console.log(
             `[Matchmaker] Room ${code} → port ${port} (pid ${proc.pid})`,
         );
         res.writeHead(200);
-        res.end(JSON.stringify({ code, port }));
+        res.end(JSON.stringify({
+            code,
+            game_ip: GAME_IP,
+            game_port: port,
+            player_id: playerId,
+        }));
         return;
     }
 
+    // ── POST /qiaohu/join ──────────────────────────────────────────
     if (method === "POST" && url.pathname === "/qiaohu/join") {
         const body = await parseBody(req);
         const code = body.code?.toUpperCase?.() || "";
 
-        if (!roomCodes.has(code)) {
+        const room = rooms.get(code);
+        if (!room) {
             res.writeHead(404);
             res.end(JSON.stringify({ error: "room not found" }));
             return;
         }
 
-        const timer = expireTimers.get(code);
-        if (!timer) {
+        if (!room.expireTimer) {
             res.writeHead(410);
             res.end(JSON.stringify({ error: "room expired" }));
             return;
         }
 
-        clearTimeout(timer);
-        expireTimers.delete(code);
+        clearTimeout(room.expireTimer);
+        room.expireTimer = null;
 
-        const port = roomCodes.get(code);
-        console.log(`[Matchmaker] Room ${code} joined on port ${port}`);
+        const playerId = generatePlayerId();
+        room.playerIds.push(playerId);
+
+        room.readyTimer = setTimeout(() => expireReady(code), 90_000);
+
+        console.log(`[Matchmaker] Room ${code} joined, ${room.playerIds.length} players`);
         res.writeHead(200);
-        res.end(JSON.stringify({ port }));
+        res.end(JSON.stringify({
+            game_ip: GAME_IP,
+            game_port: room.port,
+            player_id: playerId,
+        }));
+        return;
+    }
+
+    // ── POST /qiaohu/ready ─────────────────────────────────────────
+    if (method === "POST" && url.pathname === "/qiaohu/ready") {
+        const body = await parseBody(req);
+        const code = body.code?.toUpperCase?.() || "";
+        const playerId = body.player_id || "";
+
+        const room = rooms.get(code);
+        if (!room) {
+            res.writeHead(404);
+            res.end(JSON.stringify({ error: "room not found" }));
+            return;
+        }
+
+        if (room.gameStarted) {
+            res.writeHead(410);
+            res.end(JSON.stringify({ error: "game already started" }));
+            return;
+        }
+
+        if (!room.playerIds.includes(playerId)) {
+            res.writeHead(403);
+            res.end(JSON.stringify({ error: "invalid player_id" }));
+            return;
+        }
+
+        room.readyPlayerIds.add(playerId);
+
+        if (
+            room.playerIds.length >= 2 &&
+            room.readyPlayerIds.size >= room.playerIds.length
+        ) {
+            room.gameStarted = true;
+            if (room.readyTimer) {
+                clearTimeout(room.readyTimer);
+                room.readyTimer = null;
+            }
+            console.log(`[Matchmaker] Room ${code} both ready, game starting`);
+            res.writeHead(200);
+            res.end(JSON.stringify({ status: "start" }));
+            return;
+        }
+
+        res.writeHead(200);
+        res.end(JSON.stringify({ status: "waiting" }));
+        return;
+    }
+
+    // ── GET /qiaohu/status ─────────────────────────────────────────
+    if (method === "GET" && url.pathname === "/qiaohu/status") {
+        const code = url.searchParams.get("code")?.toUpperCase() || "";
+
+        const room = rooms.get(code);
+        if (!room) {
+            res.writeHead(404);
+            res.end(JSON.stringify({ error: "room not found" }));
+            return;
+        }
+
+        res.writeHead(200);
+        res.end(JSON.stringify({
+            player_count: room.playerIds.length,
+            ready_count: room.readyPlayerIds.size,
+            game_started: room.gameStarted,
+        }));
         return;
     }
 
@@ -180,56 +328,18 @@ const server = http.createServer(async (req, res) => {
     res.end(JSON.stringify({ error: "not found" }));
 });
 
-function cleanupRoom(code) {
-    const port = roomCodes.get(code);
-    if (port !== undefined) {
-        freePorts.add(port);
-    }
-    roomCodes.delete(code);
-    children.delete(code);
-
-    const timer = expireTimers.get(code);
-    if (timer) {
-        clearTimeout(timer);
-        expireTimers.delete(code);
-    }
-    if (port !== undefined) {
-        console.log(`[Matchmaker] Room ${code} cleaned up, port ${port} freed`);
-    }
-}
-
-function findRoomCodeByProcess(proc) {
-    for (const [code, p] of children) {
-        if (p === proc) return code;
-    }
-    return null;
-}
-
-function expireRoom(code) {
-    console.log(`[Matchmaker] Room ${code} expired, killing Godot`);
-    const proc = children.get(code);
-    if (proc) {
-        proc.kill("SIGTERM");
-        const forceKill = setTimeout(() => {
-            if (proc.exitCode === null) proc.kill("SIGKILL");
-        }, 5000);
-        proc.on("exit", () => clearTimeout(forceKill));
-    }
-    cleanupRoom(code);
-}
-
 process.on("SIGTERM", () => {
     console.log("[Matchmaker] Shutting down, killing all Godot instances...");
-    for (const [, proc] of children) {
-        proc.kill("SIGTERM");
+    for (const [, room] of rooms) {
+        if (room.process) room.process.kill("SIGTERM");
     }
     process.exit(0);
 });
 
 process.on("SIGINT", () => {
     console.log("[Matchmaker] Interrupted, killing all Godot instances...");
-    for (const [, proc] of children) {
-        proc.kill("SIGTERM");
+    for (const [, room] of rooms) {
+        if (room.process) room.process.kill("SIGTERM");
     }
     process.exit(0);
 });
