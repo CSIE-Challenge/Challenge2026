@@ -89,7 +89,7 @@ func _save_ip(ip: String) -> void:
 	cfg.save(SETTINGS_PATH)
 
 
-func _show_panel(panel: Panel) -> void:
+func _show_panel(panel: Page) -> void:
 	_current_panel = panel
 	panel_a.visible = (panel == Page.A)
 	panel_b.visible = (panel == Page.B)
@@ -282,6 +282,7 @@ func _on_back_c_button_up() -> void:
 
 
 func _enter_panel_d() -> void:
+	_show_panel(Page.D)
 	_timer_d = 90
 	_update_countdown_label_d()
 	_update_status_label()
