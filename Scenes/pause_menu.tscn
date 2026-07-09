@@ -38,6 +38,9 @@ vertical_alignment = 1
 [node name="ResumeButton" type="Button" parent="Panel/VBoxContainer"]
 text = "Continue"
 
+[node name="RestartButton" type="Button" parent="Panel/VBoxContainer"]
+text = "Restart"
+
 [node name="MainMenuButton" type="Button" parent="Panel/VBoxContainer"]
 text = "Return to Main Menu"
 

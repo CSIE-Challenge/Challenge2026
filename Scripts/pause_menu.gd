@@ -3,9 +3,11 @@ extends CanvasLayer
 
 signal resume_requested
 signal main_menu_requested
+signal restart_requested
 signal exit_requested
 
 @onready var _resume_button: Button = $Panel/VBoxContainer/ResumeButton
+@onready var _restart_button: Button = $Panel/VBoxContainer/RestartButton
 @onready var _main_menu_button: Button = $Panel/VBoxContainer/MainMenuButton
 @onready var _exit_button: Button = $Panel/VBoxContainer/ExitButton
 
@@ -15,6 +17,7 @@ func _ready() -> void:
 	visible = false
 
 	_resume_button.button_up.connect(_on_resume_button_up)
+	_restart_button.button_up.connect(_on_restart_button_up)
 	_main_menu_button.button_up.connect(_on_main_menu_button_up)
 	_exit_button.button_up.connect(_on_exit_button_up)
 
@@ -39,6 +42,10 @@ func close() -> void:
 
 func _on_resume_button_up() -> void:
 	_emit_resume_requested()
+
+
+func _on_restart_button_up() -> void:
+	restart_requested.emit()
 
 
 func _on_main_menu_button_up() -> void:

@@ -217,6 +217,7 @@ func _connect_pause_menu() -> void:
 	if pause_menu == null:
 		return
 	pause_menu.resume_requested.connect(_on_pause_resume_requested)
+	pause_menu.restart_requested.connect(_on_pause_restart_requested)
 	pause_menu.main_menu_requested.connect(_on_pause_main_menu_requested)
 	pause_menu.exit_requested.connect(_on_pause_exit_requested)
 	pause_menu.close()
@@ -224,6 +225,11 @@ func _connect_pause_menu() -> void:
 
 func _on_pause_resume_requested() -> void:
 	_resume_gameplay()
+
+
+func _on_pause_restart_requested() -> void:
+	_shutdown_gameplay_for_scene_change()
+	SceneTransition.transition_to("res://Scenes/gameplay.tscn")
 
 
 func _on_pause_main_menu_requested() -> void:
