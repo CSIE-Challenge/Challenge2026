@@ -1,5 +1,5 @@
 # Stage 1: Download Godot binary
-FROM debian:bookworm-slim AS godot-download
+FROM --platform=linux/amd64 debian:bookworm-slim AS godot-download
 ARG GODOT_VERSION=4.6.3
 ARG GODOT_STATUS=stable
 
@@ -13,7 +13,7 @@ RUN wget -O godot.zip "https://github.com/godotengine/godot/releases/download/${
 	&& chmod +x /usr/local/bin/godot
 
 # Stage 2: Runtime
-FROM node:22-bookworm-slim
+FROM --platform=linux/amd64 node:22-bookworm-slim
 
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \

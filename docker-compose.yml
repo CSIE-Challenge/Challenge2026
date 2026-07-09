@@ -1,5 +1,6 @@
 services:
   matchmaker:
+    platform: linux/amd64
     build:
       context: .
       args:
