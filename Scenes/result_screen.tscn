@@ -1,78 +1,63 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://sy61e2606j8w"]
 
-[ext_resource type="Script" path="res://Scripts/result_screen.gd" id="1_result"]
+[ext_resource type="Script" uid="uid://brqtb34ab82qi" path="res://Scripts/result_screen.gd" id="1_result"]
 
-[node name="ResultScreen" type="CanvasLayer"]
+[node name="ResultScreen" type="CanvasLayer" unique_id=250910659]
 layer = 100
 visible = false
 script = ExtResource("1_result")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=20452836]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.055, 0.075, 0.11, 0.94)
-mouse_filter = 0
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=863430935]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="CenterContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="CenterContainer" unique_id=1914732084]
 custom_minimum_size = Vector2(520, 470)
+layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/PanelContainer" unique_id=533272811]
+layout_mode = 2
 theme_override_constants/margin_left = 44
 theme_override_constants/margin_top = 32
 theme_override_constants/margin_right = 44
 theme_override_constants/margin_bottom = 32
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer" unique_id=94432051]
+layout_mode = 2
 theme_override_constants/separation = 14
 
-[node name="TitleLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="TitleLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1068592199]
+layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "RESULT"
 horizontal_alignment = 1
 
-[node name="Separator" type="HSeparator" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="Separator" type="HSeparator" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=412927854]
+layout_mode = 2
 
-[node name="EnergySpentLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
-unique_name_in_owner = true
-theme_override_font_sizes/font_size = 22
-text = "Total Energy Spent: 0"
+[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=224187305]
+layout_mode = 2
+theme_override_constants/separation = 0
 
-[node name="EnergyBallsLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="StatNamesLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=635769938]
 unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 22
-text = "Energy Balls Collected: 0"
 
-[node name="JumpCountLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="StatValuesLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=119839190]
 unique_name_in_owner = true
+layout_mode = 2
 theme_override_font_sizes/font_size = 22
-text = "Jumps: 0"
-
-[node name="DistanceLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
-unique_name_in_owner = true
-theme_override_font_sizes/font_size = 22
-text = "Distance Traveled: 0.0"
-
-[node name="SurvivalTimeLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
-unique_name_in_owner = true
-theme_override_font_sizes/font_size = 22
-text = "Survival Time: 0.0 seconds"
-
-[node name="RemainingHealthLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
-unique_name_in_owner = true
-theme_override_font_sizes/font_size = 22
-text = "Remaining Health: 0"
-
-[node name="TrapCountLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
-unique_name_in_owner = true
-theme_override_font_sizes/font_size = 22
-text = "Traps Placed: 0"
+horizontal_alignment = 2
