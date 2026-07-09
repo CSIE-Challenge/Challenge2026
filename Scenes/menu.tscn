@@ -150,6 +150,12 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_mode")
 text = "雙人模式"
 
+[node name="MatchmakerButton" type="Button" parent="Panel/ModePanel/VBoxContainer" unique_id=1160019089]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "雙人模式 (matchmaker)"
+
 [node name="ConfirmButton" type="Button" parent="Panel/ModePanel/VBoxContainer" unique_id=1160019088]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
@@ -170,5 +176,6 @@ text = "返回"
 [connection signal="button_up" from="Panel/VBoxContainer/VolumeButton" to="." method="_on_volume_button_button_up"]
 [connection signal="button_up" from="Panel/VBoxContainer/QuitButton" to="." method="_on_quit_button_button_up"]
 [connection signal="button_up" from="Panel/invisible" to="." method="_on_invisible_button_up"]
+[connection signal="button_up" from="Panel/ModePanel/VBoxContainer/MatchmakerButton" to="." method="_on_matchmaker_button_up"]
 [connection signal="button_up" from="Panel/ModePanel/VBoxContainer/ConfirmButton" to="." method="_on_confirm_button_up"]
 [connection signal="button_up" from="Panel/ModePanel/VBoxContainer/ModeBackButton" to="." method="_on_mode_back_button_up"]

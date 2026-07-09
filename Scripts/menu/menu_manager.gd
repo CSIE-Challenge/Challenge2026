@@ -1,6 +1,7 @@
 extends Control
 
 const FILE_SELECTOR_SCENE := "res://Scenes/menu/file_selector.tscn"
+const MATCHMAKER_SCENE := "res://Scenes/menu/matchmaker.tscn"
 
 @onready var mode_panel = $Panel/ModePanel
 @onready var single_button: Button = $Panel/ModePanel/VBoxContainer/ToggleRow/SingleButton
@@ -37,6 +38,14 @@ func _on_invisible_button_up() -> void:
 
 
 # --- Mode selection (toggle + confirm) -------------------------------------
+func _on_matchmaker_button_up() -> void:
+	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
+	mode_panel.visible = false
+	Global.single_player = false
+	Global.agent_file = ""
+	SceneTransition.transition_to(MATCHMAKER_SCENE)
+
+
 func _on_confirm_button_up() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	if single_button.button_pressed:
