@@ -1,5 +1,5 @@
+# Stage 1: Download Godot binary
 FROM debian:bookworm-slim AS godot-download
-
 ARG GODOT_VERSION=4.6.3
 ARG GODOT_STATUS=stable
 
@@ -7,19 +7,19 @@ RUN apt-get update \
 	&& apt-get install -y --no-install-recommends ca-certificates unzip wget \
 	&& rm -rf /var/lib/apt/lists/*
 
-WORKDIR /tmp
-
 RUN wget -O godot.zip "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-${GODOT_STATUS}/Godot_v${GODOT_VERSION}-${GODOT_STATUS}_linux.x86_64.zip" \
 	&& unzip godot.zip \
 	&& mv "Godot_v${GODOT_VERSION}-${GODOT_STATUS}_linux.x86_64" /usr/local/bin/godot \
 	&& chmod +x /usr/local/bin/godot
 
-FROM debian:bookworm-slim
+# Stage 2: Runtime
+FROM node:22-bookworm-slim
 
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
 		ca-certificates \
 		dumb-init \
+		procps \
 		libasound2 \
 		libegl1 \
 		libfontconfig1 \
@@ -47,8 +47,10 @@ USER godot
 
 RUN godot --headless --import --path /app
 
-EXPOSE 7777/udp
-EXPOSE 7749/tcp
+EXPOSE 3000/tcp
+EXPOSE 7777-7791/udp
 
-ENTRYPOINT ["dumb-init", "--", "godot", "--headless", "--path", "/app", "--"]
-CMD ["--server", "--port", "7777"]
+ENV GODOT_BIN=godot
+ENV GODOT_PROJECT_PATH=/app
+
+ENTRYPOINT ["dumb-init", "--", "node", "matchmaker/server.js"]
