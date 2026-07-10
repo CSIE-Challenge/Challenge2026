@@ -14,7 +14,10 @@
 [ext_resource type="AudioStream" uid="uid://s38uamf74qig" path="res://Assets/audio/Result.mp3" id="8_r8i6a"]
 [ext_resource type="AudioStream" uid="uid://kfxthmlglfh2" path="res://Assets/audio/phase_5.mp3" id="8_tf0nv"]
 [ext_resource type="AudioStream" uid="uid://bi01vm7qcutil" path="res://Assets/audio/trap_1_landmine_explode.mp3" id="10_38mwv"]
+[ext_resource type="AudioStream" uid="uid://cld4poronrvxs" path="res://Assets/audio/character_fall_sand.mp3" id="11_mjojf"]
+[ext_resource type="AudioStream" uid="uid://bqpaejdaq4jcv" path="res://Assets/audio/character_fall_juice.mp3" id="12_0w0wh"]
 [ext_resource type="AudioStream" uid="uid://b2kg56yc6iwrc" path="res://Assets/audio/Get_coconut.mp3" id="12_tf0nv"]
+[ext_resource type="AudioStream" uid="uid://dvgprx7jght86" path="res://Assets/audio/character_fall_water.mp3" id="13_bm6li"]
 [ext_resource type="AudioStream" uid="uid://bf0dpmjiygwpd" path="res://Assets/audio/die_1b.mp3" id="15_aan0r"]
 [ext_resource type="AudioStream" uid="uid://b27vqppkxjtjq" path="res://Assets/audio/scene_transition_2.mp3" id="15_o1fue"]
 [ext_resource type="AudioStream" uid="uid://d2m7t5250b1x" path="res://Assets/audio/trap_1_remove_bananapeel_2.mp3" id="17_n35fw"]
@@ -33,6 +36,9 @@ gameplay_phase_5_tracks = Array[AudioStream]([ExtResource("8_tf0nv")])
 result_screen_tracks = Array[AudioStream]([ExtResource("8_r8i6a")])
 hidden_game_tracks = Array[AudioStream]([])
 jump_sfx = ExtResource("2_c8j57")
+land_sand_sfx = ExtResource("11_mjojf")
+land_juice_sfx = ExtResource("12_0w0wh")
+land_water_sfx = ExtResource("13_bm6li")
 button_press_sfx = ExtResource("2_y8l05")
 energy_collected_sfx = ExtResource("12_tf0nv")
 gameplay_phase_change_sfx = ExtResource("6_e0u3b")

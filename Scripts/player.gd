@@ -158,6 +158,12 @@ func _jump_process(delta: float):
 		_adjust_collision_layer()
 		land_particle.restart()
 		land_particle.emitting = true
+		if juice_count > 0:
+			Audio.play_sfx(Audio.SFX.LAND_SAND)
+		elif is_in_water:
+			Audio.play_sfx(Audio.SFX.LAND_WATER)
+		else:
+			Audio.play_sfx(Audio.SFX.LAND_SAND)
 		if is_instance_valid(skin_instance):
 			skin_instance.global_position = self.global_position
 			if skin_instance.has_method("play_land"):
