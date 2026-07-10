@@ -12,7 +12,7 @@ class Vector2:
         """x 座標"""
 
         self.y = float(y)
-        """y 座標（正方向朝下）"""
+        """y 座標"""
 
     @classmethod
     def from_list(cls, data: list[float]) -> Vector2:

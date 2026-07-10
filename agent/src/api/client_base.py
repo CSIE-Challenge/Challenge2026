@@ -15,19 +15,46 @@ from .transport import Transport
 T = TypeVar("T")
 
 
+# Human-readable meaning for each status code. The server only sends the
+# number, so this is the one place a readable message can be attached.
+_CODE_MESSAGES = {
+    protocol.Code.ILLFORMED: "malformed request or bad arguments",
+    protocol.Code.NOT_FOUND: "unknown command",
+}
+
+
 class ApiError(Exception):
-    def __init__(self, code: int) -> None:
-        super().__init__(f"server returned error code {code}")
+    """代表一次失敗的 API 呼叫。
+
+    屬性：
+        code (int): 狀態碼（400 表示格式/參數錯誤，404 表示未知指令）。
+        cmd (str | None): 觸發錯誤的指令名稱。
+
+    ``str(err)`` 是可讀的完整訊息，例如
+    ``"get_my_energy failed: unknown command (404)"``。
+    """
+
+    def __init__(self, code: int, cmd: str | None = None) -> None:
         self.code = code
+        self.cmd = cmd
+        reason = _CODE_MESSAGES.get(code, "unknown error")
+        prefix = f"{cmd} failed: " if cmd else ""
+        super().__init__(f"{prefix}{reason} ({code})")
 
 
-def _unwrap(response: dict) -> Any:
+def _unwrap(response: dict, cmd: str | None = None) -> Any:
     if response.get("status") == protocol.Status.ERROR:
-        raise ApiError(response.get("code", protocol.Code.ILLFORMED))
+        raise ApiError(response.get("code", protocol.Code.ILLFORMED), cmd)
     return response.get("data")
 
 
 class GameClientBase:
+    """與遊戲伺服器溝通的客戶端，你的 ``run(client)`` 會收到一個實例。
+
+    ``print(...)`` 的輸出會顯示在執行 agent 的終端機（單人模式下也會寫到
+    ``agent.log``），所以印出來就能在 Python 端看到結果與錯誤訊息。
+    """
+
     def __init__(self, token: str, host: str = "127.0.0.1", port: int = 7749) -> None:
         self._token = token
         self.host = host
@@ -91,7 +118,7 @@ class GameClientBase:
     def _call(self, cmd: str, args: dict[str, Any] | None = None) -> Any:
         """Send a command, block for the reply, and unwrap it (raises ApiError)."""
         assert self._rpc is not None, "not connected"
-        return _unwrap(self._submit(self._rpc.call(cmd, args)))
+        return _unwrap(self._submit(self._rpc.call(cmd, args)), cmd)
 
     def ping(self) -> Any:
         """
@@ -148,7 +175,7 @@ class GameClientBase:
         """
         return self._call(protocol.Cmd.GET_MY_HEALTH)
 
-    def get_opponent_player_position(self) -> list[float]:
+    def get_opponent_player_position(self) -> Vector2:
         """
         # Get Opponent Player Position
         取得對手玩家的位置（單人模式下即為自己）。
@@ -157,17 +184,17 @@ class GameClientBase:
         無參數
 
         ## Returns
-        回傳一個 ``[x, y]`` 陣列（list[float]），表示對手玩家的座標；
-        可用 `Vector2.from_list(...)` 轉成 `Vector2`。
+        回傳一個 `Vector2`，表示對手玩家的座標；可直接用 `.x`／`.y` 取值。
 
         ## Example
         ```python
-        pos = Vector2.from_list(client.get_opponent_player_position())
+        pos = client.get_opponent_player_position()
+        print(pos.x, pos.y)
         ```
         """
-        return self._call(protocol.Cmd.GET_OPPONENT_PLAYER_POSITION)
+        return Vector2.from_list(self._call(protocol.Cmd.GET_OPPONENT_PLAYER_POSITION))
 
-    def get_opponent_energy_ball_position(self) -> list[float]:
+    def get_opponent_energy_ball_position(self) -> Vector2:
         """
         # Get Opponent Energy Ball Position
         取得對手能量球的位置（單人模式下即為自己）。
@@ -176,17 +203,19 @@ class GameClientBase:
         無參數
 
         ## Returns
-        回傳一個 ``[x, y]`` 陣列（list[float]），表示能量球的座標；
-        可用 `Vector2.from_list(...)` 轉成 `Vector2`。
+        回傳一個 `Vector2`，表示能量球的座標；可直接用 `.x`／`.y` 取值。
 
         ## Example
         ```python
-        ball = Vector2.from_list(client.get_opponent_energy_ball_position())
+        ball = client.get_opponent_energy_ball_position()
+        print(ball.x, ball.y)
         ```
         """
-        return self._call(protocol.Cmd.GET_OPPONENT_ENERGY_BALL_POSITION)
+        return Vector2.from_list(
+            self._call(protocol.Cmd.GET_OPPONENT_ENERGY_BALL_POSITION)
+        )
 
-    def get_opponent_player_velocity(self) -> list[float]:
+    def get_opponent_player_velocity(self) -> Vector2:
         """
         # Get Opponent Player Velocity
         取得對手玩家的當前速度向量（單人模式下即為自己）。
@@ -195,9 +224,15 @@ class GameClientBase:
         無參數
 
         ## Returns
-        回傳一個 ``[x, y]`` 陣列（list[float]）。
+        回傳一個 `Vector2`（速度向量）。
+
+        ## Example
+        ```python
+        vel = client.get_opponent_player_velocity()
+        print(vel.x, vel.y)
+        ```
         """
-        return self._call(protocol.Cmd.GET_OPPONENT_PLAYER_VELOCITY)
+        return Vector2.from_list(self._call(protocol.Cmd.GET_OPPONENT_PLAYER_VELOCITY))
 
     def get_remaining_time(self) -> float:
         """

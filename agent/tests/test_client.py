@@ -23,6 +23,13 @@ def test_unwrap_raises_apierror_on_error() -> None:
     assert excinfo.value.code == 404
 
 
+def test_apierror_message_is_readable_and_names_the_command() -> None:
+    err = ApiError(404, "get_my_energy")
+    assert err.code == 404
+    assert err.cmd == "get_my_energy"
+    assert str(err) == "get_my_energy failed: unknown command (404)"
+
+
 def test_encode_serializes_vector2_and_direction_as_xy() -> None:
     import json
 

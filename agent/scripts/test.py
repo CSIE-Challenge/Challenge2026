@@ -41,8 +41,8 @@ def run(client) -> None:
     while True:
         hp = client.get_my_health()
         energy = client.get_my_energy()
-        pos = Vector2.from_list(client.get_opponent_player_position())
-        eball_pos = Vector2.from_list(client.get_opponent_energy_ball_position())
+        pos = client.get_opponent_player_position()
+        eball_pos = client.get_opponent_energy_ball_position()
 
         # ruff: disable[E501]
         print(

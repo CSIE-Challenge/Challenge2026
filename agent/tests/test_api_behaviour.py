@@ -11,6 +11,7 @@ from __future__ import annotations
 import pytest
 
 from api.client_base import ApiError, GameClientBase
+from api.structures import Vector2
 
 pytestmark = pytest.mark.integration
 
@@ -47,8 +48,8 @@ def test_heal_reports_real_player_health(client: GameClientBase) -> None:
 
 def test_get_opponent_velocity_shape(client: GameClientBase) -> None:
     velocity = client.get_opponent_player_velocity()
-    assert isinstance(velocity, list)
-    assert len(velocity) == 2
+    assert isinstance(velocity, Vector2)
+    assert (velocity[0], velocity[1]) == (velocity.x, velocity.y)
 
 
 def test_get_remaining_time_and_phase(client: GameClientBase) -> None:
