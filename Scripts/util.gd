@@ -34,10 +34,10 @@ const LAYERS = {
 	"Trap10Shotgun/Bullets": 10,
 	"Trap10Shotgun/Baskets": 10,
 	"Walls": 5,
-	"Trap4Conveyor/AnimatedSprite2D": 5,
-	"Trap5IceFloor/SpilledJuice": 5,
-	"Trap9Mortar/Explosion": 5,
-	"Trap8ElectricArc/Crack": 0
+	"Trap9Mortar/Explosion": 4,
+	"Trap5IceFloor/SpilledJuice": 3,
+	"Trap4Conveyor/AnimatedSprite2D": 2,
+	"Trap8ElectricArc/Crack": 1
 }
 ##### End of layer #####
 
