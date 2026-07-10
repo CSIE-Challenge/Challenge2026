@@ -11,5 +11,6 @@ Button/fonts/font = ExtResource("1_x5s4q")
 Label/fonts/font = ExtResource("1_x5s4q")
 LineEdit/fonts/font = ExtResource("1_x5s4q")
 LineEdit/styles/normal = SubResource("StyleBoxFlat_oqv23")
+RichTextLabel/constants/line_separation = -6
 RichTextLabel/fonts/bold_font = ExtResource("1_x5s4q")
 RichTextLabel/fonts/normal_font = ExtResource("1_x5s4q")
