@@ -3,6 +3,26 @@ extends Node
 
 const _REAP_INTERVAL := 1.0
 
+const TRAP_IDS := {
+	1: "trap1-mine",
+	2: "trap2-electric_ring",
+	3: "trap3-tracing_bullet",
+	4: "trap4-conveyor",
+	5: "trap5-icefloor",
+	6: "trap6-scanline",
+	7: "trap7-spreading_ripples",
+	8: "trap8-electric_arc",
+	9: "trap9-mortar",
+	10: "trap10-shotgun",
+}
+
+# Failures the agent can do nothing about (our bug, not the agent's input).
+const _INTERNAL_REASONS := [
+	"game_not_assigned",
+	"trap_request_scheduler_not_assigned",
+	"scheduler_submit_failed",
+]
+
 var game: Node2D
 
 var bundle_dir := ""
@@ -115,6 +135,19 @@ func register_command(cmd_name: String, handler: Callable) -> void:
 	_command_handlers[cmd_name] = handler
 
 
+# Non-empty when the game world is unusable; handlers must not run then,
+# because GDScript has no try/catch — a null deref would drop the response
+# and hang the agent's pending request forever.
+func _internal_reason() -> String:
+	if not is_instance_valid(game):
+		return "game_not_assigned"
+	if not is_instance_valid(game.player):
+		return "player_missing"
+	if not is_instance_valid(game.energy_ball):
+		return "energy_ball_missing"
+	return ""
+
+
 # Helpers used by gameplay APIs.
 func _is_number(value: Variant) -> bool:
 	return typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT
@@ -159,20 +192,24 @@ func _read_required_float(args: Dictionary, key: String) -> Dictionary:
 	return {"ok": true, "value": float(args[key]), "reason": ""}
 
 
-func _read_required_string(args: Dictionary, key: String) -> Dictionary:
+func _read_required_int(args: Dictionary, key: String) -> Dictionary:
 	if not args.has(key):
-		return {"ok": false, "value": "", "reason": "missing_" + key}
+		return {"ok": false, "value": 0, "reason": "missing_" + key}
 
-	if typeof(args[key]) != TYPE_STRING:
-		return {"ok": false, "value": "", "reason": "invalid_" + key}
+	var value: Variant = args[key]
+	if not _is_number(value) or float(value) != floorf(float(value)):
+		return {"ok": false, "value": 0, "reason": "invalid_" + key}
 
-	return {"ok": true, "value": str(args[key]), "reason": ""}
+	return {"ok": true, "value": int(value), "reason": ""}
 
 
 func _submit_trap(trap_id: String, params: Dictionary) -> Dictionary:
 	var agent_action_service: AgentActionService = game.get_agent_action_service()
 	var result: Dictionary = agent_action_service.submit_trap_request_result(trap_id, params)
-	return ApiServer.ok(result)
+	if not result["ok"]:
+		var code := 500 if result["reason"] in _INTERNAL_REASONS else 409
+		return ApiServer.err(code, result["reason"])
+	return ApiServer.ok(true)
 
 
 # gdlint: disable=max-returns
@@ -210,77 +247,71 @@ func _cmd_ping(_args: Dictionary) -> Dictionary:
 func _cmd_spawn_trap1(args: Dictionary) -> Dictionary:
 	var r := _read_required(args, ["position"], [])
 	if not r["ok"]:
-		return _trap_reject("trap1-mine", r["reason"])
+		return ApiServer.err(400, r["reason"])
 	return _submit_trap("trap1-mine", r["params"])
 
 
 func _cmd_spawn_trap2(args: Dictionary) -> Dictionary:
 	var r := _read_required(args, [], ["delay_time", "radius"])
 	if not r["ok"]:
-		return _trap_reject("trap2-electric_ring", r["reason"])
+		return ApiServer.err(400, r["reason"])
 	return _submit_trap("trap2-electric_ring", r["params"])
 
 
 func _cmd_spawn_trap3(args: Dictionary) -> Dictionary:
 	var r := _read_required(args, ["position", "direction"], ["speed"])
 	if not r["ok"]:
-		return _trap_reject("trap3-tracing_bullet", r["reason"])
+		return ApiServer.err(400, r["reason"])
 	return _submit_trap("trap3-tracing_bullet", r["params"])
 
 
 func _cmd_spawn_trap4(args: Dictionary) -> Dictionary:
 	var r := _read_required(args, ["position", "direction"], [])
 	if not r["ok"]:
-		return _trap_reject("trap4-conveyor", r["reason"])
+		return ApiServer.err(400, r["reason"])
 	return _submit_trap("trap4-conveyor", r["params"])
 
 
 func _cmd_spawn_trap5(args: Dictionary) -> Dictionary:
 	var r := _read_required(args, ["position"], [])
 	if not r["ok"]:
-		return _trap_reject("trap5-icefloor", r["reason"])
+		return ApiServer.err(400, r["reason"])
 	return _submit_trap("trap5-icefloor", r["params"])
 
 
 func _cmd_spawn_trap6(args: Dictionary) -> Dictionary:
 	var r := _read_required(args, ["direction"], ["speed"])
 	if not r["ok"]:
-		return _trap_reject("trap6-scanline", r["reason"])
+		return ApiServer.err(400, r["reason"])
 	return _submit_trap("trap6-scanline", r["params"])
 
 
 func _cmd_spawn_trap7(args: Dictionary) -> Dictionary:
 	var r := _read_required(args, ["position"], ["expand_rate"])
 	if not r["ok"]:
-		return _trap_reject("trap7-spreading_ripples", r["reason"])
+		return ApiServer.err(400, r["reason"])
 	return _submit_trap("trap7-spreading_ripples", r["params"])
 
 
 func _cmd_spawn_trap8(args: Dictionary) -> Dictionary:
 	var r := _read_required(args, ["start_position", "end_position"], [])
 	if not r["ok"]:
-		return _trap_reject("trap8-electric_arc", r["reason"])
+		return ApiServer.err(400, r["reason"])
 	return _submit_trap("trap8-electric_arc", r["params"])
 
 
 func _cmd_spawn_trap9(args: Dictionary) -> Dictionary:
 	var r := _read_required(args, ["start_position", "end_position"], ["air_time"])
 	if not r["ok"]:
-		return _trap_reject("trap9-mortar", r["reason"])
+		return ApiServer.err(400, r["reason"])
 	return _submit_trap("trap9-mortar", r["params"])
 
 
 func _cmd_spawn_trap10(args: Dictionary) -> Dictionary:
 	var r := _read_required(args, ["position", "dir1", "dir2", "dir3"], [])
 	if not r["ok"]:
-		return _trap_reject("trap10-shotgun", r["reason"])
+		return ApiServer.err(400, r["reason"])
 	return _submit_trap("trap10-shotgun", r["params"])
-
-
-func _trap_reject(trap_id: String, reason: String) -> Dictionary:
-	return ApiServer.ok(
-		{"ok": false, "stage": "rejected", "request_id": -1, "trap_id": trap_id, "reason": reason}
-	)
 
 
 func _cmd_get_my_energy(_args: Dictionary) -> Dictionary:
@@ -320,20 +351,31 @@ func _cmd_get_phase(_args: Dictionary) -> Dictionary:
 
 func _cmd_get_available_traps(_args: Dictionary) -> Dictionary:
 	var action_service: AgentActionService = game.get_agent_action_service()
-	return ApiServer.ok(action_service.get_available_traps())
+	var numbers: Array = []
+	for trap_id in action_service.get_available_traps():
+		numbers.append(TRAP_IDS.find_key(trap_id))
+	numbers.sort()
+	return ApiServer.ok(numbers)
 
 
 func _cmd_get_cool_down_time(args: Dictionary) -> Dictionary:
-	var req := _read_required_string(args, "trap_id")
+	var req := _read_required_int(args, "trap_id")
 	if not req["ok"]:
-		return ApiServer.ok(-1.0)
+		return ApiServer.err(400, req["reason"])
+	if not TRAP_IDS.has(req["value"]):
+		return ApiServer.err(404, "unknown_trap")
 	var action_service: AgentActionService = game.get_agent_action_service()
-	var cooldown: float = action_service.get_cool_down_time(req["value"])
+	var cooldown: float = action_service.get_cool_down_time(TRAP_IDS[req["value"]])
 	return ApiServer.ok(cooldown)
 
 
 func _cmd_heal(_args: Dictionary) -> Dictionary:
-	return ApiServer.ok(game.get_agent_action_service().request_heal())
+	var result: Dictionary = game.get_agent_action_service().request_heal()
+	if not result["ok"]:
+		return ApiServer.err(409, result["reason"])
+	result.erase("ok")
+	result.erase("reason")
+	return ApiServer.ok(result)
 
 
 #endregion
@@ -343,7 +385,7 @@ func _on_received_text(msg: String) -> void:
 	# Deserialize
 	var data: Variant = JSON.parse_string(msg)
 	if typeof(data) != TYPE_DICTIONARY:
-		_conn.send_text(JSON.stringify(ApiServer.err(400)))
+		_conn.send_text(JSON.stringify(ApiServer.err(400, "illformed_request")))
 		return
 
 	var req_id: Variant = data.get("id")
@@ -353,6 +395,13 @@ func _on_received_text(msg: String) -> void:
 		args = {}
 
 	var handler: Callable = _command_handlers.get(cmd, Callable())
-	var response: Dictionary = handler.call(args) if handler.is_valid() else ApiServer.err(404)
+	var response: Dictionary
+	if not handler.is_valid():
+		response = ApiServer.err(404, "unknown_command")
+	elif cmd != "ping" and _internal_reason() != "":
+		# Guard every gameplay handler in one place (see _internal_reason).
+		response = ApiServer.err(500, _internal_reason())
+	else:
+		response = handler.call(args)
 	response["id"] = req_id
 	_conn.send_text(JSON.stringify(response))
