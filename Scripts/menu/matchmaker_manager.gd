@@ -1,6 +1,7 @@
 extends Control
 
 enum Page { A, B, C, D }
+enum MarqueeState { PAUSED_START, SCROLLING, SCROLL_BACK, PAUSED_END, STOPPED }
 
 const MENU_SCENE := "res://Scenes/menu.tscn"
 const GAMEPLAY_SCENE := "res://Scenes/gameplay.tscn"
@@ -29,6 +30,13 @@ var _pending_request := ""
 var _countdown_text_d: String = ""
 var _status_text_d: String = ""
 
+var _pause_duration: float = 2.0
+var _scroll_speed: float = 80.0
+var _current_marquee_state: MarqueeState = MarqueeState.STOPPED
+var _current_offset: float = 0.0
+var _max_offset: float = 0.0
+var _pause_timer: float = 0.0
+
 @onready var ip_input: LineEdit = $Panel/Margins/Content/Panels/PanelA/IPContainer/IPInput
 @onready var panel_a: VBoxContainer = $Panel/Margins/Content/Panels/PanelA
 @onready var panel_b: VBoxContainer = $Panel/Margins/Content/Panels/PanelB
@@ -43,7 +51,8 @@ var _status_text_d: String = ""
 @onready var countdown_b: Label = $Panel/Margins/Content/Panels/PanelB/CountdownLabel
 @onready var code_label: Label = $Panel/Margins/Content/Panels/PanelB/CodeLabel
 @onready var status_label: Label = $Panel/Margins/Content/Panels/PanelD/StatusLabel
-@onready var agent_label: Label = $Panel/Margins/Content/Panels/PanelD/AgentLabel
+@onready var marquee_node: Control = $Panel/Margins/Content/Panels/PanelD/MarqueeText
+@onready var agent_label: Label = $Panel/Margins/Content/Panels/PanelD/MarqueeText/AgentLabel
 @onready var ready_button: Button = $Panel/Margins/Content/Panels/PanelD/HBoxContainer/ReadyButton
 
 @onready var code_input: LineEdit = $Panel/Margins/Content/Panels/PanelC/CodeInput
@@ -76,6 +85,34 @@ func _ready() -> void:
 	http_request.request_completed.connect(_on_request_completed)
 
 	NetworkManager.server_disconnected.connect(_on_server_disconnected)
+
+
+func _process(delta: float) -> void:
+	match _current_marquee_state:
+		MarqueeState.PAUSED_START:
+			_pause_timer += delta
+			if _pause_timer >= _pause_duration:
+				_pause_timer = 0.0
+				_current_marquee_state = MarqueeState.SCROLLING
+
+		MarqueeState.SCROLLING:
+			_current_offset += _scroll_speed * delta
+			agent_label.position.x = -1.0 * _current_offset
+			if _current_offset >= _max_offset:
+				agent_label.position.x = -1.0 * _max_offset
+				_current_marquee_state = MarqueeState.PAUSED_END
+
+		MarqueeState.PAUSED_END:
+			_pause_timer += delta
+			if _pause_timer >= _pause_duration:
+				_current_marquee_state = MarqueeState.SCROLL_BACK
+
+		MarqueeState.SCROLL_BACK:
+			_current_offset -= _scroll_speed * 25 * delta
+			agent_label.position.x = -1.0 * _current_offset
+			if _current_offset <= 0:
+				agent_label.position.x = 0
+				_reset_marquee()
 
 
 func _load_ip() -> String:
@@ -333,7 +370,10 @@ func _update_agent_label() -> void:
 	if _selected_agent == "":
 		agent_label.text = "Default Agent"
 	else:
-		agent_label.text = _selected_agent.get_file()
+		agent_label.text = _selected_agent
+	await get_tree().process_frame  # wait for the label to change size
+	await get_tree().process_frame
+	_reset_marquee()
 
 
 func _on_choose_agent_button_up() -> void:
@@ -376,6 +416,21 @@ func _on_expire_d() -> void:
 	await get_tree().create_timer(3.0).timeout
 	NetworkManager.stop_network()
 	_show_panel(Page.A)
+
+
+func _reset_marquee():
+	_current_offset = 0
+	_pause_timer = 0
+	_max_offset = agent_label.get_minimum_size().x - marquee_node.size.x
+
+	agent_label.position = Vector2(0, 0)
+	if _max_offset <= 0:
+		agent_label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		_current_marquee_state = MarqueeState.STOPPED
+	else:
+		agent_label.set_anchors_and_offsets_preset(PRESET_LEFT_WIDE)
+		_current_marquee_state = MarqueeState.PAUSED_START
+		_scroll_speed = (_max_offset) / (_max_offset + 700) * 235
 
 
 # ── Polling ────────────────────────────────────────────────────────────────

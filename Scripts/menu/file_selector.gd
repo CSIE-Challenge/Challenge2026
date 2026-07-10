@@ -1,5 +1,7 @@
 extends Control
 
+enum MarqueeState { PAUSED_START, SCROLLING, SCROLL_BACK, PAUSED_END, STOPPED }
+
 const MENU_SCENE := "res://Scenes/menu.tscn"
 const GAMEPLAY_SCENE := "res://Scenes/gameplay.tscn"
 const SETTINGS_FILE_PATH := "user://player_settings.cfg"
@@ -12,7 +14,15 @@ const DEFAULT_AGENT_DIR := "agent/scripts"
 var selected_agent_file := ""
 var _file_dialog: FileDialog
 
-@onready var selected_label: Label = $Panel/VBoxContainer/SelectedFileLabel
+var _pause_duration: float = 2.0
+var _scroll_speed: float = 80.0
+var _current_marquee_state: MarqueeState = MarqueeState.STOPPED
+var _current_offset: float = 0.0
+var _max_offset: float = 0.0
+var _pause_timer: float = 0.0
+
+@onready var selected_label: Label = $Panel/VBoxContainer/MarqueeText/SelectedFileLabel
+@onready var marquee_node: Control = $Panel/VBoxContainer/MarqueeText
 @onready var enter_button: Button = $Panel/VBoxContainer/HBoxContainer/EnterGameButton
 
 
@@ -20,6 +30,34 @@ func _ready() -> void:
 	selected_agent_file = _load_last_selected_file()
 	_mark_chosen()
 	_update_selected_label()
+
+
+func _process(delta: float) -> void:
+	match _current_marquee_state:
+		MarqueeState.PAUSED_START:
+			_pause_timer += delta
+			if _pause_timer >= _pause_duration:
+				_pause_timer = 0.0
+				_current_marquee_state = MarqueeState.SCROLLING
+
+		MarqueeState.SCROLLING:
+			_current_offset += _scroll_speed * delta
+			selected_label.position.x = -1.0 * _current_offset
+			if _current_offset >= _max_offset:
+				selected_label.position.x = -1.0 * _max_offset
+				_current_marquee_state = MarqueeState.PAUSED_END
+
+		MarqueeState.PAUSED_END:
+			_pause_timer += delta
+			if _pause_timer >= _pause_duration:
+				_current_marquee_state = MarqueeState.SCROLL_BACK
+
+		MarqueeState.SCROLL_BACK:
+			_current_offset -= _scroll_speed * 25 * delta
+			selected_label.position.x = -1.0 * _current_offset
+			if _current_offset <= 0:
+				selected_label.position.x = 0
+				_reset_marquee()
 
 
 func _on_choose_button_up() -> void:
@@ -56,6 +94,9 @@ func _update_selected_label() -> void:
 		selected_label.text = "Default Agent"
 	else:
 		selected_label.text = selected_agent_file
+	await get_tree().process_frame  # wait for the label to change size
+	await get_tree().process_frame
+	_reset_marquee()
 
 
 func _open_file_dialog() -> void:
@@ -134,3 +175,18 @@ func _resolve_initial_directory() -> String:
 		return runtime_candidate
 
 	return executable_base_dir
+
+
+func _reset_marquee():
+	_current_offset = 0
+	_pause_timer = 0
+	_max_offset = selected_label.get_minimum_size().x - marquee_node.size.x
+
+	selected_label.position = Vector2(0, 0)
+	if _max_offset <= 0:
+		selected_label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		_current_marquee_state = MarqueeState.STOPPED
+	else:
+		selected_label.set_anchors_and_offsets_preset(PRESET_LEFT_WIDE)
+		_current_marquee_state = MarqueeState.PAUSED_START
+		_scroll_speed = (_max_offset) / (_max_offset + 700) * 235
