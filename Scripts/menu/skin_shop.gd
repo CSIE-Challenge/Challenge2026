@@ -112,17 +112,13 @@ func _on_item_action_requested(data: SkinData):
 	if PlayerData.has_skin(data.skin_id):
 		# 如果已經擁有了 -> 執行【裝備】
 		PlayerData.equipped_skin = data.skin_id
-		print("裝備了皮膚: ", data.true_name)
 		refresh_all_items()  # 刷新畫面，確保只有一個顯示「已裝備」
 	else:
 		# 如果還沒擁有 -> 嘗試【購買】
 		if not data.is_achievement_unlock:
 			if PlayerData.buy_skin(data.skin_id, data.price):
-				print("購買成功: ", data.true_name)
 				_update_coin_label()  # 更新金幣顯示
 				refresh_all_items()  # 購買成功，刷新畫面讓按鈕變成「裝備」
-			else:
-				print("金幣不足或發生錯誤")
 
 
 func _update_coin_label():

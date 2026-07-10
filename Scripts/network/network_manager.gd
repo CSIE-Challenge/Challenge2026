@@ -624,14 +624,12 @@ func _broadcast_health(peer_id: int, health: int) -> void:
 func _client_set_energy(peer_id: int, energy: int) -> void:
 	energy_by_peer_id[peer_id] = energy
 	energy_changed.emit(peer_id, energy)
-	# print("Energy update peer=%d energy=%d" % [peer_id, energy])
 
 
 @rpc("authority", "call_remote", "reliable")
 func _client_set_health(peer_id: int, health: int) -> void:
 	health_by_peer_id[peer_id] = health
 	health_changed.emit(peer_id, health)
-	# print("Health update peer=%d health=%d" % [peer_id, health])
 
 
 ## Public APIs should still work in single-player; offline mode is treated as local authority.

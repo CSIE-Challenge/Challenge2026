@@ -386,7 +386,6 @@ func _run_phase_5_final() -> bool:
 			PlayerData.save_data()
 			PlayerData.skin_unlocked.emit("golden_skin")
 			SceneTransition.show_achievement("獲得成就：黃金傳說！")
-			print("已解鎖隱藏皮膚：黃金傳說！")
 
 		# 播放死亡動畫
 		boss.play_death_animation()

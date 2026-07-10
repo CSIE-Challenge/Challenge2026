@@ -134,6 +134,7 @@ func _handle_pause_toggle() -> void:
 		_pause_gameplay()
 
 
+#region Agent
 func _begin_agents() -> void:
 	if "--console" in OS.get_cmdline_user_args():
 		_spawn_agents("", "")
@@ -185,6 +186,10 @@ func _spawn_agents(bundle: String, agent_file: String) -> void:
 	add_child(agent)
 
 
+#endregion
+
+
+#region API
 func get_agent_action_service() -> AgentActionService:
 	return agent_action_service
 
@@ -214,40 +219,6 @@ func get_phase() -> int:
 
 func _connect_agent_action_signals() -> void:
 	agent_action_service.trap_approved.connect(_on_trap_approved)
-	agent_action_service.heal_used.connect(_on_heal_used)
-
-
-func _connect_pause_menu() -> void:
-	if pause_menu == null:
-		return
-	pause_menu.resume_requested.connect(_on_pause_resume_requested)
-	pause_menu.restart_requested.connect(_on_pause_restart_requested)
-	pause_menu.main_menu_requested.connect(_on_pause_main_menu_requested)
-	pause_menu.exit_requested.connect(_on_pause_exit_requested)
-	pause_menu.close()
-
-
-func _on_pause_resume_requested() -> void:
-	_resume_gameplay()
-
-
-func _on_pause_restart_requested() -> void:
-	_shutdown_gameplay_for_scene_change()
-	SceneTransition.transition_to_wave("res://Scenes/gameplay.tscn")
-
-
-func _on_pause_main_menu_requested() -> void:
-	_shutdown_gameplay_for_scene_change()
-	SceneTransition.transition_to("res://Scenes/menu.tscn")
-
-
-func _on_pause_exit_requested() -> void:
-	_shutdown_gameplay_for_scene_change()
-	get_tree().quit()
-
-
-func _on_heal_used(_heal_amount: int, _energy_cost: int, _heal_uses_left: int) -> void:
-	_update_health_display(player.health)
 
 
 func _on_trap_approved(request: Dictionary, _energy_cost: float) -> void:
@@ -336,7 +307,9 @@ func _spawn_trap_from_request(request: Dictionary) -> void:
 	# gdlint: enable=max-returns
 
 
-#----------------------------------------------------------------------
+#endregion
+
+
 func _wall_animation() -> void:
 	for w in walls:
 		w.material.set_shader_parameter("offset", randf_range(0, 10))
@@ -380,6 +353,7 @@ func _update_max_energy() -> void:
 	Audio.set_phase_bgm(current_phase)
 
 
+#region Control
 func finish_game(authoritative_stats: Dictionary = {}) -> void:
 	if game_over:
 		return
@@ -411,6 +385,29 @@ func finish_game(authoritative_stats: Dictionary = {}) -> void:
 			}
 		)
 	)
+
+
+func _connect_pause_menu() -> void:
+	if pause_menu == null:
+		return
+	pause_menu.resume_requested.connect(_on_pause_resume_requested)
+	pause_menu.main_menu_requested.connect(_on_pause_main_menu_requested)
+	pause_menu.exit_requested.connect(_on_pause_exit_requested)
+	pause_menu.close()
+
+
+func _on_pause_resume_requested() -> void:
+	_resume_gameplay()
+
+
+func _on_pause_main_menu_requested() -> void:
+	_shutdown_gameplay_for_scene_change()
+	SceneTransition.transition_to("res://Scenes/menu.tscn")
+
+
+func _on_pause_exit_requested() -> void:
+	_shutdown_gameplay_for_scene_change()
+	get_tree().quit()
 
 
 func _pause_gameplay() -> void:
@@ -502,6 +499,9 @@ func _shutdown_running_agents() -> void:
 			child.queue_free()
 
 
+#endregion
+
+
 func _on_energyball_collected(energy_gain: int) -> void:
 	energy_ball_count += 1
 	coconut_bar.coconut_count = energy_ball_count
@@ -548,6 +548,7 @@ func _on_network_health_changed(peer_id: int, health: int) -> void:
 	_update_opponent_energy_label(peer_id, NetworkManager.get_energy(peer_id))
 
 
+#region UI
 func _update_time_label() -> void:
 	# Show whole seconds still remaining (counts down game_duration -> 0).
 	# The label uses right alignment, so digits stay anchored at the right edge
@@ -598,3 +599,4 @@ func _update_health_display(health: int) -> void:
 			health_icon.set_max_health(max_health)
 			_health_icon_ready = true
 		health_icon.set_health(current_health)
+#endregion

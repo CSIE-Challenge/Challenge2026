@@ -2,7 +2,6 @@ class_name AgentActionService
 extends Node
 
 signal trap_approved(request: Dictionary, energy_cost: float)
-signal heal_used(heal_amount: int, energy_cost: int, heal_uses_left: int)
 
 var game
 var trap_request_scheduler: TrapRequestScheduler
@@ -259,7 +258,6 @@ func request_heal() -> Dictionary:
 	NetworkManager.request_heal_opponent_health(default_heal_amount)
 	heal_uses_left -= 1
 
-	heal_used.emit(default_heal_amount, default_heal_energy_cost, heal_uses_left)
 	return _make_heal_result(true, "")
 
 
