@@ -202,6 +202,8 @@ func die():
 	$ShadowSprite.hide()
 	if is_instance_valid(skin_instance) and skin_instance.has_method("play_die"):
 		await skin_instance.play_die()
+
+
 func adjust_particle() -> void:
 	adjust_walk_particle()
 	adjust_jump_particle()
