@@ -26,23 +26,27 @@ var _countdown_timer: Timer
 var _poll_timer: Timer
 var _pending_request := ""
 
-@onready var ip_input: LineEdit = $Panel/VBoxContainer/IPInput
-@onready var panel_a: VBoxContainer = $Panel/PanelA
-@onready var panel_b: VBoxContainer = $Panel/PanelB
-@onready var panel_c: VBoxContainer = $Panel/PanelC
-@onready var panel_d: VBoxContainer = $Panel/PanelD
+var _countdown_text_d: String = ""
+var _status_text_d: String = ""
 
-@onready var error_label_a: Label = $Panel/PanelA/ErrorLabel
-@onready var error_label_c: Label = $Panel/PanelC/ErrorLabel
+@onready var ip_input: LineEdit = $Panel/Margins/Content/Panels/PanelA/IPContainer/IPInput
+@onready var panel_a: VBoxContainer = $Panel/Margins/Content/Panels/PanelA
+@onready var panel_b: VBoxContainer = $Panel/Margins/Content/Panels/PanelB
+@onready var panel_c: VBoxContainer = $Panel/Margins/Content/Panels/PanelC
+@onready var panel_d: VBoxContainer = $Panel/Margins/Content/Panels/PanelD
 
-@onready var countdown_b: Label = $Panel/PanelB/CountdownLabel
-@onready var code_label: Label = $Panel/PanelB/CodeLabel
-@onready var countdown_d: Label = $Panel/PanelD/CountdownLabel
-@onready var status_label: Label = $Panel/PanelD/StatusLabel
-@onready var agent_label: Label = $Panel/PanelD/AgentLabel
-@onready var ready_button: Button = $Panel/PanelD/ReadyButton
+@onready var error_label_a: Label = $Panel/Margins/Content/Panels/PanelA/IPContainer/ErrorLabel
+@onready var error_label_c: Label = $Panel/Margins/Content/Panels/PanelC/ErrorLabel
 
-@onready var code_input: LineEdit = $Panel/PanelC/CodeInput
+@onready var create_room_button: Button = $Panel/Margins/Content/Panels/PanelA/CreateRoomButton
+@onready var join_room_button: Button = $Panel/Margins/Content/Panels/PanelA/JoinRoomButton
+@onready var countdown_b: Label = $Panel/Margins/Content/Panels/PanelB/CountdownLabel
+@onready var code_label: Label = $Panel/Margins/Content/Panels/PanelB/CodeLabel
+@onready var status_label: Label = $Panel/Margins/Content/Panels/PanelD/StatusLabel
+@onready var agent_label: Label = $Panel/Margins/Content/Panels/PanelD/AgentLabel
+@onready var ready_button: Button = $Panel/Margins/Content/Panels/PanelD/HBoxContainer/ReadyButton
+
+@onready var code_input: LineEdit = $Panel/Margins/Content/Panels/PanelC/CodeInput
 
 @onready var http_request: HTTPRequest = $HTTPRequest
 
@@ -51,6 +55,9 @@ func _ready() -> void:
 	Audio.set_bgm(Audio.BGM.MENU)
 	_matchmaker_ip = _load_ip()
 	ip_input.text = _matchmaker_ip
+	if _matchmaker_ip != "":
+		create_room_button.disabled = false
+		join_room_button.disabled = false
 
 	_poll_timer = Timer.new()
 	_poll_timer.wait_time = 1.0
@@ -85,12 +92,22 @@ func _save_ip(ip: String) -> void:
 		if cfg.has_section(SETTINGS_SECTION):
 			cfg.erase_section_key(SETTINGS_SECTION, "ip")
 	else:
+		create_room_button.disabled = false
+		join_room_button.disabled = false
 		cfg.set_value(SETTINGS_SECTION, "ip", ip)
 	cfg.save(SETTINGS_PATH)
 
 
 func _show_panel(panel: Page) -> void:
 	_current_panel = panel
+
+	if panel == Page.A:
+		error_label_a.visible = false
+		error_label_a.text = ""
+	elif panel == Page.C:
+		error_label_c.visible = false
+		error_label_c.text = ""
+
 	panel_a.visible = (panel == Page.A)
 	panel_b.visible = (panel == Page.B)
 	panel_c.visible = (panel == Page.C)
@@ -118,8 +135,10 @@ func _http_get(path: String, tag: String) -> void:
 func _handle_error(msg: String) -> void:
 	match _current_panel:
 		Page.A:
+			error_label_a.visible = true
 			error_label_a.text = msg
 		Page.C:
+			error_label_c.visible = true
 			error_label_c.text = msg
 		_:
 			printerr("[Matchmaker] ", msg)
@@ -166,9 +185,8 @@ func _on_ip_text_changed(new_text: String) -> void:
 
 func _on_create_room_button_up() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
-	error_label_a.text = ""
 	if _matchmaker_ip == "":
-		_handle_error("請輸入 Matchmaker Server 位置")
+		_handle_error("Please enter a server address")
 		return
 	_post("/qiaohu/room", {}, "create_room")
 
@@ -186,7 +204,7 @@ func _on_create_room_response(data: Dictionary) -> void:
 
 	var err := NetworkManager.join_server(_game_ip, _game_port)
 	if err != OK:
-		_handle_error("無法連線到遊戲伺服器")
+		_handle_error("Cannot connect to server")
 		return
 
 	code_label.text = _room_code
@@ -199,7 +217,6 @@ func _on_create_room_response(data: Dictionary) -> void:
 
 func _on_join_room_button_up() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
-	error_label_a.text = ""
 	code_input.text = ""
 	_show_panel(Page.C)
 
@@ -214,7 +231,7 @@ func _on_back_button_up() -> void:
 
 
 func _update_countdown_label_b() -> void:
-	countdown_b.text = "剩餘 " + str(_timer_b) + " 秒"
+	countdown_b.text = "Time Remaining: " + str(_timer_b) + "s"
 
 
 func _on_back_b_button_up() -> void:
@@ -226,8 +243,8 @@ func _on_back_b_button_up() -> void:
 
 func _on_expire_b() -> void:
 	_stop_all_timers()
-	code_label.text = "房間已過期"
-	countdown_b.text = "房間已過期"
+	code_label.text = "Room expired"
+	countdown_b.text = "Room expired"
 	await get_tree().create_timer(3.0).timeout
 	NetworkManager.stop_network()
 	_show_panel(Page.A)
@@ -238,13 +255,12 @@ func _on_expire_b() -> void:
 
 func _on_confirm_join_button_up() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
-	error_label_c.text = ""
 	var code := code_input.text.strip_edges().to_upper()
 	if code == "":
-		_handle_error("請輸入房間號碼")
+		_handle_error("Please enter a room code")
 		return
 	if _matchmaker_ip == "":
-		_handle_error("請輸入 Matchmaker Server 位置")
+		_handle_error("Please enter a server address")
 		return
 	_post("/qiaohu/join", {"code": code}, "join_room")
 
@@ -262,7 +278,7 @@ func _on_join_room_response(data: Dictionary) -> void:
 
 	var err := NetworkManager.join_server(_game_ip, _game_port)
 	if err != OK:
-		_handle_error("無法連線到遊戲伺服器")
+		_handle_error("Unable to connect to server")
 		return
 
 	_timer_d = 90
@@ -288,28 +304,30 @@ func _enter_panel_d() -> void:
 	_update_status_label()
 	_update_agent_label()
 	ready_button.disabled = false
-	ready_button.text = "確認"
+	ready_button.text = "Confirm"
 	_confirmed = false
 	_countdown_timer.start()
 	_poll_timer.start()
 
 
 func _update_countdown_label_d() -> void:
-	countdown_d.text = "剩餘 " + str(_timer_d) + " 秒"
+	_countdown_text_d = str(_timer_d) + "s"
+	status_label.text = _countdown_text_d + " - " + _status_text_d
 
 
 func _update_status_label() -> void:
 	if _confirmed:
-		status_label.text = "已確認，等待對手..."
+		_status_text_d = "Waiting for Opponent..."
 	else:
-		status_label.text = "等待雙方確認..."
+		_status_text_d = "Waiting for Players..."
+	status_label.text = _countdown_text_d + " - " + _status_text_d
 
 
 func _update_agent_label() -> void:
 	if _selected_agent == "":
-		agent_label.text = "Agent: 使用預設"
+		agent_label.text = "Default Agent"
 	else:
-		agent_label.text = "Agent: " + _selected_agent.get_file()
+		agent_label.text = _selected_agent.get_file()
 
 
 func _on_choose_agent_button_up() -> void:
@@ -327,7 +345,7 @@ func _on_ready_button_up() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	_confirmed = true
 	ready_button.disabled = true
-	ready_button.text = "已確認"
+	ready_button.text = "Confirmed"
 	_update_status_label()
 	_post("/qiaohu/ready", {"code": _room_code, "player_id": _player_id}, "ready")
 
@@ -348,8 +366,7 @@ func _on_back_d_button_up() -> void:
 
 func _on_expire_d() -> void:
 	_stop_all_timers()
-	status_label.text = "配對逾時"
-	countdown_d.text = "配對逾時"
+	status_label.text = "Matchmaking timed out"
 	await get_tree().create_timer(3.0).timeout
 	NetworkManager.stop_network()
 	_show_panel(Page.A)
@@ -369,7 +386,7 @@ func _on_poll_status_response(data: Dictionary) -> void:
 		var error := data.get("error", "") as String
 		if error == "room not found":
 			_stop_all_timers()
-			_handle_error("房間已失效")
+			_handle_error("Room no longer available")
 			NetworkManager.stop_network()
 			_show_panel(Page.A)
 		return
@@ -416,7 +433,7 @@ func _on_server_disconnected() -> void:
 	_stop_all_timers()
 	match _current_panel:
 		Page.B, Page.C, Page.D:
-			_handle_error("連線中斷")
+			_handle_error("Connection lost")
 			_show_panel(Page.A)
 
 
@@ -476,15 +493,15 @@ func _stop_all_timers() -> void:
 func _error_message(error: String) -> String:
 	match error:
 		"room not found":
-			return "房間不存在"
+			return "Room does not exist"
 		"room expired":
-			return "房間已過期"
+			return "Room expired"
 		"no free ports":
-			return "伺服器已滿，請稍後再試"
+			return "Server is full, please try again later"
 		"failed to start game server":
-			return "伺服器啟動失敗"
+			return "Failed to start game server"
 		"invalid player_id":
-			return "驗證失敗"
+			return "Authentication failed"
 		"game already started":
-			return "遊戲已開始"
-	return "無法連線到伺服器"
+			return "Game has already started"
+	return "Unable to connect to server"
