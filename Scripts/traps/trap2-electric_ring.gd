@@ -48,6 +48,7 @@ func _physics_process(delta: float) -> void:
 			ring_sprite.visible = true
 			current_stay_time = stay_time
 			animation.play("electric_ring")
+			Audio.play_sfx(Audio.SFX.TRAP2_ELECTRIC_RING)
 	else:
 		current_stay_time -= delta
 		if current_stay_time <= 0.0:
