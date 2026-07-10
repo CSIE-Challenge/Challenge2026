@@ -4,7 +4,6 @@ const FILE_SELECTOR_SCENE := "res://Scenes/menu/file_selector.tscn"
 const MATCHMAKER_SCENE := "res://Scenes/menu/matchmaker.tscn"
 
 @onready var mode_panel = $Panel/ModePanel
-@onready var single_button: Button = $Panel/ModePanel/VBoxContainer/ToggleRow/SingleButton
 
 
 # Called when the node enters the scene tree for the first time.
@@ -37,27 +36,21 @@ func _on_invisible_button_up() -> void:
 	SceneTransition.transition_to_distortion("res://Scenes/menu/hidden_game.tscn")
 
 
-# --- Mode selection (toggle + confirm) -------------------------------------
+# --- Mode selection (one click per mode) -----------------------------------
+func _on_single_button_up() -> void:
+	# 單人模式: pick an agent script in the file selector scene.
+	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
+	Global.single_player = true
+	Global.agent_file = ""
+	SceneTransition.transition_to(FILE_SELECTOR_SCENE)
+
+
 func _on_matchmaker_button_up() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	mode_panel.visible = false
 	Global.single_player = false
 	Global.agent_file = ""
 	SceneTransition.transition_to(MATCHMAKER_SCENE)
-
-
-func _on_confirm_button_up() -> void:
-	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
-	if single_button.button_pressed:
-		# 單人模式: pick an agent script in the file selector scene.
-		Global.single_player = true
-		Global.agent_file = ""
-		SceneTransition.transition_to(FILE_SELECTOR_SCENE)
-	else:
-		# 雙人模式: no dedicated scene yet (placeholder).
-		Global.single_player = false
-		Global.agent_file = ""
-		print("[Menu] 雙人模式 selected (not implemented yet)")
 
 
 func _on_mode_back_button_up() -> void:
