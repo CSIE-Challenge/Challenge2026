@@ -16,3 +16,5 @@ class_name SkinData extends Resource  # 繼承自 Resource 是關鍵！
 @export var preview_texture: Texture2D  # 顯示在商店格子裡的靜態圖片
 # 如果你有皮膚的場景 (PackedScene)，可以加在這裡供實際掛載與詳細預覽頁面使用
 @export var skin_prefab: PackedScene
+# 不同的 skin 有不同的 health icon
+@export var health_icon_texture: Texture2D

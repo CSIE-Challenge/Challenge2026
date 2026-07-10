@@ -15,6 +15,15 @@ var _max_health: int = 0
 
 func _ready() -> void:
 	_set_max_health_safely(life_capacity)
+
+	if has_node("/root/PlayerData"):
+		var player_data_node = get_node("/root/PlayerData")
+		var skin_path = "res://Assets/skins/" + player_data_node.equipped_skin + ".tres"
+		if ResourceLoader.exists(skin_path):
+			var skin_data = load(skin_path) as SkinData
+			if skin_data and skin_data.health_icon_texture:
+				unit_icon = skin_data.health_icon_texture
+
 	if unit_icon == null:
 		unit_icon = preload("res://Shapes/feather.svg")
 

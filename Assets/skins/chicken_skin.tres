@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://b2k06lcrrs40a"]
 
 [ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_chicken"]
+[ext_resource type="Texture2D" uid="uid://dp5h07jgvcutm" path="res://Shapes/chicken/蛋.png" id="1_xfoqp"]
 [ext_resource type="PackedScene" uid="uid://chickenskin" path="res://Scenes/skins/chicken_skin_prefab.tscn" id="2_prefab"]
 [ext_resource type="Texture2D" uid="uid://b4lov3l0g1uh7" path="res://Shapes/chicken/雞.png" id="3_preview"]
 
@@ -10,4 +11,5 @@ skin_id = "chicken_skin"
 true_name = "阿雞米得"
 preview_texture = ExtResource("3_preview")
 skin_prefab = ExtResource("2_prefab")
+health_icon_texture = ExtResource("1_xfoqp")
 metadata/_custom_type_script = "uid://c6vuqckcyjdey"

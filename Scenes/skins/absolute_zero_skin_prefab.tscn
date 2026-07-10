@@ -21,8 +21,7 @@ scale_amount_min = 0.01
 scale_amount_max = 0.03
 color = Color(0.8, 0.95, 1, 0.5)
 
-[node name="SnowParticles" type="CPUParticles2D" parent="."]
-local_coords = false
+[node name="SnowParticles" type="CPUParticles2D" parent="." unique_id=439505407]
 emitting = false
 amount = 30
 lifetime = 0.8
@@ -39,5 +38,5 @@ scale_amount_min = 2.0
 scale_amount_max = 5.0
 color = Color(1, 1, 1, 0.8)
 
-[node name="SpikesContainer" type="Node2D" parent="." unique_id=1513969134]
+[node name="SpikesContainer" type="Node2D" parent="." unique_id=1599045705]
 position = Vector2(0, 25)
