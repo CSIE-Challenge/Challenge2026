@@ -123,6 +123,8 @@ func explode() -> void:
 
 	position = end_pos
 
+	Audio.play_sfx(Audio.SFX.TRAP9_WATERMELON_FALL)
+
 
 func _fade_out():
 	var tween = create_tween()

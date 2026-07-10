@@ -290,6 +290,8 @@ func transition_to_wave(target_scene: String) -> void:
 	tween.tween_callback(transition_finished.emit)
 	get_tree().paused = false
 
+	Audio.play_sfx(Audio.SFX.SCENE_TRANSITION_WAVE)
+
 
 func transition_to_distortion(target_scene: String) -> void:
 	preload_scene_async(target_scene)
