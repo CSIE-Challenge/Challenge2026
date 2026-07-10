@@ -2,9 +2,11 @@
 
 [ext_resource type="Script" uid="uid://cldwh66u3axjp" path="res://Scripts/about.gd" id="1_vbrdd"]
 [ext_resource type="Texture2D" uid="uid://di85rde5vj61d" path="res://Shapes/about/head1.png" id="2_0p54k"]
-[ext_resource type="Texture2D" uid="uid://mcjrdtc3bh68" path="res://Shapes/about/head2.png" id="3_m6yjq"]
-[ext_resource type="Texture2D" uid="uid://bxll3uvdhnv4u" path="res://Shapes/about/head3.png" id="4_mi8yn"]
+[ext_resource type="FontFile" uid="uid://uwn4vst4fceu" path="res://Assets/fonts/Cubic_11.ttf" id="2_ohg52"]
+[ext_resource type="FontFile" uid="uid://vmmbbrsm1jdl" path="res://Assets/fonts/PixelMplus12-Bold.ttf" id="3_bo6cl"]
 [ext_resource type="Texture2D" uid="uid://bhwl54uv2nr7k" path="res://Shapes/about/effect.png" id="5_mi8yn"]
+[ext_resource type="Texture2D" uid="uid://mcjrdtc3bh68" path="res://Shapes/about/head2.png" id="6_xifaj"]
+[ext_resource type="Texture2D" uid="uid://bxll3uvdhnv4u" path="res://Shapes/about/head3.png" id="7_f6w75"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_m6yjq"]
 blend_mode = 1
@@ -26,6 +28,8 @@ gravity = Vector3(0, 0, 0)
 color_ramp = SubResource("GradientTexture1D_mi8yn")
 anim_offset_max = 1.0
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_mi8yn"]
+
 [node name="About" type="Control" unique_id=1973538277]
 layout_mode = 3
 anchors_preset = 15
@@ -33,6 +37,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 script = ExtResource("1_vbrdd")
 
 [node name="Panel" type="Panel" parent="." unique_id=69571252]
@@ -42,6 +47,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Panel" unique_id=1619510258]
 layout_mode = 1
@@ -53,71 +59,98 @@ offset_top = -252.0
 offset_bottom = 258.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
+theme_override_fonts/normal_font = ExtResource("2_ohg52")
+theme_override_fonts/bold_font = ExtResource("3_bo6cl")
 bbcode_enabled = true
-text = "[center][b][font_size=26][rainbow sat=0.8 val=0.9 freq=0.5]🌴 躲陷阱對抗賽 🌴[/rainbow][/font_size][/b]
-[font_size=12][color=#a0aec0]Versio[wave amp=10 freq=1][url=4_N]n[/url][/wave] 1.0.0[/color][/font_size]
+text = "[center][b][font_size=26][rainbow sat=0.8 val=0.9 freq=0.5]🌴 Coconut Snare In Evasion 🌴[/rainbow][/font_size][/b]
+[font_size=12][color=#a0aec0]Version 1.0.0[/color][/font_size]
 [color=#4a5568][hr][/color]
 
-[font_size=18][b][color=#ed8936]🥥 關於這個遊戲 🥥[/color][/b][/font_size]
+[font_size=18][b][color=#ed8936]🥥 Ab[wave amp=10 freq=2][url=1_O]o[/url][/wave]ut This Game 🥥[/color][/b][/font_size]
 生活中，若🥥出現了，我們就不🉐不考慮它出現了的事實。每個人都不🉐不面對這些問題。
 
 在面對這種問題時，更多🥥的意義是這樣的，我這幾天一直在思索🤔這個問題，我們不🉐不面對一個非常尷尬😅的事實。
 
-那就是😤，既然是這樣，奧斯特洛夫斯基曾經說過一句發人深省的話🗣🗣🗣，
-當人生給你🥥，就做🥥水，我不能腐朽😭，我願意燃燒🔥起來！這不禁令我深思🤔。
+那就是😤，既然是這樣，[b]張境恩[/b]曾經說過一句發人深省的話🗣️🗣️🗣️：
+「當人生給你🥥，做🥥汁」，我不能腐朽😭，我願意燃燒🔥起來！這不禁令我深思🤔。
 
 [color=#4a5568][hr][/color]
 
-[font_size=18][b][color=#3182ce]🛠️ 製作團隊[/color][/b][/font_size]
+[font_size=18][b][color=#3182ce]🛠️ Develop Team 🛠️[/color][/b][/font_size]
 
-[color=#eb4034][b]Leaders[/b][/color]
-prairie
-wen
+[color=#eb4034][b]Project Ma[wave amp=10 freq=2][url=4_N]n[/url][/wave]agement & Quality Assurance[/b][/color]
+[table=2]
+[cell][right]卓育安[/right][/cell][cell][left]prairie2022[/left][/cell]
+[cell][right]林文繡[/right][/cell][cell][left]bbwinner[/left][/cell]
+[/table]
 
-[color=#eb4034][b]Game Design & Game Pr[wave amp=10 freq=1][url=1_O]o[/url][/wave]gramming[/b][/color]
-Ian
-Eggrror404
-iantsai0616
-731018913097449533
-cmj
-prairie
-NJ[wave amp=10 freq=1][url=0_C]C[/url][/wave]
-崩潰警告( •̀ ω •́ )✧
-Ppppp
-CYh[wave amp=10 freq=1][url=5_U]u[/url][/wave]ang
-wen
-Andromeda
-20620
+[color=#eb4034][b]Game Design & Game Programming[/b][/color]
+[table=2]
+[cell][right]卓育安[/right][/cell][cell][left]prairie2022[/left][/cell]
+[cell][right]林文繡[/right][/cell][cell][left]bbwinner[/left][/cell]
+[cell][right]劉正惟[/right][/cell][cell][left]a97[/left][/cell]
+[cell][right]廖衡[/right][/cell][cell][left]henglia[wave amp=10 freq=2][url=3_O]o[/url][/wave]0615[/left][/cell]
+[cell][right]張境恩[/right][/cell][cell][left]cjn0130[/left][/cell]
+[cell][right]曾子齊[/right][/cell][cell][left]WgLy[/left][/cell]
+[cell][right]莊沅翰[/right][/cell][cell][left]Eggrror404[/left][/cell]
+[cell][right]趙文睿[/right][/cell][cell][left]Chaoray[/left][/cell]
+[cell][right]邱新堯[/right][/cell][cell][left]SingOut[/left][/cell]
+[cell][right]鍾心卉[/right][/cell][cell][left]peoerfxir[/left][/cell]
+[cell][right]陳曦[/right][/cell][cell][left]Ian747-tw[/left][/cell]
+[cell][right]林和甫[/right][/cell][cell][left]chilfox[/left][/cell]
+[cell][right]黃傳耀[/right][/cell][cell][left]CYhuang314[/left][/cell]
+[cell][right]蔡孟憬[/right][/cell][cell][left]cmj0415[/left][/cell]
+[cell][right]洪德朗[/right][/cell][cell][left]Andromeda[/left][/cell]
+[cell][right]蔡宗邑[/right][/cell][cell][left]iantsai0616[/left][/cell]
+[cell][right]王以安[/right][/cell][cell][left]PsychoPinkQ[/left][/cell]
+[/table]
 
-[color=#eb4034][b]Art[/b][/color]
-Eggrror404
-NJC
-崩潰警告( •̀ ω •́ )✧
-Ppppp
-SingOut
+[color=#eb4034][b]Art Design[/b][/color]
+[table=2]
+[cell][right]張境恩[/right][/cell][cell][left][wave amp=10 freq=2][url=2_C]c[/url][/wave]jn0130[/left][/cell]
+[cell][right]廖衡[/right][/cell][cell][left]hengliao0615[/left][/cell]
+[cell][right]莊沅翰[/right][/cell][cell][left]Eggrror404[/left][/cell]
+[cell][right]邱新堯[/right][/cell][cell][left]SingOut[/left][/cell]
+[cell][right]鍾心卉[/right][/cell][cell][left]peoerfxir[/left][/cell]
+[cell][right]曾子齊[/right][/cell][cell][left]WgLy[/left][/cell]
+[/table]
 
-[color=#eb4034][b]Music & Sound Effec[wave amp=10 freq=1][url=6_T]t[/url][/wave][/b][/color]
-a97
-nahco3sheep
+[color=#eb4034][b]M[wave amp=10 freq=2][url=5_U]u[/url][/wave]sic & Sound Effect[/b][/color]
+[table=2]
+[cell][right]陳博閱[/right][/cell][cell][left]cby0927[/left][/cell]
+[cell][right]劉正惟[/right][/cell][cell][left]a97[/left][/cell]
+[cell][right]莊沅翰[/right][/cell][cell][left]Eggrror404[/left][/cell]
+[/table]
 
-[color=#eb4034][b]Agent Design & Game Testing[/b][/color]
-企鵝
-NJC
-Andromeda
-a97
+[color=#eb4034][b]Agent Design & Game [wave amp=10 freq=2][url=6_T]T[/url][/wave]esting[/b][/color]
+[table=2]
+[cell][right]張境恩[/right][/cell][cell][left]cjn0130[/left][/cell]
+[cell][right]吳佳紘[/right][/cell][cell][left]penguin5728[/left][/cell]
+[cell][right]簡劭丞[/right][/cell][cell][left]ablueboyy[/left][/cell]
+[/table]
+
+[color=#eb4034][b][wave amp=10 freq=2][url=0_C]C[/url][/wave]onsultants[/b][/color]
+[table=2]
+[cell][right]楊晉宇[/right][/cell][cell][left]illumeow[/left][/cell]
+[cell][right]陳泊告樂[/right][/cell][cell][left]willychan[/left][/cell]
+[/table]
+
+[color=#eb4034][b]Special Appearance[/b][/color]
+三位召部的…頭…？
 
 [color=#4a5568][hr][/color]
 
-[font_size=18][b][color=#9f7aea]Spe[wave amp=10 freq=1][url=2_C]c[/url][/wave]ial Thanks[/color][/b][/font_size]
+[font_size=18][b][color=#9f7aea]🎊 Special Thanks 🎊[/color][/b][/font_size]
 Challenge 2025 開發團隊
-主辦 資工系系學會
-還有一起籌備資訊營的人們…
+主辦 資訊系系學會
+還有所有一起籌備資訊營的人們…
 
-[font_size=18][i][color=#a0aec0]與你[/color][/i][/font_size]
+[font_size=25][color=#a0aec0]與你[/color][/font_size]
 
 [color=#4a5568][hr][/color]
 
-[font_size=18][b][color=#82ed77]Devel[wave amp=10 freq=1][url=3_O]o[/url][/wave]pers’ Notes[/color][/b][/font_size]
+[font_size=18][b][color=#82ed77]📜 Developers’ Notes 📜[/color][/b][/font_size]
 
 我想要說的前人們都說過了
 
@@ -137,21 +170,15 @@ offset_right = 44.0
 offset_bottom = -15.0
 grow_horizontal = 2
 grow_vertical = 0
-text = "回到主畫面"
+theme_override_fonts/font = ExtResource("2_ohg52")
+text = "Back to Main"
 
-[node name="Head1" type="Sprite2D" parent="." unique_id=653172641]
-visible = false
-texture = ExtResource("2_0p54k")
-
-[node name="Head2" type="Sprite2D" parent="." unique_id=1820371873]
-visible = false
-scale = Vector2(0.6, 0.6)
-texture = ExtResource("3_m6yjq")
-
-[node name="Head3" type="Sprite2D" parent="." unique_id=524326330]
-visible = false
-scale = Vector2(0.6, 0.6)
-texture = ExtResource("4_mi8yn")
+[node name="CollectedLetter" type="RichTextLabel" parent="." unique_id=1442200721]
+layout_mode = 0
+offset_right = 344.0
+offset_bottom = 40.0
+theme_override_fonts/normal_font = ExtResource("2_ohg52")
+bbcode_enabled = true
 
 [node name="FlyingLetter" type="Label" parent="." unique_id=1139308491]
 visible = false
@@ -160,6 +187,8 @@ layout_mode = 0
 offset_right = 16.0
 offset_bottom = 35.0
 pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 1
+theme_override_fonts/font = ExtResource("2_ohg52")
 theme_override_font_sizes/font_size = 25
 text = "C"
 horizontal_alignment = 1
@@ -176,5 +205,47 @@ local_coords = true
 draw_order = 0
 process_material = SubResource("ParticleProcessMaterial_xifaj")
 
+[node name="Debug" type="Button" parent="." unique_id=2056527536]
+visible = false
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+text = "Summon"
+
+[node name="Head1" type="Sprite2D" parent="." unique_id=893961496]
+visible = false
+scale = Vector2(1.7, 1.7)
+texture = ExtResource("2_0p54k")
+
+[node name="Area2D" type="Area2D" parent="Head1" unique_id=237515739]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Head1/Area2D" unique_id=1528625591]
+scale = Vector2(13.425, 13.425)
+shape = SubResource("CircleShape2D_mi8yn")
+
+[node name="Head2" type="Sprite2D" parent="." unique_id=1128352020]
+visible = false
+texture = ExtResource("6_xifaj")
+
+[node name="Area2D" type="Area2D" parent="Head2" unique_id=260359346]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Head2/Area2D" unique_id=1436003092]
+scale = Vector2(23.87, 23.87)
+shape = SubResource("CircleShape2D_mi8yn")
+
+[node name="Head3" type="Sprite2D" parent="." unique_id=40006496]
+visible = false
+texture = ExtResource("7_f6w75")
+
+[node name="Area2D" type="Area2D" parent="Head3" unique_id=1703118987]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Head3/Area2D" unique_id=908166263]
+scale = Vector2(23.335, 23.335)
+shape = SubResource("CircleShape2D_mi8yn")
+
 [connection signal="meta_clicked" from="Panel/RichTextLabel" to="." method="_on_rich_text_label_meta_clicked"]
 [connection signal="pressed" from="Panel/Close" to="." method="_on_close_pressed"]
+[connection signal="pressed" from="Debug" to="." method="_on_all_collected"]
+[connection signal="input_event" from="Head1/Area2D" to="." method="_on_sprite_input"]
+[connection signal="input_event" from="Head2/Area2D" to="." method="_on_sprite_input"]
+[connection signal="input_event" from="Head3/Area2D" to="." method="_on_sprite_input"]
