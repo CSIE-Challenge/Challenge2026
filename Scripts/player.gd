@@ -219,6 +219,7 @@ func _on_energy_ball_collected(_energy_amount: int) -> void:
 
 func die():
 	$ShadowSprite.hide()
+	Audio.play_sfx(Audio.SFX.PLAYER_DIE)
 	if is_instance_valid(skin_instance) and skin_instance.has_method("play_die"):
 		skin_instance.process_mode = Node.PROCESS_MODE_WHEN_PAUSED
 		get_tree().paused = true

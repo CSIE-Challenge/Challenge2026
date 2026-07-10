@@ -15,10 +15,11 @@
 [ext_resource type="AudioStream" uid="uid://kfxthmlglfh2" path="res://Assets/audio/phase_5.mp3" id="8_tf0nv"]
 [ext_resource type="AudioStream" uid="uid://bi01vm7qcutil" path="res://Assets/audio/trap_1_landmine_explode.mp3" id="10_38mwv"]
 [ext_resource type="AudioStream" uid="uid://b2kg56yc6iwrc" path="res://Assets/audio/Get_coconut.mp3" id="12_tf0nv"]
+[ext_resource type="AudioStream" uid="uid://bf0dpmjiygwpd" path="res://Assets/audio/die_1b.mp3" id="15_aan0r"]
 [ext_resource type="AudioStream" uid="uid://b27vqppkxjtjq" path="res://Assets/audio/scene_transition_2.mp3" id="15_o1fue"]
 [ext_resource type="AudioStream" uid="uid://d2m7t5250b1x" path="res://Assets/audio/trap_1_remove_bananapeel_2.mp3" id="17_n35fw"]
 [ext_resource type="AudioStream" uid="uid://dqxw67caahfo1" path="res://Assets/audio/trap_3_seagull_hit_wall.mp3" id="18_o1fue"]
-[ext_resource type="AudioStream" uid="uid://di6xe3qcig0ih" path="res://Assets/audio/watermelon_fall_2.mp3" id="19_aan0r"]
+[ext_resource type="AudioStream" uid="uid://bea7mnolr3b30" path="res://Assets/audio/watermelon_fall_2b.mp3" id="19_o1fue"]
 
 [node name="Audio" type="Node" unique_id=664248620]
 script = ExtResource("1_l04ps")
@@ -36,12 +37,13 @@ button_press_sfx = ExtResource("2_y8l05")
 energy_collected_sfx = ExtResource("12_tf0nv")
 gameplay_phase_change_sfx = ExtResource("6_e0u3b")
 take_damage_sfx = ExtResource("7_e0u3b")
+player_die_sfx = ExtResource("15_aan0r")
 set_trap_sfx = null
 scene_transition_wave_sfx = ExtResource("15_o1fue")
 trap1_mine_explode_sfx = ExtResource("10_38mwv")
 trap1_mine_disarm_sfx = ExtResource("17_n35fw")
 trap3_bullet_hit_wall_sfx = ExtResource("18_o1fue")
-trap9_watermelon_fall_sfx = ExtResource("19_aan0r")
+trap9_watermelon_fall_sfx = ExtResource("19_o1fue")
 
 [node name="BgmPlayer1" type="AudioStreamPlayer" parent="." unique_id=249781410]
 bus = &"Music"
