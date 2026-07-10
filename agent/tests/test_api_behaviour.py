@@ -20,10 +20,12 @@ def test_ping_returns_pong(client: GameClientBase) -> None:
     assert client.ping() == "pong"
 
 
-def test_unknown_command_raises_not_found(client: GameClientBase) -> None:
-    with pytest.raises(ApiError) as excinfo:
-        client._call("does_not_exist")
-    assert excinfo.value.code == 404
+def test_unknown_command_returns_falsy_apierror(client: GameClientBase) -> None:
+    result = client._call("does_not_exist")
+    assert isinstance(result, ApiError)
+    assert not result
+    assert result.code == 404
+    assert result.reason == "unknown_command"
 
 
 def test_heal_refused_when_energy_too_low(client: GameClientBase) -> None:
@@ -33,23 +35,21 @@ def test_heal_refused_when_energy_too_low(client: GameClientBase) -> None:
     NetworkManager) and proves heal reads the REAL energy, not the old phantom ledger.
     """
     result = client.heal()
-    assert result["ok"] is False
-    assert result["reason"] == "insufficient_energy"
+    assert not result
+    assert result.reason == "insufficient_energy"
 
 
-def test_heal_reports_real_player_health(client: GameClientBase) -> None:
-    """A refused heal must not touch health, and must report the same live player.health
-    that get_my_health() returns."""
+def test_refused_heal_does_not_touch_health(client: GameClientBase) -> None:
     before = client.get_my_health()
     result = client.heal()
-    assert result["health"] == before
+    assert not result
     assert client.get_my_health() == before
 
 
 def test_get_opponent_velocity_shape(client: GameClientBase) -> None:
     velocity = client.get_opponent_player_velocity()
     assert isinstance(velocity, Vector2)
-    assert (velocity[0], velocity[1]) == (velocity.x, velocity.y)
+    assert list(velocity) == [velocity.x, velocity.y]
 
 
 def test_get_remaining_time_and_phase(client: GameClientBase) -> None:
@@ -69,17 +69,19 @@ def test_get_opponent_combo_and_available_traps(client: GameClientBase) -> None:
     traps = client.get_available_traps()
     assert isinstance(traps, list)
     for trap_id in traps:
-        assert isinstance(trap_id, str)
-        assert trap_id.startswith("trap")
+        assert isinstance(trap_id, int)
+        assert 1 <= trap_id <= 10
 
 
 def test_get_cool_down_time(client: GameClientBase) -> None:
-    result = client.get_cool_down_time("trap1-mine")
+    result = client.get_cool_down_time(1)
     assert isinstance(result, (int, float))
     assert result >= 0.0
 
 
-def test_get_cool_down_time_invalid_trap_id_is_negative(client: GameClientBase) -> None:
-    result = client.get_cool_down_time("not-a-trap")
-    assert isinstance(result, (int, float))
-    assert result < 0
+def test_get_cool_down_time_unknown_trap_is_apierror(client: GameClientBase) -> None:
+    result = client.get_cool_down_time(99)
+    assert isinstance(result, ApiError)
+    assert not result
+    assert result.code == 404
+    assert result.reason == "unknown_trap"

@@ -28,11 +28,11 @@ def run(client: GameClientBase):
         for place_trap in PLAN:
             while True:
                 result = place_trap(client)
-                if result.get("ok"):
+                if result:
                     print(f"placed trap (energy left: {client.get_my_energy()})")
                     break
-                if result.get("reason") != "insufficient_energy":
-                    print(f"trap rejected: {result.get('reason')}")
+                if result.reason != "insufficient_energy":
+                    print(f"trap rejected: {result.reason}")
                     break
                 time.sleep(1.0)
 

@@ -2,7 +2,7 @@
 Envelopes:
     state push :  {"type": "state", "tick", "round", "self": {...}, "opponent": {...}}
     request    :  {"id", "cmd": "<name>", "args": {...}}
-    response   :  {"id", "status": "ok"|"error", "code"?, "data"?}
+    response   :  {"id", "status": "ok"|"error", "code"?, "reason"?, "data"?}
 """
 
 from __future__ import annotations
@@ -58,6 +58,8 @@ class Code:
     OK = 200
     ILLFORMED = 400
     NOT_FOUND = 404
+    REJECTED = 409
+    INTERNAL = 500
 
 
 def make_request(req_id: int, cmd: str, args: dict[str, Any] | None = None) -> dict:

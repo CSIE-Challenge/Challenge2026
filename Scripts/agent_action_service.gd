@@ -266,7 +266,6 @@ func _make_heal_result(ok: bool, reason: String) -> Dictionary:
 	return {
 		"ok": ok,
 		"health": NetworkManager.get_health(owner_peer_id),
-		"max_health": NetworkManager.get_max_health(),
 		"energy": NetworkManager.get_energy(owner_peer_id),
 		"heal_uses_left": heal_uses_left,
 		"reason": reason,
