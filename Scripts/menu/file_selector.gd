@@ -13,7 +13,7 @@ var selected_agent_file := ""
 var _file_dialog: FileDialog
 
 @onready var selected_label: Label = $Panel/VBoxContainer/SelectedFileLabel
-@onready var enter_button: Button = $Panel/VBoxContainer/EnterGameButton
+@onready var enter_button: Button = $Panel/VBoxContainer/HBoxContainer/EnterGameButton
 
 
 func _ready() -> void:
