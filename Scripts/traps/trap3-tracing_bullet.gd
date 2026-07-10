@@ -18,7 +18,7 @@ var effect_reparented := false
 @onready var leave_wall_detector = $Area2D
 @onready var wait_timer = $WaitTimer
 @onready var animation = $AnimationPlayer
-@onready var sprite = $AnimatedSprite2D
+@onready var sprite = $Seagull
 
 
 static func initialize(pos: Vector2, dir: Vector2, speed: float) -> Trap3TracingBullet:
