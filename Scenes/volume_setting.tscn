@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://fh2uubspqhku"]
 
 [ext_resource type="Script" uid="uid://dwkms4oc73qao" path="res://Scripts/volume_setting.gd" id="1_qeyc0"]
+[ext_resource type="Theme" uid="uid://doboascpna6vx" path="res://Assets/themes/menu.tres" id="1_uwnqj"]
 [ext_resource type="Script" uid="uid://cb74adv0y1hxa" path="res://Scripts/volume_slider.gd" id="2_gpihd"]
 
 [node name="VolumeSetting" type="ColorRect" unique_id=926328968]
@@ -9,6 +10,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_uwnqj")
 color = Color(0, 0, 0, 0.8)
 script = ExtResource("1_qeyc0")
 

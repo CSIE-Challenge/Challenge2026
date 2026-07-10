@@ -1,0 +1,15 @@
+[gd_resource type="Theme" format=3 uid="uid://doboascpna6vx"]
+
+[ext_resource type="FontFile" uid="uid://hp5u4fxb5ifw" path="res://Assets/fonts/PixeloidSans-Bold.ttf" id="1_x5s4q"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oqv23"]
+content_margin_left = 16.0
+bg_color = Color(0.12941177, 0.12941177, 0.12941177, 1)
+
+[resource]
+Button/fonts/font = ExtResource("1_x5s4q")
+Label/fonts/font = ExtResource("1_x5s4q")
+LineEdit/fonts/font = ExtResource("1_x5s4q")
+LineEdit/styles/normal = SubResource("StyleBoxFlat_oqv23")
+RichTextLabel/fonts/bold_font = ExtResource("1_x5s4q")
+RichTextLabel/fonts/normal_font = ExtResource("1_x5s4q")

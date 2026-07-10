@@ -1,7 +1,9 @@
 [gd_scene format=3 uid="uid://c8n4ortwop0"]
 
 [ext_resource type="Script" uid="uid://b5d7uvxoarxp1" path="res://Scripts/menu/menu_manager.gd" id="1_1rerr"]
+[ext_resource type="Theme" uid="uid://doboascpna6vx" path="res://Assets/themes/menu.tres" id="2_cayip"]
 [ext_resource type="PackedScene" uid="uid://fh2uubspqhku" path="res://Scenes/volume_setting.tscn" id="2_xhh6f"]
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="3_158mb"]
 
 [node name="Menu" type="Control" unique_id=1229865894]
 layout_mode = 3
@@ -19,61 +21,130 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("2_cayip")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel" unique_id=413349039]
+[node name="MarginContainer" type="MarginContainer" parent="Panel" unique_id=352044200]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -331.0
-offset_top = -192.5
-offset_right = 331.0
-offset_bottom = 192.5
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Panel/VBoxContainer" unique_id=642453348]
-custom_minimum_size = Vector2(0, 100)
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/MarginContainer" unique_id=974974596]
 layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Panel/MarginContainer/HBoxContainer" unique_id=642453348]
+custom_minimum_size = Vector2(500, 300)
+layout_mode = 2
+size_flags_vertical = 0
 theme_override_font_sizes/normal_font_size = 70
 bbcode_enabled = true
-text = "躲陷阱對抗賽"
+text = "Coconut Snare In Evasion"
 scroll_active = false
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer/HBoxContainer" unique_id=413349039]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 16
+
+[node name="SingleButton" type="Button" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer" unique_id=2090390772]
+custom_minimum_size = Vector2(220, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "1 Player Mode"
+
+[node name="DoubleButton" type="Button" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1829849739]
+custom_minimum_size = Vector2(220, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "2 Player Mode"
+
+[node name="SkinShopButton" type="Button" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer" unique_id=142343978]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Skin Shop"
+
+[node name="Spacer" type="Control" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1156813575]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1315869923]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 48
+
+[node name="AboutContainer" type="VBoxContainer" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=648052316]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="AboutButton" type="Button" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/AboutContainer" unique_id=2043309010]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 40
+icon = ExtResource("3_158mb")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Label" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/AboutContainer" unique_id=2135570866]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "About"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="StartButton" type="Button" parent="Panel/VBoxContainer" unique_id=204886571]
-custom_minimum_size = Vector2(0, 80)
+[node name="VolumeContainer" type="VBoxContainer" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1036153318]
+custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 40
-text = "進入遊戲"
+theme_override_constants/separation = 8
 
-[node name="SkinShopButton" type="Button" parent="Panel/VBoxContainer" unique_id=142343978]
-custom_minimum_size = Vector2(0, 80)
+[node name="VolumeButton" type="Button" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/VolumeContainer" unique_id=475166805]
+custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme_override_font_sizes/font_size = 40
-text = "skin shop"
+icon = ExtResource("3_158mb")
+icon_alignment = 1
+expand_icon = true
 
-[node name="AboutButton" type="Button" parent="Panel/VBoxContainer" unique_id=2043309010]
-custom_minimum_size = Vector2(0, 80)
+[node name="Label" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/VolumeContainer" unique_id=1715354070]
 layout_mode = 2
-theme_override_font_sizes/font_size = 40
-text = "關於"
+theme_override_font_sizes/font_size = 28
+text = "Audio"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="VolumeButton" type="Button" parent="Panel/VBoxContainer" unique_id=475166805]
-custom_minimum_size = Vector2(0, 80)
+[node name="ExitContainer" type="VBoxContainer" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1379262870]
+custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 40
-text = "調整音量
-"
+theme_override_constants/separation = 8
 
-[node name="QuitButton" type="Button" parent="Panel/VBoxContainer" unique_id=1642981513]
-custom_minimum_size = Vector2(0, 80)
+[node name="ExitButton" type="Button" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/ExitContainer" unique_id=1642981513]
+custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme_override_font_sizes/font_size = 40
-text = "離開遊戲"
+icon = ExtResource("3_158mb")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Label" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/ExitContainer" unique_id=1164056655]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Exit"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="invisible" type="Button" parent="Panel" unique_id=1778200500]
 visible = false
@@ -89,69 +160,13 @@ grow_horizontal = 0
 grow_vertical = 0
 text = "invisible"
 
-[node name="ModePanel" type="Panel" parent="Panel" unique_id=986957485]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 64.0
-offset_top = 55.0
-offset_right = -64.0
-offset_bottom = -55.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel/ModePanel" unique_id=2064909190]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -250.0
-offset_top = -200.0
-offset_right = 250.0
-offset_bottom = 200.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 20
-
-[node name="RichTextLabel" type="RichTextLabel" parent="Panel/ModePanel/VBoxContainer" unique_id=2132273028]
-custom_minimum_size = Vector2(0, 90)
-layout_mode = 2
-theme_override_font_sizes/normal_font_size = 50
-bbcode_enabled = true
-text = "選擇模式"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="SingleButton" type="Button" parent="Panel/ModePanel/VBoxContainer" unique_id=2090390772]
-custom_minimum_size = Vector2(220, 80)
-layout_mode = 2
-theme_override_font_sizes/font_size = 40
-text = "單人模式"
-
-[node name="MatchmakerButton" type="Button" parent="Panel/ModePanel/VBoxContainer" unique_id=1160019089]
-custom_minimum_size = Vector2(0, 60)
-layout_mode = 2
-theme_override_font_sizes/font_size = 30
-text = "雙人模式"
-
-[node name="ModeBackButton" type="Button" parent="Panel/ModePanel/VBoxContainer" unique_id=1160019087]
-custom_minimum_size = Vector2(0, 60)
-layout_mode = 2
-theme_override_font_sizes/font_size = 30
-text = "返回"
-
 [node name="VolumeSetting" parent="." unique_id=709368218 instance=ExtResource("2_xhh6f")]
+layout_mode = 1
 
-[connection signal="button_up" from="Panel/VBoxContainer/StartButton" to="." method="_on_start_button_button_up"]
-[connection signal="button_up" from="Panel/VBoxContainer/SkinShopButton" to="." method="_on_skin_shop_button_button_up"]
-[connection signal="pressed" from="Panel/VBoxContainer/AboutButton" to="." method="_on_about_button_pressed"]
-[connection signal="button_up" from="Panel/VBoxContainer/VolumeButton" to="." method="_on_volume_button_button_up"]
-[connection signal="button_up" from="Panel/VBoxContainer/QuitButton" to="." method="_on_quit_button_button_up"]
+[connection signal="button_up" from="Panel/MarginContainer/HBoxContainer/VBoxContainer/SingleButton" to="." method="_on_single_button_button_up"]
+[connection signal="button_up" from="Panel/MarginContainer/HBoxContainer/VBoxContainer/DoubleButton" to="." method="_on_double_button_button_up"]
+[connection signal="button_up" from="Panel/MarginContainer/HBoxContainer/VBoxContainer/SkinShopButton" to="." method="_on_skin_shop_button_button_up"]
+[connection signal="pressed" from="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/AboutContainer/AboutButton" to="." method="_on_about_button_pressed"]
+[connection signal="button_up" from="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/VolumeContainer/VolumeButton" to="." method="_on_volume_button_button_up"]
+[connection signal="button_up" from="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/ExitContainer/ExitButton" to="." method="_on_exit_button_button_up"]
 [connection signal="button_up" from="Panel/invisible" to="." method="_on_invisible_button_up"]
-[connection signal="button_up" from="Panel/ModePanel/VBoxContainer/SingleButton" to="." method="_on_single_button_up"]
-[connection signal="button_up" from="Panel/ModePanel/VBoxContainer/MatchmakerButton" to="." method="_on_matchmaker_button_up"]
-[connection signal="button_up" from="Panel/ModePanel/VBoxContainer/ModeBackButton" to="." method="_on_mode_back_button_up"]
