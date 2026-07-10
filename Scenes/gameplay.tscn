@@ -17,6 +17,7 @@
 [ext_resource type="Script" uid="uid://bs7ntuoxby0al" path="res://Scripts/trap_request_scheduler.gd" id="8_urrcd"]
 [ext_resource type="Script" uid="uid://c8r5j40yj4je7" path="res://Scripts/agent_action_service.gd" id="9_puebw"]
 [ext_resource type="Shader" uid="uid://ciml8236dkjoe" path="res://Shaders/dashboard.gdshader" id="12_ifha0"]
+[ext_resource type="Script" uid="uid://d2y578q176xkm" path="res://Scripts/high_stage.gd" id="13_kj63f"]
 [ext_resource type="PackedScene" uid="uid://cfqo7i5tygq4w" path="res://Scenes/energy_label.tscn" id="14_1ff3a"]
 [ext_resource type="Texture2D" uid="uid://f5ertr28h6kq" path="res://Shapes/feather.svg" id="15_feather"]
 [ext_resource type="Script" uid="uid://ddqb3djaesce4" path="res://Scripts/health_icon.gd" id="16_health_icon"]
@@ -49,6 +50,9 @@ sources/0 = SubResource("TileSetAtlasSource_jb71e")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_puebw"]
 viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_icchp"]
+viewport_path = NodePath("HigherThanPlayer")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wbxth"]
 size = Vector2(135, 135)
@@ -92,6 +96,24 @@ shader_parameter/offset = 0.0
 shader_parameter/draw = 1.0
 shader_parameter/color_variation = 0.1
 shader_parameter/color_bands = 3
+
+[sub_resource type="Gradient" id="Gradient_5i20n"]
+colors = PackedColorArray(0.79905266, 0.7251527, 0.4327446, 1, 0.77568465, 0.70158905, 0.40794194, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_kj63f"]
+gradient = SubResource("Gradient_5i20n")
+
+[sub_resource type="Gradient" id="Gradient_fe56y"]
+colors = PackedColorArray(0, 0.3882353, 1, 1, 0.16470589, 0.68235296, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_icchp"]
+gradient = SubResource("Gradient_fe56y")
+
+[sub_resource type="Gradient" id="Gradient_5fmf4"]
+colors = PackedColorArray(1, 0.7019608, 0.5019608, 1, 0.9224753, 0.47343725, 1.1358858e-05, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_8ipd1"]
+gradient = SubResource("Gradient_5fmf4")
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_wbxth"]
 radius = 13.5
@@ -259,6 +281,15 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("ViewportTexture_puebw")
 
+[node name="HigherThanPlayer" type="TextureRect" parent="StageLayer" unique_id=1564845260]
+z_index = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("ViewportTexture_icchp")
+
 [node name="SubViewport" type="SubViewport" parent="." unique_id=117532480]
 transparent_bg = true
 size = Vector2i(480, 270)
@@ -333,12 +364,17 @@ material = SubResource("ShaderMaterial_decfu")
 scale = Vector2(36, 1.05)
 texture = ExtResource("1_hf1ha")
 
-[node name="Player" type="CharacterBody2D" parent="SubViewport/Stage" unique_id=1716138881]
+[node name="Player" type="CharacterBody2D" parent="SubViewport/Stage" unique_id=1716138881 node_paths=PackedStringArray("stage_layer", "high_stage")]
 position = Vector2(35, 35)
 collision_layer = 9
 collision_mask = 2
 motion_mode = 1
 script = ExtResource("2_m34ki")
+sand_particle = SubResource("GradientTexture1D_kj63f")
+water_particle = SubResource("GradientTexture1D_icchp")
+juice_particle = SubResource("GradientTexture1D_8ipd1")
+stage_layer = NodePath("../../../StageLayer")
+high_stage = NodePath("../../../HigherThanPlayer/Stage")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewport/Stage/Player" unique_id=1018866415]
 shape = SubResource("CircleShape2D_wbxth")
@@ -382,6 +418,9 @@ one_shot = true
 explosiveness = 1.0
 process_material = SubResource("ParticleProcessMaterial_5i20n")
 
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="SubViewport/Stage/Player" unique_id=2111833122]
+remote_path = NodePath("../LandParticle")
+
 [node name="CoconutBar" parent="SubViewport" unique_id=339971714 instance=ExtResource("8_ltefv")]
 
 [node name="ColorRect" type="ColorRect" parent="SubViewport" unique_id=912998492]
@@ -398,6 +437,16 @@ offset_bottom = 96.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(100, 150)
+
+[node name="HigherThanPlayer" type="SubViewport" parent="." unique_id=1579438163]
+transparent_bg = true
+size = Vector2i(480, 270)
+size_2d_override = Vector2i(1152, 648)
+size_2d_override_stretch = true
+
+[node name="Stage" type="Node2D" parent="HigherThanPlayer" unique_id=1121310107]
+position = Vector2(576, 324)
+script = ExtResource("13_kj63f")
 
 [node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "camera", "health_label", "energy_balls_label", "energy_bar_label", "coconut_bar", "opponent_energy_bar_label", "time_label", "result_screen", "pause_menu", "phase_label", "health_icon", "walls", "energy_label")]
 script = ExtResource("1_kwrm5")
@@ -564,6 +613,7 @@ vertical_alignment = 1
 
 [node name="PauseMenu" parent="HUD" unique_id=444701185 instance=ExtResource("17_pause_menu")]
 layer = 300
+visible = false
 
 [node name="TrapRequestScheduler" type="Node" parent="." unique_id=578271909]
 script = ExtResource("8_urrcd")

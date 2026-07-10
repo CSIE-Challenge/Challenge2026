@@ -5,6 +5,8 @@ extends CharacterBody2D
 @export var sand_particle: GradientTexture1D
 @export var water_particle: GradientTexture1D
 @export var juice_particle: GradientTexture1D
+@export var stage_layer: CanvasLayer
+@export var high_stage: Node2D
 
 var acceleration := 100.0
 var move_speed := 300.0
@@ -33,6 +35,7 @@ var juice_count := 0
 @onready var walk_particle = $WalkParticle
 @onready var jump_particle = $JumpParticle
 @onready var land_particle = $LandParticle
+@onready var remote_land_particle = $RemoteTransform2D
 
 
 func _ready() -> void:
@@ -49,17 +52,9 @@ func _ready() -> void:
 	var skin_data = load(skin_path)
 	if skin_data and skin_data.skin_prefab:
 		skin_instance = skin_data.skin_prefab.instantiate()
-		skin_instance.z_index = 20
+		skin_instance.z_index = 1
 		skin_instance.set_meta("player", self)
-		var hd_skin_layer = CanvasLayer.new()
-		hd_skin_layer.layer = 100
-		hd_skin_layer.follow_viewport_enabled = true
-		var my_viewport = get_viewport()
-		if my_viewport and my_viewport.get_parent():
-			my_viewport.get_parent().add_child.call_deferred(hd_skin_layer)
-		else:
-			get_tree().current_scene.add_child.call_deferred(hd_skin_layer)
-		hd_skin_layer.add_child.call_deferred(skin_instance)
+		stage_layer.add_child.call_deferred(skin_instance)
 		body_sprite.hide()
 		if skin_instance.has_method("play_spawn"):
 			if not skin_instance.is_node_ready():
@@ -77,6 +72,10 @@ func _reload_from_game_data() -> void:
 	jump_fall_multiplier = game_data.data["player"]["jump_fall_multiplier"]
 	max_health = game_data.data["player"]["max_health"]
 	invincibility_flicker_period = game_data.data["player"]["invincibility_flicker_period"]
+
+
+func reparent_land_particles() -> void:
+	land_particle.reparent(high_stage)
 
 
 func _physics_process(delta: float) -> void:
@@ -173,8 +172,10 @@ func _invincible_flicker() -> void:
 		< invincibility_flicker_period
 	):
 		modulate.a = 0.2
+		skin_instance.modulate.a = modulate.a
 	else:
 		modulate.a = 1
+		skin_instance.modulate.a = modulate.a
 
 
 func _adjust_collision_layer() -> void:
@@ -191,6 +192,7 @@ func invincibility_toggle(on: bool):
 	_adjust_collision_layer()
 	if not on:
 		modulate.a = 1
+		skin_instance.modulate.a = modulate.a
 
 
 func _on_energy_ball_collected(_energy_amount: int) -> void:
@@ -265,3 +267,4 @@ func adjust_land_particle() -> void:
 	new_particle.process_material = mat
 	new_particle.emitting = false
 	land_particle = new_particle
+	remote_land_particle.remote_path = remote_land_particle.get_path_to(land_particle)

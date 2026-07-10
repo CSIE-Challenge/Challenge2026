@@ -6,7 +6,9 @@ signal player_hit(damage: int)
 signal energyball_collected(energy_gain: int)
 
 var game_manager: Node2D
+var stage_canvaslayer: CanvasLayer
 var stage: Node2D
+var high_stage: Node2D
 var single_player: bool = false
 var agent_file: String = ""
 

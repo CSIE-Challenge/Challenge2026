@@ -37,6 +37,7 @@ var is_demo := false
 @onready var explosion_area: Area2D = $ExplosionArea
 @onready var explosion_shape: CollisionShape2D = $ExplosionArea/CollisionShape2D
 @onready var effect: GPUParticles2D = $Explosion/GPUParticles2D
+@onready var remote_shell: RemoteTransform2D = $ShellShadow/Remote
 
 
 func _ready() -> void:
@@ -45,6 +46,7 @@ func _ready() -> void:
 	$ShellShadow/Shell.z_index = Util.LAYERS["Trap9Mortar/Shell"]
 	$ShellShadow/Shadow.z_index = Util.LAYERS["Trap9Mortar/Shadow"]
 	$Explosion.z_index = Util.LAYERS["Trap9Mortar/Explosion"]
+	shell.reparent(Global.high_stage)
 
 
 static func initialize(start_pos: Vector2, end_pos: Vector2, air_time: float) -> Trap9Mortar:
@@ -58,10 +60,10 @@ func _physics_process(delta: float) -> void:
 	if flying:
 		elapsed += delta
 		shell_shadow.position += velocity * delta
-		shell.position.y += shell_vertical_speed * delta
+		remote_shell.position.y += shell_vertical_speed * delta
 		shell_vertical_speed += gravity * delta
-		shell.rotation += my_shell_rotate_speed * delta
-		shadow.rotation = shell.rotation
+		remote_shell.rotation += my_shell_rotate_speed * delta
+		shadow.rotation = remote_shell.rotation
 		shadow.self_modulate.r = 0.5 + 0.5 * sin(elapsed * shadow_flicker_frequency)
 		if elapsed >= air_time:
 			explode()
@@ -94,7 +96,7 @@ func activate(
 	explosion.visible = false
 	effect.lifetime = stay_time
 
-	shell.position = Vector2.ZERO
+	remote_shell.position = Vector2.ZERO
 	shell_shadow.position = start_pos
 	velocity.x = (end_pos.x - start_pos.x) / air_time
 	velocity.y = (end_pos.y - start_pos.y) / air_time
@@ -135,8 +137,8 @@ func serialize_state() -> Dictionary:
 		"type": "trap9-mortar",
 		"position": global_position,
 		"shadow_position": shell_shadow.global_position,
-		"shell_y": shell.position.y,
-		"shell_rotation": shell.rotation,
+		"shell_y": remote_shell.position.y,
+		"shell_rotation": remote_shell.rotation,
 		"shadow_modulate": shadow.self_modulate,
 		"explosion_visibility": explosion.visible,
 		"modulate": modulate,

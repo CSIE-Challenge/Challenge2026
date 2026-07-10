@@ -44,8 +44,12 @@ scale = Vector2(0.175, 0.175)
 texture = ExtResource("2_w0shn")
 
 [node name="Shell" type="Sprite2D" parent="ShellShadow" unique_id=1326917978]
-scale = Vector2(0.19999999, 0.19999999)
+scale = Vector2(0.175, 0.175)
 texture = ExtResource("2_w0shn")
+
+[node name="Remote" type="RemoteTransform2D" parent="ShellShadow" unique_id=1273632195]
+remote_path = NodePath("../Shell")
+update_scale = false
 
 [node name="Explosion" type="Sprite2D" parent="." unique_id=227206667]
 visible = false
