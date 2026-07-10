@@ -46,7 +46,7 @@ func _ready():
 func _on_main_close_pressed():
 	# 離開商店回到主畫面
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
-	SceneTransition.transition_shop("res://Scenes/menu.tscn")
+	SceneTransition.transition_to("res://Scenes/menu.tscn")
 
 
 # ==========================================

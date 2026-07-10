@@ -43,7 +43,7 @@ func _on_enter_game_button_up() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	Global.single_player = true
 	Global.agent_file = selected_agent_file
-	SceneTransition.transition_to(GAMEPLAY_SCENE)
+	SceneTransition.transition_to_wave(GAMEPLAY_SCENE)
 
 
 func _on_back_button_up() -> void:

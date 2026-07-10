@@ -1,5 +1,7 @@
 extends CanvasLayer
 
+signal transition_finished
+
 var ach_max_width: float = 350.0
 var ach_margin_x: float = 20.0
 var ach_border_thickness: float = 4.0
@@ -120,6 +122,7 @@ func _ach_on_animation_finished():
 
 
 func transition_to_fade(target_scene: String) -> void:
+	get_tree().paused = true
 	fade_rect.color.a = 0.0
 	var tween = create_tween()
 	# 淡出至黑幕
@@ -130,9 +133,12 @@ func transition_to_fade(target_scene: String) -> void:
 	tween.tween_interval(0.1)
 	# 淡入畫面
 	tween.tween_property(fade_rect, "color:a", 0.0, 1.0)
+	tween.tween_callback(transition_finished.emit)
+	get_tree().paused = false
 
 
-func transition_shop(target_scene: String) -> void:
+func transition_to(target_scene: String) -> void:
+	get_tree().paused = true
 	top_bar.anchor_bottom = 0.0
 	bottom_bar.anchor_top = 1.0
 	shader_rect.hide()
@@ -163,9 +169,12 @@ func transition_shop(target_scene: String) -> void:
 		. set_trans(Tween.TRANS_EXPO)
 		. set_ease(Tween.EASE_OUT)
 	)
+	tween.tween_callback(transition_finished.emit)
+	get_tree().paused = false
 
 
-func transition_to(target_scene: String) -> void:
+func transition_to_wave(target_scene: String) -> void:
+	get_tree().paused = true
 	var root = Control.new()
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -281,9 +290,12 @@ func transition_to(target_scene: String) -> void:
 	)
 
 	tween.tween_callback(root.queue_free)
+	tween.tween_callback(transition_finished.emit)
+	get_tree().paused = false
 
 
 func transition_to_distortion(target_scene: String) -> void:
+	get_tree().paused = true
 	shader_rect.show()
 
 	# 重設 Shader 參數
@@ -380,3 +392,5 @@ func transition_to_distortion(target_scene: String) -> void:
 	# 特效播放結束，隱藏著色器節點
 	# 將 append_callback 改為 tween_callback
 	tween.tween_callback(shader_rect.hide)
+	tween.tween_callback(transition_finished.emit)
+	get_tree().paused = false

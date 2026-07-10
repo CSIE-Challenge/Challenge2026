@@ -72,4 +72,4 @@ func _on_about_button_pressed() -> void:
 
 func _on_skin_shop_button_button_up() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
-	SceneTransition.transition_shop("res://Scenes/menu/skin_shop.tscn")
+	SceneTransition.transition_to("res://Scenes/menu/skin_shop.tscn")
