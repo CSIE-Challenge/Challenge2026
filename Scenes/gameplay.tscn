@@ -386,7 +386,7 @@ grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(100, 150)
 
-[node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "camera", "health_label", "energy_balls_label", "energy_bar_label", "coconut_bar", "opponent_energy_bar_label", "time_label", "result_screen", "pause_menu", "phase_label", "health_icon", "walls")]
+[node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "camera", "health_label", "energy_balls_label", "energy_bar_label", "coconut_bar", "opponent_energy_bar_label", "time_label", "result_screen", "pause_menu", "phase_label", "health_icon", "walls", "energy_label")]
 script = ExtResource("1_kwrm5")
 player = NodePath("../SubViewport/Stage/Player")
 camera = NodePath("../GameCamera")
