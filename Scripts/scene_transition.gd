@@ -122,13 +122,14 @@ func _ach_on_animation_finished():
 
 
 func transition_to_fade(target_scene: String) -> void:
+	preload_scene_async(target_scene)
 	get_tree().paused = true
 	fade_rect.color.a = 0.0
 	var tween = create_tween()
 	# 淡出至黑幕
 	tween.tween_property(fade_rect, "color:a", 1.0, 1.0)
 	# 切換場景
-	tween.tween_callback(func(): get_tree().change_scene_to_file(target_scene))
+	tween.tween_callback(func(): await _switch_scene(target_scene))
 	# 等待載入
 	tween.tween_interval(0.1)
 	# 淡入畫面
@@ -138,6 +139,7 @@ func transition_to_fade(target_scene: String) -> void:
 
 
 func transition_to(target_scene: String) -> void:
+	preload_scene_async(target_scene)
 	get_tree().paused = true
 	top_bar.anchor_bottom = 0.0
 	bottom_bar.anchor_top = 1.0
@@ -155,7 +157,7 @@ func transition_to(target_scene: String) -> void:
 		. set_ease(Tween.EASE_OUT)
 	)
 
-	tween.tween_callback(func(): get_tree().change_scene_to_file(target_scene))
+	tween.tween_callback(func(): await _switch_scene(target_scene))
 	tween.tween_interval(0.1)
 
 	# 快速拉開
@@ -174,6 +176,7 @@ func transition_to(target_scene: String) -> void:
 
 
 func transition_to_wave(target_scene: String) -> void:
+	preload_scene_async(target_scene)
 	get_tree().paused = true
 	var root = Control.new()
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -251,13 +254,7 @@ func transition_to_wave(target_scene: String) -> void:
 		. set_ease(Tween.EASE_IN_OUT)
 	)
 
-	tween.tween_callback(
-		func():
-			if target_scene == "":
-				get_tree().reload_current_scene()
-			else:
-				get_tree().change_scene_to_file(target_scene)
-	)
+	tween.tween_callback(func(): await _switch_scene(target_scene))
 	tween.tween_interval(0.1)
 
 	# 退潮準備：粒子發射器回到左側
@@ -295,6 +292,7 @@ func transition_to_wave(target_scene: String) -> void:
 
 
 func transition_to_distortion(target_scene: String) -> void:
+	preload_scene_async(target_scene)
 	get_tree().paused = true
 	shader_rect.show()
 
@@ -342,13 +340,7 @@ func transition_to_distortion(target_scene: String) -> void:
 	)
 
 	# ===== 階段三：完全遮黑後，於背景更換場景 =====
-	tween.tween_callback(
-		func():
-			if target_scene == "":
-				get_tree().reload_current_scene()
-			else:
-				get_tree().change_scene_to_file(target_scene)
-	)
+	tween.tween_callback(func(): await _switch_scene(target_scene))
 
 	# 讓新場景載入後有短暫時間載入資源
 	# 將 append_interval 改為 tween_interval
@@ -394,3 +386,50 @@ func transition_to_distortion(target_scene: String) -> void:
 	tween.tween_callback(shader_rect.hide)
 	tween.tween_callback(transition_finished.emit)
 	get_tree().paused = false
+
+
+## 立即發出 threaded loading request（不等待）。
+## 如果你能提早知道目標場景路徑（例如玩家一走進傳送門範圍就知道），
+## 可以在觸發轉場動畫「之前」就先呼叫這個函式，讓讀取時間完全被動畫遮蔽。
+func preload_scene_async(path: String) -> void:
+	if path == "":
+		return
+	var status = ResourceLoader.load_threaded_get_status(path)
+	# 避免對同一個路徑重複發出 request
+	if status == ResourceLoader.THREAD_LOAD_INVALID_RESOURCE:
+		ResourceLoader.load_threaded_request(path)
+
+
+## 等待場景背景讀取完成並回傳 PackedScene。
+## 如果先前沒有呼叫過 preload_scene_async，這裡會自動補發 request。
+func _await_scene_load(path: String) -> PackedScene:
+	var status = ResourceLoader.load_threaded_get_status(path)
+	if status == ResourceLoader.THREAD_LOAD_INVALID_RESOURCE:
+		ResourceLoader.load_threaded_request(path)
+		status = ResourceLoader.load_threaded_get_status(path)
+
+	while status == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
+		# SceneTree.process_frame 不受 get_tree().paused 影響，每幀都會發出
+		await get_tree().process_frame
+		status = ResourceLoader.load_threaded_get_status(path)
+
+	if status != ResourceLoader.THREAD_LOAD_LOADED:
+		push_error("場景背景讀取失敗: %s (status=%s)" % [path, status])
+		return null
+
+	return ResourceLoader.load_threaded_get(path) as PackedScene
+
+
+## 統一的換場動作：優先用背景讀好的 PackedScene 換場，
+## 避免走同步的 change_scene_to_file 造成的卡頓。
+func _switch_scene(target_scene: String) -> void:
+	if target_scene == "":
+		get_tree().reload_current_scene()
+		return
+
+	var packed_scene := await _await_scene_load(target_scene)
+	if packed_scene != null:
+		get_tree().change_scene_to_packed(packed_scene)
+	else:
+		# 讀取失敗時 fallback 回同步讀取，至少能確保場景還是換得過去
+		get_tree().change_scene_to_file(target_scene)

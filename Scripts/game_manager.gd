@@ -347,9 +347,9 @@ func _on_phase_timeout() -> void:
 
 
 func _update_max_energy() -> void:
-	var max = max_energy[min(current_phase, max_energy.size() - 1)]
-	energy_label._update_max_energy(max)
-	NetworkManager.update_max_energy(max)
+	var mxn = max_energy[min(current_phase, max_energy.size() - 1)]
+	energy_label._update_max_energy(mxn)
+	NetworkManager.update_max_energy(mxn)
 
 	Audio.set_phase_bgm(current_phase)
 
@@ -392,6 +392,7 @@ func _connect_pause_menu() -> void:
 	if pause_menu == null:
 		return
 	pause_menu.resume_requested.connect(_on_pause_resume_requested)
+	pause_menu.restart_requested.connect(_on_pause_restart_requested)
 	pause_menu.main_menu_requested.connect(_on_pause_main_menu_requested)
 	pause_menu.exit_requested.connect(_on_pause_exit_requested)
 	pause_menu.close()
@@ -399,6 +400,11 @@ func _connect_pause_menu() -> void:
 
 func _on_pause_resume_requested() -> void:
 	_resume_gameplay()
+
+
+func _on_pause_restart_requested() -> void:
+	_shutdown_gameplay_for_scene_change()
+	SceneTransition.transition_to_wave("res://Scenes/gameplay.tscn")
 
 
 func _on_pause_main_menu_requested() -> void:
