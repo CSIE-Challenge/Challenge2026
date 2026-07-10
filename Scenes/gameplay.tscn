@@ -295,6 +295,7 @@ texture = SubResource("ViewportTexture_icchp")
 
 [node name="SubViewport" type="SubViewport" parent="." unique_id=117532480]
 transparent_bg = true
+audio_listener_enable_2d = true
 size = Vector2i(480, 270)
 size_2d_override = Vector2i(1152, 648)
 size_2d_override_stretch = true
@@ -430,6 +431,9 @@ collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewport/Stage/Player/TrapCleaner" unique_id=2065862102]
 shape = SubResource("CircleShape2D_1ff3a")
+
+[node name="AudioListener2D" type="AudioListener2D" parent="SubViewport/Stage/Player" unique_id=2139268890]
+current = true
 
 [node name="CoconutBar" parent="SubViewport" unique_id=339971714 instance=ExtResource("8_ltefv")]
 
