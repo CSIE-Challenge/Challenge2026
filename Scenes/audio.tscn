@@ -1,17 +1,20 @@
 [gd_scene format=3 uid="uid://bxj6outuppaq0"]
 
 [ext_resource type="Script" uid="uid://onn30eh2nvc" path="res://Scripts/audio.gd" id="1_l04ps"]
-[ext_resource type="AudioStream" uid="uid://dely3vnv8n5jm" path="res://Assets/audio/BGM/Title BGM.mp3" id="2_4thc6"]
+[ext_resource type="AudioStream" uid="uid://clghs7g8dkyrr" path="res://Assets/audio/BGM/Little Rushing Steps.mp3" id="2_aan0r"]
 [ext_resource type="AudioStream" uid="uid://kwrrir3nslnh" path="res://Assets/audio/SFX/Jump.mp3" id="2_c8j57"]
 [ext_resource type="AudioStream" uid="uid://dr7oxaje130i5" path="res://Assets/audio/SFX/Press.mp3" id="2_y8l05"]
+[ext_resource type="AudioStream" uid="uid://cylbuxljjwia0" path="res://Assets/audio/BGM/Sumikiru.mp3" id="3_k6wgq"]
 [ext_resource type="AudioStream" uid="uid://d0xbcnhe4ti68" path="res://Assets/audio/BGM/phase_0.mp3" id="3_qfbpw"]
+[ext_resource type="AudioStream" uid="uid://dakrw27lhvla5" path="res://Assets/audio/BGM/Sunglasses.mp3" id="4_q2wiq"]
 [ext_resource type="AudioStream" uid="uid://6mdtw85opt84" path="res://Assets/audio/BGM/phase_1.mp3" id="4_r8i6a"]
+[ext_resource type="AudioStream" uid="uid://crcxamkehvt1k" path="res://Assets/audio/BGM/Sunset.mp3" id="5_mjojf"]
 [ext_resource type="AudioStream" uid="uid://b3ksi86ncwxbn" path="res://Assets/audio/BGM/phase_2.mp3" id="5_tf0nv"]
 [ext_resource type="AudioStream" uid="uid://bt5uqgtwioiuc" path="res://Assets/audio/SFX/change_phase.mp3" id="6_e0u3b"]
 [ext_resource type="AudioStream" uid="uid://c4ek643il074e" path="res://Assets/audio/BGM/phase_3.mp3" id="6_n35fw"]
 [ext_resource type="AudioStream" uid="uid://korupvo2rheb" path="res://Assets/audio/SFX/take_damage.mp3" id="7_e0u3b"]
 [ext_resource type="AudioStream" uid="uid://ds3wjgb42oyfd" path="res://Assets/audio/BGM/phase_4.mp3" id="7_o1fue"]
-[ext_resource type="AudioStream" uid="uid://s38uamf74qig" path="res://Assets/audio/SFX/Result.mp3" id="8_r8i6a"]
+[ext_resource type="AudioStream" uid="uid://s38uamf74qig" path="res://Assets/audio/BGM/Result.mp3" id="8_r8i6a"]
 [ext_resource type="AudioStream" uid="uid://kfxthmlglfh2" path="res://Assets/audio/BGM/phase_5.mp3" id="8_tf0nv"]
 [ext_resource type="AudioStream" uid="uid://bi01vm7qcutil" path="res://Assets/audio/SFX/trap_1_landmine_explode.mp3" id="10_38mwv"]
 [ext_resource type="AudioStream" uid="uid://cld4poronrvxs" path="res://Assets/audio/SFX/character_fall_sand.mp3" id="11_mjojf"]
@@ -29,7 +32,7 @@
 
 [node name="Audio" type="Node" unique_id=664248620]
 script = ExtResource("1_l04ps")
-menu_tracks = Array[AudioStream]([ExtResource("2_4thc6")])
+menu_tracks = Array[AudioStream]([ExtResource("2_aan0r"), ExtResource("3_k6wgq"), ExtResource("4_q2wiq"), ExtResource("5_mjojf")])
 gameplay_phase_0_tracks = Array[AudioStream]([ExtResource("3_qfbpw")])
 gameplay_phase_1_tracks = Array[AudioStream]([ExtResource("4_r8i6a")])
 gameplay_phase_2_tracks = Array[AudioStream]([ExtResource("5_tf0nv")])
