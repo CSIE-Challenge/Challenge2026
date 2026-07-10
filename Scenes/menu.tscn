@@ -3,8 +3,10 @@
 [ext_resource type="Script" uid="uid://b5d7uvxoarxp1" path="res://Scripts/menu/menu_manager.gd" id="1_1rerr"]
 [ext_resource type="Theme" uid="uid://doboascpna6vx" path="res://Assets/themes/menu.tres" id="2_cayip"]
 [ext_resource type="PackedScene" uid="uid://fh2uubspqhku" path="res://Scenes/volume_setting.tscn" id="2_xhh6f"]
-[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="3_158mb"]
 [ext_resource type="Texture2D" uid="uid://cnkhc8wj5g45l" path="res://Shapes/menu_background.jpg" id="3_wwsa2"]
+[ext_resource type="Texture2D" uid="uid://cu7uscm4tcnjo" path="res://Shapes/about_icon.svg" id="4_wbdvm"]
+[ext_resource type="Texture2D" uid="uid://buro076xqgfiy" path="res://Shapes/audio_icon.svg" id="5_q3rjx"]
+[ext_resource type="Texture2D" uid="uid://cmsifmvfmf64x" path="res://Shapes/exit_icon.svg" id="6_6swd7"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jsrd8"]
 texture = ExtResource("3_wwsa2")
@@ -98,8 +100,9 @@ custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+theme_override_constants/icon_max_width = 72
 theme_override_font_sizes/font_size = 40
-icon = ExtResource("3_158mb")
+icon = ExtResource("4_wbdvm")
 icon_alignment = 1
 expand_icon = true
 
@@ -121,8 +124,9 @@ custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+theme_override_constants/icon_max_width = 72
 theme_override_font_sizes/font_size = 40
-icon = ExtResource("3_158mb")
+icon = ExtResource("5_q3rjx")
 icon_alignment = 1
 expand_icon = true
 
@@ -144,8 +148,9 @@ custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+theme_override_constants/icon_max_width = 72
 theme_override_font_sizes/font_size = 40
-icon = ExtResource("3_158mb")
+icon = ExtResource("6_6swd7")
 icon_alignment = 1
 expand_icon = true
 
