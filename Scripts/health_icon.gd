@@ -7,6 +7,7 @@ signal depleted
 @export var unit_icon: Texture2D
 @export var icon_size: Vector2 = Vector2(24, 24)
 @export var inactive_alpha: float = 0.25
+@export var reversed: bool = 0
 
 var _icons: Array[TextureRect] = []
 var _current_health: int = 0
@@ -73,10 +74,21 @@ func _refresh_display() -> void:
 
 	var remaining: int = _current_health
 	for i in range(_icons.size()):
-		var alpha: float = 1.0 if i < remaining else inactive_alpha
+		var not_transparent: bool = (
+			i < remaining if not reversed else i >= life_capacity - remaining
+		)
+		var alpha: float = 1.0 if not_transparent else inactive_alpha
 		_icons[i].modulate = Color(1, 1, 1, alpha)
 
 
 func _set_max_health_safely(value: int) -> void:
 	_max_health = max(0, int(value))
 	life_capacity = _max_health
+
+
+func set_icon_size(new_size: Vector2) -> void:
+	icon_size = new_size
+	for icon in _icons:
+		icon.custom_minimum_size = new_size
+	reset_size()
+	queue_sort()

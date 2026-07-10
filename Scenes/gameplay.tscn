@@ -12,7 +12,7 @@
 [ext_resource type="Shader" uid="uid://flarch4chr80" path="res://Shaders/bounds.gdshader" id="7_r5xtw"]
 [ext_resource type="PackedScene" uid="uid://cwfs8yn4r4hjl" path="res://Scenes/energy_text.tscn" id="7_ra47u"]
 [ext_resource type="PackedScene" uid="uid://dukfpi8j30j5" path="res://Scenes/coconut_bar/coconut_bar.tscn" id="8_ltefv"]
-[ext_resource type="PackedScene" path="res://Scenes/result_screen.tscn" id="8_result"]
+[ext_resource type="PackedScene" uid="uid://sy61e2606j8w" path="res://Scenes/result_screen.tscn" id="8_result"]
 [ext_resource type="Texture2D" uid="uid://c1rj0im3pw7gd" path="res://Shapes/sand_background.png" id="8_rg35f"]
 [ext_resource type="Script" uid="uid://bs7ntuoxby0al" path="res://Scripts/trap_request_scheduler.gd" id="8_urrcd"]
 [ext_resource type="Script" uid="uid://c8r5j40yj4je7" path="res://Scripts/agent_action_service.gd" id="9_puebw"]
@@ -661,9 +661,13 @@ label_settings = SubResource("LabelSettings_1ff3a")
 horizontal_alignment = 1
 vertical_alignment = 1
 
+<<<<<<< HEAD
 [node name="PauseMenu" parent="HUD" unique_id=444701185 instance=ExtResource("17_pause_menu")]
 layer = 300
 visible = false
+=======
+[node name="PauseMenu" parent="HUD" unique_id=185754770 instance=ExtResource("17_pause_menu")]
+>>>>>>> f258b9f (feat: add exit button, health icons)
 
 [node name="TrapRequestScheduler" type="Node" parent="." unique_id=578271909]
 script = ExtResource("8_urrcd")
@@ -672,7 +676,11 @@ script = ExtResource("8_urrcd")
 script = ExtResource("9_puebw")
 
 [node name="ResultScreen" parent="." unique_id=1827147285 instance=ExtResource("8_result")]
+<<<<<<< HEAD
 layer = 200
+=======
+process_mode = 2
+>>>>>>> f258b9f (feat: add exit button, health icons)
 
 [node name="StateSerializer" type="Node" parent="." unique_id=509829794 node_paths=PackedStringArray("game_manager", "stage")]
 script = ExtResource("4_ssg01")

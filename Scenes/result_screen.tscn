@@ -1,6 +1,16 @@
 [gd_scene format=3 uid="uid://sy61e2606j8w"]
 
 [ext_resource type="Script" uid="uid://brqtb34ab82qi" path="res://Scripts/result_screen.gd" id="1_result"]
+[ext_resource type="Script" uid="uid://ddqb3djaesce4" path="res://Scripts/health_icon.gd" id="2_ndexe"]
+[ext_resource type="Texture2D" uid="uid://f5ertr28h6kq" path="res://Shapes/feather.svg" id="3_o517f"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qk7ap"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o517f"]
+bg_color = Color(0.39926064, 0.5974127, 0.9320517, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ndexe"]
+bg_color = Color(0.9413203, 0.33117294, 0.6938895, 1)
 
 [node name="ResultScreen" type="CanvasLayer" unique_id=250910659]
 layer = 100
@@ -13,6 +23,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 color = Color(0.055, 0.075, 0.11, 0.94)
 
 [node name="CenterContainer" type="CenterContainer" parent="." unique_id=863430935]
@@ -21,20 +32,25 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="CenterContainer" unique_id=1914732084]
 custom_minimum_size = Vector2(520, 470)
 layout_mode = 2
+mouse_filter = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="CenterContainer/PanelContainer" unique_id=533272811]
 layout_mode = 2
+mouse_filter = 2
 theme_override_constants/margin_left = 44
 theme_override_constants/margin_top = 32
 theme_override_constants/margin_right = 44
 theme_override_constants/margin_bottom = 32
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer" unique_id=94432051]
+unique_name_in_owner = true
 layout_mode = 2
+mouse_filter = 2
 theme_override_constants/separation = 14
 
 [node name="TitleLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1068592199]
@@ -55,9 +71,40 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 22
+text = "Total Energy Spent
+Energy Balls Collected
+Jumps
+Distance Traveled
+Survival Time
+Remaining Health
+Traps Placed"
 
 [node name="StatValuesLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=119839190]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 22
 horizontal_alignment = 2
+
+[node name="ExitButton" type="Button" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=2007003856]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("StyleBoxFlat_qk7ap")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_o517f")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ndexe")
+text = "Exit"
+
+[node name="HealthIcons" type="HBoxContainer" parent="." unique_id=970283826]
+offset_left = 300.0
+offset_top = 380.0
+offset_right = 300.0
+offset_bottom = 380.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+alignment = 1
+script = ExtResource("2_ndexe")
+unit_icon = ExtResource("3_o517f")
+icon_size = Vector2(30, 30)
+
+[connection signal="button_up" from="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/ExitButton" to="." method="_on_exit_button_button_up"]
