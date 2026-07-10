@@ -1,11 +1,11 @@
-extends Node2D
+extends ColorRect
 
 var settings = ConfigFile.new()
 var temp_music_volume: float
 var temp_sfx_volume: float
 
-@onready var music_slider = $VBoxContainer/MusicSlider
-@onready var sfx_slider = $VBoxContainer/SFXSlider
+@onready var music_slider = $PanelContainer/MarginContainer/VBoxContainer/MusicContainer/MusicSlider
+@onready var sfx_slider = $PanelContainer/MarginContainer/VBoxContainer/SFXContainer/SFXSlider
 
 
 func _ready() -> void:
@@ -18,13 +18,41 @@ func open() -> void:
 	sfx_slider.value = settings.get_value("Volume", "sfx", 1.0)
 	temp_music_volume = music_slider.value
 	temp_sfx_volume = sfx_slider.value
+
+	var panel = $PanelContainer
+	self.modulate.a = 0.0
 	self.visible = true
+	panel.scale = Vector2(0.85, 0.85)
+	panel.pivot_offset = panel.size / 2.0
+
+	var tween = create_tween()
+	tween.parallel().tween_property(self, "modulate:a", 1.0, 0.2)
+	(
+		tween
+		. parallel()
+		. tween_property(panel, "scale", Vector2.ONE, 0.2)
+		. set_trans(Tween.TRANS_CUBIC)
+		. set_ease(Tween.EASE_OUT)
+	)
 
 
 func close() -> void:
 	settings.set_value("Volume", "music", music_slider.value)
 	settings.set_value("Volume", "sfx", sfx_slider.value)
 	settings.save("user://settings.cfg")
+
+	var tween = create_tween()
+	var panel = $PanelContainer
+	tween.parallel().tween_property(self, "modulate:a", 0.0, 0.2)
+	(
+		tween
+		. parallel()
+		. tween_property(panel, "scale", Vector2(0.85, 0.85), 0.2)
+		. set_trans(Tween.TRANS_CUBIC)
+		. set_ease(Tween.EASE_OUT)
+	)
+
+	await tween.finished
 	self.visible = false
 
 
