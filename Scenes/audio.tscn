@@ -25,6 +25,7 @@
 [ext_resource type="AudioStream" uid="uid://bea7mnolr3b30" path="res://Assets/audio/SFX/watermelon_fall_2b.mp3" id="19_o1fue"]
 [ext_resource type="AudioStream" uid="uid://hhkgup5y7sfg" path="res://Assets/audio/SFX/electric_shock.mp3" id="22_0w0wh"]
 [ext_resource type="AudioStream" uid="uid://d2glsqhefcr0m" path="res://Assets/audio/SFX/juice_splash_2c.mp3" id="24_hfiiv"]
+[ext_resource type="AudioStream" uid="uid://dlaraob8lhjvk" path="res://Assets/audio/SFX/six_seven.mp3" id="26_oboth"]
 
 [node name="Audio" type="Node" unique_id=664248620]
 script = ExtResource("1_l04ps")
@@ -54,6 +55,7 @@ trap2_electric_ring_sfx = ExtResource("22_0w0wh")
 trap3_seagull_hit_sfx = ExtResource("18_o1fue")
 trap5_juice_splash_sfx = ExtResource("24_hfiiv")
 trap9_watermelon_fall_sfx = ExtResource("19_o1fue")
+six_seven_sfx = ExtResource("26_oboth")
 
 [node name="BgmPlayer1" type="AudioStreamPlayer" parent="." unique_id=249781410]
 bus = &"Music"

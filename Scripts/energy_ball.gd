@@ -68,6 +68,9 @@ func _spawn_energy_text() -> void:
 	text.position = position + Vector2(552, 324)
 	text.initialize(now_combo)
 
+	if energy_gain[energy_ball_phase][now_combo] == 67:
+		Audio.play_sfx(Audio.SFX.SIX_SEVEN)
+
 
 func advance_phase() -> void:
 	energy_ball_phase = min(energy_ball_phase + 1, energy_gain.size() - 1)
