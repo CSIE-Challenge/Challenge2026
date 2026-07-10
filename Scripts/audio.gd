@@ -34,13 +34,19 @@ enum BGM {
 @export var sfx_pool_size := 8
 @export var bgm_fade_out_time := 0.3125
 
-var _sfx_players: Array[AudioStreamPlayer] = []
-var _bgm_playlist: Array[AudioStream] = []
-var _last_track_index: int = -1
-
+# the audio collection
 var _sfx_streams: Dictionary = {}
 var _bgm_playlists: Dictionary = {}
 
+# sfx player pool
+var _sfx_players: Array[AudioStreamPlayer] = []
+
+# current state
+var _current_bgm: BGM = -1 as BGM
+var _bgm_playlist: Array[AudioStream] = []
+var _last_track_index: int = -1
+
+# for bgm fading
 var _current_player: AudioStreamPlayer
 var _next_player: AudioStreamPlayer
 var _fade_tween: Tween
@@ -63,6 +69,9 @@ func _ready() -> void:
 
 
 func set_bgm(bgm: BGM) -> void:
+	if _current_bgm == bgm:
+		return
+
 	if _fade_tween and _fade_tween.is_running():
 		_fade_tween.kill()
 
@@ -70,6 +79,7 @@ func set_bgm(bgm: BGM) -> void:
 	_fade_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)  # run even if game is paused
 	_fade_tween.tween_property(_current_player, "volume_db", -80.0, bgm_fade_out_time)
 
+	_current_bgm = bgm
 	_bgm_playlist = _bgm_playlists.get(bgm, []) as Array[AudioStream]
 	_last_track_index = -1
 	_play_random_bgm_track(_next_player)
