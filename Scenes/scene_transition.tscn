@@ -12,6 +12,7 @@ shader_parameter/bg_color = Color(0.08, 0.02, 0.15, 1)
 
 [node name="SceneTransition" type="CanvasLayer" unique_id=873390737]
 process_mode = 3
+layer = 1000
 script = ExtResource("1_vin40")
 
 [node name="ShaderRect" type="ColorRect" parent="." unique_id=1217484533]

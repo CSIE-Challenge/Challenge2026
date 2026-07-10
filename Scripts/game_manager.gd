@@ -234,7 +234,7 @@ func _on_pause_resume_requested() -> void:
 
 func _on_pause_restart_requested() -> void:
 	_shutdown_gameplay_for_scene_change()
-	SceneTransition.transition_to("res://Scenes/gameplay.tscn")
+	SceneTransition.transition_to_wave("res://Scenes/gameplay.tscn")
 
 
 func _on_pause_main_menu_requested() -> void:

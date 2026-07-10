@@ -93,24 +93,6 @@ shader_parameter/draw = 1.0
 shader_parameter/color_variation = 0.1
 shader_parameter/color_bands = 3
 
-[sub_resource type="Gradient" id="Gradient_5i20n"]
-colors = PackedColorArray(0.79905266, 0.7251527, 0.4327446, 1, 0.77568465, 0.70158905, 0.40794194, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_kj63f"]
-gradient = SubResource("Gradient_5i20n")
-
-[sub_resource type="Gradient" id="Gradient_fe56y"]
-colors = PackedColorArray(0, 0.3882353, 1, 1, 0.16470589, 0.68235296, 1, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_icchp"]
-gradient = SubResource("Gradient_fe56y")
-
-[sub_resource type="Gradient" id="Gradient_5fmf4"]
-colors = PackedColorArray(1, 0.7019608, 0.5019608, 1, 0.9224753, 0.47343725, 1.1358858e-05, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_8ipd1"]
-gradient = SubResource("Gradient_5fmf4")
-
 [sub_resource type="CircleShape2D" id="CircleShape2D_wbxth"]
 radius = 13.5
 
@@ -357,9 +339,6 @@ collision_layer = 9
 collision_mask = 2
 motion_mode = 1
 script = ExtResource("2_m34ki")
-sand_particle = SubResource("GradientTexture1D_kj63f")
-water_particle = SubResource("GradientTexture1D_icchp")
-juice_particle = SubResource("GradientTexture1D_8ipd1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewport/Stage/Player" unique_id=1018866415]
 shape = SubResource("CircleShape2D_wbxth")
@@ -584,6 +563,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="PauseMenu" parent="HUD" unique_id=444701185 instance=ExtResource("17_pause_menu")]
+layer = 300
 
 [node name="TrapRequestScheduler" type="Node" parent="." unique_id=578271909]
 script = ExtResource("8_urrcd")
@@ -592,6 +572,7 @@ script = ExtResource("8_urrcd")
 script = ExtResource("9_puebw")
 
 [node name="ResultScreen" parent="." unique_id=1827147285 instance=ExtResource("8_result")]
+layer = 200
 
 [node name="StateSerializer" type="Node" parent="." unique_id=509829794 node_paths=PackedStringArray("game_manager", "stage")]
 script = ExtResource("4_ssg01")
