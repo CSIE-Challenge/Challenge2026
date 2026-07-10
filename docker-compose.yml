@@ -1,0 +1,24 @@
+services:
+  matchmaker:
+    platform: linux/amd64
+    build:
+      context: .
+      args:
+        GODOT_VERSION: "4.6.3"
+        GODOT_STATUS: "stable"
+    image: challenge2026-server:4.6.3
+    # Ports:
+    #   3000/tcp         — matchmaker HTTP API (container fixed, host via HTTP_PORT)
+    #   N..M/udp         — Godot ENet game servers, one per room (via PORT_RANGE_START/END)
+    ports:
+      - "${HTTP_PORT:-3000}:3000/tcp"
+      - "${PORT_RANGE_START:-7777}-${PORT_RANGE_END:-7791}:${PORT_RANGE_START:-7777}-${PORT_RANGE_END:-7791}/udp"
+    environment:
+      # Set via .env or override here
+      - HTTP_PORT=3000
+      - PORT_RANGE_START=${PORT_RANGE_START:-7777}
+      - PORT_RANGE_END=${PORT_RANGE_END:-7791}
+      - GAME_IP=${GAME_IP:-127.0.0.1}         # public IP clients connect to
+      - GODOT_BIN=godot
+      - GODOT_PROJECT_PATH=/app
+    restart: unless-stopped

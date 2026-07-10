@@ -1,0 +1,312 @@
+[gd_scene format=3 uid="uid://dr7u7lt2gd2oa"]
+
+[ext_resource type="Script" uid="uid://cn2xkgu54d28e" path="res://Scripts/menu/hidden_game_controller.gd" id="1_ebyp3"]
+[ext_resource type="Texture2D" uid="uid://dle4xt8upfg42" path="res://Shapes/Square.svg" id="1_tfqsm"]
+[ext_resource type="Script" uid="uid://55q1cmku2arh" path="res://Scripts/menu/coconut_controller.gd" id="2_ebyp3"]
+[ext_resource type="Script" uid="uid://dv55d1s0ldngo" path="res://Scripts/menu/walls_controller.gd" id="2_qncmu"]
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="3_pger8"]
+[ext_resource type="Texture2D" uid="uid://b7rrv2ws3as1d" path="res://Shapes/boss.png" id="4_boss"]
+[ext_resource type="Script" uid="uid://b1vu1u854wu0d" path="res://Scripts/menu/boss_controller.gd" id="5_pger8"]
+[ext_resource type="PackedScene" uid="uid://coibxbp8o7ax0" path="res://Scenes/menu/rocket_warning.tscn" id="7_i6agr"]
+[ext_resource type="Shader" uid="uid://cdsrngsn8ij2n" path="res://Shaders/hidden_game_bg.gdshader" id="100_bg"]
+[ext_resource type="Shader" uid="uid://ct0xwy4laxymf" path="res://Shaders/boss_hp_bar.gdshader" id="200_hp"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bg"]
+shader = ExtResource("100_bg")
+shader_parameter/time_scale = 1.0
+shader_parameter/base_color = Color(0.02, 0.01, 0.05, 1)
+shader_parameter/glow_color = Color(0.2, 0.05, 0.4, 1)
+shader_parameter/star_color = Color(0.9, 0.9, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wxxv2"]
+bg_color = Color(0.17880967, 0.17880964, 0.17880964, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qncmu"]
+size = Vector2(135, 135)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_plgjo"]
+radius = 13.5
+
+[sub_resource type="Curve" id="Curve_ebyp3"]
+_data = [Vector2(0.16312057, 1), 0.0, 0.0, 0, 0, Vector2(0.5283688, 0.5048715), -1.5645216, -1.5645216, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_pger8"]
+offsets = PackedFloat32Array(0, 0.39344263, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hp"]
+shader = ExtResource("200_hp")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hp_bg"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i6agr"]
+bg_color = Color(1, 0, 0, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="Shader" id="Shader_edgefade"]
+code = "shader_type canvas_item;
+void fragment() {
+    float alpha = smoothstep(0.0, 0.2, UV.y) * smoothstep(1.0, 0.8, UV.y);
+    COLOR.a *= alpha;
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_edgefade"]
+shader = SubResource("Shader_edgefade")
+
+[sub_resource type="SystemFont" id="SystemFont_golden"]
+font_names = PackedStringArray("Impact", "Arial Black", "Sans-Serif")
+font_italic = true
+font_weight = 900
+
+[sub_resource type="LabelSettings" id="LabelSettings_golden"]
+font = SubResource("SystemFont_golden")
+font_size = 120
+font_color = Color(1, 0.843137, 0, 1)
+outline_size = 15
+outline_color = Color(0.4, 0.2, 0, 1)
+shadow_offset = Vector2(8, 8)
+
+[sub_resource type="Shader" id="Shader_shine"]
+code = "shader_type canvas_item;
+uniform float shine_progress : hint_range(0.0, 1.0) = 0.0;
+uniform float shine_size : hint_range(0.01, 1.0) = 0.1;
+uniform float shine_angle : hint_range(0.0, 89.9) = 45.0;
+
+void fragment() {
+    float rad = radians(shine_angle);
+    float v = UV.x * cos(rad) + (1.0 - UV.y) * sin(rad);
+    float max_v = cos(rad) + sin(rad);
+    float progress = shine_progress * (max_v + shine_size * 2.0) - shine_size;
+    float shine = step(v, progress + shine_size / 2.0) - step(v, progress - shine_size / 2.0);
+    COLOR = vec4(1.0, 1.0, 1.0, shine * 0.8);
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_shine"]
+shader = SubResource("Shader_shine")
+shader_parameter/shine_progress = 0.0
+shader_parameter/shine_size = 0.1
+shader_parameter/shine_angle = 45.0
+
+[node name="hidden_game" type="Control" unique_id=18491525]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ebyp3")
+
+[node name="Panel" type="Panel" parent="." unique_id=558493639]
+material = SubResource("ShaderMaterial_bg")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_wxxv2")
+
+[node name="Stage" type="Node2D" parent="Panel" unique_id=1261095101]
+position = Vector2(576, 424)
+
+[node name="boss" type="Node2D" parent="Panel/Stage" unique_id=560461437]
+position = Vector2(0, -300)
+script = ExtResource("5_pger8")
+
+[node name="Sprites" type="Node2D" parent="Panel/Stage/boss" unique_id=733336291]
+
+[node name="boss_sprite" type="Sprite2D" parent="Panel/Stage/boss/Sprites" unique_id=1992438912]
+modulate = Color(0.61745477, 0.61745477, 0.6174547, 1)
+position = Vector2(0, 180)
+scale = Vector2(1e-05, 1e-05)
+texture = ExtResource("4_boss")
+
+[node name="Walls" type="AnimatableBody2D" parent="Panel/Stage" unique_id=1389870853 groups=["walls"]]
+position = Vector2(0, -50)
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("2_qncmu")
+
+[node name="RightWallCollision" type="CollisionShape2D" parent="Panel/Stage/Walls" unique_id=2091655395]
+position = Vector2(249.99994, 0)
+scale = Vector2(0.099999994, 3.5999997)
+shape = SubResource("RectangleShape2D_qncmu")
+
+[node name="RightWallSprite" type="Sprite2D" parent="Panel/Stage/Walls/RightWallCollision" unique_id=40708392]
+modulate = Color(1, 1, 1, 0.8)
+scale = Vector2(0.99999994, 0.99999994)
+texture = ExtResource("1_tfqsm")
+
+[node name="LeftWallCollision" type="CollisionShape2D" parent="Panel/Stage/Walls" unique_id=786614015]
+position = Vector2(-250, 0)
+scale = Vector2(0.099999994, 3.5999997)
+shape = SubResource("RectangleShape2D_qncmu")
+
+[node name="LeftWallSprite" type="Sprite2D" parent="Panel/Stage/Walls/LeftWallCollision" unique_id=1792312663]
+modulate = Color(1, 1, 1, 0.8)
+scale = Vector2(0.99999994, 0.99999994)
+texture = ExtResource("1_tfqsm")
+
+[node name="UpWallCollision" type="CollisionShape2D" parent="Panel/Stage/Walls" unique_id=339149447]
+position = Vector2(0, 249.99994)
+rotation = 1.5707964
+scale = Vector2(0.099999994, 3.5999997)
+shape = SubResource("RectangleShape2D_qncmu")
+
+[node name="UpWallSprite" type="Sprite2D" parent="Panel/Stage/Walls/UpWallCollision" unique_id=2064223693]
+modulate = Color(1, 1, 1, 0.8)
+scale = Vector2(0.99999994, 0.99999994)
+texture = ExtResource("1_tfqsm")
+
+[node name="DownWallCollision" type="CollisionShape2D" parent="Panel/Stage/Walls" unique_id=1023714697]
+position = Vector2(0, -250)
+rotation = 1.5707964
+scale = Vector2(0.099999994, 3.5999997)
+shape = SubResource("RectangleShape2D_qncmu")
+
+[node name="DownWallSprite" type="Sprite2D" parent="Panel/Stage/Walls/DownWallCollision" unique_id=297151584]
+modulate = Color(1, 1, 1, 0.8)
+scale = Vector2(0.99999994, 0.99999994)
+texture = ExtResource("1_tfqsm")
+
+[node name="coconut" type="CharacterBody2D" parent="Panel/Stage" unique_id=1812759276]
+collision_mask = 2
+motion_mode = 1
+script = ExtResource("2_ebyp3")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Panel/Stage/coconut" unique_id=499880627]
+shape = SubResource("CircleShape2D_plgjo")
+
+[node name="ShadowSprite" type="Sprite2D" parent="Panel/Stage/coconut" unique_id=302972566]
+modulate = Color(0, 0, 0, 1)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("3_pger8")
+
+[node name="BodySprite" type="Sprite2D" parent="Panel/Stage/coconut" unique_id=832913162]
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("3_pger8")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="Panel/Stage/coconut" unique_id=1255809617]
+emitting = false
+amount = 50
+texture = ExtResource("3_pger8")
+lifetime = 0.5
+one_shot = true
+explosiveness = 1.0
+randomness = 1.0
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 100.0
+initial_velocity_max = 250.0
+damping_min = 10.0
+damping_max = 50.0
+scale_amount_curve = SubResource("Curve_ebyp3")
+color_ramp = SubResource("Gradient_pger8")
+
+[node name="damagefield" type="Area2D" parent="Panel/Stage" unique_id=1099580206]
+collision_layer = 3
+collision_mask = 3
+
+[node name="rocket_warning" parent="Panel/Stage" unique_id=1030739022 instance=ExtResource("7_i6agr")]
+
+[node name="Timer" type="Timer" parent="." unique_id=1395498405]
+wait_time = 5.0
+autostart = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1199998352]
+
+[node name="BossHpBar" type="ProgressBar" parent="CanvasLayer" unique_id=900724363]
+material = SubResource("ShaderMaterial_hp")
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -342.5
+offset_top = 15.0
+offset_right = 342.5
+offset_bottom = 42.0
+grow_horizontal = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_hp_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_i6agr")
+value = 50.0
+show_percentage = false
+
+[node name="CompleteScreen" type="Control" parent="CanvasLayer" unique_id=1621534484]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/CompleteScreen" unique_id=96376795]
+material = SubResource("ShaderMaterial_edgefade")
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -150.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.784314)
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="CanvasLayer/CompleteScreen" unique_id=1104575055]
+position = Vector2(576, 324)
+emitting = false
+amount = 100
+lifetime = 2.0
+emission_shape = 3
+emission_rect_extents = Vector2(400, 100)
+direction = Vector2(0, -1)
+spread = 10.0
+gravity = Vector2(0, -50)
+initial_velocity_min = 50.0
+initial_velocity_max = 150.0
+scale_amount_min = 2.0
+scale_amount_max = 5.0
+color = Color(1, 0.843137, 0, 1)
+
+[node name="Label" type="Label" parent="CanvasLayer/CompleteScreen" unique_id=1342254239]
+clip_children = 2
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -100.0
+offset_right = 400.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(400, 100)
+text = "Complete!"
+label_settings = SubResource("LabelSettings_golden")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ShineRect" type="ColorRect" parent="CanvasLayer/CompleteScreen/Label" unique_id=286089869]
+material = SubResource("ShaderMaterial_shine")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[connection signal="body_entered" from="Panel/Stage/damagefield" to="Panel/Stage/coconut" method="_on_damagefield_body_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

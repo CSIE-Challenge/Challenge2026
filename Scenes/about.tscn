@@ -1,0 +1,180 @@
+[gd_scene format=3 uid="uid://dld7mndmqtjwn"]
+
+[ext_resource type="Script" uid="uid://cldwh66u3axjp" path="res://Scripts/about.gd" id="1_vbrdd"]
+[ext_resource type="Texture2D" uid="uid://di85rde5vj61d" path="res://Shapes/about/head1.png" id="2_0p54k"]
+[ext_resource type="Texture2D" uid="uid://mcjrdtc3bh68" path="res://Shapes/about/head2.png" id="3_m6yjq"]
+[ext_resource type="Texture2D" uid="uid://bxll3uvdhnv4u" path="res://Shapes/about/head3.png" id="4_mi8yn"]
+[ext_resource type="Texture2D" uid="uid://bhwl54uv2nr7k" path="res://Shapes/about/effect.png" id="5_mi8yn"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_m6yjq"]
+blend_mode = 1
+particles_animation = true
+particles_anim_h_frames = 3
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Gradient" id="Gradient_mi8yn"]
+offsets = PackedFloat32Array(0, 0.5185185, 1)
+colors = PackedColorArray(0.82646006, 0.86, 0.18920003, 1, 1, 0.9333334, 0, 1, 1, 0.97733337, 0.65999997, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_mi8yn"]
+gradient = SubResource("Gradient_mi8yn")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_xifaj"]
+particle_flag_disable_z = true
+gravity = Vector3(0, 0, 0)
+color_ramp = SubResource("GradientTexture1D_mi8yn")
+anim_offset_max = 1.0
+
+[node name="About" type="Control" unique_id=1973538277]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_vbrdd")
+
+[node name="Panel" type="Panel" parent="." unique_id=69571252]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Panel" unique_id=1619510258]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -252.0
+offset_bottom = 258.0
+grow_horizontal = 2
+grow_vertical = 2
+bbcode_enabled = true
+text = "[center][b][font_size=26][rainbow sat=0.8 val=0.9 freq=0.5]🌴 躲陷阱對抗賽 🌴[/rainbow][/font_size][/b]
+[font_size=12][color=#a0aec0]Versio[wave amp=10 freq=1][url=4_N]n[/url][/wave] 1.0.0[/color][/font_size]
+[color=#4a5568][hr][/color]
+
+[font_size=18][b][color=#ed8936]🥥 關於這個遊戲 🥥[/color][/b][/font_size]
+生活中，若🥥出現了，我們就不🉐不考慮它出現了的事實。每個人都不🉐不面對這些問題。
+
+在面對這種問題時，更多🥥的意義是這樣的，我這幾天一直在思索🤔這個問題，我們不🉐不面對一個非常尷尬😅的事實。
+
+那就是😤，既然是這樣，奧斯特洛夫斯基曾經說過一句發人深省的話🗣🗣🗣，
+當人生給你🥥，就做🥥水，我不能腐朽😭，我願意燃燒🔥起來！這不禁令我深思🤔。
+
+[color=#4a5568][hr][/color]
+
+[font_size=18][b][color=#3182ce]🛠️ 製作團隊[/color][/b][/font_size]
+
+[color=#eb4034][b]Leaders[/b][/color]
+prairie
+wen
+
+[color=#eb4034][b]Game Design & Game Pr[wave amp=10 freq=1][url=1_O]o[/url][/wave]gramming[/b][/color]
+Ian
+Eggrror404
+iantsai0616
+731018913097449533
+cmj
+prairie
+NJ[wave amp=10 freq=1][url=0_C]C[/url][/wave]
+崩潰警告( •̀ ω •́ )✧
+Ppppp
+CYh[wave amp=10 freq=1][url=5_U]u[/url][/wave]ang
+wen
+Andromeda
+20620
+
+[color=#eb4034][b]Art[/b][/color]
+Eggrror404
+NJC
+崩潰警告( •̀ ω •́ )✧
+Ppppp
+SingOut
+
+[color=#eb4034][b]Music & Sound Effec[wave amp=10 freq=1][url=6_T]t[/url][/wave][/b][/color]
+a97
+nahco3sheep
+
+[color=#eb4034][b]Agent Design & Game Testing[/b][/color]
+企鵝
+NJC
+Andromeda
+a97
+
+[color=#4a5568][hr][/color]
+
+[font_size=18][b][color=#9f7aea]Spe[wave amp=10 freq=1][url=2_C]c[/url][/wave]ial Thanks[/color][/b][/font_size]
+Challenge 2025 開發團隊
+主辦 資工系系學會
+還有一起籌備資訊營的人們…
+
+[font_size=18][i][color=#a0aec0]與你[/color][/i][/font_size]
+
+[color=#4a5568][hr][/color]
+
+[font_size=18][b][color=#82ed77]Devel[wave amp=10 freq=1][url=3_O]o[/url][/wave]pers’ Notes[/color][/b][/font_size]
+
+我想要說的前人們都說過了
+
+[/center]"
+meta_underlined = false
+
+[node name="Close" type="Button" parent="Panel" unique_id=1956544565]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -44.0
+offset_top = -46.0
+offset_right = 44.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "回到主畫面"
+
+[node name="Head1" type="Sprite2D" parent="." unique_id=653172641]
+visible = false
+texture = ExtResource("2_0p54k")
+
+[node name="Head2" type="Sprite2D" parent="." unique_id=1820371873]
+visible = false
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("3_m6yjq")
+
+[node name="Head3" type="Sprite2D" parent="." unique_id=524326330]
+visible = false
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_mi8yn")
+
+[node name="FlyingLetter" type="Label" parent="." unique_id=1139308491]
+visible = false
+top_level = true
+layout_mode = 0
+offset_right = 16.0
+offset_bottom = 35.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_font_sizes/font_size = 25
+text = "C"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CollectEffect" type="GPUParticles2D" parent="FlyingLetter" unique_id=1640661442]
+material = SubResource("CanvasItemMaterial_m6yjq")
+position = Vector2(9, 18)
+amount = 6
+texture = ExtResource("5_mi8yn")
+randomness = 1.0
+fixed_fps = 0
+local_coords = true
+draw_order = 0
+process_material = SubResource("ParticleProcessMaterial_xifaj")
+
+[connection signal="meta_clicked" from="Panel/RichTextLabel" to="." method="_on_rich_text_label_meta_clicked"]
+[connection signal="pressed" from="Panel/Close" to="." method="_on_close_pressed"]

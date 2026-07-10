@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://mongusskin"]
+
+[ext_resource type="Script" uid="uid://ccq118brpqmer" path="res://Scripts/skins/among_us_skin_prefab.gd" id="1_amongus"]
+
+[node name="AmongUsSkinPrefab" type="Node2D" unique_id=139175558]
+script = ExtResource("1_amongus")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1794595352]
+scale = Vector2(0.1, 0.1)
+
+[node name="BloodParticles" type="CPUParticles2D" parent="." unique_id=153821708]
+emitting = false
+amount = 40
+lifetime = 0.5
+one_shot = true
+explosiveness = 0.9
+emission_shape = 1
+emission_sphere_radius = 10.0
+direction = Vector2(0, -1)
+spread = 60.0
+gravity = Vector2(0, 300)
+initial_velocity_min = 100.0
+initial_velocity_max = 300.0
+scale_amount_min = 4.0
+scale_amount_max = 8.0
+color = Color(1, 0, 0, 1)

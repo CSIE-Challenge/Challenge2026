@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://goldenskin"]
+
+[ext_resource type="Script" uid="uid://bf5d30mmspnlx" path="res://Scripts/skins/golden_skin_prefab.gd" id="1_gold"]
+[ext_resource type="Shader" uid="uid://cfqwjf78ukjip" path="res://Shaders/golden_shine.gdshader" id="2_shader"]
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="3_circle"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gold"]
+shader = ExtResource("2_shader")
+shader_parameter/base_color = Color(1, 0.84, 0, 1)
+shader_parameter/shine_speed = 3.0
+
+[sub_resource type="Curve" id="Curve_gold"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_gold_death"]
+colors = PackedColorArray(1, 0.9, 0.2, 1, 1, 0.6, 0, 0)
+
+[node name="GoldenSkinPrefab" type="Node2D"]
+script = ExtResource("1_gold")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_gold")
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("3_circle")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+amount = 16
+lifetime = 1.5
+texture = ExtResource("3_circle")
+emission_shape = 1
+emission_sphere_radius = 25.0
+direction = Vector2(0, -1)
+spread = 20.0
+gravity = Vector2(0, -50)
+initial_velocity_min = 20.0
+initial_velocity_max = 40.0
+scale_amount_min = 0.01
+scale_amount_max = 0.03
+scale_amount_curve = SubResource("Curve_gold")
+color = Color(1, 0.9, 0.3, 1)
+
+[node name="DeathParticles" type="CPUParticles2D" parent="."]
+material = SubResource("ShaderMaterial_gold")
+emitting = false
+amount = 100
+texture = ExtResource("3_circle")
+lifetime = 1.0
+one_shot = true
+explosiveness = 1.0
+randomness = 0.8
+spread = 180.0
+gravity = Vector2(0, 200)
+initial_velocity_min = 150.0
+initial_velocity_max = 400.0
+damping_min = 50.0
+damping_max = 100.0
+scale_amount_min = 0.02
+scale_amount_max = 0.08
+scale_amount_curve = SubResource("Curve_gold")
+color_ramp = SubResource("Gradient_gold_death")

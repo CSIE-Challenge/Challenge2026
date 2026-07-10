@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://thundertres"]
+
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="1_circle"]
+[ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_skindata"]
+[ext_resource type="PackedScene" uid="uid://thunderskin" path="res://Scenes/skins/thunder_skin_prefab.tscn" id="2_prefab"]
+
+[resource]
+script = ExtResource("1_skindata")
+skin_id = "thunder_skin"
+true_name = "雷霆風暴"
+price = 300
+preview_texture = ExtResource("1_circle")
+skin_prefab = ExtResource("2_prefab")

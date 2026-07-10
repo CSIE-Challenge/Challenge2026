@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://bbqeu8g5su01k"]
+
+[ext_resource type="Script" uid="uid://cc773nwoerrrd" path="res://Scripts/trap_test.gd" id="1_7trjf"]
+[ext_resource type="PackedScene" uid="uid://bjm2jsv5qry5v" path="res://Scenes/gameplay.tscn" id="2_r4qip"]
+
+[node name="TrapTest" type="Node2D" unique_id=459225068]
+script = ExtResource("1_7trjf")
+
+[node name="Gameplay" parent="." unique_id=678551049 instance=ExtResource("2_r4qip")]

@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://choe7qk61cgan"]
+
+[ext_resource type="Script" uid="uid://dsh5dbr08ie17" path="res://Scripts/skins/singularity_skin_prefab.gd" id="1_sing"]
+[ext_resource type="Shader" uid="uid://bo5o76rrqf6l4" path="res://Shaders/blackhole.gdshader" id="2_shader"]
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="3_circle"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bh"]
+shader = ExtResource("2_shader")
+shader_parameter/disk_color = Color(0.6, 0.1, 1, 1)
+shader_parameter/rotation_speed = 5.0
+
+[node name="SingularitySkinPrefab" type="Node2D" unique_id=1831137622]
+script = ExtResource("1_sing")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1530450222]
+material = SubResource("ShaderMaterial_bh")
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("3_circle")
+
+[node name="Shockwave" type="ColorRect" parent="." unique_id=2113988025]
+visible = false
+offset_left = -150.0
+offset_top = -15.0
+offset_right = 150.0
+offset_bottom = 15.0
+color = Color(0.6, 0.1, 1, 0.8)
+
+[node name="SuckParticles" type="CPUParticles2D" parent="." unique_id=116106495]
+emitting = false
+amount = 40
+texture = ExtResource("3_circle")
+lifetime = 0.4
+one_shot = true
+emission_shape = 1
+emission_sphere_radius = 60.0
+gravity = Vector2(0, 0)
+radial_accel_min = -300.0
+radial_accel_max = -200.0
+scale_amount_min = 0.01
+scale_amount_max = 0.03
+color = Color(0.8, 0.4, 1, 1)
+

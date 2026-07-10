@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://cam3j8ep2wgtd"]
+
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="1_s77u2"]
+[ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_skindata"]
+[ext_resource type="PackedScene" uid="uid://goldenskin" path="res://Scenes/skins/golden_skin_prefab.tscn" id="2_prefab"]
+
+[resource]
+script = ExtResource("1_skindata")
+skin_id = "golden_skin"
+true_name = "黃金傳說"
+is_achievement_unlock = true
+achievement_desc = "通關隱藏遊戲"
+is_silhouette = true
+preview_texture = ExtResource("1_s77u2")
+skin_prefab = ExtResource("2_prefab")

@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://dukfpi8j30j5"]
+
+[ext_resource type="Script" uid="uid://dfja4wnnn1mv6" path="res://Scripts/coconut_bar/coconut_bar.gd" id="1_vw16d"]
+[ext_resource type="PackedScene" uid="uid://d1htyju3dtx5m" path="res://Scenes/coconut_bar/trunk.tscn" id="2_qf87j"]
+[ext_resource type="PackedScene" uid="uid://ckydfw0uqneas" path="res://Scenes/coconut_bar/leaf.tscn" id="3_wia73"]
+[ext_resource type="PackedScene" uid="uid://cwcgxf140mcg3" path="res://Scenes/coconut_bar/coconut.tscn" id="4_dm3mp"]
+[ext_resource type="PackedScene" uid="uid://ccsek587w7nqo" path="res://Scenes/coconut_bar/eaten_coconut.tscn" id="5_uqnti"]
+
+[node name="CoconutBar" type="Node2D" unique_id=339971714]
+script = ExtResource("1_vw16d")
+trunk = ExtResource("2_qf87j")
+leaf = ExtResource("3_wia73")
+coconut = ExtResource("4_dm3mp")
+eaten_coconut = ExtResource("5_uqnti")

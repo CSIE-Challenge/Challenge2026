@@ -1,0 +1,269 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/menu/matchmaker_manager.gd" id="1_mm"]
+
+[node name="Matchmaker" type="Control" unique_id=2000000001]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_mm")
+
+[node name="Panel" type="Panel" parent="." unique_id=2000000002]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel" unique_id=2000000003]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.0
+anchor_right = 0.5
+anchor_bottom = 0.0
+offset_left = -350.0
+offset_top = 40.0
+offset_right = 350.0
+offset_bottom = 165.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 10
+
+[node name="IPLabel" type="Label" parent="Panel/VBoxContainer" unique_id=2000000004]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Matchmaker Server:"
+horizontal_alignment = 1
+
+[node name="IPInput" type="LineEdit" parent="Panel/VBoxContainer" unique_id=2000000005]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+placeholder_text = "127.0.0.1:3000"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Panel/VBoxContainer" unique_id=2000000006]
+layout_mode = 2
+
+[node name="PanelA" type="VBoxContainer" parent="Panel" unique_id=2000000007]
+visible = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -350.0
+offset_top = -150.0
+offset_right = 350.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+
+[node name="TitleLabel" type="Label" parent="Panel/PanelA" unique_id=2000000008]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "建立或加入房間"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ErrorLabel" type="Label" parent="Panel/PanelA" unique_id=2000000009]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = ""
+horizontal_alignment = 1
+
+[node name="CreateRoomButton" type="Button" parent="Panel/PanelA" unique_id=2000000010]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+text = "創建房間"
+
+[node name="JoinRoomButton" type="Button" parent="Panel/PanelA" unique_id=2000000011]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+text = "加入房間"
+
+[node name="BackButton" type="Button" parent="Panel/PanelA" unique_id=2000000012]
+custom_minimum_size = Vector2(0, 55)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "返回"
+
+[node name="PanelB" type="VBoxContainer" parent="Panel" unique_id=2000000013]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -350.0
+offset_top = -150.0
+offset_right = 350.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+
+[node name="CountdownLabel" type="Label" parent="Panel/PanelB" unique_id=2000000014]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "剩餘 60 秒"
+horizontal_alignment = 1
+
+[node name="TitleLabel" type="Label" parent="Panel/PanelB" unique_id=2000000015]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "房間號碼"
+horizontal_alignment = 1
+
+[node name="CodeLabel" type="Label" parent="Panel/PanelB" unique_id=2000000016]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 56
+text = "------"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BackButtonB" type="Button" parent="Panel/PanelB" unique_id=2000000017]
+custom_minimum_size = Vector2(0, 55)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "返回"
+
+[node name="PanelC" type="VBoxContainer" parent="Panel" unique_id=2000000018]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -350.0
+offset_top = -150.0
+offset_right = 350.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+
+[node name="TitleLabel" type="Label" parent="Panel/PanelC" unique_id=2000000019]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "加入房間"
+horizontal_alignment = 1
+
+[node name="CodeInput" type="LineEdit" parent="Panel/PanelC" unique_id=2000000020]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+placeholder_text = "ABC123"
+horizontal_alignment = 1
+
+[node name="ErrorLabel" type="Label" parent="Panel/PanelC" unique_id=2000000021]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = ""
+horizontal_alignment = 1
+
+[node name="ConfirmJoinButton" type="Button" parent="Panel/PanelC" unique_id=2000000022]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+text = "確認"
+
+[node name="BackButtonC" type="Button" parent="Panel/PanelC" unique_id=2000000023]
+custom_minimum_size = Vector2(0, 55)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "返回"
+
+[node name="PanelD" type="VBoxContainer" parent="Panel" unique_id=2000000024]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -350.0
+offset_top = -220.0
+offset_right = 350.0
+offset_bottom = 220.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+
+[node name="CountdownLabel" type="Label" parent="Panel/PanelD" unique_id=2000000025]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "剩餘 90 秒"
+horizontal_alignment = 1
+
+[node name="StatusLabel" type="Label" parent="Panel/PanelD" unique_id=2000000026]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "等待雙方確認..."
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Panel/PanelD" unique_id=2000000027]
+layout_mode = 2
+
+[node name="AgentLabel" type="Label" parent="Panel/PanelD" unique_id=2000000028]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Agent: 使用預設"
+horizontal_alignment = 1
+
+[node name="ChooseAgentButton" type="Button" parent="Panel/PanelD" unique_id=2000000029]
+custom_minimum_size = Vector2(0, 55)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "選擇 Agent 檔案..."
+
+[node name="DefaultAgentButton" type="Button" parent="Panel/PanelD" unique_id=2000000030]
+custom_minimum_size = Vector2(0, 55)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "使用預設 Agent"
+
+[node name="ReadyButton" type="Button" parent="Panel/PanelD" unique_id=2000000031]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+text = "確認"
+
+[node name="BackButtonD" type="Button" parent="Panel/PanelD" unique_id=2000000032]
+custom_minimum_size = Vector2(0, 55)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "返回"
+
+[node name="HTTPRequest" type="HTTPRequest" parent="." unique_id=2000000033]
+
+[connection signal="text_changed" from="Panel/VBoxContainer/IPInput" to="." method="_on_ip_text_changed"]
+[connection signal="button_up" from="Panel/PanelA/CreateRoomButton" to="." method="_on_create_room_button_up"]
+[connection signal="button_up" from="Panel/PanelA/JoinRoomButton" to="." method="_on_join_room_button_up"]
+[connection signal="button_up" from="Panel/PanelA/BackButton" to="." method="_on_back_button_up"]
+[connection signal="button_up" from="Panel/PanelB/BackButtonB" to="." method="_on_back_b_button_up"]
+[connection signal="button_up" from="Panel/PanelC/ConfirmJoinButton" to="." method="_on_confirm_join_button_up"]
+[connection signal="button_up" from="Panel/PanelC/BackButtonC" to="." method="_on_back_c_button_up"]
+[connection signal="button_up" from="Panel/PanelD/ChooseAgentButton" to="." method="_on_choose_agent_button_up"]
+[connection signal="button_up" from="Panel/PanelD/DefaultAgentButton" to="." method="_on_default_agent_button_up"]
+[connection signal="button_up" from="Panel/PanelD/ReadyButton" to="." method="_on_ready_button_up"]
+[connection signal="button_up" from="Panel/PanelD/BackButtonD" to="." method="_on_back_d_button_up"]

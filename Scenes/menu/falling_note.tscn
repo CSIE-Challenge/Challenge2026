@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://ekboubnwnb0u"]
+
+[ext_resource type="Script" uid="uid://cy7242p4dhse0" path="res://Scripts/menu/falling_note.gd" id="1_1forp"]
+
+[node name="falling_note" type="Node2D" unique_id=1823802721]
+script = ExtResource("1_1forp")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1699821312]
+offset_right = 40.0
+offset_bottom = 40.0

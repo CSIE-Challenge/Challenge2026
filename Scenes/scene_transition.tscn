@@ -1,0 +1,103 @@
+[gd_scene format=3 uid="uid://c0ld3cep1ugxl"]
+
+[ext_resource type="Script" uid="uid://cm3q08snijioj" path="res://Scripts/scene_transition.gd" id="1_vin40"]
+[ext_resource type="Shader" uid="uid://mbrmymvnd75l" path="res://Shaders/transition.gdshader" id="2_8sxkv"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sd3nk"]
+shader = ExtResource("2_8sxkv")
+shader_parameter/distortion = 0.0
+shader_parameter/aberration = 0.0
+shader_parameter/mix_amount = 0.0
+shader_parameter/bg_color = Color(0.08, 0.02, 0.15, 1)
+
+[node name="SceneTransition" type="CanvasLayer" unique_id=873390737]
+process_mode = 3
+layer = 1000
+script = ExtResource("1_vin40")
+
+[node name="ShaderRect" type="ColorRect" parent="." unique_id=1217484533]
+material = SubResource("ShaderMaterial_sd3nk")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TopBar" type="ColorRect" parent="." unique_id=1211216469]
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+color = Color(0, 0, 0, 1)
+
+[node name="BottomBar" type="ColorRect" parent="." unique_id=1981720660]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(0, 0, 0, 1)
+
+[node name="FadeRect" type="ColorRect" parent="." unique_id=578224941]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0)
+
+[node name="AchievementControl" type="Control" parent="." unique_id=1559269839]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="WhiteRect" type="ColorRect" parent="AchievementControl" unique_id=861210671]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -90.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="BlackRect" type="ColorRect" parent="AchievementControl/WhiteRect" unique_id=148349588]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -4.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Label" type="Label" parent="AchievementControl/WhiteRect/BlackRect" unique_id=1359671494]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -342.0
+offset_right = -10.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_font_sizes/font_size = 20
+text = "Achievement Unlocked!"
+horizontal_alignment = 1
+vertical_alignment = 1

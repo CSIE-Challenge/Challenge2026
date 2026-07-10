@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://c6uwokkyxaxs4"]
+
+[ext_resource type="Script" uid="uid://qo426cr5dnpx" path="res://Scripts/traps/trap7-spreading_ripples.gd" id="1_us4h7"]
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_8v4sb"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2fqos"]
+radius = 96.25487
+
+[sub_resource type="Curve" id="Curve_msq6u"]
+_data = [Vector2(0, 0.5373474), 0.0, 0.94283897, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_2fqos"]
+curve = SubResource("Curve_msq6u")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_msq6u"]
+resource_local_to_scene = true
+particle_flag_disable_z = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 1.0
+emission_ring_radius = 100.0
+emission_ring_inner_radius = 100.0
+emission_ring_cone_angle = 90.0
+radial_velocity_min = -20.000021
+radial_velocity_max = 99.99998
+gravity = Vector3(0, 0, 0)
+radial_accel_min = -2.2351742e-06
+radial_accel_max = -2.2351742e-06
+scale_min = 0.099999994
+scale_max = 0.19999999
+scale_curve = SubResource("CurveTexture_2fqos")
+
+[node name="SpreadingRipples" type="Area2D" unique_id=2077179031]
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("1_us4h7")
+
+[node name="WarningSprite" type="Sprite2D" parent="." unique_id=1575762953]
+modulate = Color(0.7294118, 0.2, 0.2, 1)
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("2_8v4sb")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=781280993]
+shape = SubResource("CircleShape2D_2fqos")
+
+[node name="WaterParticles" type="GPUParticles2D" parent="." unique_id=918310142]
+emitting = false
+amount = 1000
+texture = ExtResource("2_8v4sb")
+process_material = SubResource("ParticleProcessMaterial_msq6u")

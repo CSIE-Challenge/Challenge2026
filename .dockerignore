@@ -1,0 +1,17 @@
+.git
+.godot
+.import
+
+agent/.venv
+agent/build
+agent/dist
+agent/.pytest_cache
+
+.env
+matchmaker/.env
+matchmaker/node_modules
+
+**/__pycache__
+**/.pytest_cache
+**/*.tmp
+**/node_modules

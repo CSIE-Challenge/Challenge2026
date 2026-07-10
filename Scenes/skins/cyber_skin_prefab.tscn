@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://cyberskin"]
+
+[ext_resource type="Script" uid="uid://dx7fsahyl6hoa" path="res://Scripts/skins/cyber_skin_prefab.gd" id="1_cyber"]
+[ext_resource type="Shader" uid="uid://ojahded6osr5" path="res://Shaders/glitch.gdshader" id="2_shader"]
+[ext_resource type="Texture2D" uid="uid://dle4xt8upfg42" path="res://Shapes/Square.svg" id="3_square"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_glitch"]
+shader = ExtResource("2_shader")
+shader_parameter/glitch_intensity = 0.3
+shader_parameter/glitch_intensity = 0.3
+shader_parameter/chromatic_aberration = 0.5
+
+[sub_resource type="Curve" id="Curve_cyber"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_cyber_death"]
+colors = PackedColorArray(0.1, 0.9, 0.5, 1, 0.0, 0.4, 0.2, 0)
+
+[node name="CyberSkinPrefab" type="Node2D"]
+script = ExtResource("1_cyber")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_glitch")
+modulate = Color(0.1, 0.9, 0.5, 1)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("3_square")
+
+[node name="DeathParticles" type="CPUParticles2D" parent="."]
+material = SubResource("ShaderMaterial_glitch")
+emitting = false
+amount = 120
+texture = ExtResource("3_square")
+lifetime = 1.0
+one_shot = true
+explosiveness = 0.95
+randomness = 0.8
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 100.0
+initial_velocity_max = 500.0
+damping_min = 50.0
+damping_max = 100.0
+scale_amount_min = 0.02
+scale_amount_max = 0.08
+scale_amount_curve = SubResource("Curve_cyber")
+color_ramp = SubResource("Gradient_cyber_death")

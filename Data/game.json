@@ -1,0 +1,45 @@
+{
+	"energy_ball": {
+		"spawn_bounds": {
+			"x": -220.0,
+			"y": -220.0,
+			"width": 440.0,
+			"height": 440.0
+		},
+		"min_spawn_distance_from_player": 48.0,
+		"max_spawn_attempts": 100,
+		"coconut_flicker_speed": 1,
+		"coconut_rotate_speed": 1,
+		"coconut_rotate_amplitude": 0.5,
+		"energy_gain": [
+			[2, 3, 3, 3, 4, 4],
+			[3, 3, 4, 5, 6, 7],
+			[4, 5, 6, 7, 8, 10],
+			[4, 6, 7, 8, 9, 11],
+			[5, 7, 8, 10, 12, 15],
+			[6, 8, 10, 13, 16, 67]
+		]
+	},
+	"game_manager": {
+		"energy_increase_period": [0.5, 0.35, 0.28, 0.2, 0.13, 0.1],
+		"player_invincibility_time": 1.0,
+		"game_duration": 300.0,
+		"max_phase": 5,
+		"phase_duration": [20.0, 30.0, 30.0, 50.0, 50.0, 120.0],
+		"max_energy": [35, 50, 65, 80, 95, 110]
+	},
+	"player": {
+		"acceleration": 100.0,
+		"move_speed": 300.0,
+		"jump_velocity": 750.0,
+		"jump_gravity": 2500.0,
+		"jump_fall_multiplier": 1.5,
+		"max_health": 5,
+		"invincibility_flicker_period": 8
+	},
+	"heal": {
+		"uses": 2,
+		"amount": 2,
+		"energy_cost": 40
+	}
+}

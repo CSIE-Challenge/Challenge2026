@@ -7,10 +7,24 @@
 
 # python virtual environment
 .venv/
+__pycache__/
+
+# agent bundle build output
+agent/build/
+agent/requirements.lock
+
+# python version file
+.python-version
+!agent/.python-version
+
+# ruff
+.ruff_cache/
+
+# Godot temp save files
+*.tmp
 
 # misc
 .DS_Store
-.python-version
+.env
 
 /export/
-__pycache__/

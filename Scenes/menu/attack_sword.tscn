@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://bk0s4eibd087b"]
+
+[ext_resource type="Script" uid="uid://vkcyxbp7wj6k" path="res://Scripts/menu/attack_sword.gd" id="1_0bsta"]
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="1_w4s6t"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_0bsta"]
+radius = 7.071068
+
+[node name="attack_sword" type="CollisionShape2D" unique_id=2010679171]
+shape = SubResource("CircleShape2D_0bsta")
+script = ExtResource("1_0bsta")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=720807796]
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("1_w4s6t")

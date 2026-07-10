@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://crsaundxxrh0o"]
+
+[ext_resource type="Script" uid="uid://d3rt68l81d17i" path="res://Scripts/menu/attack_ball.gd" id="1_3f3li"]
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_rfwsh"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hvs82"]
+radius = 7.2111025
+
+[sub_resource type="Curve" id="Curve_3f3li"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_rfwsh"]
+offsets = PackedFloat32Array(0, 0.8770492, 1)
+colors = PackedColorArray(0, 1, 0, 1, 0.69411767, 1, 0.69411767, 0.76862746, 1, 1, 1, 0)
+
+[node name="attack_ball" type="Area2D" unique_id=1322022260]
+collision_mask = 3
+script = ExtResource("1_3f3li")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=611050264]
+shape = SubResource("CircleShape2D_hvs82")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=145026108]
+modulate = Color(0, 1, 0, 1)
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("2_rfwsh")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="." unique_id=563030856]
+amount = 5
+texture = ExtResource("2_rfwsh")
+lifetime = 1.5
+emission_shape = 1
+emission_sphere_radius = 20.0
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 1.5
+initial_velocity_max = 3.0
+scale_amount_min = 0.01
+scale_amount_max = 0.03
+scale_amount_curve = SubResource("Curve_3f3li")
+color_ramp = SubResource("Gradient_rfwsh")

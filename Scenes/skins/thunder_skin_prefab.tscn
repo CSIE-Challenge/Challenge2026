@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://thunderskin"]
+
+[ext_resource type="Script" uid="uid://bgb1y7lnpxndi" path="res://Scripts/skins/thunder_skin_prefab.gd" id="1_thunder"]
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_circle"]
+
+[sub_resource type="Curve" id="Curve_thunder"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_thunder_death"]
+colors = PackedColorArray(0.8, 0.9, 1.0, 1, 0.2, 0.3, 0.9, 0)
+
+[node name="ThunderSkinPrefab" type="Node2D"]
+script = ExtResource("1_thunder")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.2, 0.3, 0.9, 1)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_circle")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.5
+
+
+[node name="DeathParticles" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 80
+texture = ExtResource("2_circle")
+lifetime = 0.8
+one_shot = true
+explosiveness = 1.0
+randomness = 0.5
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 200.0
+initial_velocity_max = 600.0
+damping_min = 50.0
+damping_max = 150.0
+scale_amount_min = 0.02
+scale_amount_max = 0.1
+scale_amount_curve = SubResource("Curve_thunder")
+color_ramp = SubResource("Gradient_thunder_death")

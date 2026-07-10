@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://blesmlfba01ny"]
+
+[ext_resource type="Script" uid="uid://cnnpbfnww61wx" path="res://Scripts/traps/trap5-icefloor.gd" id="1_j7spk"]
+[ext_resource type="Shader" uid="uid://c0rnb5vdrn2if" path="res://Shaders/juice_reveal.gdshader" id="2_rvr82"]
+[ext_resource type="Texture2D" uid="uid://s7nhu8pnlgo2" path="res://Shapes/juice_glass.svg" id="3_33xs4"]
+[ext_resource type="Texture2D" uid="uid://bg7lqkweutjas" path="res://Shapes/juice_spilled.svg" id="3_rvr82"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rkeu5"]
+resource_local_to_scene = true
+shader = ExtResource("2_rvr82")
+shader_parameter/liquid_color = Color(1, 0.7019608, 0.5019608, 1)
+shader_parameter/border_color = Color(1, 0.59607846, 0.33333334, 1)
+shader_parameter/highlight_color = Color(1, 0.7333592, 0.57463634, 1)
+shader_parameter/wave_frequency = 20.0000009025
+shader_parameter/wave_amplitude = 0.02000000095
+shader_parameter/wave_speed = 0.800000038
+shader_parameter/border_thickness = 0.010000000475
+shader_parameter/reveal_progress = 0.0
+shader_parameter/reveal_origin = Vector2(0.745, 0.24)
+shader_parameter/master_alpha = 1.0
+
+[node name="IceFloor" type="Area2D" unique_id=1192991918]
+collision_mask = 9
+script = ExtResource("1_j7spk")
+
+[node name="SpilledJuice" type="Sprite2D" parent="." unique_id=2135560715]
+material = SubResource("ShaderMaterial_rkeu5")
+position = Vector2(1.9073486e-06, -1.2874603e-05)
+scale = Vector2(1.25, 1.2499999)
+texture = ExtResource("3_rvr82")
+
+[node name="JuiceGlass" type="Sprite2D" parent="." unique_id=1268785805]
+position = Vector2(72, -56.000008)
+rotation = -1.0471976
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("3_33xs4")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=897093263]
+polygon = PackedVector2Array(-72, -72, -72, 72, 72, 72, 72, -72)
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
+[connection signal="area_exited" from="." to="." method="_on_area_exited"]
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]

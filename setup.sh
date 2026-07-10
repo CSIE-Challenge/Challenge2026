@@ -27,13 +27,9 @@ if [ ! -f "$PRECOMMIT_PYZ" ]; then
     exit 1
 fi
 
-echo "[INFO] Installing pre-commit hook..."
-python3 "$PRECOMMIT_PYZ" install
-
-echo "[INFO] Installing commit-msg hook..."
-python3 "$PRECOMMIT_PYZ" install --hook-type commit-msg
-
-echo "[INFO] Pre-installing all hook environments..."
-python3 "$PRECOMMIT_PYZ" install-hooks
+echo "[INFO] Installing all git hooks and their environments..."
+# Hook types come from default_install_hook_types in .pre-commit-config.yaml
+# (pre-commit, commit-msg, post-checkout, pre-merge-commit).
+python3 "$PRECOMMIT_PYZ" install --install-hooks
 
 echo "[SUCCESS] pre-commit is fully set up and active."

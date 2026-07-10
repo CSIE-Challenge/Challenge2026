@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://bs0eroskinres"]
+
+[ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_abs"]
+[ext_resource type="PackedScene" uid="uid://bs0eroskin" path="res://Scenes/skins/absolute_zero_skin_prefab.tscn" id="2_prefab"]
+
+[resource]
+script = ExtResource("1_abs")
+skin_id = "absolute_zero_skin"
+true_name = "絕對零度"
+price = 300
+is_silhouette = true
+skin_prefab = ExtResource("2_prefab")
+metadata/_custom_type_script = "uid://c6vuqckcyjdey"

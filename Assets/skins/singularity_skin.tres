@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://dm1bitghbj3r3"]
+
+[ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_sing"]
+[ext_resource type="PackedScene" uid="uid://choe7qk61cgan" path="res://Scenes/skins/singularity_skin_prefab.tscn" id="2_prefab"]
+
+[resource]
+script = ExtResource("1_sing")
+skin_id = "singularity_skin"
+true_name = "黑洞奇異點"
+price = 300
+is_silhouette = true
+skin_prefab = ExtResource("2_prefab")
+metadata/_custom_type_script = "uid://c6vuqckcyjdey"

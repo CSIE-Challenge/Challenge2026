@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://ckydfw0uqneas"]
+
+[ext_resource type="Script" uid="uid://dt2g1aqih87br" path="res://Scripts/coconut_bar/leaf.gd" id="1_3a8g1"]
+[ext_resource type="Texture2D" uid="uid://dyt01wsjqs46q" path="res://Shapes/coconut_tree/LongLeaf.png" id="2_xlgdt"]
+[ext_resource type="Texture2D" uid="uid://cjewo3g7ebcvb" path="res://Shapes/coconut_tree/ShortLeaf.png" id="3_stcbp"]
+[ext_resource type="Texture2D" uid="uid://qto2mq3mf0q1" path="res://Shapes/coconut_tree/TopLeaf.png" id="4_y4mc4"]
+
+[node name="Leaf" type="Node2D" unique_id=1302771476]
+script = ExtResource("1_3a8g1")
+
+[node name="Leafstalk" type="Marker2D" parent="." unique_id=168248056]
+
+[node name="LongLeaf" type="Sprite2D" parent="Leafstalk" unique_id=1570972638]
+visible = false
+position = Vector2(24, -193)
+rotation = -1.5707964
+texture = ExtResource("2_xlgdt")
+
+[node name="ShortLeaf" type="Sprite2D" parent="Leafstalk" unique_id=1333804521]
+visible = false
+position = Vector2(25, -135)
+rotation = -2.3561945
+texture = ExtResource("3_stcbp")
+
+[node name="TopLeaf" type="Sprite2D" parent="Leafstalk" unique_id=1898559226]
+visible = false
+position = Vector2(9.536743e-07, -120.000015)
+rotation = 0.08726646
+texture = ExtResource("4_y4mc4")

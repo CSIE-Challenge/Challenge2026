@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://dvancedskin"]
+
+[ext_resource type="Script" uid="uid://573takpc80wj" path="res://Scripts/skins/advanced_skin_prefab.gd" id="1_adv"]
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_circle"]
+
+[sub_resource type="Curve" id="Curve_ebyp3"]
+_data = [Vector2(0.16312057, 1), 0.0, 0.0, 0, 0, Vector2(0.5283688, 0.5048715), -1.5645216, -1.5645216, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_pger8"]
+offsets = PackedFloat32Array(0, 0.39344263, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0)
+
+[node name="AdvancedSkinPrefab" type="Node2D"]
+script = ExtResource("1_adv")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_circle")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 50
+texture = ExtResource("2_circle")
+lifetime = 0.5
+one_shot = true
+explosiveness = 1.0
+randomness = 1.0
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 100.0
+initial_velocity_max = 250.0
+damping_min = 10.0
+damping_max = 50.0
+scale_amount_curve = SubResource("Curve_ebyp3")
+color_ramp = SubResource("Gradient_pger8")

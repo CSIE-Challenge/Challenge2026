@@ -1,0 +1,649 @@
+[gd_scene format=3 uid="uid://crmi87tdk5kb5"]
+
+[ext_resource type="Script" uid="uid://cgyg8jq3g472r" path="res://Scripts/traps/trap10-shotgun.gd" id="1_oluei"]
+[ext_resource type="Script" uid="uid://ct2iq2u7jq2l1" path="res://Scenes/traps/trap10-shotgun_bullet.gd" id="2_gtrg3"]
+[ext_resource type="Texture2D" uid="uid://beilvq8t7d8iy" path="res://Shapes/banana_bullet.svg" id="2_il5d0"]
+[ext_resource type="Texture2D" uid="uid://bpfm5x8s50ikq" path="res://Shapes/dashed_line.svg" id="2_u2tcx"]
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_wov31"]
+[ext_resource type="Texture2D" uid="uid://bcxda587p87ol" path="res://Shapes/pineapple.svg" id="3_i7n8k"]
+[ext_resource type="Texture2D" uid="uid://dtyns3y74ppmo" path="res://Shapes/grape.svg" id="4_eitjp"]
+[ext_resource type="Texture2D" uid="uid://bbhdml57ys8i0" path="res://Shapes/basket.svg" id="6_my68g"]
+[ext_resource type="Texture2D" uid="uid://cloqbfcgyrhli" path="res://Shapes/empty_basket.svg" id="7_gtrg3"]
+
+[sub_resource type="Shader" id="Shader_t1byb"]
+code = "shader_type canvas_item;
+uniform vec4 line_color: source_color;
+uniform float speed = 3.0;
+
+void fragment() {
+	vec2 moving_uv = vec2(UV.x - TIME * speed, UV.y);
+	vec4 tex = texture(TEXTURE, moving_uv);
+	tex.rgb = line_color.rgb;
+	COLOR = tex;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8fuxe"]
+shader = SubResource("Shader_t1byb")
+shader_parameter/line_color = Color(1, 0.87058824, 0.06666667, 1)
+shader_parameter/speed = 3.0
+
+[sub_resource type="Shader" id="Shader_7ukhr"]
+code = "shader_type canvas_item;
+uniform vec4 line_color: source_color;
+uniform float speed = 3.0;
+
+void fragment() {
+	vec2 moving_uv = vec2(UV.x - TIME * speed, UV.y);
+	vec4 tex = texture(TEXTURE, moving_uv);
+	tex.rgb = line_color.rgb;
+	COLOR = tex;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sf0ol"]
+shader = SubResource("Shader_7ukhr")
+shader_parameter/line_color = Color(1, 0.78039217, 0, 1)
+shader_parameter/speed = 3.0
+
+[sub_resource type="Shader" id="Shader_wqi4w"]
+code = "shader_type canvas_item;
+uniform vec4 line_color: source_color;
+uniform float speed = 3.0;
+
+void fragment() {
+	vec2 moving_uv = vec2(UV.x - TIME * speed, UV.y);
+	vec4 tex = texture(TEXTURE, moving_uv);
+	tex.rgb = line_color.rgb;
+	COLOR = tex;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_drgio"]
+shader = SubResource("Shader_wqi4w")
+shader_parameter/line_color = Color(0.5019608, 0, 0.8980392, 1)
+shader_parameter/speed = 3.0
+
+[sub_resource type="Shader" id="Shader_my68g"]
+code = "shader_type canvas_item;
+
+uniform vec4 outline_color:source_color; 
+uniform float outline_width;            
+
+void fragment() {
+    vec4 texture_color = texture(TEXTURE, UV);
+    vec2 size = TEXTURE_PIXEL_SIZE * outline_width;
+    
+    float alpha = texture_color.a;
+    alpha += texture(TEXTURE, UV + vec2(0.0, size.y)).a;  
+    alpha += texture(TEXTURE, UV - vec2(0.0, size.y)).a;  
+    alpha += texture(TEXTURE, UV - vec2(size.x, 0.0)).a;  
+    alpha += texture(TEXTURE, UV + vec2(size.x, 0.0)).a; 
+	alpha += texture(TEXTURE, UV + size).a;
+	alpha += texture(TEXTURE, UV - size).a;
+	alpha += texture(TEXTURE, UV + vec2(size.x, -size.y)).a;  
+    alpha += texture(TEXTURE, UV - vec2(size.x, -size.y)).a; 
+
+    vec4 final_color = mix(outline_color, texture_color, texture_color.a);
+    
+    final_color.a = clamp(alpha, 0.0, 1.0);
+    
+    COLOR = final_color;
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gtrg3"]
+shader = SubResource("Shader_my68g")
+shader_parameter/outline_color = Color(0.5882353, 0.5882353, 0.5882353, 1)
+shader_parameter/outline_width = 20.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_oluei"]
+radius = 12.0
+
+[sub_resource type="Animation" id="Animation_il5d0"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_i7n8k"]
+resource_name = "spin"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 6.2831855]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_eitjp"]
+_data = {
+&"RESET": SubResource("Animation_il5d0"),
+&"spin": SubResource("Animation_i7n8k")
+}
+
+[sub_resource type="Curve" id="Curve_i7n8k"]
+_data = [Vector2(0, 1), 0.0, -3.8039467, 0, 0, Vector2(1, 0), -0.36742628, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_eitjp"]
+curve = SubResource("Curve_i7n8k")
+
+[sub_resource type="Curve" id="Curve_my68g"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.6878453, 0.60483027), 0.059382875, 0.059382875, 0, 0, Vector2(0.8701657, 0.8267749), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="CurveTexture" id="CurveTexture_gtrg3"]
+curve = SubResource("Curve_my68g")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_i7n8k"]
+resource_local_to_scene = true
+lifetime_randomness = 0.5
+particle_flag_disable_z = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 1.0
+emission_ring_radius = 10.0
+emission_ring_inner_radius = 10.0
+emission_ring_cone_angle = 90.0
+radial_velocity_min = 99.99998
+radial_velocity_max = 499.99997
+radial_velocity_curve = SubResource("CurveTexture_eitjp")
+gravity = Vector3(0, 0, 0)
+scale_min = 0.08
+scale_max = 0.12
+scale_curve = SubResource("CurveTexture_gtrg3")
+color = Color(1, 0.87058824, 0.06666667, 1)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_my68g"]
+radius = 12.0
+
+[sub_resource type="Shader" id="Shader_u2tcx"]
+code = "shader_type canvas_item;
+
+uniform vec4 outline_color:source_color = vec4(0.6,0.6,0.6,1); 
+uniform float outline_width = 20.0;            
+
+void fragment() {
+    vec4 texture_color = texture(TEXTURE, UV);
+    vec2 size = TEXTURE_PIXEL_SIZE * outline_width;
+    
+    float alpha = texture_color.a;
+    alpha += texture(TEXTURE, UV + vec2(0.0, size.y)).a;  
+    alpha += texture(TEXTURE, UV - vec2(0.0, size.y)).a;  
+    alpha += texture(TEXTURE, UV - vec2(size.x, 0.0)).a;  
+    alpha += texture(TEXTURE, UV + vec2(size.x, 0.0)).a; 
+	alpha += texture(TEXTURE, UV + size).a;
+	alpha += texture(TEXTURE, UV - size).a;
+	alpha += texture(TEXTURE, UV + vec2(size.x, -size.y)).a;  
+    alpha += texture(TEXTURE, UV - vec2(size.x, -size.y)).a; 
+
+    vec4 final_color = mix(outline_color, texture_color, texture_color.a);
+    
+    final_color.a = clamp(alpha, 0.0, 1.0);
+    
+    COLOR = final_color;
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7ukhr"]
+shader = SubResource("Shader_u2tcx")
+shader_parameter/outline_color = Color(0.5882353, 0.5882353, 0.5882353, 1)
+shader_parameter/outline_width = 10.0
+
+[sub_resource type="Animation" id="Animation_my68g"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_gtrg3"]
+resource_name = "spin"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 6.2831855]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_u2tcx"]
+_data = {
+&"RESET": SubResource("Animation_my68g"),
+&"spin": SubResource("Animation_gtrg3")
+}
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_eitjp"]
+resource_local_to_scene = true
+lifetime_randomness = 0.5
+particle_flag_disable_z = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 1.0
+emission_ring_radius = 10.0
+emission_ring_inner_radius = 10.0
+emission_ring_cone_angle = 90.0
+radial_velocity_min = 99.99998
+radial_velocity_max = 499.99997
+radial_velocity_curve = SubResource("CurveTexture_eitjp")
+gravity = Vector3(0, 0, 0)
+scale_min = 0.08
+scale_max = 0.12
+scale_curve = SubResource("CurveTexture_gtrg3")
+color = Color(1, 0.78039217, 0, 1)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_gtrg3"]
+radius = 12.0
+
+[sub_resource type="Shader" id="Shader_8fuxe"]
+code = "shader_type canvas_item;
+
+uniform vec4 outline_color:source_color = vec4(0.6,0.6,0.6,1); 
+uniform float outline_width = 20.0;            
+
+void fragment() {
+    vec4 texture_color = texture(TEXTURE, UV);
+    vec2 size = TEXTURE_PIXEL_SIZE * outline_width;
+    
+    float alpha = texture_color.a;
+    alpha += texture(TEXTURE, UV + vec2(0.0, size.y)).a;  
+    alpha += texture(TEXTURE, UV - vec2(0.0, size.y)).a;  
+    alpha += texture(TEXTURE, UV - vec2(size.x, 0.0)).a;  
+    alpha += texture(TEXTURE, UV + vec2(size.x, 0.0)).a; 
+	alpha += texture(TEXTURE, UV + size).a;
+	alpha += texture(TEXTURE, UV - size).a;
+	alpha += texture(TEXTURE, UV + vec2(size.x, -size.y)).a;  
+    alpha += texture(TEXTURE, UV - vec2(size.x, -size.y)).a; 
+
+    vec4 final_color = mix(outline_color, texture_color, texture_color.a);
+    
+    final_color.a = clamp(alpha, 0.0, 1.0);
+    
+    COLOR = final_color;
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_t1byb"]
+shader = SubResource("Shader_8fuxe")
+shader_parameter/outline_color = Color(0.5882353, 0.5882353, 0.5882353, 1)
+shader_parameter/outline_width = 10.0
+
+[sub_resource type="Animation" id="Animation_7ukhr"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_8fuxe"]
+resource_name = "spin"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 6.2831855]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_t1byb"]
+_data = {
+&"RESET": SubResource("Animation_7ukhr"),
+&"spin": SubResource("Animation_8fuxe")
+}
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_u2tcx"]
+resource_local_to_scene = true
+lifetime_randomness = 0.5
+particle_flag_disable_z = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 1.0
+emission_ring_radius = 10.0
+emission_ring_inner_radius = 10.0
+emission_ring_cone_angle = 90.0
+radial_velocity_min = 99.99998
+radial_velocity_max = 499.99997
+radial_velocity_curve = SubResource("CurveTexture_eitjp")
+gravity = Vector3(0, 0, 0)
+scale_min = 0.08
+scale_max = 0.12
+scale_curve = SubResource("CurveTexture_gtrg3")
+color = Color(0.6382291, 0.38774085, 1, 1)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_u2tcx"]
+radius = 12.0
+
+[sub_resource type="Animation" id="Animation_u2tcx"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("EmptyBasket:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1e-05, 1e-05)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Basket:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0.15, 0.15)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1e-05, 1e-05)]
+}
+
+[sub_resource type="Animation" id="Animation_t1byb"]
+resource_name = "fire"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(-45, 0), Vector2(-20, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Basket:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.0999, 0.1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0.15, 0.15), Vector2(0.15, 0.15), Vector2(1e-05, 1e-05)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("EmptyBasket:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.43333334, 0.6333333),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(1e-05, 1e-05), Vector2(0.15, 0.15), Vector2(0.15, 0.15), Vector2(1e-05, 1e-05)]
+}
+
+[sub_resource type="Animation" id="Animation_sf0ol"]
+resource_name = "ready"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.51, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(-20, 0), Vector2(-40, 0), Vector2(-45, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("EmptyBasket:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1e-05, 1e-05)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1e-05, 1e-05), Vector2(1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_wqi4w"]
+_data = {
+&"RESET": SubResource("Animation_u2tcx"),
+&"fire": SubResource("Animation_t1byb"),
+&"ready": SubResource("Animation_sf0ol")
+}
+
+[node name="ShotgunTrap" type="Node2D" unique_id=936726986]
+script = ExtResource("1_oluei")
+
+[node name="Timer" type="Timer" parent="." unique_id=2062558811]
+one_shot = true
+
+[node name="AimingLines" type="Node2D" parent="." unique_id=1096219692]
+
+[node name="Line1" type="Line2D" parent="AimingLines" unique_id=1285080951]
+texture_filter = 1
+texture_repeat = 2
+material = SubResource("ShaderMaterial_8fuxe")
+points = PackedVector2Array(0, 0, 0, 0)
+width = 20.0
+default_color = Color(1, 0.87058824, 0.06666667, 1)
+texture = ExtResource("2_u2tcx")
+texture_mode = 1
+sharp_limit = 0.0
+
+[node name="Line2" type="Line2D" parent="AimingLines" unique_id=1109717698]
+texture_filter = 1
+texture_repeat = 2
+material = SubResource("ShaderMaterial_sf0ol")
+points = PackedVector2Array(0, 0, 0, 0)
+width = 20.0
+default_color = Color(1, 0.78039217, 0, 1)
+texture = ExtResource("2_u2tcx")
+texture_mode = 1
+sharp_limit = 0.0
+
+[node name="Line3" type="Line2D" parent="AimingLines" unique_id=91096076]
+texture_filter = 1
+texture_repeat = 2
+material = SubResource("ShaderMaterial_drgio")
+points = PackedVector2Array(0, 0, 0, 0)
+width = 20.0
+default_color = Color(0.5019608, 0, 0.8980392, 1)
+texture = ExtResource("2_u2tcx")
+texture_mode = 1
+sharp_limit = 0.0
+
+[node name="Bullets" type="Node2D" parent="." unique_id=876130518]
+
+[node name="Bullet1" type="Area2D" parent="Bullets" unique_id=1893491073]
+collision_layer = 4
+script = ExtResource("2_gtrg3")
+
+[node name="Sprite2D" type="Sprite2D" parent="Bullets/Bullet1" unique_id=508732407]
+material = SubResource("ShaderMaterial_gtrg3")
+scale = Vector2(0.08, 0.08)
+texture = ExtResource("2_il5d0")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bullets/Bullet1" unique_id=1981943096]
+shape = SubResource("CircleShape2D_oluei")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Bullets/Bullet1" unique_id=446924361]
+libraries/ = SubResource("AnimationLibrary_eitjp")
+autoplay = &"spin"
+
+[node name="JuiceEffect" type="GPUParticles2D" parent="Bullets/Bullet1" unique_id=721668644]
+emitting = false
+amount = 15
+texture = ExtResource("2_wov31")
+lifetime = 0.8
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_i7n8k")
+
+[node name="WallExitDetector" type="Area2D" parent="Bullets/Bullet1" unique_id=1710452704]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bullets/Bullet1/WallExitDetector" unique_id=247218817]
+shape = SubResource("CircleShape2D_my68g")
+
+[node name="Bullet2" type="Area2D" parent="Bullets" unique_id=96416200]
+collision_layer = 4
+script = ExtResource("2_gtrg3")
+
+[node name="Sprite2D" type="Sprite2D" parent="Bullets/Bullet2" unique_id=1287761530]
+material = SubResource("ShaderMaterial_7ukhr")
+scale = Vector2(0.08, 0.08)
+texture = ExtResource("3_i7n8k")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bullets/Bullet2" unique_id=9354501]
+shape = SubResource("CircleShape2D_oluei")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Bullets/Bullet2" unique_id=930434513]
+libraries/ = SubResource("AnimationLibrary_u2tcx")
+autoplay = &"spin"
+
+[node name="JuiceEffect" type="GPUParticles2D" parent="Bullets/Bullet2" unique_id=1393011171]
+emitting = false
+amount = 15
+texture = ExtResource("2_wov31")
+lifetime = 0.8
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_eitjp")
+
+[node name="WallExitDetector" type="Area2D" parent="Bullets/Bullet2" unique_id=106406832]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bullets/Bullet2/WallExitDetector" unique_id=202160464]
+shape = SubResource("CircleShape2D_gtrg3")
+
+[node name="Bullet3" type="Area2D" parent="Bullets" unique_id=262295554]
+collision_layer = 4
+script = ExtResource("2_gtrg3")
+
+[node name="Sprite2D" type="Sprite2D" parent="Bullets/Bullet3" unique_id=1854657220]
+material = SubResource("ShaderMaterial_t1byb")
+position = Vector2(1.14, 0)
+scale = Vector2(0.08, 0.08)
+texture = ExtResource("4_eitjp")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bullets/Bullet3" unique_id=1233588193]
+shape = SubResource("CircleShape2D_oluei")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Bullets/Bullet3" unique_id=476229367]
+libraries/ = SubResource("AnimationLibrary_t1byb")
+autoplay = &"spin"
+
+[node name="JuiceEffect" type="GPUParticles2D" parent="Bullets/Bullet3" unique_id=1965802189]
+emitting = false
+amount = 15
+texture = ExtResource("2_wov31")
+lifetime = 0.8
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_u2tcx")
+
+[node name="WallExitDetector" type="Area2D" parent="Bullets/Bullet3" unique_id=865660948]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bullets/Bullet3/WallExitDetector" unique_id=1234719831]
+shape = SubResource("CircleShape2D_u2tcx")
+
+[node name="Baskets" type="Node2D" parent="." unique_id=904500447]
+
+[node name="MoveBasket" type="Node2D" parent="Baskets" unique_id=1302489735]
+scale = Vector2(1e-05, 1e-05)
+
+[node name="Basket" type="Sprite2D" parent="Baskets/MoveBasket" unique_id=2142092518]
+rotation = 1.5707964
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("6_my68g")
+
+[node name="EmptyBasket" type="Sprite2D" parent="Baskets/MoveBasket" unique_id=394350120]
+rotation = 1.5707964
+scale = Vector2(1e-05, 1e-05)
+texture = ExtResource("7_gtrg3")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Baskets/MoveBasket" unique_id=1866450731]
+libraries/ = SubResource("AnimationLibrary_wqi4w")

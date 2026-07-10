@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://bfwlg3kspapj1"]
+
+[ext_resource type="Script" uid="uid://c26dwblxoheyn" path="res://Scripts/menu/note_warning_area.gd" id="1_t6o61"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_78l7x"]
+
+[node name="note_warning_area" type="Area2D" unique_id=610378632]
+collision_layer = 0
+script = ExtResource("1_t6o61")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=636289363]
+shape = SubResource("RectangleShape2D_78l7x")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=759233655]
+offset_right = 40.0
+offset_bottom = 40.0
