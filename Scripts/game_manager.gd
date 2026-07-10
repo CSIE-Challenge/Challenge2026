@@ -62,6 +62,7 @@ func _ready() -> void:
 	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
 	_update_energy_label()
 	_update_opponent_energy_label(0, 0)
+	_update_max_energy()
 	_connect_agent_action_signals()
 	_connect_pause_menu()
 

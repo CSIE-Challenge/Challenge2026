@@ -34,5 +34,5 @@ label_settings = SubResource("LabelSettings_6srxx")
 [node name="LimitationLabel" type="Label" parent="." unique_id=369878157]
 offset_right = 40.0
 offset_bottom = 23.0
-text = "/1203"
+text = "/0"
 label_settings = SubResource("LabelSettings_46qr4")
