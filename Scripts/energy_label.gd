@@ -8,7 +8,6 @@ var time: float = 0
 
 func _ready() -> void:
 	scale = Vector2(0.8, 0.8)
-	global_position = Vector2(936, 120)
 	energy_label.text = "0"
 	limitation_label.text = "/50"
 
