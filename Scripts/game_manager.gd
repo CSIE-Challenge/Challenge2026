@@ -61,6 +61,7 @@ func _ready() -> void:
 	_setup_health_ui()
 	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
 	_update_energy_label()
+	_update_max_energy()
 	_update_opponent_energy_label(0, 0)
 	_connect_agent_action_signals()
 	_connect_pause_menu()

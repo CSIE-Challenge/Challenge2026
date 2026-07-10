@@ -414,7 +414,7 @@ one_shot = true
 [node name="PhaseTimer" type="Timer" parent="GameManager" unique_id=297683376]
 
 [node name="EnergyLabel" parent="GameManager" unique_id=995466299 instance=ExtResource("14_1ff3a")]
-position = Vector2(117, 501)
+position = Vector2(88, 500)
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=2039367638]
 layer = 0
