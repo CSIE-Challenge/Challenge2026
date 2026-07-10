@@ -44,7 +44,7 @@ var _pause_timer: float = 0.0
 @onready var panel_d: VBoxContainer = $Panel/Margins/Content/Panels/PanelD
 
 @onready var error_label_a: Label = $Panel/Margins/Content/Panels/PanelA/IPContainer/ErrorLabel
-@onready var error_label_c: Label = $Panel/Margins/Content/Panels/PanelC/ErrorLabel
+@onready var error_label_c: Label = $Panel/Margins/Content/Panels/PanelC/CodeContainer/ErrorLabel
 
 @onready var create_room_button: Button = $Panel/Margins/Content/Panels/PanelA/CreateRoomButton
 @onready var join_room_button: Button = $Panel/Margins/Content/Panels/PanelA/JoinRoomButton
@@ -55,7 +55,7 @@ var _pause_timer: float = 0.0
 @onready var agent_label: Label = $Panel/Margins/Content/Panels/PanelD/MarqueeText/AgentLabel
 @onready var ready_button: Button = $Panel/Margins/Content/Panels/PanelD/HBoxContainer/ReadyButton
 
-@onready var code_input: LineEdit = $Panel/Margins/Content/Panels/PanelC/CodeInput
+@onready var code_input: LineEdit = $Panel/Margins/Content/Panels/PanelC/CodeContainer/CodeInput
 
 @onready var http_request: HTTPRequest = $HTTPRequest
 
@@ -129,8 +129,6 @@ func _save_ip(ip: String) -> void:
 		if cfg.has_section(SETTINGS_SECTION):
 			cfg.erase_section_key(SETTINGS_SECTION, "ip")
 	else:
-		create_room_button.disabled = false
-		join_room_button.disabled = false
 		cfg.set_value(SETTINGS_SECTION, "ip", ip)
 	cfg.save(SETTINGS_PATH)
 
@@ -216,6 +214,12 @@ func _on_request_completed(
 
 
 func _on_ip_text_changed(new_text: String) -> void:
+	if new_text == "":
+		create_room_button.disabled = true
+		join_room_button.disabled = true
+	else:
+		create_room_button.disabled = false
+		join_room_button.disabled = false
 	_matchmaker_ip = new_text
 	_save_ip(new_text)
 

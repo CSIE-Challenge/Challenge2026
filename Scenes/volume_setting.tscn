@@ -4,6 +4,18 @@
 [ext_resource type="Theme" uid="uid://doboascpna6vx" path="res://Assets/themes/menu.tres" id="1_uwnqj"]
 [ext_resource type="Script" uid="uid://cb74adv0y1hxa" path="res://Scripts/volume_slider.gd" id="2_gpihd"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uwnqj"]
+bg_color = Color(0.90588236, 0.8784314, 0.827451, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.2627451, 0.24313726, 0.22745098, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
 [node name="VolumeSetting" type="ColorRect" unique_id=926328968]
 anchors_preset = 15
 anchor_right = 1.0
@@ -27,6 +39,7 @@ offset_right = 320.0
 offset_bottom = 150.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_uwnqj")
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=1185287306]
 layout_mode = 2
@@ -85,6 +98,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 4
 max_value = 1.0
 step = 0.001
+value = 0.42
 script = ExtResource("2_gpihd")
 bus_name = "SFX"
 
@@ -104,14 +118,14 @@ size_flags_horizontal = 4
 theme_override_constants/separation = 100
 
 [node name="RevertButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/ButtonContainer" unique_id=1501094021]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(180, 52)
 layout_mode = 2
 size_flags_horizontal = 10
 theme_override_font_sizes/font_size = 28
 text = "Reset"
 
 [node name="SaveButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/ButtonContainer" unique_id=1875221553]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(180, 52)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_font_sizes/font_size = 30

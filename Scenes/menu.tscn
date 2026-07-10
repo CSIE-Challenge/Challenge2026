@@ -3,13 +3,10 @@
 [ext_resource type="Script" uid="uid://b5d7uvxoarxp1" path="res://Scripts/menu/menu_manager.gd" id="1_1rerr"]
 [ext_resource type="Theme" uid="uid://doboascpna6vx" path="res://Assets/themes/menu.tres" id="2_cayip"]
 [ext_resource type="PackedScene" uid="uid://fh2uubspqhku" path="res://Scenes/volume_setting.tscn" id="2_xhh6f"]
-[ext_resource type="Texture2D" uid="uid://cnkhc8wj5g45l" path="res://Shapes/menu_background.jpg" id="3_wwsa2"]
+[ext_resource type="Texture2D" uid="uid://6rrr8k2xscjn" path="res://Shapes/background_yellow.jpg" id="3_wbdvm"]
 [ext_resource type="Texture2D" uid="uid://cu7uscm4tcnjo" path="res://Shapes/about_icon.svg" id="4_wbdvm"]
 [ext_resource type="Texture2D" uid="uid://buro076xqgfiy" path="res://Shapes/audio_icon.svg" id="5_q3rjx"]
 [ext_resource type="Texture2D" uid="uid://cmsifmvfmf64x" path="res://Shapes/exit_icon.svg" id="6_6swd7"]
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jsrd8"]
-texture = ExtResource("3_wwsa2")
 
 [node name="Menu" type="Control" unique_id=1229865894]
 layout_mode = 3
@@ -28,7 +25,16 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_cayip")
-theme_override_styles/panel = SubResource("StyleBoxTexture_jsrd8")
+
+[node name="TextureRect" type="TextureRect" parent="Panel" unique_id=1276653180]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_wbdvm")
+expand_mode = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel" unique_id=352044200]
 layout_mode = 1
@@ -38,7 +44,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_left = 50
-theme_override_constants/margin_top = 36
+theme_override_constants/margin_top = 55
 theme_override_constants/margin_right = 50
 theme_override_constants/margin_bottom = 50
 
@@ -47,13 +53,15 @@ layout_mode = 2
 theme_override_constants/separation = 32
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Panel/MarginContainer/HBoxContainer" unique_id=642453348]
-custom_minimum_size = Vector2(500, 300)
+custom_minimum_size = Vector2(576, 260)
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_colors/default_color = Color(0.35523984, 0.34669387, 0.3552394, 1)
-theme_override_font_sizes/normal_font_size = 76
+theme_override_colors/default_color = Color(0.2627451, 0.19607843, 0.25882354, 1)
+theme_override_font_sizes/normal_font_size = 65
 bbcode_enabled = true
-text = "Coconut Snare In Evasion"
+text = "CSIE's
+Scenic Island
+Escape"
 scroll_active = false
 horizontal_alignment = 1
 
@@ -93,7 +101,7 @@ theme_override_constants/separation = 48
 [node name="AboutContainer" type="VBoxContainer" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=648052316]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-theme_override_constants/separation = 6
+theme_override_constants/separation = 4
 
 [node name="AboutButton" type="Button" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/AboutContainer" unique_id=2043309010]
 custom_minimum_size = Vector2(80, 80)
@@ -108,7 +116,6 @@ expand_icon = true
 
 [node name="Label" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/AboutContainer" unique_id=2135570866]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.35686275, 0.34509805, 0.35686275, 1)
 theme_override_font_sizes/font_size = 28
 text = "About"
 horizontal_alignment = 1
@@ -117,7 +124,7 @@ vertical_alignment = 1
 [node name="VolumeContainer" type="VBoxContainer" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1036153318]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-theme_override_constants/separation = 6
+theme_override_constants/separation = 4
 
 [node name="VolumeButton" type="Button" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/VolumeContainer" unique_id=475166805]
 custom_minimum_size = Vector2(80, 80)
@@ -132,7 +139,6 @@ expand_icon = true
 
 [node name="Label" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/VolumeContainer" unique_id=1715354070]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.35686275, 0.34509805, 0.35686275, 1)
 theme_override_font_sizes/font_size = 28
 text = "Audio"
 horizontal_alignment = 1
@@ -141,7 +147,7 @@ vertical_alignment = 1
 [node name="ExitContainer" type="VBoxContainer" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1379262870]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-theme_override_constants/separation = 6
+theme_override_constants/separation = 4
 
 [node name="ExitButton" type="Button" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/ExitContainer" unique_id=1642981513]
 custom_minimum_size = Vector2(80, 80)
@@ -156,7 +162,6 @@ expand_icon = true
 
 [node name="Label" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/ExitContainer" unique_id=1164056655]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.35686275, 0.34509805, 0.35686275, 1)
 theme_override_font_sizes/font_size = 28
 text = "Exit"
 horizontal_alignment = 1
