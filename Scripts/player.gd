@@ -36,6 +36,7 @@ var juice_count := 0
 @onready var jump_particle = $JumpParticle
 @onready var land_particle = $LandParticle
 @onready var remote_land_particle = $RemoteTransform2D
+@onready var trap_cleaner = $TrapCleaner
 
 
 func _ready() -> void:
@@ -45,6 +46,8 @@ func _ready() -> void:
 	jump_particle.process_material.set("color_initial_ramp", sand_particle)
 
 	health = max_health
+	trap_cleaner.body_entered.connect(_on_body_entered)
+	trap_cleaner.area_entered.connect(_on_area_entered)
 	for x in range(4):
 		for y in range(4):
 			all_sand_tiles.append(Vector2i(x, y))
@@ -178,13 +181,27 @@ func _invincible_flicker() -> void:
 		skin_instance.modulate.a = modulate.a
 
 
+func _on_body_entered(body: Node2D):
+	if body.has_method("seagull_die"):
+		body.seagull_die()
+
+
+func _on_area_entered(area: Area2D):
+	if area.get_parent().has_method("disarm"):
+		area.get_parent().disarm()
+
+
 func _adjust_collision_layer() -> void:
 	if isjumping:
 		collision_layer = 0
+		trap_cleaner.collision_mask = 0
 	elif isinvincible:
 		collision_layer = 8
+		trap_cleaner.collision_mask = 4
 	else:
 		collision_layer = 1 | 8
+		trap_cleaner.collision_mask = 0
+	print("trap cleaner collision layer:", trap_cleaner.collision_layer)
 
 
 func invincibility_toggle(on: bool):

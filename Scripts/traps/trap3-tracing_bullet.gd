@@ -15,7 +15,6 @@ var wall_counter := 0
 var is_demo := false
 var effect_reparented := false
 @onready var feather_effect = $FeatherEffect
-@onready var leave_wall_detector = $Area2D
 @onready var wait_timer = $WaitTimer
 @onready var animation = $AnimationPlayer
 @onready var sprite = $Seagull
@@ -45,6 +44,8 @@ func _ready() -> void:
 
 
 func _destroy() -> void:
+	feather_effect.emitting = true
+	feather_effect.reparent(Global.stage)
 	visible = false
 	$CollisionShape2D.set_deferred("disabled", true)
 	await get_tree().create_timer(0.1).timeout
@@ -68,8 +69,6 @@ func _physics_process(delta):
 	var collision := move_and_collide(velocity * delta)
 
 	if collision or abs(position.x) > 1000 or abs(position.y) > 1000:
-		feather_effect.emitting = true
-		feather_effect.reparent(Global.stage)
 		if collision != null:
 			var collider := collision.get_collider()
 			if collider and collider == target:
@@ -119,3 +118,7 @@ func apply_demo_state(data: Dictionary) -> void:
 	if !effect_reparented:
 		effect_reparented = true
 		feather_effect.reparent($"..")
+
+
+func seagull_die() -> void:
+	_destroy()

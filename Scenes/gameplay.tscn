@@ -222,6 +222,9 @@ scale_max = 0.049999997
 scale_curve = SubResource("CurveTexture_5i20n")
 color_initial_ramp = SubResource("GradientTexture1D_bsu20")
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_1ff3a"]
+radius = 13.5
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gb8q7"]
 shader = ExtResource("12_ifha0")
 shader_parameter/rect_size = Vector2(200, 300)
@@ -421,6 +424,13 @@ process_material = SubResource("ParticleProcessMaterial_5i20n")
 [node name="RemoteTransform2D" type="RemoteTransform2D" parent="SubViewport/Stage/Player" unique_id=2111833122]
 remote_path = NodePath("../LandParticle")
 
+[node name="TrapCleaner" type="Area2D" parent="SubViewport/Stage/Player" unique_id=2032782554]
+collision_layer = 0
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewport/Stage/Player/TrapCleaner" unique_id=2065862102]
+shape = SubResource("CircleShape2D_1ff3a")
+
 [node name="CoconutBar" parent="SubViewport" unique_id=339971714 instance=ExtResource("8_ltefv")]
 
 [node name="ColorRect" type="ColorRect" parent="SubViewport" unique_id=912998492]
@@ -462,7 +472,6 @@ result_screen = NodePath("../ResultScreen")
 pause_menu = NodePath("../HUD/PauseMenu")
 phase_label = NodePath("../HUD/PhaseLabel")
 health_icon = NodePath("../HUD/HealthIcons")
-walls = [NodePath("../SubViewport/Stage/Walls/RightWall/Bound"), NodePath("../SubViewport/Stage/Walls/LeftWall/Bound"), NodePath("../SubViewport/Stage/Walls/UpWall/Bound"), NodePath("../SubViewport/Stage/Walls/DownWall/Bound")]
 energy_label = NodePath("EnergyLabel")
 
 [node name="EnergyIncreaseTimer" type="Timer" parent="GameManager" unique_id=1538767547]
