@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import os
+import sys
 import threading
 from collections.abc import Coroutine
 from typing import Any, TypeVar
@@ -50,6 +51,18 @@ class ApiError(Exception):
         return False
 
 
+if sys.platform == "win32":
+    os.system("")  # enable ANSI escape codes in the legacy Windows console
+
+
+def _print_warning(error: ApiError) -> None:
+    text = f"[api] {error}"
+    if sys.stdout.isatty():
+        color = "33" if "insufficient" in error.reason else "31"
+        text = f"\033[{color}m{text}\033[0m"
+    print(text)
+
+
 def _unwrap(response: dict, cmd: str | None = None) -> Any:
     """Return the response data, or a falsy ApiError."""
     if response.get("status") == protocol.Status.ERROR:
@@ -59,7 +72,7 @@ def _unwrap(response: dict, cmd: str | None = None) -> Any:
             response.get("reason", ""),
         )
         # Warn even when the caller never checks the return value.
-        print(f"[api] {error}")
+        _print_warning(error)
         return error
     return response.get("data")
 
