@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bxlecmyhyxnxj" path="res://Scripts/traps/trap6-scanline.gd" id="1_1w6og"]
 [ext_resource type="Texture2D" uid="uid://c0f7jfmf7hox4" path="res://Shapes/hula.png" id="2_1w6og"]
-[ext_resource type="AudioStream" uid="uid://d3ww2vf06d4wr" path="res://Assets/audio/wakawaka.mp3" id="3_g4qfv"]
+[ext_resource type="AudioStream" uid="uid://d3ww2vf06d4wr" path="res://Assets/audio/SFX/wakawaka.mp3" id="3_g4qfv"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wwt1h"]
 size = Vector2(1920, 29)
