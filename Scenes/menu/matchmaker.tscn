@@ -248,6 +248,7 @@ text = "Confirm"
 [connection signal="button_up" from="Panel/Margins/Content/Panels/PanelA/JoinRoomButton" to="." method="_on_join_room_button_up"]
 [connection signal="button_up" from="Panel/Margins/Content/Panels/PanelA/BackButton" to="." method="_on_back_button_up"]
 [connection signal="button_up" from="Panel/Margins/Content/Panels/PanelB/BackButtonB" to="." method="_on_back_b_button_up"]
+[connection signal="text_changed" from="Panel/Margins/Content/Panels/PanelC/CodeInput" to="." method="_on_code_text_changed"]
 [connection signal="button_up" from="Panel/Margins/Content/Panels/PanelC/ConfirmJoinButton" to="." method="_on_confirm_join_button_up"]
 [connection signal="button_up" from="Panel/Margins/Content/Panels/PanelC/BackButtonC" to="." method="_on_back_c_button_up"]
 [connection signal="button_up" from="Panel/Margins/Content/Panels/PanelD/ChooseAgentButton" to="." method="_on_choose_agent_button_up"]

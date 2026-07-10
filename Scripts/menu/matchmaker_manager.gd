@@ -253,6 +253,12 @@ func _on_expire_b() -> void:
 # ── Panel C ────────────────────────────────────────────────────────────────
 
 
+func _on_code_text_changed(new_text: String) -> void:
+	var caret_pos = code_input.caret_column
+	code_input.text = new_text.to_upper()
+	code_input.caret_column = caret_pos
+
+
 func _on_confirm_join_button_up() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	var code := code_input.text.strip_edges().to_upper()
