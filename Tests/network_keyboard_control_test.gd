@@ -35,7 +35,7 @@ func _seed_test_energy() -> void:
 		if peer.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED:
 			return
 
-	NetworkManager.request_add_energy(initial_test_energy, "keyboard_test_seed")
+	NetworkManager.request_add_energy(initial_test_energy)
 	_seeded_test_energy = true
 
 
@@ -45,28 +45,22 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 	match event.keycode:
 		KEY_Z:
-			NetworkManager.request_spend_energy(energy_amount, "keyboard_test_self_energy")
+			NetworkManager.request_spend_energy(energy_amount)
 			_accept_and_print("Z spend self energy")
 		KEY_X:
-			NetworkManager.request_spend_opponent_energy(
-				energy_amount, "keyboard_test_opponent_energy"
-			)
+			NetworkManager.request_spend_opponent_energy(energy_amount)
 			_accept_and_print("X spend opponent energy")
 		KEY_C:
-			NetworkManager.request_heal_health(health_amount, "keyboard_test_self_heal")
+			NetworkManager.request_heal_health(health_amount)
 			_accept_and_print("C heal self")
 		KEY_V:
-			NetworkManager.request_heal_opponent_health(
-				health_amount, "keyboard_test_opponent_heal"
-			)
+			NetworkManager.request_heal_opponent_health(health_amount)
 			_accept_and_print("V heal opponent")
 		KEY_B:
-			NetworkManager.request_damage_health(health_amount, "keyboard_test_self_damage")
+			NetworkManager.request_damage_health(health_amount)
 			_accept_and_print("B damage self")
 		KEY_N:
-			NetworkManager.request_damage_opponent_health(
-				health_amount, "keyboard_test_opponent_damage"
-			)
+			NetworkManager.request_damage_opponent_health(health_amount)
 			_accept_and_print("N damage opponent")
 		_:
 			return

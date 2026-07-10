@@ -18,7 +18,7 @@ var _push_count: int = 0
 
 
 func _ready() -> void:
-	print("[StateSerializer] _ready() — game_manager=%s stage=%s" % [game_manager, stage])
+	# print("[StateSerializer] _ready() — game_manager=%s stage=%s" % [game_manager, stage])
 	_timer = Timer.new()
 	_timer.name = "StatePushTimer"
 	_timer.wait_time = PUSH_INTERVAL

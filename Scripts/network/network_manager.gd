@@ -354,7 +354,7 @@ func _find_arg_value(args: Array, arg_name: String) -> String:
 	return ""
 
 
-func request_add_energy(amount: int, reason := "") -> void:
+func request_add_energy(amount: int) -> void:
 	if amount <= 0:
 		return
 	if not _can_process_local_network_request():
@@ -362,12 +362,12 @@ func request_add_energy(amount: int, reason := "") -> void:
 
 	if multiplayer.is_server():
 		_ensure_local_peer_state()
-		_server_add_energy(multiplayer.get_unique_id(), amount, reason)
+		_server_add_energy(multiplayer.get_unique_id(), amount)
 	else:
-		rpc_id(1, "_server_request_add_energy", amount, reason)
+		rpc_id(1, "_server_request_add_energy", amount)
 
 
-func request_spend_energy(amount: int, reason := "") -> void:
+func request_spend_energy(amount: int) -> void:
 	if amount <= 0:
 		return
 	if not _can_process_local_network_request():
@@ -375,14 +375,14 @@ func request_spend_energy(amount: int, reason := "") -> void:
 
 	if multiplayer.is_server():
 		_ensure_local_peer_state()
-		_server_spend_energy(multiplayer.get_unique_id(), amount, reason)
+		_server_spend_energy(multiplayer.get_unique_id(), amount)
 	else:
-		rpc_id(1, "_server_request_spend_energy", amount, reason)
+		rpc_id(1, "_server_request_spend_energy", amount)
 
 
 ## Spends energy from an explicit peer. This is used when an agent runs on one
 ## machine but needs to spend the other player's server-authoritative energy.
-func request_spend_peer_energy(peer_id: int, amount: int, reason := "") -> void:
+func request_spend_peer_energy(peer_id: int, amount: int) -> void:
 	if amount <= 0:
 		return
 	if not _can_process_local_network_request():
@@ -390,36 +390,36 @@ func request_spend_peer_energy(peer_id: int, amount: int, reason := "") -> void:
 
 	if multiplayer.is_server():
 		_ensure_local_peer_state()
-		_server_spend_energy(peer_id, amount, reason, multiplayer.get_unique_id())
+		_server_spend_energy(peer_id, amount, multiplayer.get_unique_id())
 	else:
-		rpc_id(1, "_server_request_spend_peer_energy", peer_id, amount, reason)
+		rpc_id(1, "_server_request_spend_peer_energy", peer_id, amount)
 
 
 ## Spends energy from the opponent peer; aliases to self in offline mode.
-func request_spend_opponent_energy(amount: int, reason := "") -> void:
+func request_spend_opponent_energy(amount: int) -> void:
 	var opponent_peer_id := get_opponent_peer_id()
 	if opponent_peer_id == -1:
 		energy_rejected.emit(multiplayer.get_unique_id(), "opponent peer not found")
 		return
-	request_spend_peer_energy(opponent_peer_id, amount, reason)
+	request_spend_peer_energy(opponent_peer_id, amount)
 
 
 ## Applies damage to this client's own health through the same network path as remote updates.
-func request_damage_health(amount: int, reason := "") -> void:
+func request_damage_health(amount: int) -> void:
 	if amount <= 0:
 		return
-	request_change_peer_health(multiplayer.get_unique_id(), -amount, reason)
+	request_change_peer_health(multiplayer.get_unique_id(), -amount)
 
 
 ## Heals this client's own health through the same network path as remote updates.
-func request_heal_health(amount: int, reason := "") -> void:
+func request_heal_health(amount: int) -> void:
 	if amount <= 0:
 		return
-	request_change_peer_health(multiplayer.get_unique_id(), amount, reason)
+	request_change_peer_health(multiplayer.get_unique_id(), amount)
 
 
 ## Changes a specific peer's health. Positive [param delta] heals, negative damages.
-func request_change_peer_health(peer_id: int, delta: int, reason := "") -> void:
+func request_change_peer_health(peer_id: int, delta: int) -> void:
 	if delta == 0:
 		return
 	if not _can_process_local_network_request():
@@ -427,58 +427,58 @@ func request_change_peer_health(peer_id: int, delta: int, reason := "") -> void:
 
 	if multiplayer.is_server():
 		_ensure_local_peer_state()
-		_server_change_health(peer_id, delta, reason, multiplayer.get_unique_id())
+		_server_change_health(peer_id, delta, multiplayer.get_unique_id())
 	else:
-		rpc_id(1, "_server_request_change_peer_health", peer_id, delta, reason)
+		rpc_id(1, "_server_request_change_peer_health", peer_id, delta)
 
 
 ## Changes opponent health; aliases to self in offline mode.
-func request_change_opponent_health(delta: int, reason := "") -> void:
+func request_change_opponent_health(delta: int) -> void:
 	var opponent_peer_id := get_opponent_peer_id()
 	if opponent_peer_id == -1:
 		health_rejected.emit(multiplayer.get_unique_id(), "opponent peer not found")
 		return
-	request_change_peer_health(opponent_peer_id, delta, reason)
+	request_change_peer_health(opponent_peer_id, delta)
 
 
 ## Heals opponent health; aliases to self in offline mode.
-func request_heal_opponent_health(amount: int, reason := "") -> void:
+func request_heal_opponent_health(amount: int) -> void:
 	if amount <= 0:
 		return
-	request_change_opponent_health(amount, reason)
+	request_change_opponent_health(amount)
 
 
 ## Damages opponent health; aliases to self in offline mode.
-func request_damage_opponent_health(amount: int, reason := "") -> void:
+func request_damage_opponent_health(amount: int) -> void:
 	if amount <= 0:
 		return
-	request_change_opponent_health(-amount, reason)
+	request_change_opponent_health(-amount)
 
 
 @rpc("any_peer", "call_remote", "reliable")
-func _server_request_add_energy(amount: int, reason := "") -> void:
+func _server_request_add_energy(amount: int) -> void:
 	if not multiplayer.is_server():
 		return
 
 	var sender_id := multiplayer.get_remote_sender_id()
 	if not connected_peer_ids.has(sender_id):
 		return
-	_server_add_energy(sender_id, amount, reason)
+	_server_add_energy(sender_id, amount)
 
 
 @rpc("any_peer", "call_remote", "reliable")
-func _server_request_spend_energy(amount: int, reason := "") -> void:
+func _server_request_spend_energy(amount: int) -> void:
 	if not multiplayer.is_server():
 		return
 
 	var sender_id := multiplayer.get_remote_sender_id()
 	if not connected_peer_ids.has(sender_id):
 		return
-	_server_spend_energy(sender_id, amount, reason)
+	_server_spend_energy(sender_id, amount)
 
 
 @rpc("any_peer", "call_remote", "reliable")
-func _server_request_spend_peer_energy(peer_id: int, amount: int, reason := "") -> void:
+func _server_request_spend_peer_energy(peer_id: int, amount: int) -> void:
 	if not multiplayer.is_server():
 		return
 
@@ -489,13 +489,13 @@ func _server_request_spend_peer_energy(peer_id: int, amount: int, reason := "") 
 		_server_reject_energy(sender_id, "unknown peer: %d" % peer_id)
 		return
 
-	_server_spend_energy(peer_id, amount, reason, sender_id)
+	_server_spend_energy(peer_id, amount, sender_id)
 
 
 ## Server-side health mutation endpoint. The sender is only used as the rejection target;
 ## the mutation target can be any tracked peer.
 @rpc("any_peer", "call_remote", "reliable")
-func _server_request_change_peer_health(peer_id: int, delta: int, reason := "") -> void:
+func _server_request_change_peer_health(peer_id: int, delta: int) -> void:
 	if not multiplayer.is_server():
 		return
 
@@ -506,7 +506,7 @@ func _server_request_change_peer_health(peer_id: int, delta: int, reason := "") 
 		_server_reject_health(sender_id, "unknown peer: %d" % peer_id)
 		return
 
-	_server_change_health(peer_id, delta, reason, sender_id)
+	_server_change_health(peer_id, delta, sender_id)
 
 
 func _sync_energy_to_peer(target_peer_id: int) -> void:
@@ -545,7 +545,7 @@ func _client_reject_health(reason: String) -> void:
 	health_rejected.emit(multiplayer.get_unique_id(), reason)
 
 
-func _server_add_energy(peer_id: int, amount: int, _reason := "") -> void:
+func _server_add_energy(peer_id: int, amount: int) -> void:
 	if amount <= 0:
 		_server_reject_energy(peer_id, "add amount must be positive")
 		return
@@ -557,7 +557,7 @@ func _server_add_energy(peer_id: int, amount: int, _reason := "") -> void:
 	_broadcast_energy(peer_id, new_energy)
 
 
-func _server_spend_energy(peer_id: int, amount: int, reason := "", reject_peer_id := -1) -> bool:
+func _server_spend_energy(peer_id: int, amount: int, reject_peer_id := -1) -> bool:
 	var rejection_peer_id := peer_id if reject_peer_id == -1 else reject_peer_id
 	if amount <= 0:
 		_server_reject_energy(rejection_peer_id, "spend amount must be positive")
@@ -575,17 +575,17 @@ func _server_spend_energy(peer_id: int, amount: int, reason := "", reject_peer_i
 	energy_by_peer_id[peer_id] = new_energy
 	_broadcast_energy(peer_id, new_energy)
 
-	print(
-		(
-			"Energy spend peer=%d amount=%d old=%d new=%d reason=%s"
-			% [peer_id, amount, old_energy, new_energy, reason]
-		)
-	)
+	# print(
+	# 	(
+	# 		"Energy spend peer=%d amount=%d old=%d new=%d"
+	# 		% [peer_id, amount, old_energy, new_energy]
+	# 	)
+	# )
 
 	return true
 
 
-func _server_change_health(peer_id: int, delta: int, reason := "", reject_peer_id := -1) -> bool:
+func _server_change_health(peer_id: int, delta: int, reject_peer_id := -1) -> bool:
 	var rejection_peer_id := peer_id if reject_peer_id == -1 else reject_peer_id
 	if delta == 0:
 		_server_reject_health(rejection_peer_id, "health delta must be non-zero")
@@ -600,12 +600,12 @@ func _server_change_health(peer_id: int, delta: int, reason := "", reject_peer_i
 	health_by_peer_id[peer_id] = new_health
 	_broadcast_health(peer_id, new_health)
 
-	print(
-		(
-			"Health change peer=%d delta=%d old=%d new=%d reason=%s"
-			% [peer_id, delta, old_health, new_health, reason]
-		)
-	)
+	# print(
+	# 	(
+	# 		"Health change peer=%d delta=%d old=%d new=%d"
+	# 		% [peer_id, delta, old_health, new_health]
+	# 	)
+	# )
 
 	return true
 
@@ -624,14 +624,14 @@ func _broadcast_health(peer_id: int, health: int) -> void:
 func _client_set_energy(peer_id: int, energy: int) -> void:
 	energy_by_peer_id[peer_id] = energy
 	energy_changed.emit(peer_id, energy)
-	print("Energy update peer=%d energy=%d" % [peer_id, energy])
+	# print("Energy update peer=%d energy=%d" % [peer_id, energy])
 
 
 @rpc("authority", "call_remote", "reliable")
 func _client_set_health(peer_id: int, health: int) -> void:
 	health_by_peer_id[peer_id] = health
 	health_changed.emit(peer_id, health)
-	print("Health update peer=%d health=%d" % [peer_id, health])
+	# print("Health update peer=%d health=%d" % [peer_id, health])
 
 
 ## Public APIs should still work in single-player; offline mode is treated as local authority.

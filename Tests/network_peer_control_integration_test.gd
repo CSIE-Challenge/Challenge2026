@@ -49,17 +49,17 @@ func _start_test() -> void:
 
 func _on_connection_succeeded() -> void:
 	if role == "target":
-		network_manager.request_add_energy(TEST_ENERGY, "peer_control_test")
+		network_manager.request_add_energy(TEST_ENERGY)
 
 
 func _on_energy_changed(peer_id: int, energy: int) -> void:
 	var local_peer_id: int = network_manager.multiplayer.get_unique_id()
 	if role == "actor" and peer_id != local_peer_id and energy == TEST_ENERGY:
 		target_peer_id = peer_id
-		network_manager.request_spend_opponent_energy(TEST_SPEND, "peer_control_test")
+		network_manager.request_spend_opponent_energy(TEST_SPEND)
 	elif role == "actor" and peer_id == target_peer_id and energy == EXPECTED_ENERGY:
 		saw_spent_energy = true
-		network_manager.request_damage_opponent_health(TEST_DAMAGE, "peer_control_test")
+		network_manager.request_damage_opponent_health(TEST_DAMAGE)
 	elif role == "target" and peer_id == local_peer_id and energy == EXPECTED_ENERGY:
 		saw_spent_energy = true
 	elif role == "server" and energy == EXPECTED_ENERGY:
@@ -70,7 +70,7 @@ func _on_health_changed(peer_id: int, health: int) -> void:
 	var local_peer_id: int = network_manager.multiplayer.get_unique_id()
 	if role == "actor" and peer_id == target_peer_id and health == EXPECTED_DAMAGED_HEALTH:
 		saw_damaged_health = true
-		network_manager.request_heal_opponent_health(TEST_HEAL, "peer_control_test")
+		network_manager.request_heal_opponent_health(TEST_HEAL)
 	elif role == "actor" and peer_id == target_peer_id and health == EXPECTED_HEALED_HEALTH:
 		_pass()
 	elif role == "target" and peer_id == local_peer_id and health == EXPECTED_DAMAGED_HEALTH:

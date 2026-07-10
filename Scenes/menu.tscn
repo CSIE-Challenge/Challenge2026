@@ -78,6 +78,7 @@ theme_override_font_sizes/font_size = 40
 text = "離開遊戲"
 
 [node name="invisible" type="Button" parent="Panel" unique_id=1778200500]
+visible = false
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0

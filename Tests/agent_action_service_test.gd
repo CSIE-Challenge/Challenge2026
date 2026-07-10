@@ -30,7 +30,7 @@ class FakeGame:
 	func get_my_energy() -> int:
 		return energy
 
-	func request_spend_energy(amount: int, _reason := "") -> void:
+	func request_spend_energy(amount: int) -> void:
 		energy = max(energy - amount, 0)
 
 	func add(amount: int) -> void:

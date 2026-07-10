@@ -41,7 +41,7 @@ func _start_test() -> void:
 
 func _on_connection_succeeded() -> void:
 	if role == "add":
-		network_manager.request_add_energy(TEST_ENERGY, "integration_test")
+		network_manager.request_add_energy(TEST_ENERGY)
 
 
 func _is_connected() -> bool:
@@ -70,7 +70,7 @@ func _on_energy_changed(peer_id: int, energy: int) -> void:
 
 func _spend_after_observer_connects() -> void:
 	await create_timer(1.0).timeout
-	network_manager.request_spend_energy(TEST_SPEND, "integration_test")
+	network_manager.request_spend_energy(TEST_SPEND)
 
 
 func _finish_after_broadcast(delay: float) -> void:

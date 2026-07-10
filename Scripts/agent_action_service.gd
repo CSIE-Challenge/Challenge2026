@@ -2,7 +2,6 @@ class_name AgentActionService
 extends Node
 
 signal trap_approved(request: Dictionary, energy_cost: float)
-signal trap_rejected(request: Dictionary, reason: String)
 signal heal_used(heal_amount: int, energy_cost: int, heal_uses_left: int)
 
 var game
@@ -174,15 +173,12 @@ func _on_request_ready(request: Dictionary) -> void:
 
 	if game == null:
 		push_error("AgentActionService: game is not assigned.")
-		trap_rejected.emit(request, "game_not_assigned")
 		return
 
 	if not _is_known_trap(trap_id):
-		trap_rejected.emit(request, "unknown_trap")
 		return
 
 	if _is_trap_on_cooldown(trap_id):
-		trap_rejected.emit(request, "cooldown_active")
 		return
 
 	var cost := _get_trap_cost(trap_id)
@@ -190,10 +186,9 @@ func _on_request_ready(request: Dictionary) -> void:
 	# Script A runs on the opponent's client, so a trap is paid for by the
 	# opponent's energy (aliases to self in offline mode).
 	if NetworkManager.get_energy(NetworkManager.get_opponent_peer_id()) < cost:
-		trap_rejected.emit(request, "insufficient_energy")
 		return
 
-	NetworkManager.request_spend_opponent_energy(cost, "trap:" + trap_id)
+	NetworkManager.request_spend_opponent_energy(cost)
 	_start_cooldown(trap_id)
 	trap_approved.emit(request, cost)
 
@@ -260,8 +255,8 @@ func request_heal() -> Dictionary:
 	if NetworkManager.get_energy(owner_peer_id) < default_heal_energy_cost:
 		return _make_heal_result(false, "insufficient_energy")
 
-	NetworkManager.request_spend_opponent_energy(default_heal_energy_cost, "heal")
-	NetworkManager.request_heal_opponent_health(default_heal_amount, "heal")
+	NetworkManager.request_spend_opponent_energy(default_heal_energy_cost)
+	NetworkManager.request_heal_opponent_health(default_heal_amount)
 	heal_uses_left -= 1
 
 	heal_used.emit(default_heal_amount, default_heal_energy_cost, heal_uses_left)

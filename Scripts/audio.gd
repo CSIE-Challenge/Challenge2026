@@ -77,8 +77,6 @@ func set_bgm(bgm: BGM) -> void:
 	_current_player = _next_player
 	_next_player = tmp
 
-	print("playing BGM.%s playlist" % BGM.keys()[bgm])
-
 
 func play_sfx(sfx: SFX) -> AudioStreamPlayer:
 	var stream := _sfx_streams.get(sfx) as AudioStream

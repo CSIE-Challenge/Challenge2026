@@ -16,7 +16,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 	get_viewport().set_input_as_handled()
 	print("Spend-energy test requested: %d" % spend_amount)
-	NetworkManager.request_spend_energy(spend_amount, "keyboard_test")
+	NetworkManager.request_spend_energy(spend_amount)
 
 
 func _on_energy_rejected(peer_id: int, reason: String) -> void:

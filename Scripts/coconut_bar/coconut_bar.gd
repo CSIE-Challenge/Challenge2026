@@ -138,7 +138,6 @@ func polar_vector(deg: float, len: float) -> Vector2:
 
 
 func spawn_eaten_coconut(pos: Vector2) -> void:
-	print("coconut eaten")
 	var new_eaten_coconut = eaten_coconut.instantiate()
 	add_child(new_eaten_coconut)
 	new_eaten_coconut.global_position = pos

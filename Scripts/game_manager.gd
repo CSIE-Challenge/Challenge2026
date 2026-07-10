@@ -214,7 +214,6 @@ func get_phase() -> int:
 
 func _connect_agent_action_signals() -> void:
 	agent_action_service.trap_approved.connect(_on_trap_approved)
-	agent_action_service.trap_rejected.connect(_on_trap_rejected)
 	agent_action_service.heal_used.connect(_on_heal_used)
 
 
@@ -253,17 +252,6 @@ func _on_heal_used(_heal_amount: int, _energy_cost: int, _heal_uses_left: int) -
 
 func _on_trap_approved(request: Dictionary, _energy_cost: float) -> void:
 	_spawn_trap_from_request(request)
-
-
-func _on_trap_rejected(request: Dictionary, reason: String) -> void:
-	print(
-		"FINAL_REJECTED request_id=",
-		request["request_id"],
-		" trap=",
-		request["trap_id"],
-		" reason=",
-		reason
-	)
 
 
 # gdlint: disable=max-returns
@@ -368,7 +356,7 @@ func on_player_hit(damage: int) -> void:
 		return
 	_player_become_invincible()
 	camera.shake_cam()
-	NetworkManager.request_damage_health(damage, "player_hit")
+	NetworkManager.request_damage_health(damage)
 	Audio.play_sfx(Audio.SFX.TAKE_DAMAGE)
 
 
@@ -518,7 +506,7 @@ func _on_energyball_collected(energy_gain: int) -> void:
 	energy_ball_count += 1
 	coconut_bar.coconut_count = energy_ball_count
 	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
-	NetworkManager.request_add_energy(energy_gain, "energy_ball")
+	NetworkManager.request_add_energy(energy_gain)
 
 
 func _player_become_invincible() -> void:
@@ -533,7 +521,7 @@ func _on_player_invincibility_timer_timeout() -> void:
 
 
 func _on_energy_increase_timer_timeout() -> void:
-	NetworkManager.request_add_energy(1, "passive_regeneration")
+	NetworkManager.request_add_energy(1)
 	energy_increase_timer.start(energy_increase_period[current_phase])
 
 
