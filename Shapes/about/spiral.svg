@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg1"
+   inkscape:export-filename="spiral.svg"
+   inkscape:export-xdpi="11.459933"
+   inkscape:export-ydpi="11.459933"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm">
+    <inkscape:page
+       x="0"
+       y="0"
+       width="210"
+       height="297"
+       id="page2"
+       margin="0"
+       bleed="0" />
+  </sodipodi:namedview>
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="圖層 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       sodipodi:type="spiral"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.4798;stroke-dasharray:none"
+       id="path1"
+       sodipodi:cx="98.579964"
+       sodipodi:cy="138.56445"
+       sodipodi:expansion="1"
+       sodipodi:revolution="2.1529713"
+       sodipodi:radius="10.707907"
+       sodipodi:argument="-19.075085"
+       sodipodi:t0="0"
+       d="m 98.579964,138.56445 c 0.729152,-0.16729 0.585243,0.90035 0.278048,1.2119 -0.832478,0.84429 -2.187545,0.21458 -2.701847,-0.6558 -0.919968,-1.5569 0.06609,-3.4845 1.589653,-4.1918 2.235885,-1.03798 4.802892,0.34444 5.681742,2.52351 1.17137,2.90436 -0.62113,6.1294 -3.457354,7.17169 -3.569096,1.31161 -7.45991,-0.89686 -8.66164,-4.39121 -1.455456,-4.23212 1.172003,-8.79268 5.325059,-10.15158 4.894235,-1.60142 10.126885,1.44676 11.641535,6.25891 1.00909,3.20594 0.30139,6.76871 -1.75618,9.40988"
+       transform="matrix(0.99967011,0,0,1.0706281,5.9624201,-0.98661356)" />
+  </g>
+</svg>

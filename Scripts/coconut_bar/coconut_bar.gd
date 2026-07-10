@@ -1,5 +1,6 @@
 extends Node2D
 const TRUNK_HEIGHT_PIXEL = 36
+const MAX_COCONUT_COUNT = 100
 
 @export var trunk: PackedScene
 @export var leaf: PackedScene
@@ -8,14 +9,14 @@ const TRUNK_HEIGHT_PIXEL = 36
 
 @export var coconut_count: int = 0
 @export var tree_height: float
-@export var tree_root_position: Vector2 = Vector2(984, 556)
+@export var tree_root_position: Vector2 = Vector2(984, 532)
+@export var congratulation: Node2D
 var trunks: Array[Node2D]
 var leaves: Array[Node2D]
 var coconuts: Array[Node2D]
 var eaten_coconuts: Array[Node2D]
 
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	global_position = tree_root_position
 	trunks.clear()
@@ -97,7 +98,6 @@ func leaf_cut() -> void:
 	if leaves.size() <= 0:
 		return
 	leaves.back().queue_free()
-	leaves.pop_back()
 
 
 func rearrange_coconuts() -> void:
@@ -105,7 +105,7 @@ func rearrange_coconuts() -> void:
 	while coconuts.size() < num_target:
 		coconut_grow()
 	while coconuts.size() > num_target:
-		coconut_cut()
+		coconut_fall()
 	var len = coconuts.size()
 	for i in len:
 		coconuts[i].relocate(
@@ -125,10 +125,10 @@ func coconut_grow() -> void:
 	coconuts.push_back(new_coconut)
 
 
-func coconut_cut() -> void:
+func coconut_fall() -> void:
 	if coconuts.size() <= 0:
 		return
-	coconuts.back().queue_free()
+	coconuts.back().fall()
 	coconuts.pop_back()
 
 
@@ -154,6 +154,14 @@ func rearrange_eaten_coconuts() -> void:
 			eaten_coconuts.remove_at(j)
 			continue
 		eaten_coconuts[j].set_target_position(target_position)
+
+
+func _update_coconut_count(new_coconut_count: int) -> void:
+	coconut_count = min(100, new_coconut_count)
+	if new_coconut_count == MAX_COCONUT_COUNT:
+		congratulation._spawn()
+	if new_coconut_count > MAX_COCONUT_COUNT and (new_coconut_count - MAX_COCONUT_COUNT) % 5 == 0:
+		coconut_grow()
 
 
 func use(delta: float) -> float:

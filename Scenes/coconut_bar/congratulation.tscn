@@ -1,0 +1,77 @@
+[gd_scene format=3 uid="uid://qp6jqbo10xw6"]
+
+[ext_resource type="Script" uid="uid://cp4dx3iexc1qj" path="res://Scripts/congratulation.gd" id="1_n8vuk"]
+[ext_resource type="Texture2D" uid="uid://di85rde5vj61d" path="res://Shapes/about/head1.png" id="2_upijq"]
+[ext_resource type="Texture2D" uid="uid://mcjrdtc3bh68" path="res://Shapes/about/head2.png" id="3_sikac"]
+[ext_resource type="Texture2D" uid="uid://bxll3uvdhnv4u" path="res://Shapes/about/head3.png" id="4_mjqfy"]
+[ext_resource type="Texture2D" uid="uid://dfn6llmyg5b6u" path="res://Shapes/about/spiral.svg" id="5_mjqfy"]
+[ext_resource type="Texture2D" uid="uid://cg45wi8cofs2m" path="res://Shapes/about/speech_balloon.svg" id="5_upijq"]
+[ext_resource type="FontFile" uid="uid://hp5u4fxb5ifw" path="res://Assets/fonts/PixeloidSans-Bold.ttf" id="6_sikac"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_fcffw"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_upijq")
+}],
+"loop": true,
+"name": &"0",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_sikac")
+}],
+"loop": true,
+"name": &"1",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_mjqfy")
+}],
+"loop": true,
+"name": &"2",
+"speed": 5.0
+}]
+
+[sub_resource type="LabelSettings" id="LabelSettings_mjqfy"]
+font = ExtResource("6_sikac")
+font_size = 8
+font_color = Color(0, 0, 0, 1)
+
+[node name="Congratulation" type="Node2D" unique_id=1990153518]
+script = ExtResource("1_n8vuk")
+
+[node name="Head" type="AnimatedSprite2D" parent="." unique_id=842273962]
+sprite_frames = SubResource("SpriteFrames_fcffw")
+animation = &"2"
+
+[node name="LeftSpiral" type="Sprite2D" parent="Head" unique_id=1389827657]
+position = Vector2(-96, 8)
+scale = Vector2(1.4, 1.4)
+texture = ExtResource("5_mjqfy")
+
+[node name="RightSpiral" type="Sprite2D" parent="Head" unique_id=1582235450]
+position = Vector2(65, 3)
+scale = Vector2(1.4, 1.4)
+texture = ExtResource("5_mjqfy")
+
+[node name="SpeechBalloon" type="Sprite2D" parent="." unique_id=38790769]
+position = Vector2(28, -64)
+scale = Vector2(1.4, 1.4)
+texture = ExtResource("5_upijq")
+
+[node name="TextLabel" type="Label" parent="SpeechBalloon" unique_id=1571079886]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -379.0
+offset_top = -559.5
+offset_right = -379.0
+offset_bottom = -559.5
+grow_horizontal = 2
+grow_vertical = 2
+label_settings = SubResource("LabelSettings_mjqfy")
+horizontal_alignment = 1
+vertical_alignment = 1
