@@ -73,6 +73,8 @@ var _sfx_players: Array[AudioStreamPlayer] = []
 
 # current state
 var _current_bgm: BGM = BGM.NONE
+var _bgm_playlist: Array = []
+var _last_track_index: int = -1
 
 # for bgm fading
 var _current_player: AudioStreamPlayer
@@ -92,11 +94,10 @@ func _ready() -> void:
 		add_child(player)
 		_sfx_players.append(player)
 
-	bgm_player.finished.connect(func(): bgm_player.play())
-	bgm_player2.finished.connect(func(): bgm_player2.play())
-
 	_current_player = bgm_player
 	_next_player = bgm_player2
+	_current_player.finished.connect(_play_random_bgm_track.bind(_current_player))
+	_next_player.finished.connect(_play_random_bgm_track.bind(_next_player))
 
 
 func set_bgm(bgm: BGM) -> void:
@@ -111,10 +112,9 @@ func set_bgm(bgm: BGM) -> void:
 	_fade_tween.tween_property(_current_player, "volume_db", -80.0, bgm_fade_out_time)
 
 	_current_bgm = bgm
-	var stream := _bgm_playlists.get(BGM.find_key(bgm)) as AudioStream
-	_next_player.stream = stream
-	_next_player.volume_db = 0
-	_next_player.play()
+	_bgm_playlist = _bgm_playlists.get(BGM.find_key(bgm), []) as Array[AudioStream]
+	_last_track_index = -1
+	_play_random_bgm_track(_next_player)
 
 	await _fade_tween.finished
 	_current_player.stop()
@@ -205,6 +205,23 @@ func set_phase_bgm(phase: int) -> void:
 			set_bgm(BGM.GAMEPLAY_PHASE_5)
 
 
+func _play_random_bgm_track(player: AudioStreamPlayer) -> void:
+	var count := _bgm_playlist.size()
+	if count == 0:
+		player.stream = null
+		return
+	if count == 1:
+		_last_track_index = 0
+	else:
+		var index := _last_track_index
+		while index == _last_track_index:
+			index = randi() % count
+		_last_track_index = index
+	player.stream = _bgm_playlist[_last_track_index]
+	player.volume_db = 0
+	player.play()
+
+
 func play_coconut_sfx(combo: int) -> void:
 	play_sfx(SFX.ENERGY_COLLECTED)
 	match combo:
@@ -231,10 +248,9 @@ func _get_property_list() -> Array[Dictionary]:
 		properties.append(
 			{
 				"name": "%s_tracks" % bgm_type.to_lower(),
-				"type": TYPE_OBJECT,
-				"hint": PROPERTY_HINT_RESOURCE_TYPE,
-				"hint_string": "AudioStream",
-				"class_name": &"AudioStream"
+				"type": TYPE_ARRAY,
+				"hint": PROPERTY_HINT_TYPE_STRING,
+				"hint_string": "24/17:AudioStream"
 			}
 		)
 
@@ -257,7 +273,7 @@ func _get_property_list() -> Array[Dictionary]:
 func _get(property):
 	if property.ends_with("_tracks"):
 		var bgm_type = property.left(-7)
-		return _bgm_playlists.get(bgm_type.to_upper())
+		return _bgm_playlists.get(bgm_type.to_upper(), [])
 	elif property.ends_with("_sfx"):
 		var sfx_name = property.left(-4)
 		return _sfx_streams.get(sfx_name.to_upper())
@@ -267,7 +283,7 @@ func _get(property):
 func _set(property, value):
 	if property.ends_with("_tracks"):
 		var bgm_type = property.left(-7)
-		_bgm_playlists[bgm_type.to_upper()] = value as AudioStream
+		_bgm_playlists[bgm_type.to_upper()] = value as Array[AudioStream]
 		return true
 	elif property.ends_with("_sfx"):
 		var sfx_name = property.left(-4)
