@@ -137,6 +137,8 @@ func stop_all_sfx() -> void:
 	for player in _sfx_players:
 		if player.playing:
 			player.stop()
+
+
 func stop_all_audio() -> void:
 	if _fade_tween != null and _fade_tween.is_valid():
 		_fade_tween.kill()
