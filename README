@@ -1,0 +1,80 @@
+# Challenge 2026 - CSIE's Scenic Island Escape
+
+這是 2026 臺大資訊系「2026 臺大資訊營 Code Code Nut」使用的教學用遊戲原始碼專案。遊戲為雙人對戰，使用外部 agent 置放陷阱，並以移動與跳躍的人工操作，閃躲對方置放的陷阱。
+
+- 請使用[最新版本的遊戲啟動器](https://github.com/CSIE-Challenge/Challenge2026-Launcher/releases)下載遊戲。
+
+## Credit
+### Project Management & Quality Assurance
+
+- 林文繡 bbwinner
+- 卓育安 prairie2022
+
+### Game Design & Game Programming
+
+- 劉正惟 a97
+- 洪德朗 Andromeda
+- 林文繡 bbwinner
+- 趙文睿 Chaoray
+- 林和甫 chilfox
+- 張境恩 cjn0130
+- 蔡孟憬 cmj0415
+- 黃傳耀 CYhuang314
+- 莊沅翰 Eggrror404
+- 廖衡 hengliao0615
+- 陳曦 Ian747-tw
+- 蔡宗邑 iantsai0616
+- 鍾心卉 peoerfxir
+- 卓育安 prairie2022
+- 王以安 PsychoPinkQ
+- 邱新堯 SingOut
+- 曾子齊 WgLy
+
+
+### Art Design
+
+- 張境恩 cjn0130
+- 莊沅翰 Eggrror404
+- 廖衡 hengliao0615
+- 喻慈恩 mia1102
+- 鍾心卉 peoerfxir
+- 邱新堯 SingOut
+- 曾子齊 WgLy
+
+
+### Music & Sound Effect
+
+- 劉正惟 a97
+- 陳博閱 cby0927
+- 莊沅翰 Eggrror404
+
+
+### Agent Design & Game Testing
+
+- 簡劭丞 ablueboyy
+- 張境恩 cjn0130
+- 吳佳紘 penguin5728
+
+
+### Consultants
+
+- 楊晉宇 illumeow
+- 陳澔樂 willychan
+
+
+### Special Appearance
+
+- 三位召部的…頭…
+
+
+### 🎊 Special Thanks 🎊
+
+- Challenge 2025 開發團隊
+- 主辦 資訊系系學會
+- 還有所有一起籌備資訊營的人們…
+
+（以上使用 handle 的字典序排序）
+
+## License
+
+The project is licensed under the [GNU General Public License v3.0 (GPL-3.0)](./LICENSE).
