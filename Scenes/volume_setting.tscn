@@ -3,14 +3,15 @@
 [ext_resource type="Script" uid="uid://dwkms4oc73qao" path="res://Scripts/volume_setting.gd" id="1_qeyc0"]
 [ext_resource type="Theme" uid="uid://doboascpna6vx" path="res://Assets/themes/menu.tres" id="1_uwnqj"]
 [ext_resource type="Script" uid="uid://cb74adv0y1hxa" path="res://Scripts/volume_slider.gd" id="2_gpihd"]
+[ext_resource type="Theme" uid="uid://cmvy433xb5tse" path="res://Assets/themes/main_menu_buttons.tres" id="4_nfjsg"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uwnqj"]
-bg_color = Color(0.90588236, 0.8784314, 0.827451, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.2627451, 0.24313726, 0.22745098, 1)
+bg_color = Color(0.83137256, 0.92941177, 0.9411765, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.16470589, 0.30588236, 0.34117648, 1)
 corner_radius_top_left = 12
 corner_radius_top_right = 12
 corner_radius_bottom_right = 12
@@ -53,6 +54,7 @@ theme_override_constants/separation = 16
 
 [node name="Title" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1168083539]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.23529412, 0.22745098, 0.23529412, 1)
 theme_override_font_sizes/font_size = 44
 text = "Volume Settings"
 horizontal_alignment = 1
@@ -64,6 +66,7 @@ theme_override_constants/separation = 20
 [node name="MusicLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/MusicContainer" unique_id=1016900071]
 custom_minimum_size = Vector2(160, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(0.23529412, 0.22745098, 0.23529412, 1)
 theme_override_font_sizes/font_size = 30
 text = "Music"
 
@@ -78,6 +81,7 @@ bus_name = "Music"
 
 [node name="ValueLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/MusicContainer" unique_id=1405787552]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.23529412, 0.22745098, 0.23529412, 1)
 theme_override_font_sizes/font_size = 28
 text = "100"
 horizontal_alignment = 2
@@ -89,6 +93,7 @@ theme_override_constants/separation = 20
 [node name="SFXLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/SFXContainer" unique_id=198577739]
 custom_minimum_size = Vector2(160, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(0.23529412, 0.22745098, 0.23529412, 1)
 theme_override_font_sizes/font_size = 30
 text = "SFX"
 
@@ -104,6 +109,7 @@ bus_name = "SFX"
 
 [node name="ValueLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/SFXContainer" unique_id=961669272]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.23529412, 0.22745098, 0.23529412, 1)
 theme_override_font_sizes/font_size = 28
 text = "100"
 horizontal_alignment = 2
@@ -121,6 +127,7 @@ theme_override_constants/separation = 100
 custom_minimum_size = Vector2(180, 52)
 layout_mode = 2
 size_flags_horizontal = 10
+theme = ExtResource("4_nfjsg")
 theme_override_font_sizes/font_size = 28
 text = "Reset"
 
@@ -128,6 +135,7 @@ text = "Reset"
 custom_minimum_size = Vector2(180, 52)
 layout_mode = 2
 size_flags_horizontal = 0
+theme = ExtResource("4_nfjsg")
 theme_override_font_sizes/font_size = 30
 text = "Save"
 

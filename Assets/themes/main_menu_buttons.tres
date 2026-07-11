@@ -1,0 +1,43 @@
+[gd_resource type="Theme" format=3 uid="uid://cmvy433xb5tse"]
+
+[ext_resource type="FontFile" uid="uid://hp5u4fxb5ifw" path="res://Assets/fonts/PixeloidSans-Bold.ttf" id="1_l4rfh"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2apib"]
+bg_color = Color(0.32156864, 0.35686275, 0.3882353, 1)
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.2, 0.24313726, 0.27450982, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l4rfh"]
+bg_color = Color(0.23529412, 0.2627451, 0.28627452, 1)
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.2, 0.24313726, 0.27450982, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lwbcb"]
+bg_color = Color(0.16862746, 0.1882353, 0.20784314, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[resource]
+Button/colors/font_color = Color(0.99, 0.9768, 0.9405, 1)
+Button/colors/font_hover_color = Color(0.94509804, 0.8392157, 0.62352943, 1)
+Button/colors/font_pressed_color = Color(0.9882353, 0.9764706, 0.9411765, 1)
+Button/colors/icon_disabled_color = Color(0.9882353, 0.9764706, 0.9411765, 1)
+Button/colors/icon_hover_color = Color(0.94509804, 0.8392157, 0.62352943, 1)
+Button/colors/icon_normal_color = Color(0.9882353, 0.9764706, 0.9411765, 1)
+Button/colors/icon_pressed_color = Color(0.9882353, 0.9764706, 0.9411765, 1)
+Button/fonts/font = ExtResource("1_l4rfh")
+Button/styles/hover = SubResource("StyleBoxFlat_2apib")
+Button/styles/normal = SubResource("StyleBoxFlat_l4rfh")
+Button/styles/pressed = SubResource("StyleBoxFlat_lwbcb")

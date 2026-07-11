@@ -3,7 +3,8 @@
 [ext_resource type="Script" uid="uid://b5d7uvxoarxp1" path="res://Scripts/menu/menu_manager.gd" id="1_1rerr"]
 [ext_resource type="Theme" uid="uid://doboascpna6vx" path="res://Assets/themes/menu.tres" id="2_cayip"]
 [ext_resource type="PackedScene" uid="uid://fh2uubspqhku" path="res://Scenes/volume_setting.tscn" id="2_xhh6f"]
-[ext_resource type="Texture2D" uid="uid://6rrr8k2xscjn" path="res://Shapes/background_yellow.jpg" id="3_wbdvm"]
+[ext_resource type="Texture2D" uid="uid://bcnx3b286mcb7" path="res://Shapes/background_blue.jpg" id="3_wbdvm"]
+[ext_resource type="Theme" uid="uid://cmvy433xb5tse" path="res://Assets/themes/main_menu_buttons.tres" id="4_q3rjx"]
 [ext_resource type="Texture2D" uid="uid://cu7uscm4tcnjo" path="res://Shapes/about_icon.svg" id="4_wbdvm"]
 [ext_resource type="Texture2D" uid="uid://buro076xqgfiy" path="res://Shapes/audio_icon.svg" id="5_q3rjx"]
 [ext_resource type="Texture2D" uid="uid://cmsifmvfmf64x" path="res://Shapes/exit_icon.svg" id="6_6swd7"]
@@ -56,7 +57,7 @@ theme_override_constants/separation = 32
 custom_minimum_size = Vector2(576, 260)
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_colors/default_color = Color(0.2627451, 0.19607843, 0.25882354, 1)
+theme_override_colors/default_color = Color(0.31668463, 0.30995673, 0.32004762, 1)
 theme_override_font_sizes/normal_font_size = 65
 bbcode_enabled = true
 text = "CSIE's
@@ -74,18 +75,21 @@ theme_override_constants/separation = 16
 [node name="SingleButton" type="Button" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer" unique_id=2090390772]
 custom_minimum_size = Vector2(220, 80)
 layout_mode = 2
+theme = ExtResource("4_q3rjx")
 theme_override_font_sizes/font_size = 40
 text = "1-Player Mode"
 
 [node name="DoubleButton" type="Button" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1829849739]
 custom_minimum_size = Vector2(220, 80)
 layout_mode = 2
+theme = ExtResource("4_q3rjx")
 theme_override_font_sizes/font_size = 40
 text = "2-Player Mode"
 
 [node name="SkinShopButton" type="Button" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer" unique_id=142343978]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
+theme = ExtResource("4_q3rjx")
 theme_override_font_sizes/font_size = 40
 text = "Skin Shop"
 
@@ -108,6 +112,7 @@ custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+theme = ExtResource("4_q3rjx")
 theme_override_constants/icon_max_width = 72
 theme_override_font_sizes/font_size = 40
 icon = ExtResource("4_wbdvm")
@@ -116,6 +121,7 @@ expand_icon = true
 
 [node name="Label" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/AboutContainer" unique_id=2135570866]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.23380288, 0.22753623, 0.23693547, 1)
 theme_override_font_sizes/font_size = 28
 text = "About"
 horizontal_alignment = 1
@@ -131,6 +137,7 @@ custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+theme = ExtResource("4_q3rjx")
 theme_override_constants/icon_max_width = 72
 theme_override_font_sizes/font_size = 40
 icon = ExtResource("5_q3rjx")
@@ -139,6 +146,7 @@ expand_icon = true
 
 [node name="Label" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/VolumeContainer" unique_id=1715354070]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.23380288, 0.22753623, 0.23693547, 1)
 theme_override_font_sizes/font_size = 28
 text = "Audio"
 horizontal_alignment = 1
@@ -154,6 +162,7 @@ custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+theme = ExtResource("4_q3rjx")
 theme_override_constants/icon_max_width = 72
 theme_override_font_sizes/font_size = 40
 icon = ExtResource("6_6swd7")
@@ -162,6 +171,7 @@ expand_icon = true
 
 [node name="Label" type="Label" parent="Panel/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/ExitContainer" unique_id=1164056655]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.23380288, 0.22753623, 0.23693547, 1)
 theme_override_font_sizes/font_size = 28
 text = "Exit"
 horizontal_alignment = 1
