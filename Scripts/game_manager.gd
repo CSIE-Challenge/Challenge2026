@@ -365,8 +365,17 @@ func _on_game_duration_timeout() -> void:
 	finish_game()
 
 
+func _calculate_phase(time: float) -> int:
+	for i in range(max_phase):
+		if time >= phase_duration[i]:
+			time -= phase_duration[i]
+		else:
+			return i
+	return max_phase
+
+
 func _update_phase() -> void:
-	var new_phase := calculate_phase(elapsed_time)
+	var new_phase := _calculate_phase(elapsed_time)
 	if new_phase != current_phase:
 		current_phase = new_phase
 		energy_ball.change_phase(current_phase)
@@ -428,15 +437,6 @@ func _connect_pause_menu() -> void:
 	pause_menu.close()
 
 
-func calculate_phase(time: float) -> int:
-	for i in range(max_phase):
-		if time >= phase_duration[i]:
-			time -= phase_duration[i]
-		else:
-			return i
-	return max_phase
-
-
 func _on_pause_resume_requested(requested_elapsed_time: float) -> void:
 	elapsed_time = requested_elapsed_time
 	_update_time_label()
@@ -493,7 +493,7 @@ func _close_pause_overlay_for_finish() -> void:
 
 
 func _shutdown_gameplay_for_scene_change() -> void:
-	Audio.set_bgm(Audio.BGM.NONE)
+	Audio.set_bgm(-1 as Audio.BGM)
 	if _is_shutting_down:
 		return
 	_is_shutting_down = true
@@ -566,6 +566,11 @@ func _player_become_invincible() -> void:
 func _on_player_invincibility_timer_timeout() -> void:
 	player_invincible = false
 	player.invincibility_toggle(false)
+
+
+func _on_energy_increase_timer_timeout() -> void:
+	NetworkManager.request_add_energy(1)
+	energy_increase_timer.start(energy_increase_period[current_phase])
 
 
 func _on_network_energy_changed(peer_id: int, energy: int) -> void:
