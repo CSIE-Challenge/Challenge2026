@@ -1,6 +1,6 @@
 # Challenge 2026 - CSIE's Scenic Island Escape
 
-這是 2026 臺大資訊系「2026 臺大資訊營 Code Code Nut」使用的教學用遊戲原始碼專案。遊戲為雙人對戰，使用外部 agent 置放陷阱，並以移動與跳躍的人工操作，閃躲對方置放的陷阱。
+這是 2026 臺大資訊系「2026 臺大資訊營 Code Code Nut」使用的教學用遊戲原始碼專案。遊戲為雙人對戰，使用外部 agent 置放陷阱，並以移動與跳躍等人工操作閃躲陷阱。
 
 - 請使用[最新版本的遊戲啟動器](https://github.com/CSIE-Challenge/Challenge2026-Launcher/releases)下載遊戲。
 
@@ -71,7 +71,7 @@
 
 - Challenge 2025 開發團隊
 - 主辦 資訊系系學會
-- 還有所有一起籌備資訊營的人們…
+- 還有所有一起籌備資訊營的人們
 
 （以上使用 handle 的字典序排序）
 
