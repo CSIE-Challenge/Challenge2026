@@ -156,7 +156,8 @@ func _resolve_bundle_dir() -> String:
 	if OS.has_feature("editor"):
 		var root := ProjectSettings.globalize_path("res://")
 		return root.path_join("agent/build").path_join(_bundle_platform_label())
-	return OS.get_executable_path().get_base_dir().path_join("agent")
+	# Launcher layout: the exe sits in GameBuilds/ with the bundle beside it.
+	return OS.get_executable_path().get_base_dir().get_base_dir().path_join("agent")
 
 
 func _bundle_platform_label() -> String:

@@ -22,5 +22,3 @@ client.connect()
 atexit.register(client.close)
 
 print(f"connected to {client.host}:{client.port}")
-print("try:  client.ping()   client.get_my_energy()   client.get_available_traps()")
-print("failures return a falsy ApiError (check result.reason) - nothing raises")

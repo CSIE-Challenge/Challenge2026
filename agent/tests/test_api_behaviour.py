@@ -28,6 +28,18 @@ def test_unknown_command_returns_falsy_apierror(client: GameClientBase) -> None:
     assert result.reason == "unknown_command"
 
 
+def test_print_api_errors_can_be_disabled(
+    client: GameClientBase, capsys: pytest.CaptureFixture
+) -> None:
+    client.print_api_errors = False
+    try:
+        result = client._call("does_not_exist")
+    finally:
+        client.print_api_errors = True
+    assert isinstance(result, ApiError)
+    assert "[api]" not in capsys.readouterr().out
+
+
 def test_heal_refused_when_energy_too_low(client: GameClientBase) -> None:
     """A freshly booted game starts near-zero energy, so heal is refused for lack of it.
 

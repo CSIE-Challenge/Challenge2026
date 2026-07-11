@@ -34,6 +34,17 @@ def test_unwrap_never_raises() -> None:
     assert isinstance(result, ApiError)
 
 
+def test_unwrap_prints_warning_by_default(capsys: pytest.CaptureFixture) -> None:
+    _unwrap({"status": "error", "code": 409, "reason": "insufficient_energy"}, "heal")
+    assert "[api] heal failed: insufficient_energy (409)" in capsys.readouterr().out
+
+
+def test_unwrap_warn_false_is_silent(capsys: pytest.CaptureFixture) -> None:
+    result = _unwrap({"status": "error", "code": 409}, "heal", warn=False)
+    assert isinstance(result, ApiError)
+    assert capsys.readouterr().out == ""
+
+
 def test_apierror_message_is_readable_and_names_the_command() -> None:
     err = ApiError(409, "spawn_trap1", "insufficient_energy")
     assert str(err) == "spawn_trap1 failed: insufficient_energy (409)"

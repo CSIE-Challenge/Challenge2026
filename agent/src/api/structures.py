@@ -5,7 +5,7 @@ from enum import Enum
 
 
 class Vector2:
-    """二維向量，傳給遊戲或從遊戲讀回時皆以 ``[x, y]`` 陣列表示。"""
+    """二維向量。正的 x 表示往右，正的 y 表示往下。"""
 
     def __init__(self, x: float = 0.0, y: float = 0.0) -> None:
         self.x = float(x)

@@ -52,7 +52,7 @@ class ApiError(Exception):
 
 
 if sys.platform == "win32":
-    os.system("")  # enable ANSI escape codes in the legacy Windows console
+    os.system("")
 
 
 def _print_warning(error: ApiError) -> None:
@@ -63,7 +63,7 @@ def _print_warning(error: ApiError) -> None:
     print(text)
 
 
-def _unwrap(response: dict, cmd: str | None = None) -> Any:
+def _unwrap(response: dict, cmd: str | None = None, warn: bool = True) -> Any:
     """Return the response data, or a falsy ApiError."""
     if response.get("status") == protocol.Status.ERROR:
         error = ApiError(
@@ -71,29 +71,42 @@ def _unwrap(response: dict, cmd: str | None = None) -> Any:
             cmd,
             response.get("reason", ""),
         )
-        # Warn even when the caller never checks the return value.
-        _print_warning(error)
+        if warn:
+            # Warn even when the caller never checks the return value.
+            _print_warning(error)
         return error
     return response.get("data")
 
 
 class GameClientBase:
-    """與遊戲伺服器溝通的客戶端，你的 ``run(client)`` 會收到一個實例。
+    """與遊戲伺服器溝通的客戶端。
 
-    **錯誤處理**：成功回傳結果；失敗「回傳」一個 `ApiError`。
+    ## 錯誤處理
+    成功回傳結果；失敗「回傳」一個 `ApiError`。
 
-    >>> result = client.spawn_trap1(Vector2(120, 80))
-    >>> if not result:
-    ...     print(result.reason)  # 例如 insufficient_energy
+    ```
+    result = client.spawn_trap1(Vector2(120, 80))
+    if not result:
+        print(result.reason)  # 例如 insufficient_energy
+    ```
 
     就算不檢查回傳值，每次失敗也會自動印出警告（例如
     ``[api] spawn_trap1 failed: insufficient_energy (409)``）。
 
+    想自己處理錯誤、不要自動警告的話：
+
+    ```
+    client.print_api_errors = False
+    ```
+
     ``print(...)`` 的輸出會顯示在執行 agent 的終端機（單人模式下也會寫到
-    ``agent.log``），所以印出來就能在 Python 端看到結果與錯誤訊息。
+    agent.py 旁邊的 ``agent.log``），所以印出來就能在 Python 端看到
+    結果與錯誤訊息。
     """
 
     def __init__(self, token: str, host: str = "127.0.0.1", port: int = 7749) -> None:
+        """設為 False 可關閉 API 失敗時的自動警告（預設 True）"""
+        self.print_api_errors = True
         self._token = token
         self.host = host
         self.port = port
@@ -151,7 +164,6 @@ class GameClientBase:
         self._loop.call_soon_threadsafe(self._loop.stop)
         self._thread.join(timeout=2.0)
 
-    # --- APIs ---------------------------------------------------------------
     # ruff: disable[E501]
     def _call(self, cmd: str, args: dict[str, Any] | None = None) -> Any:
         """Send a command, block for the reply, and unwrap it.
@@ -159,7 +171,9 @@ class GameClientBase:
         Returns the data on success, a ApiError on failure.
         """
         assert self._rpc is not None, "not connected"
-        return _unwrap(self._submit(self._rpc.call(cmd, args)), cmd)
+        return _unwrap(
+            self._submit(self._rpc.call(cmd, args)), cmd, self.print_api_errors
+        )
 
     def ping(self) -> Any:
         """
@@ -179,6 +193,7 @@ class GameClientBase:
         """
         return self._call(protocol.Cmd.PING)
 
+    # --- APIs ---------------------------------------------------------------
     # Read-only
     def get_my_energy(self) -> int:
         """
@@ -193,7 +208,7 @@ class GameClientBase:
 
         ## Example
         ```python
-        energy = client.get_my_energy()  # 取得目前能量
+        energy = client.get_my_energy()
         ```
         """
         return self._call(protocol.Cmd.GET_MY_ENERGY)
@@ -225,7 +240,7 @@ class GameClientBase:
         無參數
 
         ## Returns
-        回傳一個 `Vector2`，表示對手玩家的座標；可直接用 `.x`／`.y` 取值。
+        回傳一個 `Vector2`，表示對手玩家的座標；可直接用 `.x` / `.y` 取值。
 
         ## Example
         ```python
@@ -247,7 +262,7 @@ class GameClientBase:
         無參數
 
         ## Returns
-        回傳一個 `Vector2`，表示能量球的座標；可直接用 `.x`／`.y` 取值。
+        回傳一個 `Vector2`，表示能量球的座標；可直接用 `.x` / `.y` 取值。
 
         ## Example
         ```python
@@ -330,8 +345,7 @@ class GameClientBase:
         無參數
 
         ## Returns
-        陷阱編號陣列（例如 ``[1, 3, 6]``），編號對應 ``spawn_trap1`` ~
-        ``spawn_trap10``。
+        陷阱編號陣列（例如 ``[1, 3, 6]``），編號對應 ``trap1`` ~ ``trap10``。
 
         ## Example
         ```python
@@ -347,11 +361,10 @@ class GameClientBase:
         查詢指定陷阱剩餘冷卻秒數。
 
         ## Parameters
-        - `trap_id` (int): 陷阱編號 1 ~ 10，對應 ``spawn_trap1`` ~ ``spawn_trap10``。
+        - `trap_id` (int): 陷阱編號 1 ~ 10，對應 ``trap1`` ~ ``trap10``。
 
         ## Returns
-        回傳剩餘冷卻秒數（0.0 表示可以發射）；編號無效時回傳 falsy 的
-        :class:`ApiError`。
+        回傳剩餘冷卻秒數（0.0 表示可以發射）；編號無效時回傳 :class:`ApiError`。
 
         ## Example
         ```python
@@ -390,11 +403,11 @@ class GameClientBase:
 
     def spawn_trap1(self, position: Vector2) -> bool:
         """
-        # Spawn Trap 1 (Mine)
-        在指定位置放置一個地雷。
+        # Spawn Trap 1（踩踏地雷）
+        在指定位置放置一個「踩踏地雷」。
 
         ## Parameters
-        - `position` (Vector2): 放置地雷的位置。
+        - `position` (Vector2): 放置「踩踏地雷」的位置。
 
         ## Returns
         成功回傳 ``True``；失敗回傳 `ApiError`，
@@ -412,8 +425,8 @@ class GameClientBase:
 
     def spawn_trap2(self, delay_time: float, radius: float) -> bool:
         """
-        # Spawn Trap 2 (Electric Ring)
-        放置一個電環，經過 `delay_time` 秒後於半徑 `radius` 的範圍觸發。
+        # Spawn Trap 2 （追蹤電圈）
+        放置一個「追蹤電圈」，經過 `delay_time` 秒後於半徑 `radius` 的範圍觸發。
 
         ## Parameters
         - `delay_time` (float): 觸發前的延遲秒數。
@@ -434,8 +447,8 @@ class GameClientBase:
 
     def spawn_trap3(self, position: Vector2, direction: Vector2, speed: float) -> bool:
         """
-        # Spawn Trap 3 (Tracing Bullet)
-        從 `position` 以 `speed` 沿 `direction` 發射一顆追蹤子彈。
+        # Spawn Trap 3（追跡海鷗）
+        從 `position` 以 `speed` 沿 `direction` 發射一隻「追跡海鷗」。
 
         ## Parameters
         - `position` (Vector2): 子彈的發射位置。
@@ -457,11 +470,11 @@ class GameClientBase:
 
     def spawn_trap4(self, position: Vector2, direction: Direction) -> bool:
         """
-        # Spawn Trap 4 (Conveyor)
-        在 `position` 放置一塊履帶，把踩上去的玩家往 `direction` 推。
+        # Spawn Trap 4（大海嘯）
+        在 `position` 放置一片「大海嘯」，把踩上去的玩家往 `direction` 推。
 
         ## Parameters
-        - `position` (Vector2): 履帶的位置。
+        - `position` (Vector2): 「大海嘯」的位置。
         - `direction` (Direction):推動方向，可傳 `Direction.UP/DOWN/LEFT/RIGHT`。
 
         ## Returns
@@ -479,11 +492,11 @@ class GameClientBase:
 
     def spawn_trap5(self, position: Vector2) -> bool:
         """
-        # Spawn Trap 5 (Ice Floor)
-        在 `position` 放置一塊冰面。
+        # Spawn Trap 5（小心地滑）
+        在 `position` 放置一塊溼滑的地面。
 
         ## Parameters
-        - `position` (Vector2): 冰面的位置。
+        - `position` (Vector2): 「小心地滑」的位置。
 
         ## Returns
         成功回傳 ``True``；失敗回傳 `ApiError`（同 `spawn_trap1`）。
@@ -497,8 +510,8 @@ class GameClientBase:
 
     def spawn_trap6(self, direction: Direction, speed: float) -> bool:
         """
-        # Spawn Trap 6 (Scanline)
-        產生一條掃描線，沿 `direction` 以 `speed` 掃過場地。
+        # Spawn Trap 6（熱情的迎賓舞）
+        產生一支「熱情的迎賓舞」，沿 `direction` 以 `speed` 掃過場地。
 
         ## Parameters
         - `direction` (Direction):掃描方向，可傳 `Direction.UP/DOWN/LEFT/RIGHT`。
@@ -519,7 +532,7 @@ class GameClientBase:
 
     def spawn_trap7(self, position: Vector2, expand_rate: float) -> bool:
         """
-        # Spawn Trap 7 (Spreading Ripples)
+        # Spawn Trap 7（擴散漣漪）
         在 `position` 產生向外擴散的漣漪，擴散速率為 `expand_rate`。
 
         ## Parameters
@@ -541,12 +554,12 @@ class GameClientBase:
 
     def spawn_trap8(self, start_position: Vector2, end_position: Vector2) -> bool:
         """
-        # Spawn Trap 8 (Electric Arc)
-        在 `start_position` 與 `end_position` 之間產生一道電弧。
+        # Spawn Trap 8（這是一條溝吧）
+        在 `start_position` 與 `end_position` 之間產生一道「這是一條溝吧」。
 
         ## Parameters
-        - `start_position` (Vector2): 電弧的起點。
-        - `end_position` (Vector2): 電弧的終點。
+        - `start_position` (Vector2): 「這是一條溝吧」的起點。
+        - `end_position` (Vector2): 「這是一條溝吧」的終點。
 
         ## Returns
         成功回傳 ``True``；失敗回傳 `ApiError`（同 `spawn_trap1`）。
@@ -565,13 +578,13 @@ class GameClientBase:
         self, start_position: Vector2, end_position: Vector2, air_time: float
     ) -> bool:
         """
-        # Spawn Trap 9 (Mortar)
+        # Spawn Trap 9（瓜瓜墜地）
         從 `start_position` 發射迫擊砲彈，經過 `air_time` 秒後落在 `end_position`。
 
         ## Parameters
-        - `start_position` (Vector2): 迫擊砲的發射點。
-        - `end_position` (Vector2): 砲彈的落點。
-        - `air_time` (float): 砲彈的滯空秒數。
+        - `start_position` (Vector2): 「瓜瓜墜地」的發射點。
+        - `end_position` (Vector2): 「瓜瓜」的落點。
+        - `air_time` (float): 「瓜瓜」的滯空秒數。
 
         ## Returns
         成功回傳 ``True``；失敗回傳 `ApiError`（同 `spawn_trap1`）。
@@ -594,14 +607,14 @@ class GameClientBase:
         self, position: Vector2, dir1: Vector2, dir2: Vector2, dir3: Vector2
     ) -> bool:
         """
-        # Spawn Trap 10 (Shotgun)
-        在 `position` 沿 `dir1`、`dir2`、`dir3` 三個方向同時發射霰彈。
+        # Spawn Trap 10（香蕉你個鳳梨）
+        在 `position` 沿 `dir1`、`dir2`、`dir3` 三個方向同時發射「香蕉你個鳳梨」。
 
         ## Parameters
-        - `position` (Vector2): 霰彈的發射位置。
-        - `dir1` (Vector2): 第一顆彈的方向。
-        - `dir2` (Vector2): 第二顆彈的方向。
-        - `dir3` (Vector2): 第三顆彈的方向。
+        - `position` (Vector2): 「香蕉你個鳳梨」的發射位置。
+        - `dir1` (Vector2): 第一顆彈「香蕉」的方向。
+        - `dir2` (Vector2): 第二顆彈「鳳梨」的方向。
+        - `dir3` (Vector2): 第三顆彈「葡萄」的方向。
 
         ## Returns
         成功回傳 ``True``；失敗回傳 `ApiError`（同 `spawn_trap1`）。
