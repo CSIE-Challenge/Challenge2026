@@ -11,4 +11,7 @@ description = "痾、嗯？怎麼感覺在哪見過。"
 is_achievement_unlock = true
 achievement_desc = "積分兌換"
 skin_prefab = ExtResource("2_hmjhp")
+description = "痾、嗯？怎麼感覺在哪見過。"
+is_achievement_unlock = true
+achievement_desc = "積分兌換"
 metadata/_custom_type_script = "uid://c6vuqckcyjdey"

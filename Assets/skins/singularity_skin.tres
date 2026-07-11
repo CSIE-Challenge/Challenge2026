@@ -12,4 +12,7 @@ is_achievement_unlock = true
 achievement_desc = "積分兌換"
 is_silhouette = true
 skin_prefab = ExtResource("2_prefab")
+description = "會跳的黑洞，稀奇不？如果把陷阱吸到身上就糟糕了。"
+is_achievement_unlock = true
+achievement_desc = "積分兌換"
 metadata/_custom_type_script = "uid://c6vuqckcyjdey"
