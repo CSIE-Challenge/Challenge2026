@@ -379,9 +379,13 @@ func _update_max_energy(play_audio: bool = true) -> void:
 
 
 #region Control
-func finish_game(authoritative_stats: Dictionary = {}) -> void:
+func finish_game(player_died: bool = false, authoritative_stats: Dictionary = {}) -> void:
 	if game_over:
 		return
+	Audio.stop_all_audio_2d()
+	Audio.stop_all_audio()
+	if player_died:
+		Audio.play_sfx(Audio.SFX.PLAYER_DIE)
 	_close_pause_overlay_for_finish()
 	game_over = true
 	get_tree().paused = true
@@ -574,7 +578,7 @@ func _on_network_health_changed(peer_id: int, health: int) -> void:
 			return
 		if player.health <= 0:
 			await player.die()
-			finish_game()
+			finish_game(1)
 		return
 
 	_update_opponent_energy_label(peer_id, NetworkManager.get_energy(peer_id))

@@ -137,6 +137,28 @@ func stop_all_sfx() -> void:
 	for player in _sfx_players:
 		if player.playing:
 			player.stop()
+func stop_all_audio() -> void:
+	if _fade_tween != null and _fade_tween.is_valid():
+		_fade_tween.kill()
+	if _current_player != null:
+		_current_player.stop()
+	if _next_player != null:
+		_next_player.stop()
+	for player in _sfx_players:
+		player.stop()
+		player.stream = null
+
+
+func stop_all_audio_2d(node: Node = null) -> void:
+	if node == null:
+		node = get_tree().root
+
+	if node is AudioStreamPlayer2D:
+		var player := node as AudioStreamPlayer2D
+		player.stop()
+
+	for child in node.get_children():
+		stop_all_audio_2d(child)
 
 
 func bgm_is_playing() -> bool:

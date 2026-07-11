@@ -661,13 +661,9 @@ label_settings = SubResource("LabelSettings_1ff3a")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-<<<<<<< HEAD
 [node name="PauseMenu" parent="HUD" unique_id=444701185 instance=ExtResource("17_pause_menu")]
 layer = 300
 visible = false
-=======
-[node name="PauseMenu" parent="HUD" unique_id=185754770 instance=ExtResource("17_pause_menu")]
->>>>>>> f258b9f (feat: add exit button, health icons)
 
 [node name="TrapRequestScheduler" type="Node" parent="." unique_id=578271909]
 script = ExtResource("8_urrcd")
@@ -676,11 +672,7 @@ script = ExtResource("8_urrcd")
 script = ExtResource("9_puebw")
 
 [node name="ResultScreen" parent="." unique_id=1827147285 instance=ExtResource("8_result")]
-<<<<<<< HEAD
 layer = 200
-=======
-process_mode = 2
->>>>>>> f258b9f (feat: add exit button, health icons)
 
 [node name="StateSerializer" type="Node" parent="." unique_id=509829794 node_paths=PackedStringArray("game_manager", "stage")]
 script = ExtResource("4_ssg01")
