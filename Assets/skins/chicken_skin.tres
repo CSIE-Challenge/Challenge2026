@@ -9,10 +9,10 @@
 script = ExtResource("1_chicken")
 skin_id = "chicken_skin"
 true_name = "阿雞米得"
-preview_texture = ExtResource("3_preview")
-skin_prefab = ExtResource("2_prefab")
-health_icon_texture = ExtResource("1_xfoqp")
 description = "阿雞米得用睿智的眼神看著你，他正洞悉著宇宙的真理。"
 is_achievement_unlock = true
 achievement_desc = "積分兌換"
+preview_texture = ExtResource("3_preview")
+skin_prefab = ExtResource("2_prefab")
+health_icon_texture = ExtResource("1_xfoqp")
 metadata/_custom_type_script = "uid://c6vuqckcyjdey"

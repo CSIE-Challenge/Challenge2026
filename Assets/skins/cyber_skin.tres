@@ -8,11 +8,8 @@
 script = ExtResource("1_skindata")
 skin_id = "cyber_skin"
 true_name = "賽博龐克"
-price = 250
-preview_texture = ExtResource("1_square")
-skin_prefab = ExtResource("2_prefab")
-
 description = "時空穿越到三十年前，你家電視壞了就長這樣。"
-
 is_achievement_unlock = true
 achievement_desc = "積分兌換"
+preview_texture = ExtResource("1_square")
+skin_prefab = ExtResource("2_prefab")

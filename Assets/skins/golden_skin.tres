@@ -8,11 +8,8 @@
 script = ExtResource("1_skindata")
 skin_id = "golden_skin"
 true_name = "黃金傳說"
+description = "王不哭，王不鬧，王是黃金傳說！
+此乃實力的證明。"
 is_silhouette = true
 preview_texture = ExtResource("1_s77u2")
 skin_prefab = ExtResource("2_prefab")
-
-description = "王不哭，王不鬧，王是黃金傳說！\n此乃實力的證明。"
-
-is_achievement_unlock = false
-achievement_desc = ""

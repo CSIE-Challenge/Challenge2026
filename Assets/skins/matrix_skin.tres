@@ -7,9 +7,8 @@
 script = ExtResource("1_skindata")
 skin_id = "matrix_skin"
 true_name = "駭客碼流"
-skin_prefab = ExtResource("2_matrix")
-is_silhouette = false
 description = "網路上會炫技終端機噴一堆東西的影片都會被專業人士拿出來審視。但我一律推薦`sl | lolcat`"
 is_achievement_unlock = true
 achievement_desc = "積分兌換"
+skin_prefab = ExtResource("2_matrix")
 metadata/_custom_type_script = "uid://c6vuqckcyjdey"
