@@ -23,6 +23,7 @@ var max_health = int(game_data["player"]["max_health"])
 var max_phase = game_data["game_manager"]["max_phase"]
 var phase_duration = game_data["game_manager"]["phase_duration"]
 var max_energy = game_data["game_manager"]["max_energy"]
+var heal_costs = game_data["heal"]["energy_costs"]
 
 var energy_ball_count := 0
 var energy_amount := 0
@@ -367,6 +368,7 @@ func _on_phase_timeout() -> void:
 	energy_ball.advance_phase()
 	phase_timer.start(phase_duration[current_phase])
 	phase_label.text = "%d" % current_phase
+	agent_action_service.update_heal_cost(heal_costs[current_phase])
 	_update_max_energy()
 
 

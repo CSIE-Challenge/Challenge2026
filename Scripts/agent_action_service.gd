@@ -9,7 +9,7 @@ var trap_request_scheduler: TrapRequestScheduler
 var game_data := GameData.new()
 var default_heal_uses: int = game_data.data["heal"]["uses"]
 var default_heal_amount: int = game_data.data["heal"]["amount"]
-var default_heal_energy_cost: int = game_data.data["heal"]["energy_cost"]
+var default_heal_energy_cost: int = game_data.data["heal"]["energy_costs"][0]
 var heal_uses_left: int = default_heal_uses
 
 var trap_data = TrapData.new().data
@@ -270,3 +270,7 @@ func _make_heal_result(ok: bool, reason: String) -> Dictionary:
 		"heal_uses_left": heal_uses_left,
 		"reason": reason,
 	}
+
+
+func update_heal_cost(new_cost: int) -> void:
+	default_heal_amount = new_cost

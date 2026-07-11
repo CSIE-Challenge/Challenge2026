@@ -40,6 +40,6 @@
 	"heal": {
 		"uses": 2,
 		"amount": 2,
-		"energy_cost": 40
+		"energy_costs": [25, 35, 45, 52, 60, 65]
 	}
 }
