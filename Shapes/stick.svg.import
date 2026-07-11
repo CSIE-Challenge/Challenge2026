@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://donxaay6o36v4"
-path="res://.godot/imported/tick.svg-d08779f26541875e133d5b784da8e349.ctex"
+path="res://.godot/imported/stick.svg-2b6071dd572b9886a4662a84cc0415cc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Shapes/tick.svg"
-dest_files=["res://.godot/imported/tick.svg-d08779f26541875e133d5b784da8e349.ctex"]
+source_file="res://Shapes/stick.svg"
+dest_files=["res://.godot/imported/stick.svg-2b6071dd572b9886a4662a84cc0415cc.ctex"]
 
 [params]
 

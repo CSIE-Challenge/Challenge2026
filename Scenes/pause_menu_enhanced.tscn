@@ -2,8 +2,17 @@
 
 [ext_resource type="Theme" uid="uid://doboascpna6vx" path="res://Assets/themes/menu.tres" id="1_jxu5q"]
 [ext_resource type="Script" uid="uid://dmda1mw77k1h8" path="res://Scripts/pause_menu_enhanced.gd" id="2_jxu5q"]
-[ext_resource type="Texture2D" uid="uid://donxaay6o36v4" path="res://Shapes/tick.svg" id="3_q1nu4"]
+[ext_resource type="Texture2D" uid="uid://donxaay6o36v4" path="res://Shapes/stick.svg" id="3_q1nu4"]
 [ext_resource type="Script" uid="uid://cb74adv0y1hxa" path="res://Scripts/volume_slider.gd" id="3_t71ic"]
+[ext_resource type="Theme" uid="uid://cmvy433xb5tse" path="res://Assets/themes/main_menu_buttons.tres" id="4_t71ic"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q1nu4"]
+bg_color = Color(0.83137256, 0.92941177, 0.9411765, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.16470589, 0.30588236, 0.34117648, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jxu5q"]
 border_width_top = 10
@@ -25,10 +34,15 @@ mouse_filter = 2
 color = Color(0, 0, 0, 0.55)
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=926328968]
-offset_left = 217.0
-offset_top = 73.0
-offset_right = 937.0
-offset_bottom = 573.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -360.0
+offset_top = -280.0
+offset_right = 360.0
+offset_bottom = 280.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_jxu5q")
@@ -42,11 +56,12 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -360.0
-offset_top = -250.0
+offset_top = -280.0
 offset_right = 360.0
-offset_bottom = 250.0
+offset_bottom = 280.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_q1nu4")
 
 [node name="MarginContainer" type="MarginContainer" parent="ColorRect/PanelContainer" unique_id=1185287306]
 layout_mode = 2
@@ -104,16 +119,18 @@ layout_mode = 2
 theme_override_constants/separation = 20
 
 [node name="ResumeButton" type="Button" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/ActionContainer/HBoxContainer2" unique_id=1672766635]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(200, 60)
 layout_mode = 2
 size_flags_horizontal = 10
+theme = ExtResource("4_t71ic")
 theme_override_font_sizes/font_size = 28
 text = "Continue"
 
 [node name="RestartButton" type="Button" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/ActionContainer/HBoxContainer2" unique_id=1754318696]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(200, 60)
 layout_mode = 2
 size_flags_horizontal = 10
+theme = ExtResource("4_t71ic")
 theme_override_font_sizes/font_size = 28
 text = "Restart"
 
@@ -126,16 +143,18 @@ layout_mode = 2
 theme_override_constants/separation = 20
 
 [node name="MainMenuButton" type="Button" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/ActionContainer/HBoxContainer3" unique_id=1613495078]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(200, 60)
 layout_mode = 2
 size_flags_horizontal = 10
+theme = ExtResource("4_t71ic")
 theme_override_font_sizes/font_size = 28
 text = "Home"
 
 [node name="ExitButton" type="Button" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/ActionContainer/HBoxContainer3" unique_id=857557833]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(200, 60)
 layout_mode = 2
 size_flags_horizontal = 10
+theme = ExtResource("4_t71ic")
 theme_override_font_sizes/font_size = 28
 text = "Exit"
 
