@@ -38,7 +38,7 @@ func show_results(results: Dictionary) -> void:
 	health_icon.reversed = 1
 	health_icon.set_icon_size(Vector2(25, 25))
 	health_icon._ensure_icons()
-	health_icon.set_health(4)  #int(results.get("remaining_health", 0))
+	health_icon.set_health(int(results.get("remaining_health", 0)))
 
 	result_root.modulate.a = 0.0
 	health_icon.modulate.a = 0.0
