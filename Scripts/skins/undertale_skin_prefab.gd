@@ -34,7 +34,7 @@ func play_die():
 
 
 func play_eat_ball():
-	# 吃到東西時快速閃爍 (像是受傷後的無敵時間)
+	return
 	var tween = create_tween()
 	for i in range(4):
 		tween.tween_property(sprite, "modulate:a", 0.0, 0.05)

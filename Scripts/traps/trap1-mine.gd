@@ -28,6 +28,7 @@ func _ready() -> void:
 	$SpawnParticle.z_index = Util.LAYERS["Trap1Mine/SpawnParticle"]
 	$ExplosionParticle.z_index = Util.LAYERS["Trap1Mine/ExplosionParticle"]
 	player = Global.game_manager.player
+	explosion_area.collision_layer = 0
 
 
 static func initialize(pos: Vector2) -> Trap1Mine:
@@ -48,6 +49,7 @@ func start_arming_sequence() -> void:
 
 
 func on_arming_complete() -> void:
+	explosion_area.collision_layer = 4
 	spawn_particle.emitting = true
 	mine_warning.visible = false
 	mine_body.visible = true

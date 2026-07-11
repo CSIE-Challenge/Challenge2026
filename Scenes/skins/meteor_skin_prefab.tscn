@@ -22,7 +22,7 @@ script = ExtResource("1_meteor")
 
 [node name="Line2D" type="Line2D" parent="." unique_id=879721011]
 top_level = true
-width = 40.0
+width = 30.0
 width_curve = SubResource("Curve_meteor_trail")
 gradient = SubResource("Gradient_meteor")
 joint_mode = 2
@@ -36,7 +36,6 @@ scale = Vector2(0.2, 0.2)
 texture = ExtResource("2_circle")
 
 [node name="CPUParticles2D" type="CPUParticles2D" parent="." unique_id=116743951]
-local_coords = false
 emitting = false
 amount = 20
 texture = ExtResource("2_circle")
@@ -49,12 +48,10 @@ scale_amount_max = 0.06
 scale_amount_curve = SubResource("Curve_meteor_particles")
 color_ramp = SubResource("Gradient_particles")
 
-[node name="DeathParticles" type="CPUParticles2D" parent="."]
-local_coords = false
+[node name="DeathParticles" type="CPUParticles2D" parent="." unique_id=499499580]
 emitting = false
 amount = 100
 texture = ExtResource("2_circle")
-lifetime = 1.0
 one_shot = true
 explosiveness = 1.0
 randomness = 0.5

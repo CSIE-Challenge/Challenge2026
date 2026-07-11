@@ -53,7 +53,7 @@ func play_die():
 func play_eat_ball():
 	var tween = create_tween()
 	tween.tween_property(sprite, "modulate", Color(1.0, 1.0, 1.0, 1.0), 0.1)
-	tween.tween_property(sprite, "modulate", Color(0.6, 0.9, 1.0, 0.7), 0.2)
+	tween.tween_property(sprite, "modulate", Color(0.6, 0.9, 1.0, 1.0), 0.2)
 	tween.parallel().tween_property(sprite, "scale", Vector2(0.25, 0.25), 0.1)
 	tween.chain().tween_property(sprite, "scale", Vector2(0.2, 0.2), 0.2)
 

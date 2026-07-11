@@ -135,7 +135,7 @@ func play_jump():
 func _spawn_massive_lightning():
 	if not is_inside_tree():
 		return
-
+	'''
 	var flash = ColorRect.new()
 	flash.color = Color(1, 1, 1, 1)
 	flash.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -146,7 +146,7 @@ func _spawn_massive_lightning():
 	var tween_flash = create_tween()
 	tween_flash.tween_property(flash, "modulate:a", 0.0, 0.3)
 	tween_flash.tween_callback(canvas_layer.queue_free)
-
+	'''
 	var line = Line2D.new()
 	line.width = 40.0
 	line.default_color = Color(0.8, 0.95, 1.0, 1.0)

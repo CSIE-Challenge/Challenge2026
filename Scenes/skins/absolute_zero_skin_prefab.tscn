@@ -3,11 +3,15 @@
 [ext_resource type="Script" uid="uid://dtvfnt485ahwe" path="res://Scripts/skins/absolute_zero_skin_prefab.gd" id="1_abs"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_circle"]
 
+[sub_resource type="Curve" id="Curve_xh823"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -2.6851192, 0.0, 0, 0]
+point_count = 2
+
 [node name="AbsoluteZeroSkinPrefab" type="Node2D" unique_id=1442858681]
 script = ExtResource("1_abs")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1494708017]
-modulate = Color(0.6, 0.9, 1, 0.7)
+modulate = Color(0.6, 0.9019608, 1, 1)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("2_circle")
 
@@ -21,11 +25,10 @@ scale_amount_min = 0.01
 scale_amount_max = 0.03
 color = Color(0.8, 0.95, 1, 0.5)
 
-[node name="IceTrailParticles" type="CPUParticles2D" parent="."]
-local_coords = false
+[node name="IceTrailParticles" type="CPUParticles2D" parent="." unique_id=738348777]
 amount = 40
-lifetime = 0.5
 texture = ExtResource("2_circle")
+lifetime = 0.5
 emission_shape = 3
 emission_rect_extents = Vector2(15, 5)
 gravity = Vector2(0, 0)
@@ -35,12 +38,12 @@ color = Color(0.6, 0.9, 1, 0.4)
 
 [node name="SnowParticles" type="CPUParticles2D" parent="." unique_id=439505407]
 position = Vector2(0, 25)
-local_coords = false
 emitting = false
 amount = 30
-lifetime = 0.8
+lifetime = 0.34
 one_shot = true
 explosiveness = 0.8
+randomness = 0.19
 emission_shape = 1
 emission_sphere_radius = 20.0
 direction = Vector2(0, 1)
@@ -50,6 +53,7 @@ initial_velocity_min = 50.0
 initial_velocity_max = 100.0
 scale_amount_min = 2.0
 scale_amount_max = 5.0
+scale_amount_curve = SubResource("Curve_xh823")
 color = Color(1, 1, 1, 0.8)
 
 [node name="SpikesContainer" type="Node2D" parent="." unique_id=1599045705]
