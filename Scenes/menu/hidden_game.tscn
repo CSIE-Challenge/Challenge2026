@@ -104,6 +104,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ebyp3")
+skip_to_fight = null
 
 [node name="Panel" type="Panel" parent="." unique_id=558493639]
 material = SubResource("ShaderMaterial_bg")
