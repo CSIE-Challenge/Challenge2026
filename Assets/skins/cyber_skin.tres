@@ -7,7 +7,7 @@
 [resource]
 script = ExtResource("1_skindata")
 skin_id = "cyber_skin"
-true_name = "賽博龐克"
+true_name = "雪花螢幕"
 description = "時空穿越到三十年前，你家電視壞了就長這樣。"
 is_achievement_unlock = true
 achievement_desc = "積分兌換"

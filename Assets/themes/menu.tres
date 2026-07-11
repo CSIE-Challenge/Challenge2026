@@ -1,16 +1,34 @@
 [gd_resource type="Theme" format=3 uid="uid://doboascpna6vx"]
 
 [ext_resource type="FontFile" uid="uid://hp5u4fxb5ifw" path="res://Assets/fonts/PixeloidSans-Bold.ttf" id="1_x5s4q"]
+[ext_resource type="FontFile" uid="uid://uwn4vst4fceu" path="res://Assets/fonts/Cubic_11.ttf" id="2_cubic"]
+
+[sub_resource type="FontVariation" id="FontVariation_pixel"]
+fallbacks = Array[Font]([ExtResource("2_cubic")])
+base_font = ExtResource("1_x5s4q")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oqv23"]
 content_margin_left = 16.0
 bg_color = Color(0.12941177, 0.12941177, 0.12941177, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+bg_color = Color(0.12, 0.12, 0.16, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.25, 0.25, 0.3, 1)
+
 [resource]
-Button/fonts/font = ExtResource("1_x5s4q")
-Label/fonts/font = ExtResource("1_x5s4q")
-LineEdit/fonts/font = ExtResource("1_x5s4q")
+Button/fonts/font = SubResource("FontVariation_pixel")
+Label/fonts/font = SubResource("FontVariation_pixel")
+LineEdit/fonts/font = SubResource("FontVariation_pixel")
 LineEdit/styles/normal = SubResource("StyleBoxFlat_oqv23")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_panel")
 RichTextLabel/constants/line_separation = -6
-RichTextLabel/fonts/bold_font = ExtResource("1_x5s4q")
-RichTextLabel/fonts/normal_font = ExtResource("1_x5s4q")
+RichTextLabel/fonts/bold_font = SubResource("FontVariation_pixel")
+RichTextLabel/fonts/normal_font = SubResource("FontVariation_pixel")
