@@ -297,10 +297,10 @@ class GameClientBase:
             return data
         return Vector2.from_list(data)
 
-    def get_remaining_time(self) -> float:
+    def get_elapsed_time(self) -> float:
         """
-        # Get Remaining Time
-        取得目前關卡剩餘秒數（非負）。
+        # Get Elapsed Time
+        取得目前遊戲已進行的秒數。
 
         ## Parameters
         無參數
@@ -308,7 +308,7 @@ class GameClientBase:
         ## Returns
         以秒為單位的 float。
         """
-        return self._call(protocol.Cmd.GET_REMAINING_TIME)
+        return self._call(protocol.Cmd.GET_ELAPSED_TIME)
 
     def get_opponent_combo(self) -> int:
         """

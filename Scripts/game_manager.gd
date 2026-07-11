@@ -226,10 +226,6 @@ func get_opponent_player_velocity() -> Vector2:
 	return current_player.velocity
 
 
-func get_remaining_time() -> float:
-	return 300.0 - elapsed_time
-
-
 func get_elapsed_time() -> float:
 	return elapsed_time
 

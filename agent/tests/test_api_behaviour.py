@@ -64,11 +64,11 @@ def test_get_opponent_velocity_shape(client: GameClientBase) -> None:
     assert list(velocity) == [velocity.x, velocity.y]
 
 
-def test_get_remaining_time_and_phase(client: GameClientBase) -> None:
-    remaining = client.get_remaining_time()
+def test_get_elapsed_time_and_phase(client: GameClientBase) -> None:
+    elapsed = client.get_elapsed_time()
     phase = client.get_phase()
-    assert isinstance(remaining, (int, float))
-    assert remaining >= 0
+    assert isinstance(elapsed, (int, float))
+    assert elapsed >= 0
     assert isinstance(phase, int)
     assert phase >= 0
 

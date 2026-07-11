@@ -124,7 +124,7 @@ func _register_commands() -> void:
 	register_command("get_opponent_player_position", _cmd_get_opponent_player_position)
 	register_command("get_opponent_energy_ball_position", _cmd_get_opponent_energy_ball_position)
 	register_command("get_opponent_player_velocity", _cmd_get_opponent_player_velocity)
-	register_command("get_remaining_time", _cmd_get_remaining_time)
+	register_command("get_elapsed_time", _cmd_get_elapsed_time)
 	register_command("get_opponent_combo", _cmd_get_opponent_combo)
 	register_command("get_phase", _cmd_get_phase)
 	register_command("get_available_traps", _cmd_get_available_traps)
@@ -337,8 +337,8 @@ func _cmd_get_opponent_player_velocity(_args: Dictionary) -> Dictionary:
 	return ApiServer.ok([vel.x, vel.y])
 
 
-func _cmd_get_remaining_time(_args: Dictionary) -> Dictionary:
-	return ApiServer.ok(game.get_remaining_time())
+func _cmd_get_elapsed_time(_args: Dictionary) -> Dictionary:
+	return ApiServer.ok(game.get_elapsed_time())
 
 
 func _cmd_get_opponent_combo(_args: Dictionary) -> Dictionary:

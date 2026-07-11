@@ -33,7 +33,7 @@ def run(client):
     # client.print_api_errors = False
     # 如果你不想在輸出看到形如 [api] xxx 的訊息，你可以把上面這行反註解掉
 
-    previous_print_time = client.get_remaining_time()
+    previous_print_time = 300.0 - client.get_elapsed_time()
     heal_count = 0
     while True:
         if client.get_my_health() <= HEAL_THRESHOLD and heal_count < MAX_HEAL_COUNT:
@@ -96,7 +96,7 @@ def run(client):
                         Vector2(-220.0, 145.0), Vector2(145.0, 145.0), 2.0
                     )  # 調整傳入它的參數！
 
-        current_time = client.get_remaining_time()
+        current_time = 300.0 - client.get_elapsed_time()
         if current_time <= previous_print_time - 1.0:
             print(f"Remaining Time : {current_time}")
             print(f"Opponent Player Position : {client.get_opponent_player_position()}")
