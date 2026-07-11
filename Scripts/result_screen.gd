@@ -36,47 +36,55 @@ func show_results(results: Dictionary) -> void:
 
 	health_icon.modulate.a = 0.0
 	health_icon.reversed = 1
-	health_icon.set_icon_size(Vector2(22, 22))
+	health_icon.set_icon_size(Vector2(25, 25))
 	health_icon._ensure_icons()
-	health_icon.set_health(int(results.get("remaining_health", 0)))
+	health_icon.set_health(4)  #int(results.get("remaining_health", 0))
+
+	result_root.modulate.a = 0.0
+	health_icon.modulate.a = 0.0
+	show()
+	result_root.show()
+	health_icon.show()
+	health_icon.queue_sort()
+	vboxcontainer.queue_sort()
 
 	await get_tree().process_frame
-	_align_health_icon()
 	await get_tree().process_frame
+
+	_align_health_icon()
 	health_icon.modulate.a = 1.0
+
 	Audio.set_bgm(Audio.BGM.RESULT_SCREEN)
-	_fade_in(3)
+	_fade_in(3.0)
 
 
 func _align_health_icon() -> void:
-	var character_index: int = stat_names_label.text.find("Remaining Health")
+	var character_index := stat_names_label.text.find("Remaining Health")
 	if character_index == -1:
 		push_warning("Cannot find Remaining Health in StatNamesLabel")
 		return
-	var character_rect: Rect2 = stat_names_label.get_character_bounds(character_index)
+	var character_rect := stat_names_label.get_character_bounds(character_index)
 	if character_rect.size == Vector2.ZERO:
 		push_warning("Remaining Health text has not been laid out yet")
 		return
 
-	var target_local_center: Vector2 = character_rect.position + character_rect.size * 0.5
-	var target_global_center: Vector2 = (
-		stat_names_label.get_global_transform() * target_local_center
+	var character_center_local := character_rect.get_center()
+	var character_center_global := stat_names_label.get_global_transform() * character_center_local
+	var values_right_global := (
+		stat_values_label.get_global_transform() * Vector2(stat_values_label.size.x, 0.0)
 	)
-	var icon_rect: Rect2 = health_icon.get_global_rect()
-	var icon_center_y: float = icon_rect.position.y + icon_rect.size.y * 0.5
-	var target_right_x: float = vboxcontainer.get_global_rect().end.x
-
-	health_icon.global_position += Vector2(
-		target_right_x - icon_rect.end.x, target_global_center.y - icon_center_y
+	var icon_transform: Transform2D = health_icon.get_global_transform()
+	var icon_right_center_global: Vector2 = (
+		icon_transform * Vector2(health_icon.size.x, health_icon.size.y * 0.5)
 	)
+	var target_global := Vector2(values_right_global.x, character_center_global.y)
+	health_icon.global_position += (target_global - icon_right_center_global)
 
 
 func _fade_in(duration: float = 1.5) -> void:
+	show()
 	if fade_tween != null and fade_tween.is_valid():
 		fade_tween.kill()
-	result_root.modulate.a = 0.0
-	result_root.show()
-	show()
 	fade_tween = create_tween()
 	fade_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 	(

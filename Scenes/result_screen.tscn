@@ -6,32 +6,41 @@
 [ext_resource type="Texture2D" uid="uid://du0qdbs7y7rcf" path="res://Shapes/result_background.JPG" id="2_qk7ap"]
 [ext_resource type="Texture2D" uid="uid://f5ertr28h6kq" path="res://Shapes/feather.svg" id="3_o517f"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ib03x"]
+bg_color = Color(0.27450982, 0.27450982, 0.23529412, 0.50980395)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n8x6i"]
-bg_color = Color(0, 0, 0, 0.5882353)
-corner_radius_top_left = 16
-corner_radius_top_right = 17
-corner_radius_bottom_right = 16
-corner_radius_bottom_left = 17
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.27450982, 0.1764706, 0.078431375, 0.92156863)
+corner_radius_top_left = 26
+corner_radius_top_right = 27
+corner_radius_bottom_right = 26
+corner_radius_bottom_left = 27
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_qk7ap"]
+color = Color(1, 1, 1, 1)
 thickness = 3
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qk7ap"]
-bg_color = Color(0.15686275, 0.15686275, 0.15686275, 1)
+bg_color = Color(0.27450982, 0.1764706, 0.078431375, 1)
 corner_radius_top_left = 6
 corner_radius_top_right = 7
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 7
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o517f"]
-bg_color = Color(0.039215688, 0.039215688, 0.039215688, 1)
+bg_color = Color(0.18431373, 0.12156863, 0.07058824, 1)
 corner_radius_top_left = 6
 corner_radius_top_right = 7
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 7
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ndexe"]
-bg_color = Color(0.27450982, 0.27450982, 0.27450982, 1)
+bg_color = Color(0.33333334, 0.21568628, 0.101960786, 1)
 corner_radius_top_left = 6
 corner_radius_top_right = 7
 corner_radius_bottom_right = 6
@@ -56,6 +65,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -373.0
+offset_top = -130.0
+offset_right = 141.0
+offset_bottom = -1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -71,6 +84,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+
+[node name="Panel" type="Panel" parent="ResultRoot/CenterContainer" unique_id=1170119724]
+custom_minimum_size = Vector2(1152, 648)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ib03x")
 
 [node name="PanelContainer" type="PanelContainer" parent="ResultRoot/CenterContainer" unique_id=1914732084]
 custom_minimum_size = Vector2(580, 420)
@@ -135,7 +153,7 @@ layout_mode = 2
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="ResultRoot/CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1952087552]
 layout_mode = 2
-theme_override_constants/separation = 90
+theme_override_constants/separation = 145
 alignment = 1
 
 [node name="HomeButton" type="Button" parent="ResultRoot/CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=882486403]
@@ -150,7 +168,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_ndexe")
 text = "Home"
 
 [node name="ExitButton" type="Button" parent="ResultRoot/CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=2007003856]
-custom_minimum_size = Vector2(110, 0)
+custom_minimum_size = Vector2(105, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_fonts/font = ExtResource("2_o517f")
