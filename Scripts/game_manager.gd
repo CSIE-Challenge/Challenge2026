@@ -3,6 +3,7 @@ extends Node2D
 @export var player: CharacterBody2D
 @export var camera: Camera2D
 @export var health_label: Label
+@export var energy_balls_label: Label
 @export var energy_bar_label: Label
 @export var coconut_bar: Node2D
 @export var opponent_energy_bar_label: Label
@@ -44,7 +45,6 @@ var _is_shutting_down := false
 @onready var trap_request_scheduler: TrapRequestScheduler = $"../TrapRequestScheduler"
 @onready var agent_action_service: AgentActionService = $"../AgentActionService"
 @onready var pregame_countdown: Label = $"../SubViewport/PregameCountdown"
-@onready var skin_prefab = $"/StageLayer/AdvancedSkinPrefab"
 
 
 func _ready() -> void:
@@ -105,6 +105,7 @@ func _ready() -> void:
 	get_tree().paused = true
 	await get_tree().create_timer(0.3).timeout
 	pregame_countdown.play_countdown()
+	Audio.play_sfx(Audio.SFX.PREGAME_COUNTDOWN)
 
 	await get_tree().create_timer(3.0).timeout
 	get_tree().paused = false
@@ -370,9 +371,9 @@ func _on_phase_timeout() -> void:
 
 
 func _update_max_energy(play_audio: bool = true) -> void:
-	var max = max_energy[min(current_phase, max_energy.size() - 1)]
-	energy_label._update_max_energy(max)
-	NetworkManager.update_max_energy(max)
+	var mxn = max_energy[min(current_phase, max_energy.size() - 1)]
+	energy_label._update_max_energy(mxn)
+	NetworkManager.update_max_energy(mxn)
 	if play_audio:
 		Audio.set_phase_bgm(current_phase)
 
