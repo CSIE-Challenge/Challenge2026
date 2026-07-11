@@ -68,7 +68,9 @@ stream_0/stream = ExtResource("10_01jh0")
 stream_1/stream = ExtResource("11_id0ld")
 
 [node name="Audio" type="Node" unique_id=664248620]
+process_mode = 3
 script = ExtResource("1_l04ps")
+none_tracks = null
 menu_tracks = SubResource("AudioStreamRandomizer_mj7l2")
 gameplay_phase_0_tracks = ExtResource("3_qfbpw")
 gameplay_phase_1_tracks = ExtResource("4_r8i6a")
@@ -119,7 +121,9 @@ scene_transition_sfx = ExtResource("35_ubjtl")
 pregame_countdown_sfx = ExtResource("30_an1u0")
 
 [node name="BgmPlayer1" type="AudioStreamPlayer" parent="." unique_id=249781410]
+process_mode = 3
 bus = &"Music"
 
 [node name="BgmPlayer2" type="AudioStreamPlayer" parent="." unique_id=1060374281]
+process_mode = 3
 bus = &"Music"

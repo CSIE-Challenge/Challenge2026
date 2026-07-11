@@ -82,6 +82,8 @@ func _ready() -> void:
 	for i in range(sfx_pool_size):
 		var player := AudioStreamPlayer.new()
 		player.bus = &"SFX"
+		player.process_mode = Node.PROCESS_MODE_ALWAYS
+
 		add_child(player)
 		_sfx_players.append(player)
 
