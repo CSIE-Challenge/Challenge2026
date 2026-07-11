@@ -196,7 +196,6 @@ func _on_item_action_requested(data: SkinData):
 	if PlayerData.has_skin(data.skin_id):
 		# 如果已經擁有了 -> 執行【裝備】
 		PlayerData.equipped_skin = data.skin_id
-		print("裝備了皮膚: ", data.true_name)
 		refresh_all_items()  # 刷新畫面，確保只有一個顯示「已裝備」
 
 
@@ -207,7 +206,6 @@ func _on_detail_action_pressed():
 
 	if PlayerData.has_skin(data.skin_id):
 		PlayerData.equipped_skin = data.skin_id
-		print("裝備了皮膚: ", data.true_name)
 		refresh_all_items()
 		action_btn.text = "已裝備"
 		action_btn.disabled = true
