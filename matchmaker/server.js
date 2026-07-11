@@ -28,6 +28,7 @@ const HTTP_PORT = parseInt(process.env.HTTP_PORT || "3000", 10);
 const PORT_START = parseInt(process.env.PORT_RANGE_START || "7777", 10);
 const PORT_END = parseInt(process.env.PORT_RANGE_END || "7791", 10);
 const GAME_IP = process.env.GAME_IP || "127.0.0.1";
+const MAX_AGENT_BYTES = parseInt(process.env.MAX_AGENT_BYTES || "262144", 10);
 
 /** @type {Set<number>} */
 const freePorts = new Set();
@@ -47,6 +48,7 @@ const CODE_LENGTH = 6;
  * @property {number} port
  * @property {string[]} playerIds
  * @property {Set<string>} readyPlayerIds
+ * @property {Map<string, {filename: string, source: string}|null>} agentScripts
  * @property {boolean} gameStarted
  * @property {import("child_process").ChildProcess} process
  * @property {ReturnType<typeof setTimeout>} expireTimer
@@ -69,6 +71,29 @@ function generateCode() {
 
 function generatePlayerId() {
     return crypto.randomUUID();
+}
+
+function normalizeAgentScript(value) {
+    if (value == null) return null;
+    if (typeof value !== "object") {
+        throw new Error("invalid agent script");
+    }
+
+    const filename = String(value.filename || "agent.py");
+    const source = String(value.source || "");
+    if (source.length === 0) return null;
+
+    const byteLength = Buffer.byteLength(source, "utf8");
+    if (byteLength > MAX_AGENT_BYTES) {
+        throw new Error("agent script too large");
+    }
+
+    // The matchmaker only stores and forwards source code. It never executes
+    // uploaded agents; execution happens inside the opponent's Godot client.
+    return {
+        filename: filename.replace(/[^\w.\-]/g, "_") || "agent.py",
+        source,
+    };
 }
 
 const GODOT_BIN = process.env.GODOT_BIN || "godot";
@@ -206,6 +231,7 @@ const server = http.createServer(async (req, res) => {
             port,
             playerIds: [playerId],
             readyPlayerIds: new Set(),
+            agentScripts: new Map(),
             gameStarted: false,
             process: proc,
             expireTimer: setTimeout(() => expireRoom(code), 60_000),
@@ -267,6 +293,15 @@ const server = http.createServer(async (req, res) => {
         const body = await parseBody(req);
         const code = body.code?.toUpperCase?.() || "";
         const playerId = body.player_id || "";
+        let agentScript;
+
+        try {
+            agentScript = normalizeAgentScript(body.agent);
+        } catch (err) {
+            res.writeHead(413);
+            res.end(JSON.stringify({ error: err.message }));
+            return;
+        }
 
         const room = rooms.get(code);
         if (!room) {
@@ -288,6 +323,9 @@ const server = http.createServer(async (req, res) => {
         }
 
         room.readyPlayerIds.add(playerId);
+        // Store this player's upload by player id so /status can return it only
+        // to the other player in the same room.
+        room.agentScripts.set(playerId, agentScript);
 
         if (
             room.playerIds.length >= 2 &&
@@ -312,6 +350,7 @@ const server = http.createServer(async (req, res) => {
     // ── GET /qiaohu/status ─────────────────────────────────────────
     if (method === "GET" && url.pathname === "/qiaohu/status") {
         const code = url.searchParams.get("code")?.toUpperCase() || "";
+        const playerId = url.searchParams.get("player_id") || "";
 
         const room = rooms.get(code);
         if (!room) {
@@ -320,11 +359,21 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
+        let opponentAgent = null;
+        if (playerId && room.playerIds.includes(playerId)) {
+            // Each client receives the opponent's upload, not its own.
+            const opponentId = room.playerIds.find((id) => id !== playerId);
+            if (opponentId) {
+                opponentAgent = room.agentScripts.get(opponentId) || null;
+            }
+        }
+
         res.writeHead(200);
         res.end(JSON.stringify({
             player_count: room.playerIds.length,
             ready_count: room.readyPlayerIds.size,
             game_started: room.gameStarted,
+            opponent_agent: opponentAgent,
         }));
         return;
     }
