@@ -1,13 +1,19 @@
 [gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://dm1bitghbj3r3"]
 
 [ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_sing"]
+[ext_resource type="Texture2D" uid="uid://b6xvh787utym4" path="res://Shapes/hearts/singularity.svg" id="1_ty3kg"]
 [ext_resource type="PackedScene" uid="uid://choe7qk61cgan" path="res://Scenes/skins/singularity_skin_prefab.tscn" id="2_prefab"]
+[ext_resource type="Texture2D" uid="uid://b3aux4yvvi126" path="res://Shapes/hearts/singularity2.svg" id="2_ro56o"]
 
 [resource]
 script = ExtResource("1_sing")
 skin_id = "singularity_skin"
 true_name = "黑洞奇異點"
-price = 300
+description = "會跳的黑洞，稀奇不？如果把陷阱吸到身上就糟糕了。"
+is_achievement_unlock = true
+achievement_desc = "積分兌換"
 is_silhouette = true
 skin_prefab = ExtResource("2_prefab")
+health_icon_texture = ExtResource("1_ty3kg")
+health_icon_texture2 = ExtResource("2_ro56o")
 metadata/_custom_type_script = "uid://c6vuqckcyjdey"

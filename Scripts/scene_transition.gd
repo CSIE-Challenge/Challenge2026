@@ -63,6 +63,7 @@ func show_achievement(text: String):
 		return
 
 	ach_is_animating = true
+	Audio.play_sfx(Audio.SFX.HIDDEN_GAME_ACHIEVEMENT)
 	ach_label.text = text
 	_ach_reset_rects()
 	ach_white_rect.show()
@@ -177,6 +178,7 @@ func transition_to(target_scene: String) -> void:
 
 func transition_to_wave(target_scene: String) -> void:
 	preload_scene_async(target_scene)
+	Audio.set_bgm(-1 as Audio.BGM)
 	get_tree().paused = true
 	var root = Control.new()
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -290,9 +292,12 @@ func transition_to_wave(target_scene: String) -> void:
 	tween.tween_callback(transition_finished.emit)
 	get_tree().paused = false
 
+	Audio.play_sfx(Audio.SFX.SCENE_TRANSITION_WAVE)
+
 
 func transition_to_distortion(target_scene: String) -> void:
 	preload_scene_async(target_scene)
+	Audio.play_sfx(Audio.SFX.SCENE_TRANSITION)
 	get_tree().paused = true
 	shader_rect.show()
 

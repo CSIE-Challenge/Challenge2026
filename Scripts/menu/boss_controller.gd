@@ -31,6 +31,8 @@ var is_paused: bool = false
 
 var time_elapsed: float = 0.0
 
+var _debug: bool = false
+
 @onready var boss = self
 @onready var boss_sprite = $Sprites/boss_sprite
 @onready var hidden_game = $"../../.."
@@ -60,6 +62,28 @@ func _ready() -> void:
 		mat.shader = shader
 		boss_sprite.material = mat
 
+	# 貼上玩家在 about 面板選擇的頭像作為 boss 的臉
+	if (
+		PlayerData.last_selected_avatar != ""
+		and ResourceLoader.exists(PlayerData.last_selected_avatar)
+	):
+		var tex = load(PlayerData.last_selected_avatar)
+		if tex:
+			var avatar_sprite = Sprite2D.new()
+			avatar_sprite.name = "AvatarFace"
+			avatar_sprite.texture = tex
+			avatar_sprite.position = Vector2(0, -110)
+
+			# head1.png 較小，在 about.tscn 中的 scale 為 1.7，而 head2 和 head3 為 1.0。
+			# 配合 about 的比例，若為 head1 則將比例乘上 1.7
+			var base_scale = 0.7
+			if PlayerData.last_selected_avatar.contains("head1.png"):
+				base_scale *= 1.7
+
+			avatar_sprite.scale = Vector2(base_scale, base_scale)
+			avatar_sprite.use_parent_material = true
+			boss_sprite.add_child(avatar_sprite)
+
 
 func _process(delta: float) -> void:
 	if not is_dead and not invincible:
@@ -75,7 +99,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 
 	# 使用鍵盤的 1, 2, 3 鍵來測試不同的招式
-	if event is InputEventKey and event.pressed and not event.echo:
+	if event is InputEventKey and event.pressed and not event.echo and _debug:
 		match event.keycode:
 			KEY_1:
 				rhythm_attack()
@@ -1055,6 +1079,7 @@ func spawn_straight_arrow(pos: Vector2, dir: Vector2, speed: float, wait: float)
 
 # 測試用的環形飛劍攻擊招式
 func test_sword_attack(difficulty: int = 3) -> void:
+	Audio.play_sfx(Audio.SFX.HIDDEN_GAME_ATTACK)
 	is_attacking = true
 
 	# 同時在環形發射 8 把飛劍，生成在半徑 300 處，等待 1.0 秒後以速度 550 射向對角

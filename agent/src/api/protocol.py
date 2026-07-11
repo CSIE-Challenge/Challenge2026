@@ -2,7 +2,7 @@
 Envelopes:
     state push :  {"type": "state", "tick", "round", "self": {...}, "opponent": {...}}
     request    :  {"id", "cmd": "<name>", "args": {...}}
-    response   :  {"id", "status": "ok"|"error", "code"?, "data"?}
+    response   :  {"id", "status": "ok"|"error", "code"?, "reason"?, "data"?}
 """
 
 from __future__ import annotations
@@ -42,7 +42,7 @@ class Cmd:
     GET_OPPONENT_COMBO = "get_opponent_combo"
     GET_PHASE = "get_phase"
     GET_AVAILABLE_TRAPS = "get_available_traps"
-    GET_COOL_DOWN_TIME = "get_cool_down_time"
+    GET_COOLDOWN_TIME = "get_cooldown_time"
 
 
 class Status:
@@ -58,6 +58,8 @@ class Code:
     OK = 200
     ILLFORMED = 400
     NOT_FOUND = 404
+    REJECTED = 409
+    INTERNAL = 500
 
 
 def make_request(req_id: int, cmd: str, args: dict[str, Any] | None = None) -> dict:

@@ -72,19 +72,13 @@ func update_state():
 		action_btn.disabled = false
 		action_btn.modulate = Color(1, 1, 1, 1)  # 正常顏色
 	else:
-		# 玩家未擁有，顯示購買條件
+		# 玩家未擁有，顯示購買條件，禁止點擊
+		action_btn.disabled = true
+		action_btn.modulate = Color(0.8, 0.8, 0.8, 1)  # 顯示為灰色標籤
 		if skin_data.is_achievement_unlock:
 			action_btn.text = skin_data.achievement_desc
-			action_btn.disabled = true  # 成就解鎖的不能直接用按鈕買
 		else:
-			action_btn.text = "BUY $" + str(skin_data.price)
-			# 如果錢不夠，按鈕變灰並禁用
-			if PlayerData.money >= skin_data.price:
-				action_btn.disabled = false
-				action_btn.modulate = Color(1, 1, 1, 1)  # 亮色
-			else:
-				action_btn.disabled = true
-				action_btn.modulate = Color(0.5, 0.5, 0.5, 1)  # 錢不夠變暗淡
+			action_btn.text = "未解鎖"
 
 
 # ==========================================

@@ -32,7 +32,7 @@ func _ready() -> void:
 
 	_reload_from_game_data()
 	body_entered.connect(_on_body_entered)
-	_respawn_energy_ball()
+	#_respawn_energy_ball()
 
 
 func _reload_from_game_data() -> void:
@@ -54,7 +54,7 @@ func _on_body_entered(body: Node2D) -> void:
 		return
 	collision_shape.set_deferred("disabled", true)
 	Global.energyball_collected.emit(energy_gain[energy_ball_phase][now_combo])
-	Audio.play_sfx(Audio.SFX.ENERGY_COLLECTED)
+	Audio.play_coconut_sfx(now_combo)
 	_spawn_energy_text()
 	now_combo = min(now_combo + 1, energy_gain[energy_ball_phase].size() - 1)
 	coconut_bar.spawn_eaten_coconut(self.global_position)
@@ -67,6 +67,9 @@ func _spawn_energy_text() -> void:
 	text.text = "+%d" % energy_gain[energy_ball_phase][now_combo]
 	text.position = position + Vector2(552, 324)
 	text.initialize(now_combo)
+
+	if energy_gain[energy_ball_phase][now_combo] == 67:
+		Audio.play_sfx(Audio.SFX.SIX_SEVEN)
 
 
 func advance_phase() -> void:

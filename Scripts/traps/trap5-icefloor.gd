@@ -68,6 +68,8 @@ func start_animation() -> void:
 	)
 	tween.tween_property(juice_sprite.material, "shader_parameter/reveal_progress", 1.0, 1.6)
 
+	Audio.play_sfx(Audio.SFX.TRAP5_JUICE_SPLASH)
+
 
 func _on_body_entered(body: Node2D) -> void:
 	if body == Global.game_manager.player and not _is_destroying:

@@ -7,6 +7,7 @@ var time_passed = 0.0
 @onready var main_square = $MainSquare
 @onready var ghost_container = $GhostContainer
 @onready var pixel_particles = $PixelParticles
+@onready var trail_particles = $TrailParticles
 
 
 func _process(delta):
@@ -14,8 +15,12 @@ func _process(delta):
 	# 復古閃爍效果 (每 0.5 秒切換一次顏色)
 	if int(time_passed * 4) % 2 == 0:
 		main_square.color = color_a
+		trail_particles.color = color_a
+		trail_particles.color.a = 0.5
 	else:
 		main_square.color = color_b
+		trail_particles.color = color_b
+		trail_particles.color.a = 0.5
 
 
 func play_spawn():
@@ -36,6 +41,18 @@ func play_die():
 	pixel_particles.restart()
 	pixel_particles.emitting = true
 	main_square.visible = false
+	trail_particles.emitting = false
+
+	var white_line = ColorRect.new()
+	white_line.color = Color.WHITE
+	white_line.size = Vector2(50, 2)
+	white_line.position = Vector2(-25, -1)
+	add_child(white_line)
+
+	var tw = create_tween()
+	tw.tween_property(white_line, "scale", Vector2(2.0, 0.1), 0.2)
+	tw.parallel().tween_property(white_line, "color:a", 0.0, 0.2)
+	tw.tween_callback(white_line.queue_free)
 
 	await get_tree().create_timer(1.0).timeout
 
@@ -81,7 +98,8 @@ func play_land():
 	# 沒有平滑的形變，只有生硬的壓扁
 	main_square.scale = Vector2(1.2, 0.5)
 	main_square.position = Vector2(
-		-main_square.size.x * 1.2 / 2.0, -main_square.size.y * 0.5 / 2.0 + 12.5
+		-main_square.size.x * 1.2 / 2.0,
+		-main_square.size.y * 0.5 / 2.0 + (main_square.size.y * 0.25)
 	)
 
 	await get_tree().create_timer(0.1).timeout

@@ -52,6 +52,7 @@ func play_jump():
 
 
 func play_land():
+	return
 	confetti.restart()
 	confetti.emitting = true
 	var tween = create_tween()

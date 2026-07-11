@@ -287,6 +287,8 @@ text = "Confirm"
 
 [node name="HTTPRequest" type="HTTPRequest" parent="." unique_id=2000000033]
 
+[node name="PollHTTPRequest" type="HTTPRequest" parent="."]
+
 [connection signal="text_changed" from="Panel/Margins/Content/Panels/PanelA/IPContainer/IPInput" to="." method="_on_ip_text_changed"]
 [connection signal="button_up" from="Panel/Margins/Content/Panels/PanelA/CreateRoomButton" to="." method="_on_create_room_button_up"]
 [connection signal="button_up" from="Panel/Margins/Content/Panels/PanelA/JoinRoomButton" to="." method="_on_join_room_button_up"]

@@ -52,15 +52,15 @@ class _Tee:
         return self._stream.isatty()
 
 
-def _tee_output_to_log() -> None:
-    """Mirror stdout/stderr into agent.log next to this file.
+def _tee_output_to_log(agent_path: Path) -> None:
+    """Mirror stdout/stderr into agent.log next to the player's agent file.
 
     The game sets CHALLENGE_AGENT_LOG.
     Only single player and not default agent will print to LOG.
     """
     if not os.environ.get("CHALLENGE_AGENT_LOG"):
         return
-    log_path = Path(__file__).resolve().parent / _LOG_NAME
+    log_path = agent_path.resolve().parent / _LOG_NAME
     try:
         log = open(log_path, "w", encoding="utf-8", buffering=1)
     except OSError:
@@ -148,14 +148,15 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
 
-    _tee_output_to_log()
+    agent_path = _agent_path(args.agent)
+    _tee_output_to_log(agent_path)
     client = _build_client(args)
     _wait_for_port(client.host, client.port, _PORT_WAIT_SEC)
     client.connect()
     stop = threading.Event()
     _start_reaper(client, stop)
     try:
-        _run_agent(client, _agent_path(args.agent))
+        _run_agent(client, agent_path)
     finally:
         stop.set()
         client.close()

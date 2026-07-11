@@ -29,4 +29,6 @@ agent/requirements.lock
 
 /export/
 
+# agent logs
 agent_log.txt
+agent.log

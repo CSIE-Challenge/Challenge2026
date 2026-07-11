@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://cybertres"]
 
+[ext_resource type="Texture2D" uid="uid://dkmlsg8e41cgh" path="res://Shapes/hearts/cyber.svg" id="1_5ry13"]
 [ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_skindata"]
 [ext_resource type="Texture2D" uid="uid://dle4xt8upfg42" path="res://Shapes/Square.svg" id="1_square"]
 [ext_resource type="PackedScene" uid="uid://cyberskin" path="res://Scenes/skins/cyber_skin_prefab.tscn" id="2_prefab"]
@@ -7,7 +8,10 @@
 [resource]
 script = ExtResource("1_skindata")
 skin_id = "cyber_skin"
-true_name = "賽博龐克"
-price = 250
+true_name = "雪花螢幕"
+description = "時空穿越到三十年前，你家電視壞了就長這樣。"
+is_achievement_unlock = true
+achievement_desc = "積分兌換"
 preview_texture = ExtResource("1_square")
 skin_prefab = ExtResource("2_prefab")
+health_icon_texture = ExtResource("1_5ry13")

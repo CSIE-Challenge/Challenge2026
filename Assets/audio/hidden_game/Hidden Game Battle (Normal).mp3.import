@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bhknaks4pbq5m"
+path="res://.godot/imported/Hidden Game Battle (Normal).mp3-d21b52fa1a13da933c9f93e7f2d49272.mp3str"
+
+[deps]
+
+source_file="res://Assets/audio/hidden_game/Hidden Game Battle (Normal).mp3"
+dest_files=["res://.godot/imported/Hidden Game Battle (Normal).mp3-d21b52fa1a13da933c9f93e7f2d49272.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

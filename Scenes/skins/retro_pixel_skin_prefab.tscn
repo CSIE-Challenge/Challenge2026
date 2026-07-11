@@ -1,28 +1,53 @@
 [gd_scene format=3 uid="uid://c3k4712lvhatx"]
 
 [ext_resource type="Script" uid="uid://bn6xf44kol226" path="res://Scripts/skins/retro_pixel_skin_prefab.gd" id="1_retro"]
+[ext_resource type="Shader" uid="uid://q00mu6ij0sv2" path="res://Scenes/skins/retro_crt.gdshader" id="2_crt"]
 
-[node name="RetroPixelSkinPrefab" type="Node2D"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_crt"]
+shader = ExtResource("2_crt")
+shader_parameter/curvature = 3.0
+shader_parameter/scanlines = 20.0
+
+[sub_resource type="Curve" id="Curve_px4l2"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -1.7087121, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_fsy2k"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -2.9685283, 0.0, 0, 0]
+point_count = 2
+
+[node name="RetroPixelSkinPrefab" type="Node2D" unique_id=1394239452]
 script = ExtResource("1_retro")
 
-[node name="MainSquare" type="ColorRect" parent="."]
-offset_left = -25.0
-offset_top = -25.0
-offset_right = 25.0
-offset_bottom = 25.0
+[node name="MainSquare" type="ColorRect" parent="." unique_id=15560882]
+material = SubResource("ShaderMaterial_crt")
+offset_left = -15.0
+offset_top = -15.0
+offset_right = 15.0
+offset_bottom = 15.0
 color = Color(1, 0.2, 0.5, 1)
 
-[node name="GhostContainer" type="Node2D" parent="."]
+[node name="TrailParticles" type="CPUParticles2D" parent="." unique_id=1636435288]
+amount = 15
+lifetime = 0.4
+randomness = 0.38
+gravity = Vector2(0, 0)
+scale_amount_min = 10.0
+scale_amount_max = 20.0
+scale_amount_curve = SubResource("Curve_px4l2")
+color = Color(1, 0.2, 0.5, 0.5)
 
-[node name="PixelParticles" type="CPUParticles2D" parent="."]
-local_coords = false
+[node name="GhostContainer" type="Node2D" parent="." unique_id=939788015]
+
+[node name="PixelParticles" type="CPUParticles2D" parent="." unique_id=67939862]
 emitting = false
-amount = 40
-lifetime = 0.6
+amount = 15
+lifetime = 0.3
 one_shot = true
 explosiveness = 1.0
+randomness = 0.5
 emission_shape = 2
-emission_sphere_radius = 25.0
+emission_sphere_radius = 15.0
 direction = Vector2(0, -1)
 spread = 90.0
 gravity = Vector2(0, 800)
@@ -30,4 +55,5 @@ initial_velocity_min = 150.0
 initial_velocity_max = 300.0
 scale_amount_min = 8.0
 scale_amount_max = 12.0
+scale_amount_curve = SubResource("Curve_fsy2k")
 color = Color(0.2, 0.8, 1, 1)

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://crmi87tdk5kb5"]
 
 [ext_resource type="Script" uid="uid://cgyg8jq3g472r" path="res://Scripts/traps/trap10-shotgun.gd" id="1_oluei"]
-[ext_resource type="Script" uid="uid://ct2iq2u7jq2l1" path="res://Scenes/traps/trap10-shotgun_bullet.gd" id="2_gtrg3"]
+[ext_resource type="Script" uid="uid://ct2iq2u7jq2l1" path="res://Scripts/traps/trap10-shotgun_bullet.gd" id="2_gtrg3"]
 [ext_resource type="Texture2D" uid="uid://beilvq8t7d8iy" path="res://Shapes/banana_bullet.svg" id="2_il5d0"]
 [ext_resource type="Texture2D" uid="uid://bpfm5x8s50ikq" path="res://Shapes/dashed_line.svg" id="2_u2tcx"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_wov31"]

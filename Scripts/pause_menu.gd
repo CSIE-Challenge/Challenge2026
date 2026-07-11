@@ -41,18 +41,22 @@ func close() -> void:
 
 
 func _on_resume_button_up() -> void:
+	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	_emit_resume_requested()
 
 
 func _on_restart_button_up() -> void:
+	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	restart_requested.emit()
 
 
 func _on_main_menu_button_up() -> void:
+	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	main_menu_requested.emit()
 
 
 func _on_exit_button_up() -> void:
+	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	exit_requested.emit()
 
 

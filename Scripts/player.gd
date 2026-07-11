@@ -46,6 +46,7 @@ func _ready() -> void:
 	jump_particle.process_material.set("color_initial_ramp", sand_particle)
 
 	health = max_health
+	shadow_sprite.visible = false
 	trap_cleaner.body_entered.connect(_on_body_entered)
 	trap_cleaner.area_entered.connect(_on_area_entered)
 	for x in range(4):
@@ -131,6 +132,7 @@ func _update_sand_tilemap():
 func _jump():
 	if isjumping:
 		return
+	shadow_sprite.visible = true
 	jump_particle.restart()
 	jump_particle.emitting = true
 	isjumping = true
@@ -158,6 +160,13 @@ func _jump_process(delta: float):
 		_adjust_collision_layer()
 		land_particle.restart()
 		land_particle.emitting = true
+		shadow_sprite.visible = false
+		if juice_count > 0:
+			Audio.play_sfx(Audio.SFX.LAND_JUICE)
+		elif is_in_water:
+			Audio.play_sfx(Audio.SFX.LAND_WATER)
+		else:
+			Audio.play_sfx(Audio.SFX.LAND_SAND)
 		if is_instance_valid(skin_instance):
 			skin_instance.global_position = self.global_position
 			if skin_instance.has_method("play_land"):

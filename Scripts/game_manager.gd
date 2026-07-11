@@ -23,6 +23,7 @@ var max_health = int(game_data["player"]["max_health"])
 var max_phase = game_data["game_manager"]["max_phase"]
 var phase_duration = game_data["game_manager"]["phase_duration"]
 var max_energy = game_data["game_manager"]["max_energy"]
+var heal_costs = game_data["heal"]["energy_costs"]
 
 var energy_ball_count := 0
 var energy_amount := 0
@@ -44,6 +45,7 @@ var _is_shutting_down := false
 @onready var phase_timer = $PhaseTimer
 @onready var trap_request_scheduler: TrapRequestScheduler = $"../TrapRequestScheduler"
 @onready var agent_action_service: AgentActionService = $"../AgentActionService"
+@onready var pregame_countdown: Label = $"../SubViewport/PregameCountdown"
 
 
 func _ready() -> void:
@@ -63,10 +65,9 @@ func _ready() -> void:
 	NetworkManager.energy_changed.connect(_on_network_energy_changed)
 	NetworkManager.health_changed.connect(_on_network_health_changed)
 	_setup_health_ui()
-	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
 	_update_energy_label()
 	_update_opponent_energy_label(0, 0)
-	_update_max_energy()
+	_update_max_energy(0)
 	_connect_agent_action_signals()
 	_connect_pause_menu()
 
@@ -80,18 +81,8 @@ func _ready() -> void:
 	game_duration_timer.start()
 	_update_time_label()
 
-	player_invincible = false
-
-	_begin_agents()
-
 	phase_timer.timeout.connect(_on_phase_timeout)
 	phase_timer.start(phase_duration[0])
-
-	_wall_animation()
-
-	Audio.set_phase_bgm(0)
-
-	#_show_test_result_after_delay()
 
 	player.get_node("ShadowSprite").z_index = Util.LAYERS["Player/ShadowSprite"]
 	player.get_node("BodySprite").z_index = Util.LAYERS["Player/BodySprite"]
@@ -99,9 +90,41 @@ func _ready() -> void:
 	player.get_node("JumpParticle").z_index = Util.LAYERS["Player/JumpParticle"]
 	player.get_node("LandParticle").z_index = Util.LAYERS["Player/LandParticle"]
 	player.reparent_land_particles()
+
 	energy_ball.z_index = Util.LAYERS["EnergyBall"]
 	$"../SubViewport/Stage/Walls".z_index = Util.LAYERS["Walls"]
 	coconut_bar.z_index = Util.LAYERS["CoconutBar/CoconutBar"]
+
+	player.hide()
+	player.skin_instance.hide()
+	energy_label.process_mode = Node.PROCESS_MODE_ALWAYS
+	for w in walls:
+		w.process_mode = Node.PROCESS_MODE_ALWAYS
+	_wall_animation()
+	energy_ball.hide()
+
+	get_tree().paused = true
+	await get_tree().create_timer(0.3).timeout
+	pregame_countdown.play_countdown()
+	Audio.play_sfx(Audio.SFX.PREGAME_COUNTDOWN)
+
+	await get_tree().create_timer(3.0).timeout
+	get_tree().paused = false
+	for w in walls:
+		w.process_mode = Node.PROCESS_MODE_PAUSABLE
+	energy_label.process_mode = Node.PROCESS_MODE_PAUSABLE
+
+	Audio.set_phase_bgm(0)
+	player_invincible = false
+	player.show()
+	player.skin_instance.show()
+	_begin_agents()
+
+	energy_ball._respawn_energy_ball()
+	await get_tree().create_timer(0.2).timeout
+	energy_ball.show()
+	await get_tree().create_timer(1.0).timeout
+	pregame_countdown.hide()
 
 
 func _exit_tree() -> void:
@@ -156,7 +179,8 @@ func _resolve_bundle_dir() -> String:
 	if OS.has_feature("editor"):
 		var root := ProjectSettings.globalize_path("res://")
 		return root.path_join("agent/build").path_join(_bundle_platform_label())
-	return OS.get_executable_path().get_base_dir().path_join("agent")
+	# Launcher layout: the exe sits in GameBuilds/ with the bundle beside it.
+	return OS.get_executable_path().get_base_dir().get_base_dir().path_join("agent")
 
 
 func _bundle_platform_label() -> String:
@@ -315,6 +339,7 @@ func _wall_animation() -> void:
 	for w in walls:
 		w.material.set_shader_parameter("offset", randf_range(0, 10))
 		var tween = create_tween()
+		tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 		(
 			tween
 			. tween_method(
@@ -343,21 +368,26 @@ func _on_phase_timeout() -> void:
 	energy_ball.advance_phase()
 	phase_timer.start(phase_duration[current_phase])
 	phase_label.text = "%d" % current_phase
+	agent_action_service.update_heal_cost(heal_costs[current_phase])
 	_update_max_energy()
 
 
-func _update_max_energy() -> void:
+func _update_max_energy(play_audio: bool = true) -> void:
 	var mxn = max_energy[min(current_phase, max_energy.size() - 1)]
 	energy_label._update_max_energy(mxn)
 	NetworkManager.update_max_energy(mxn)
-
-	Audio.set_phase_bgm(current_phase)
+	if play_audio:
+		Audio.set_phase_bgm(current_phase)
 
 
 #region Control
-func finish_game(authoritative_stats: Dictionary = {}) -> void:
+func finish_game(player_died: bool = false, authoritative_stats: Dictionary = {}) -> void:
 	if game_over:
 		return
+	Audio.stop_all_audio_2d()
+	Audio.stop_all_audio()
+	if player_died:
+		Audio.play_sfx(Audio.SFX.PLAYER_DIE)
 	_close_pause_overlay_for_finish()
 	game_over = true
 	get_tree().paused = true
@@ -451,6 +481,7 @@ func _close_pause_overlay_for_finish() -> void:
 
 
 func _shutdown_gameplay_for_scene_change() -> void:
+	Audio.set_bgm(Audio.BGM.NONE)
 	if _is_shutting_down:
 		return
 	_is_shutting_down = true
@@ -511,7 +542,7 @@ func _shutdown_running_agents() -> void:
 
 func _on_energyball_collected(energy_gain: int) -> void:
 	energy_ball_count += 1
-	coconut_bar.coconut_count = energy_ball_count
+	coconut_bar._update_coconut_count(energy_ball_count)
 	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
 	NetworkManager.request_add_energy(energy_gain)
 
@@ -549,7 +580,7 @@ func _on_network_health_changed(peer_id: int, health: int) -> void:
 			return
 		if player.health <= 0:
 			await player.die()
-			finish_game()
+			finish_game(1)
 		return
 
 	_update_opponent_energy_label(peer_id, NetworkManager.get_energy(peer_id))

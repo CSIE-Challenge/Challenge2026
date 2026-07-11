@@ -1,5 +1,6 @@
 extends Node2D
-const TRUNK_HEIGHT_PIXEL = 36
+const TRUNK_HEIGHT_PIXEL = 28
+const MAX_COCONUT_COUNT = 160
 
 @export var trunk: PackedScene
 @export var leaf: PackedScene
@@ -8,14 +9,14 @@ const TRUNK_HEIGHT_PIXEL = 36
 
 @export var coconut_count: int = 0
 @export var tree_height: float
-@export var tree_root_position: Vector2 = Vector2(984, 556)
+@export var tree_root_position: Vector2 = Vector2(984, 542)
+@export var congratulation: Node2D
 var trunks: Array[Node2D]
 var leaves: Array[Node2D]
 var coconuts: Array[Node2D]
 var eaten_coconuts: Array[Node2D]
 
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	global_position = tree_root_position
 	trunks.clear()
@@ -40,13 +41,13 @@ func rearrange_trunks() -> void:
 	while trunks.size() > num_target:
 		tree_cut()
 	var len = trunks.size()
-	var scale: float = 0.18 + len * 0.02
+	var scale: float = 0.24 + len * 0.01
 	tree_height = 0
 	for i in len:
 		trunks[i].relocate(Vector2(0, tree_height))
 		trunks[i].resize(scale)
 		tree_height -= TRUNK_HEIGHT_PIXEL * scale
-		scale *= 0.96
+		scale *= 0.98
 
 
 func tree_grow() -> void:
@@ -67,7 +68,7 @@ func tree_cut() -> void:
 
 
 func rearrange_leaves() -> void:
-	var num_target = 7 - max(89 - coconut_count, 0) / 30 * 2
+	var num_target = 7 - max(149 - coconut_count, 0) / 50 * 2
 	while leaves.size() < num_target:
 		leaf_grow()
 	while leaves.size() > num_target:
@@ -75,7 +76,7 @@ func rearrange_leaves() -> void:
 	var len: int = leaves.size()
 	for i in len:
 		leaves[i].relocate(Vector2(0, tree_height))
-		leaves[i].resize(sqrt(coconut_count) * 0.036)
+		leaves[i].resize(sqrt(coconut_count) * 0.030)
 		leaves[i].set_direction((75 - 5 * len) * (i - len / 2))
 		if i == len / 2:
 			leaves[i].set_type(0)
@@ -97,15 +98,14 @@ func leaf_cut() -> void:
 	if leaves.size() <= 0:
 		return
 	leaves.back().queue_free()
-	leaves.pop_back()
 
 
 func rearrange_coconuts() -> void:
-	var num_target = coconut_count / 20
+	var num_target = coconut_count / 30
 	while coconuts.size() < num_target:
 		coconut_grow()
 	while coconuts.size() > num_target:
-		coconut_cut()
+		coconut_fall()
 	var len = coconuts.size()
 	for i in len:
 		coconuts[i].relocate(
@@ -114,7 +114,7 @@ func rearrange_coconuts() -> void:
 				+ polar_vector(100 + 180 / len + 360 / len * i, sqrt(coconut_count))
 			)
 		)
-		coconuts[i].resize(0.14 + coconut_count * 0.001)
+		coconuts[i].resize(0.15 + coconut_count * 0.001)
 
 
 func coconut_grow() -> void:
@@ -125,10 +125,10 @@ func coconut_grow() -> void:
 	coconuts.push_back(new_coconut)
 
 
-func coconut_cut() -> void:
+func coconut_fall() -> void:
 	if coconuts.size() <= 0:
 		return
-	coconuts.back().queue_free()
+	coconuts.back().fall()
 	coconuts.pop_back()
 
 
@@ -154,6 +154,14 @@ func rearrange_eaten_coconuts() -> void:
 			eaten_coconuts.remove_at(j)
 			continue
 		eaten_coconuts[j].set_target_position(target_position)
+
+
+func _update_coconut_count(new_coconut_count: int) -> void:
+	coconut_count = min(MAX_COCONUT_COUNT, new_coconut_count)
+	if new_coconut_count == MAX_COCONUT_COUNT:
+		congratulation._spawn()
+	if new_coconut_count > MAX_COCONUT_COUNT and (new_coconut_count - MAX_COCONUT_COUNT) % 5 == 0:
+		coconut_grow()
 
 
 func use(delta: float) -> float:

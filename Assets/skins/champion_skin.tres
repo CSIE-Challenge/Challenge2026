@@ -1,13 +1,17 @@
 [gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://ditimx24fjdob"]
 
+[ext_resource type="Texture2D" uid="uid://dy3b6tugfpwen" path="res://Shapes/hearts/champion.svg" id="1_j2aet"]
 [ext_resource type="Texture2D" uid="uid://dle4xt8upfg42" path="res://Shapes/Square.svg" id="1_q3mce"]
 [ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_skindata"]
+[ext_resource type="Texture2D" uid="uid://bav7xygojvi2c" path="res://Shapes/hearts/champion2.svg" id="2_6ay0r"]
 [ext_resource type="PackedScene" uid="uid://championskin" path="res://Scenes/skins/champion_skin_prefab.tscn" id="2_prefab"]
 
 [resource]
 script = ExtResource("1_skindata")
 skin_id = "champion_skin"
 true_name = "冠軍王者"
-price = 400
+description = "這讓我想起了一位黃紫配色的故人。喔不是，他是藍紫色的。"
 preview_texture = ExtResource("1_q3mce")
 skin_prefab = ExtResource("2_prefab")
+health_icon_texture = ExtResource("1_j2aet")
+health_icon_texture2 = ExtResource("2_6ay0r")

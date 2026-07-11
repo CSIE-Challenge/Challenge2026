@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://utskinprefab"]
+
+[ext_resource type="Script" path="res://Scripts/skins/undertale_skin_prefab.gd" id="1_ut"]
+[ext_resource type="Texture2D" path="res://Shapes/heart.png" id="2_heart"]
+[ext_resource type="Texture2D" path="res://Shapes/crack.png" id="3_crack"]
+
+[node name="UndertaleSkinPrefab" type="Node2D"]
+script = ExtResource("1_ut")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+modulate = Color(1, 0, 0, 1)
+scale = Vector2(0.12, 0.12)
+texture = ExtResource("2_heart")
+
+[node name="Crack" type="Sprite2D" parent="."]
+visible = false
+modulate = Color(0, 0, 0, 1)
+scale = Vector2(0.12, 0.12)
+texture = ExtResource("3_crack")
+
+[node name="DeathShards" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 12
+texture = ExtResource("2_heart")
+lifetime = 1.2
+one_shot = true
+explosiveness = 1.0
+direction = Vector2(0, -1)
+spread = 180.0
+gravity = Vector2(0, 800)
+initial_velocity_min = 200.0
+initial_velocity_max = 500.0
+scale_amount_min = 0.02
+scale_amount_max = 0.04
+color = Color(1, 0, 0, 1)

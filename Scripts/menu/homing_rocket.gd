@@ -17,6 +17,7 @@ var damage_field: Area2D
 
 # 記錄碰撞牆壁的次數
 var wall_hit_count: int = 0
+var rocket_flying_audio: AudioStreamPlayer
 
 # 火箭是否已經穿牆進到場地內
 var is_inside_arena: bool = false
@@ -41,6 +42,7 @@ func init(
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	rocket_flying_audio = Audio.play_sfx(Audio.SFX.HIDDEN_GAME_ROCKET_FLYING)
 	collision_mask = 3  # 確保動態修正 Mask
 	body_entered.connect(_on_body_entered)
 
@@ -123,6 +125,10 @@ func bounce_off_wall() -> void:
 
 func explode() -> void:
 	set_physics_process(false)
+
+	if rocket_flying_audio and is_instance_valid(rocket_flying_audio):
+		rocket_flying_audio.stop()
+	Audio.play_sfx(Audio.SFX.HIDDEN_GAME_ROCKET_EXPLODE)
 
 	if is_instance_valid(damage_field):
 		var explosion = ROCKET_EXPLOSION_SCENE.instantiate()

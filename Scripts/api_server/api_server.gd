@@ -171,6 +171,6 @@ static func ok(data: Variant = null) -> Dictionary:
 	return {"status": "ok", "data": data}
 
 
-static func err(code: int) -> Dictionary:
-	return {"status": "error", "code": code}
+static func err(code: int, reason: String = "") -> Dictionary:
+	return {"status": "error", "code": code, "reason": reason}
 #endregion
