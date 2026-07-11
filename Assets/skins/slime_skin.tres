@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://slimetres"]
 
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="1_circle"]
+[ext_resource type="Texture2D" uid="uid://brng3s4jma0lu" path="res://Shapes/hearts/slime.svg" id="1_fne83"]
 [ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_skindata"]
 [ext_resource type="PackedScene" uid="uid://slimeskin" path="res://Scenes/skins/slime_skin_prefab.tscn" id="2_prefab"]
 
@@ -14,3 +15,4 @@ is_achievement_unlock = true
 achievement_desc = "積分兌換"
 preview_texture = ExtResource("1_circle")
 skin_prefab = ExtResource("2_prefab")
+health_icon_texture = ExtResource("1_fne83")

@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://phantomtres"]
 
+[ext_resource type="Texture2D" uid="uid://c8g0rw1vmaphi" path="res://Shapes/hearts/phantom.svg" id="1_74p5b"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="1_circle"]
 [ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_skindata"]
 [ext_resource type="PackedScene" uid="uid://phantomskin" path="res://Scenes/skins/phantom_skin_prefab.tscn" id="2_prefab"]
@@ -13,3 +14,4 @@ is_achievement_unlock = true
 achievement_desc = "積分兌換"
 preview_texture = ExtResource("1_circle")
 skin_prefab = ExtResource("2_prefab")
+health_icon_texture = ExtResource("1_74p5b")

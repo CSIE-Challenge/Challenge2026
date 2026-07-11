@@ -1,6 +1,8 @@
 [gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://6fubpy5dfbde"]
 
+[ext_resource type="Texture2D" uid="uid://cjmmfoujlnxt" path="res://Shapes/hearts/retro_pixel.svg" id="1_cluwn"]
 [ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_retro"]
+[ext_resource type="Texture2D" uid="uid://dmf6qv4fgargj" path="res://Shapes/hearts/retro_pixel2.svg" id="2_l50ct"]
 [ext_resource type="PackedScene" uid="uid://c3k4712lvhatx" path="res://Scenes/skins/retro_pixel_skin_prefab.tscn" id="2_prefab"]
 
 [resource]
@@ -11,4 +13,6 @@ description = "如果嫌螢幕不夠花，推薦你加入一點復古像素。"
 is_achievement_unlock = true
 achievement_desc = "積分兌換"
 skin_prefab = ExtResource("2_prefab")
+health_icon_texture = ExtResource("1_cluwn")
+health_icon_texture2 = ExtResource("2_l50ct")
 metadata/_custom_type_script = "uid://c6vuqckcyjdey"

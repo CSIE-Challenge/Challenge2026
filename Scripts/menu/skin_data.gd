@@ -18,3 +18,4 @@ class_name SkinData extends Resource  # 繼承自 Resource 是關鍵！
 @export var skin_prefab: PackedScene
 # 不同的 skin 有不同的 health icon
 @export var health_icon_texture: Texture2D
+@export var health_icon_texture2: Texture2D

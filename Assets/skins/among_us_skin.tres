@@ -1,6 +1,8 @@
 [gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://mongus"]
 
+[ext_resource type="Texture2D" uid="uid://63c6ida37u3m" path="res://Shapes/among_us/小人跑步1.png" id="1_2i4mn"]
 [ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_amongus_scr"]
+[ext_resource type="Texture2D" uid="uid://c5ueski6djx0p" path="res://Shapes/among_us/小人跑步2.png" id="2_454el"]
 [ext_resource type="PackedScene" uid="uid://mongusskin" path="res://Scenes/skins/among_us_skin_prefab.tscn" id="2_prefab"]
 [ext_resource type="Texture2D" uid="uid://4oyuspab8tit" path="res://Shapes/among_us/小人站立.png" id="3_preview"]
 
@@ -13,5 +15,6 @@ is_achievement_unlock = true
 achievement_desc = "積分兌換"
 preview_texture = ExtResource("3_preview")
 skin_prefab = ExtResource("2_prefab")
-health_icon_texture = ExtResource("3_preview")
+health_icon_texture = ExtResource("1_2i4mn")
+health_icon_texture2 = ExtResource("2_454el")
 metadata/_custom_type_script = "uid://c6vuqckcyjdey"
