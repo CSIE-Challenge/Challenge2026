@@ -494,19 +494,19 @@ one_shot = true
 [node name="PhaseTimer" type="Timer" parent="GameManager" unique_id=297683376]
 
 [node name="EnergyLabel" parent="GameManager" unique_id=995466299 instance=ExtResource("14_1ff3a")]
-position = Vector2(117, 501)
+position = Vector2(84, 500)
 
 [node name="Congratulation" parent="GameManager" unique_id=1990153518 instance=ExtResource("12_kj63f")]
-position = Vector2(1048, 500)
+position = Vector2(1048, 512)
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=2039367638]
 layer = 0
 
 [node name="EnergyBallsLabel" type="Label" parent="HUD" unique_id=312988717]
 offset_left = 876.0
-offset_top = 548.0
+offset_top = 560.0
 offset_right = 1096.0
-offset_bottom = 580.0
+offset_bottom = 592.0
 theme_override_font_sizes/font_size = 24
 text = "Energy Balls: 0"
 label_settings = SubResource("LabelSettings_icchp")

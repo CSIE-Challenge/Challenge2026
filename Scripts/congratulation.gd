@@ -57,7 +57,7 @@ func _spawn_head() -> void:
 	left_spiral.scale = left_scale[head_index]
 	right_spiral.position = right_position[head_index]
 	right_spiral.scale = right_scale[head_index]
-	left_spiral.rotation_degrees = randf_range(-30, 30)
+	left_spiral.rotation_degrees = randf_range(-60, 60)
 	for i in 100:
 		head.modulate.a += 0.01
 		await get_tree().create_timer(0.01).timeout

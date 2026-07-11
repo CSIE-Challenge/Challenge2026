@@ -3,7 +3,7 @@ const SLIDING_RATE: float = 0.15
 var swaying_speed: float = 3
 var swaying_amplitude: float = 20
 var assigned_position: Vector2
-var assigned_scale: float = 0.3
+var assigned_scale: float = 0.36
 var assigned_a: float = 1
 var time: float
 var on_tree: bool = true
