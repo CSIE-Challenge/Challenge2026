@@ -10,4 +10,5 @@ skin_id = "among_us_skin"
 true_name = "among_us"
 preview_texture = ExtResource("3_preview")
 skin_prefab = ExtResource("2_prefab")
+health_icon_texture = ExtResource("3_preview")
 metadata/_custom_type_script = "uid://c6vuqckcyjdey"
