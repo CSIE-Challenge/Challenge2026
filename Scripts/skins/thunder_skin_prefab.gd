@@ -10,6 +10,47 @@ var walk_lightning_timer: float = 0.0
 @onready var timer = $Timer
 @onready var death_particles = $DeathParticles
 
+var last_pos: Vector2
+var walk_lightning_timer: float = 0.0
+
+func _process(delta):
+	if global_position.distance_to(last_pos) > 1.0:
+		walk_lightning_timer -= delta
+		if walk_lightning_timer <= 0:
+			walk_lightning_timer = randf_range(0.05, 0.2)
+			_spawn_ground_lightning()
+	last_pos = global_position
+
+func _spawn_ground_lightning():
+	if not is_inside_tree(): return
+	var line = Line2D.new()
+	line.width = 10.0
+	line.default_color = Color(0.4, 0.8, 1.0, 1.0)
+	var mat = ShaderMaterial.new()
+	mat.shader = LASER_SHADER
+	mat.set_shader_parameter("noise_strength", 0.15)
+	mat.set_shader_parameter("speed", 30.0)
+	line.material = mat
+	line.texture_mode = Line2D.LINE_TEXTURE_STRETCH
+	var tex = PlaceholderTexture2D.new()
+	tex.size = Vector2(32, 32)
+	line.texture = tex
+	
+	var start_pos = Vector2(randf_range(-15, 15), 10)
+	var current_pos = start_pos
+	line.add_point(current_pos)
+	for i in range(3):
+		current_pos += Vector2(randf_range(-5, 5), randf_range(5, 15))
+		line.add_point(current_pos)
+		
+	line.top_level = true
+	line.global_position = global_position
+	add_child(line)
+	
+	var tween = create_tween()
+	tween.tween_property(line, "modulate:a", 0.0, 0.15)
+	tween.tween_callback(line.queue_free)
+
 
 func _process(delta):
 	if global_position.distance_to(last_pos) > 1.0:
@@ -130,6 +171,59 @@ func play_jump():
 	var tween = create_tween()
 	tween.tween_property(sprite, "scale", Vector2(0.12, 0.28), 0.1)
 	tween.tween_property(sprite, "scale", Vector2(0.2, 0.2), 0.1)
+
+func _spawn_massive_lightning():
+	if not is_inside_tree(): return
+	
+	var flash = ColorRect.new()
+	flash.color = Color(1, 1, 1, 1)
+	flash.set_anchors_preset(Control.PRESET_FULL_RECT)
+	var canvas_layer = CanvasLayer.new()
+	canvas_layer.layer = 100
+	canvas_layer.add_child(flash)
+	add_child(canvas_layer)
+	var tween_flash = create_tween()
+	tween_flash.tween_property(flash, "modulate:a", 0.0, 0.3)
+	tween_flash.tween_callback(canvas_layer.queue_free)
+	
+	var line = Line2D.new()
+	line.width = 40.0
+	line.default_color = Color(0.8, 0.95, 1.0, 1.0)
+	var mat = ShaderMaterial.new()
+	mat.shader = LASER_SHADER
+	mat.set_shader_parameter("noise_strength", 0.2)
+	mat.set_shader_parameter("speed", 40.0)
+	line.material = mat
+	line.texture_mode = Line2D.LINE_TEXTURE_STRETCH
+	var tex = PlaceholderTexture2D.new()
+	tex.size = Vector2(32, 32)
+	line.texture = tex
+	
+	line.top_level = true
+	var target_global = global_position
+	var camera = get_viewport().get_camera_2d()
+	var screen_top_y = target_global.y - 600
+	if camera:
+		screen_top_y = camera.global_position.y - get_viewport_rect().size.y / 2 - 100
+		
+	var current_pos = Vector2(target_global.x + randf_range(-50, 50), screen_top_y)
+	line.add_point(current_pos)
+	
+	var steps = 10
+	var y_step = (target_global.y - screen_top_y) / steps
+	for i in range(steps):
+		var next_y = current_pos.y + y_step
+		var next_x = current_pos.x + randf_range(-30, 30)
+		if i == steps - 1:
+			next_x = target_global.x
+			next_y = target_global.y
+		current_pos = Vector2(next_x, next_y)
+		line.add_point(current_pos)
+		
+	add_child(line)
+	var tween = create_tween()
+	tween.tween_property(line, "modulate:a", 0.0, 0.4)
+	tween.tween_callback(line.queue_free)
 
 
 func _spawn_massive_lightning():
