@@ -67,6 +67,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _on_resume_button_up() -> void:
 	if visible:
+		Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 		save()
 		close()
 		resume_requested.emit(_time_slider.value)
@@ -74,6 +75,7 @@ func _on_resume_button_up() -> void:
 
 func _on_restart_button_up() -> void:
 	if visible:
+		Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 		save()
 		close()
 		restart_requested.emit()
@@ -81,6 +83,7 @@ func _on_restart_button_up() -> void:
 
 func _on_main_menu_button_up() -> void:
 	if visible:
+		Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 		save()
 		close()
 		main_menu_requested.emit()
@@ -88,8 +91,11 @@ func _on_main_menu_button_up() -> void:
 
 func _on_exit_button_up() -> void:
 	if visible:
+		var sfx_player = Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
+		Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 		save()
-		close()
+		if is_instance_valid(sfx_player):
+			await sfx_player.finished
 		exit_requested.emit()
 
 
