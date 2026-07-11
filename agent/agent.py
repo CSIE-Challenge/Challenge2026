@@ -2,6 +2,22 @@
 # ruff: disable[F405]
 from api import *
 
+# 這是 Default Agent 的程式碼，這支程式的放陷阱邏輯如下
+# - 如果玩家位在牆邊，Agent 會嘗試放置 trap 10
+# - 否則，agent 會將場地切成 3x3 的網格，如下圖
+
+# 	 --- --- ---
+# 	| 1 | 2 | 3 |
+# 	 --- --- ---
+# 	| 4 | 5 | 6 |
+# 	 --- --- ---
+# 	| 7 | 8 | 9 |
+# 	 --- --- ---
+#    並放置玩家所在格子編號的陷阱
+
+# 如果你想要調整 Default Agent 並進行測試，你可以將其複製到一份新的 .py 檔中，
+# 並放在 /scripts 底下，鼓勵大家調整傳入陷阱中的各個參數看看效果如何！
+
 MIN_COORDINATE = -220
 MAX_COORDINATE = 220
 PLAYER_RADIUS = 13
@@ -9,6 +25,9 @@ FIELD_SIZE = 440
 
 
 def run(client):
+    # client.print_api_errors = False
+    # 如果你不想在輸出看到形如 [api] xxx 的訊息，你可以把上面這行反註解掉
+
     previous_print_time = client.get_remaining_time()
     while True:
         position = client.get_opponent_player_position()
@@ -19,38 +38,49 @@ def run(client):
             or abs(position.y - MIN_COORDINATE) <= PLAYER_RADIUS
             or abs(position.y - MAX_COORDINATE) <= PLAYER_RADIUS
         ):
+            # 如果玩家位在牆邊，Agent 會只嘗試放置 trap 10
             if client.get_cooldown_time(10) <= 0:
                 client.spawn_trap10(
                     Vector2(-250.0, 100.0),
                     Vector2(1.0, 0.2),
                     Vector2(1.0, 0.0),
                     Vector2(1.0, -0.2),
-                )
+                )  # 調整傳入它的參數！
         else:
             x_block = (position.x - MIN_COORDINATE) * 3 // FIELD_SIZE
             y_block = (position.y - MIN_COORDINATE) * 3 // FIELD_SIZE
             target_trap = y_block * 3 + x_block + 1
+            # target_trap 為玩家位在九宮格哪一格
+
             if target_trap in client.get_available_traps():
                 if target_trap == 1:
-                    client.spawn_trap1(Vector2(-145.0, -145.0))
+                    client.spawn_trap1(Vector2(-145.0, -145.0))  # 調整傳入它的參數！
                 elif target_trap == 2:
-                    client.spawn_trap2(1.0, 70.0)
+                    client.spawn_trap2(1.0, 70.0)  # 調整傳入它的參數！
                 elif target_trap == 3:
-                    client.spawn_trap3(Vector2(145.0, 220.0), Direction.UP, 100.0)
+                    client.spawn_trap3(
+                        Vector2(145.0, 220.0), Direction.UP, 100.0
+                    )  # 調整傳入它的參數！
                 elif target_trap == 4:
-                    client.spawn_trap4(Vector2(-75.0, 0.0), Direction.RIGHT)
+                    client.spawn_trap4(
+                        Vector2(-75.0, 0.0), Direction.RIGHT
+                    )  # 調整傳入它的參數！
                 elif target_trap == 5:
-                    client.spawn_trap5(Vector2(0.0, 0.0))
+                    client.spawn_trap5(Vector2(0.0, 0.0))  # 調整傳入它的參數！
                 elif target_trap == 6:
-                    client.spawn_trap6(Direction.DOWN, 120.0)
+                    client.spawn_trap6(Direction.DOWN, 120.0)  # 調整傳入它的參數！
                 elif target_trap == 7:
-                    client.spawn_trap7(Vector2(210.0, -210.0), 200.0)
+                    client.spawn_trap7(
+                        Vector2(210.0, -210.0), 200.0
+                    )  # 調整傳入它的參數！
                 elif target_trap == 8:
-                    client.spawn_trap8(Vector2(-220.0, 145.0), Vector2(220.0, 145.0))
+                    client.spawn_trap8(
+                        Vector2(-220.0, 145.0), Vector2(220.0, 145.0)
+                    )  # 調整傳入它的參數！
                 else:
                     client.spawn_trap9(
                         Vector2(-220.0, 145.0), Vector2(145.0, 145.0), 2.0
-                    )
+                    )  # 調整傳入它的參數！
 
         current_time = client.get_remaining_time()
         if current_time <= previous_print_time - 1.0:
