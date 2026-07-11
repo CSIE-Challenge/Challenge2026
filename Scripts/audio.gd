@@ -46,7 +46,7 @@ var _sfx_players: Array[AudioStreamPlayer] = []
 
 # current state
 var _current_bgm: BGM = -1 as BGM
-var _bgm_playlist: Array[AudioStream] = []
+var _bgm_playlist: Array = []
 var _last_track_index: int = -1
 
 # for bgm fading
@@ -83,7 +83,7 @@ func set_bgm(bgm: BGM) -> void:
 	_fade_tween.tween_property(_current_player, "volume_db", -80.0, bgm_fade_out_time)
 
 	_current_bgm = bgm
-	_bgm_playlist = _bgm_playlists.get(bgm, []) as Array[AudioStream]
+	_bgm_playlist = _bgm_playlists.get(BGM.find_key(bgm), []) as Array[AudioStream]
 	_last_track_index = -1
 	_play_random_bgm_track(_next_player)
 
@@ -98,7 +98,7 @@ func set_bgm(bgm: BGM) -> void:
 
 
 func play_sfx(sfx: SFX) -> AudioStreamPlayer:
-	var stream := _sfx_streams.get(sfx) as AudioStream
+	var stream := _sfx_streams.get(SFX.find_key(sfx)) as AudioStream
 	if stream == null:
 		return
 	# find free players to play effect audio
@@ -197,26 +197,20 @@ func _get_property_list() -> Array[Dictionary]:
 func _get(property):
 	if property.ends_with("_tracks"):
 		var bgm_type = property.left(-7)
-		var bgm_key = BGM.get(bgm_type.to_upper())
-		return _bgm_playlists.get(bgm_key, [])
+		return _bgm_playlists.get(bgm_type.to_upper(), [])
 	elif property.ends_with("_sfx"):
 		var sfx_name = property.left(-4)
-		var sfx_key = SFX.get(sfx_name.to_upper(), [])
-		return _sfx_streams.get(sfx_key)
+		return _sfx_streams.get(sfx_name.to_upper())
 	return null
 
 
 func _set(property, value):
 	if property.ends_with("_tracks"):
 		var bgm_type = property.left(-7)
-		var bgm_key = BGM.get(bgm_type.to_upper())
-		if not _bgm_playlists.has(bgm_key):
-			_bgm_playlists[bgm_key] = [] as Array[AudioStream]
-		_bgm_playlists[bgm_key].assign(value)
+		_bgm_playlists[bgm_type.to_upper()] = value as Array[AudioStream]
 		return true
 	elif property.ends_with("_sfx"):
 		var sfx_name = property.left(-4)
-		var sfx_key = SFX.get(sfx_name.to_upper())
-		_sfx_streams.set(sfx_key, value)
+		_sfx_streams[sfx_name.to_upper()] = value as AudioStream
 		return true
 	return false
