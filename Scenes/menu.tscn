@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://fh2uubspqhku" path="res://Scenes/volume_setting.tscn" id="2_xhh6f"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="3_158mb"]
 [ext_resource type="Texture2D" uid="uid://cnkhc8wj5g45l" path="res://Shapes/menu_background.jpg" id="3_wwsa2"]
+[ext_resource type="FontFile" uid="uid://vmmbbrsm1jdl" path="res://Assets/fonts/PixelMplus12-Bold.ttf" id="5_jsrd8"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jsrd8"]
 texture = ExtResource("3_wwsa2")
@@ -170,6 +171,24 @@ offset_top = -31.0
 grow_horizontal = 0
 grow_vertical = 0
 text = "invisible"
+
+[node name="TrackLabel" type="Label" parent="Panel" unique_id=1879138033]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -400.0
+offset_top = -60.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.35523984, 0.34669387, 0.3552394, 1)
+theme_override_fonts/font = ExtResource("5_jsrd8")
+theme_override_font_sizes/font_size = 24
+horizontal_alignment = 2
 
 [node name="VolumeSetting" parent="." unique_id=709368218 instance=ExtResource("2_xhh6f")]
 visible = false

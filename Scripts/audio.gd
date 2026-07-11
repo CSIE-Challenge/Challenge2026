@@ -1,6 +1,8 @@
 @tool
 extends Node
 
+signal track_changed(track_name: String)
+
 enum SFX {
 	JUMP,
 	LAND_SAND,
@@ -107,23 +109,25 @@ func set_bgm(bgm: BGM) -> void:
 	if _fade_tween and _fade_tween.is_running():
 		_fade_tween.kill()
 
-	_fade_tween = create_tween()
-	_fade_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)  # run even if game is paused
-	_fade_tween.tween_property(_current_player, "volume_db", -80.0, bgm_fade_out_time)
-
 	_current_bgm = bgm
 	_bgm_playlist = _bgm_playlists.get(BGM.find_key(bgm), []) as Array[AudioStream]
 	_last_track_index = -1
-	_play_random_bgm_track(_next_player)
-
-	await _fade_tween.finished
-	_current_player.stop()
-	_current_player.volume_db = 0
 
 	# swap available players
 	var tmp = _current_player
 	_current_player = _next_player
 	_next_player = tmp
+
+	# _next_player fades out the old track
+	_fade_tween = create_tween()
+	_fade_tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)  # run even if game is paused
+	_fade_tween.tween_property(_next_player, "volume_db", -80.0, bgm_fade_out_time)
+
+	_play_random_bgm_track(_current_player)
+
+	await _fade_tween.finished
+	_next_player.stop()
+	_next_player.volume_db = 0
 
 
 func play_sfx(sfx: SFX) -> AudioStreamPlayer:
@@ -188,6 +192,12 @@ func resume_bgm() -> void:
 		_current_player.play()
 
 
+func get_current_track_name() -> String:
+	if _current_player.stream == null:
+		return ""
+	return _current_player.stream.resource_path.get_file().get_basename()
+
+
 func set_phase_bgm(phase: int) -> void:
 	play_sfx(SFX.GAMEPLAY_PHASE_CHANGE)
 	match phase:
@@ -220,6 +230,7 @@ func _play_random_bgm_track(player: AudioStreamPlayer) -> void:
 	player.stream = _bgm_playlist[_last_track_index]
 	player.volume_db = 0
 	player.play()
+	track_changed.emit(player.stream.resource_path.get_file().get_basename())
 
 
 func play_coconut_sfx(combo: int) -> void:

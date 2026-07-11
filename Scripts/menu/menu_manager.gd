@@ -3,10 +3,31 @@ extends Control
 const FILE_SELECTOR_SCENE := "res://Scenes/menu/file_selector.tscn"
 const MATCHMAKER_SCENE := "res://Scenes/menu/matchmaker.tscn"
 
+var _track_tween: Tween
+
+@onready var track_label: Label = $Panel/TrackLabel
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	var track_name = Audio.get_current_track_name()
+	track_label.text = "♪ %s" % track_name if not track_name.is_empty() else ""
+
+	Audio.track_changed.connect(_on_track_changed)
 	Audio.set_bgm(Audio.BGM.MENU)
+
+
+func _on_track_changed(track_name: String) -> void:
+	if _track_tween and _track_tween.is_running():
+		_track_tween.kill()
+
+	var new_label = "♪ %s" % track_name if not track_name.is_empty() else ""
+
+	_track_tween = create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+
+	_track_tween.tween_property(track_label, "position:x", 420, 0.4).as_relative()
+	_track_tween.tween_callback(func(): track_label.text = new_label)
+	_track_tween.tween_property(track_label, "position:x", -420, 0.5).as_relative()
 
 
 func _on_single_button_button_up() -> void:
