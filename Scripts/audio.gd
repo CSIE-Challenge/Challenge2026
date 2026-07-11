@@ -43,6 +43,7 @@ enum SFX {
 }
 
 enum BGM {
+	NONE = -1,
 	MENU,
 	GAMEPLAY_PHASE_0,
 	GAMEPLAY_PHASE_1,
@@ -66,7 +67,7 @@ var _bgm_playlists: Dictionary = {}
 var _sfx_players: Array[AudioStreamPlayer] = []
 
 # current state
-var _current_bgm: BGM = -1 as BGM
+var _current_bgm: BGM = BGM.NONE
 
 # for bgm fading
 var _current_player: AudioStreamPlayer
