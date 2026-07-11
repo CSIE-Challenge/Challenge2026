@@ -31,6 +31,8 @@ var is_paused: bool = false
 
 var time_elapsed: float = 0.0
 
+var _debug: bool = false
+
 @onready var boss = self
 @onready var boss_sprite = $Sprites/boss_sprite
 @onready var hidden_game = $"../../.."
@@ -75,7 +77,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 
 	# 使用鍵盤的 1, 2, 3 鍵來測試不同的招式
-	if event is InputEventKey and event.pressed and not event.echo:
+	if event is InputEventKey and event.pressed and not event.echo and _debug:
 		match event.keycode:
 			KEY_1:
 				rhythm_attack()

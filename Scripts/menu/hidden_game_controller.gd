@@ -209,7 +209,14 @@ func _run_phase_3() -> bool:
 		await wait_or_die(5.0)
 
 	if is_player_dead and not is_aborted:
-		Dialogue.start_dialogue(["哈！會追著你的就沒辦法了吧！"])
+		if not seen_dialogues.has("death_3_rocket"):
+			seen_dialogues["death_3_rocket"] = true
+			Dialogue.start_dialogue(["哈！會追著你的就沒辦法了吧！"])
+			await Dialogue.dialogue_finished
+		else:
+			await get_tree().create_timer(1.0).timeout
+		SceneTransition.transition_to(HIDDEN_SCENE_PATH)
+		return true
 	if not seen_dialogues.has("intro_3"):
 		seen_dialogues["intro_3"] = true
 		Dialogue.start_dialogue(
