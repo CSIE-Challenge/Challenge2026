@@ -159,7 +159,7 @@ func _jump_process(delta: float):
 		land_particle.restart()
 		land_particle.emitting = true
 		if juice_count > 0:
-			Audio.play_sfx(Audio.SFX.LAND_SAND)
+			Audio.play_sfx(Audio.SFX.LAND_JUICE)
 		elif is_in_water:
 			Audio.play_sfx(Audio.SFX.LAND_WATER)
 		else:
