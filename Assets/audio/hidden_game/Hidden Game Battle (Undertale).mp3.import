@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://4i6j7ywby8gy"
+path="res://.godot/imported/Hidden Game Battle (Undertale).mp3-c987fd05fc9ede20aef7b3d71ffebb1f.mp3str"
+
+[deps]
+
+source_file="res://Assets/audio/hidden_game/Hidden Game Battle (Undertale).mp3"
+dest_files=["res://.godot/imported/Hidden Game Battle (Undertale).mp3-c987fd05fc9ede20aef7b3d71ffebb1f.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

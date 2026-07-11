@@ -26,7 +26,19 @@ enum SFX {
 	HIDDEN_GAME_LASER_READY,
 	HIDDEN_GAME_LASER_EMIT,
 	HIDDEN_GAME_TYPEWRITER,
-	HIDDEN_GAME_TYPEWRITER_2
+	HIDDEN_GAME_TYPEWRITER_2,
+	HIDDEN_GAME_ACHIEVEMENT,
+	HIDDEN_GAME_BIGBALL_HITWALL,
+	HIDDEN_GAME_BOOMERANG,
+	HIDDEN_GAME_GET_ATTACKBALL,
+	HIDDEN_GAME_NOTES_GLIDING_1,
+	HIDDEN_GAME_NOTES_GLIDING_2,
+	HIDDEN_GAME_NOTES_GLIDING_3,
+	HIDDEN_GAME_NOTES_HIT,
+	HIDDEN_GAME_ROCKET_EXPLODE,
+	HIDDEN_GAME_ROCKET_FLYING,
+	HIDDEN_GAME_SLASH,
+	SCENE_TRANSITION
 }
 
 enum BGM {
@@ -117,6 +129,12 @@ func play_sfx(sfx: SFX) -> AudioStreamPlayer:
 	_sfx_players[0].stream = stream
 	_sfx_players[0].play()
 	return _sfx_players[0]
+
+
+func stop_all_sfx() -> void:
+	for player in _sfx_players:
+		if player.playing:
+			player.stop()
 
 
 func bgm_is_playing() -> bool:

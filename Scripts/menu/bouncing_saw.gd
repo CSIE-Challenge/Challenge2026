@@ -95,6 +95,7 @@ func _physics_process(delta: float) -> void:
 		bounced_vert = true
 
 	if bounced_horiz or bounced_vert:
+		Audio.play_sfx(Audio.SFX.HIDDEN_GAME_BIGBALL_HITWALL)
 		global_position = walls.to_global(local_pos)
 		speed += 12.0
 

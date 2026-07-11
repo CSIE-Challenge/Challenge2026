@@ -57,6 +57,7 @@ func init(start_pos: Vector2, target_pos: Vector2, speed: float, wait_time: floa
 
 
 func _apply_stretch(speed: float):
+	Audio.play_sfx(Audio.SFX.HIDDEN_GAME_SLASH)
 	# 飛行開始時，套用速度拉伸效果 (拉長 X，壓扁 Y，維持視覺體積)
 	if sprite:
 		var stretch = 1.0 + speed * stretch_factor

@@ -30,6 +30,7 @@ static func reset_dialogue_state() -> void:
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	Audio.set_bgm(Audio.BGM.HIDDEN_GAME)
 	if player:
 		player.player_died.connect(_on_player_died)
 
