@@ -26,6 +26,7 @@ var _timer_d: int = 90
 var _countdown_timer: Timer
 var _poll_timer: Timer
 var _pending_request := ""
+var _poll_pending := false
 
 var _countdown_text_d: String = ""
 var _status_text_d: String = ""
@@ -58,6 +59,7 @@ var _pause_timer: float = 0.0
 @onready var code_input: LineEdit = $Panel/Margins/Content/Panels/PanelC/CodeInput
 
 @onready var http_request: HTTPRequest = $HTTPRequest
+@onready var poll_http_request: HTTPRequest = $PollHTTPRequest
 
 
 func _ready() -> void:
@@ -83,6 +85,7 @@ func _ready() -> void:
 	_show_panel(Page.A)
 
 	http_request.request_completed.connect(_on_request_completed)
+	poll_http_request.request_completed.connect(_on_poll_request_completed)
 
 	NetworkManager.server_disconnected.connect(_on_server_disconnected)
 
@@ -161,11 +164,12 @@ func _post(path: String, body: Dictionary, tag: String) -> void:
 		_handle_error("HTTP request failed")
 
 
-func _http_get(path: String, tag: String) -> void:
-	_pending_request = tag
+func _http_get(path: String, _tag: String) -> void:
+	_poll_pending = true
 	var url := "http://" + _matchmaker_ip + path
-	var err := http_request.request(url)
+	var err := poll_http_request.request(url)
 	if err != OK:
+		_poll_pending = false
 		_handle_error("HTTP request failed")
 
 
@@ -208,8 +212,28 @@ func _on_request_completed(
 			_on_join_room_response(data)
 		"ready":
 			_on_ready_response(data)
-		"poll_status":
-			_on_poll_status_response(data)
+
+
+func _on_poll_request_completed(
+	result: int, _code: int, _headers: PackedStringArray, body: PackedByteArray
+) -> void:
+	_poll_pending = false
+	var body_str := body.get_string_from_utf8()
+
+	var data: Dictionary
+	var test_json := JSON.new()
+	if test_json.parse(body_str) == OK:
+		data = test_json.get_data()
+	else:
+		_handle_error("Invalid response from server")
+		return
+
+	if result != HTTPRequest.RESULT_SUCCESS:
+		var error_msg := data.get("error", "Request failed") as String
+		_handle_error(error_msg)
+		return
+
+	_on_poll_status_response(data)
 
 
 # ── Panel A ────────────────────────────────────────────────────────────────
@@ -437,7 +461,7 @@ func _reset_marquee():
 
 
 func _on_poll_tick() -> void:
-	if _pending_request != "":
+	if _poll_pending:
 		return
 	_http_get("/qiaohu/status?code=" + _room_code, "poll_status")
 
