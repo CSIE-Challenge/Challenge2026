@@ -16,35 +16,39 @@
 [ext_resource type="AudioStream" uid="uid://ds3wjgb42oyfd" path="res://Assets/audio/BGM/phase_4.mp3" id="7_o1fue"]
 [ext_resource type="AudioStream" uid="uid://s38uamf74qig" path="res://Assets/audio/BGM/Result.mp3" id="8_r8i6a"]
 [ext_resource type="AudioStream" uid="uid://kfxthmlglfh2" path="res://Assets/audio/BGM/phase_5.mp3" id="8_tf0nv"]
+[ext_resource type="AudioStream" uid="uid://c67kpqx4keuyf" path="res://Assets/audio/SFX/set_trap.mp3" id="8_tyt1w"]
+[ext_resource type="AudioStream" uid="uid://bjlmmy6mqxi8b" path="res://Assets/audio/BGM/SmashTheCoconuts.mp3" id="10_01jh0"]
 [ext_resource type="AudioStream" uid="uid://bi01vm7qcutil" path="res://Assets/audio/SFX/trap_1_landmine_explode.mp3" id="10_38mwv"]
+[ext_resource type="AudioStream" uid="uid://bhknaks4pbq5m" path="res://Assets/audio/hidden_game/Hidden Game Battle (Normal).mp3" id="11_id0ld"]
 [ext_resource type="AudioStream" uid="uid://cld4poronrvxs" path="res://Assets/audio/SFX/character_fall_sand.mp3" id="11_mjojf"]
 [ext_resource type="AudioStream" uid="uid://bqpaejdaq4jcv" path="res://Assets/audio/SFX/character_fall_juice.mp3" id="12_0w0wh"]
 [ext_resource type="AudioStream" uid="uid://b2kg56yc6iwrc" path="res://Assets/audio/SFX/Get_coconut.mp3" id="12_tf0nv"]
+[ext_resource type="AudioStream" uid="uid://4i6j7ywby8gy" path="res://Assets/audio/hidden_game/Hidden Game Battle (Undertale).mp3" id="12_yu0qa"]
 [ext_resource type="AudioStream" uid="uid://dvgprx7jght86" path="res://Assets/audio/SFX/character_fall_water.mp3" id="13_bm6li"]
 [ext_resource type="AudioStream" uid="uid://bf0dpmjiygwpd" path="res://Assets/audio/SFX/die_1b.mp3" id="15_aan0r"]
 [ext_resource type="AudioStream" uid="uid://b27vqppkxjtjq" path="res://Assets/audio/SFX/scene_transition_2.mp3" id="15_o1fue"]
 [ext_resource type="AudioStream" uid="uid://d2m7t5250b1x" path="res://Assets/audio/SFX/trap_1_remove_bananapeel_2.mp3" id="17_n35fw"]
-[ext_resource type="AudioStream" uid="uid://dqxw67caahfo1" path="res://Assets/audio/SFX/trap_3_seagull_hit_wall.mp3" id="18_o1fue"]
-[ext_resource type="AudioStream" uid="uid://bea7mnolr3b30" path="res://Assets/audio/SFX/watermelon_fall_2b.mp3" id="19_o1fue"]
-[ext_resource type="AudioStream" uid="uid://hhkgup5y7sfg" path="res://Assets/audio/SFX/electric_shock.mp3" id="22_0w0wh"]
-[ext_resource type="AudioStream" uid="uid://d2glsqhefcr0m" path="res://Assets/audio/SFX/juice_splash_2c.mp3" id="24_hfiiv"]
-[ext_resource type="AudioStream" uid="uid://dlaraob8lhjvk" path="res://Assets/audio/SFX/six_seven.mp3" id="26_oboth"]
-[ext_resource type="AudioStream" uid="uid://mi12das237oh" path="res://Assets/audio/SFX/get_coconut_2.mp3" id="6_fkw8n"]
-[ext_resource type="AudioStream" uid="uid://c67kpqx4keuyf" path="res://Assets/audio/SFX/set_trap.mp3" id="8_tyt1w"]
-[ext_resource type="AudioStream" uid="uid://oa1tcs2ewa07" path="res://Assets/audio/SFX/trap_1_remove_bananapeel.mp3" id="11_7stf1"]
-[ext_resource type="AudioStream" uid="uid://bjlmmy6mqxi8b" path="res://Assets/audio/BGM/SmashTheCoconuts.mp3" id="10_01jh0"]
-[ext_resource type="AudioStream" uid="uid://bhknaks4pbq5m" path="res://Assets/audio/hidden_game/Hidden Game Battle (Normal).mp3" id="11_id0ld"]
-[ext_resource type="AudioStream" uid="uid://4i6j7ywby8gy" path="res://Assets/audio/hidden_game/Hidden Game Battle (Undertale).mp3" id="12_yu0qa"]
 [ext_resource type="AudioStream" uid="uid://bslkb3wtlsp7s" path="res://Assets/audio/hidden_game/hidden_game_attack.mp3" id="18_mjojf"]
+[ext_resource type="AudioStream" uid="uid://dqxw67caahfo1" path="res://Assets/audio/SFX/trap_3_seagull_hit_wall.mp3" id="18_o1fue"]
 [ext_resource type="AudioStream" uid="uid://cdtbqd6mcqhn3" path="res://Assets/audio/hidden_game/hidden_game_complete.mp3" id="19_0w0wh"]
+[ext_resource type="AudioStream" uid="uid://bea7mnolr3b30" path="res://Assets/audio/SFX/watermelon_fall_2b.mp3" id="19_o1fue"]
 [ext_resource type="AudioStream" uid="uid://f87tomb66xja" path="res://Assets/audio/hidden_game/hidden_game_lazer_ready.mp3" id="20_bm6li"]
 [ext_resource type="AudioStream" uid="uid://b1pbbpehkh76w" path="res://Assets/audio/hidden_game/hidden_game_lazer_emit.mp3" id="21_hfiiv"]
+[ext_resource type="AudioStream" uid="uid://hhkgup5y7sfg" path="res://Assets/audio/SFX/electric_shock.mp3" id="22_0w0wh"]
 [ext_resource type="AudioStream" uid="uid://bakhld8ddwwhy" path="res://Assets/audio/hidden_game/hidden_game_typewriter 2.mp3" id="22_oboth"]
+[ext_resource type="AudioStream" uid="uid://ymyq3qd03him" path="res://Assets/audio/SFX/get_coconut_b1.mp3" id="22_qbrj8"]
 [ext_resource type="AudioStream" uid="uid://x2gucqiypn8b" path="res://Assets/audio/hidden_game/hidden_game_typewriter.mp3" id="23_llcnc"]
+[ext_resource type="AudioStream" uid="uid://c1sllq2elbjyj" path="res://Assets/audio/SFX/get_coconut_b2.mp3" id="23_pnqkd"]
+[ext_resource type="AudioStream" uid="uid://d2glsqhefcr0m" path="res://Assets/audio/SFX/juice_splash_2c.mp3" id="24_hfiiv"]
 [ext_resource type="AudioStream" uid="uid://bokgky20lwh7j" path="res://Assets/audio/hidden_game/hidden_game_achievement.mp3" id="24_titv6"]
+[ext_resource type="AudioStream" uid="uid://ctqka2j1vvlq0" path="res://Assets/audio/SFX/get_coconut_b3.mp3" id="24_wytld"]
 [ext_resource type="AudioStream" uid="uid://dxdvka25y0dgq" path="res://Assets/audio/hidden_game/hidden_game_bigball_hitwall.mp3" id="25_01jh0"]
+[ext_resource type="AudioStream" uid="uid://dweyoosn2vf6o" path="res://Assets/audio/SFX/get_coconut_b4.mp3" id="25_xbbd1"]
 [ext_resource type="AudioStream" uid="uid://8k7d0aknepas" path="res://Assets/audio/hidden_game/hidden_game_boomerang.mp3" id="26_64buw"]
+[ext_resource type="AudioStream" uid="uid://clcgg2sfcoxjy" path="res://Assets/audio/SFX/get_coconut_b5.mp3" id="26_mdcop"]
+[ext_resource type="AudioStream" uid="uid://dlaraob8lhjvk" path="res://Assets/audio/SFX/six_seven.mp3" id="26_oboth"]
 [ext_resource type="AudioStream" uid="uid://duw4ajsn7e8i2" path="res://Assets/audio/hidden_game/hidden_game_get_attackball.mp3" id="27_id0ld"]
+[ext_resource type="AudioStream" uid="uid://cj80apfk8ggv0" path="res://Assets/audio/SFX/get_coconut_b6.mp3" id="27_sddt1"]
 [ext_resource type="AudioStream" uid="uid://bl0hsitw6344e" path="res://Assets/audio/hidden_game/hidden_game_notes_gliding_1.mp3" id="28_yu0qa"]
 [ext_resource type="AudioStream" uid="uid://duup6dihy3e5w" path="res://Assets/audio/hidden_game/hidden_game_notes_gliding_2.mp3" id="29_vnt5c"]
 [ext_resource type="AudioStream" uid="uid://cv2lohn1gd5qq" path="res://Assets/audio/hidden_game/hidden_game_notes_gliding_3.mp3" id="30_6ite6"]
@@ -87,6 +91,12 @@ land_juice_sfx = ExtResource("12_0w0wh")
 land_water_sfx = ExtResource("13_bm6li")
 button_press_sfx = ExtResource("2_y8l05")
 energy_collected_sfx = ExtResource("12_tf0nv")
+energy_combo_1_sfx = ExtResource("22_qbrj8")
+energy_combo_2_sfx = ExtResource("23_pnqkd")
+energy_combo_3_sfx = ExtResource("24_wytld")
+energy_combo_4_sfx = ExtResource("25_xbbd1")
+energy_combo_5_sfx = ExtResource("26_mdcop")
+energy_combo_6_sfx = ExtResource("27_sddt1")
 gameplay_phase_change_sfx = ExtResource("6_e0u3b")
 take_damage_sfx = ExtResource("7_e0u3b")
 player_die_sfx = ExtResource("15_aan0r")
@@ -99,7 +109,6 @@ trap3_seagull_hit_sfx = ExtResource("18_o1fue")
 trap5_juice_splash_sfx = ExtResource("24_hfiiv")
 trap9_watermelon_fall_sfx = ExtResource("19_o1fue")
 six_seven_sfx = ExtResource("26_oboth")
-trap3_bullet_hit_wall_sfx = ExtResource("11_7stf1")
 hidden_game_attack_sfx = ExtResource("18_mjojf")
 hidden_game_complete_sfx = ExtResource("19_0w0wh")
 hidden_game_laser_ready_sfx = ExtResource("20_bm6li")

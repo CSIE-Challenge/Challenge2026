@@ -8,6 +8,12 @@ enum SFX {
 	LAND_WATER,
 	BUTTON_PRESS,
 	ENERGY_COLLECTED,
+	ENERGY_COMBO_1,
+	ENERGY_COMBO_2,
+	ENERGY_COMBO_3,
+	ENERGY_COMBO_4,
+	ENERGY_COMBO_5,
+	ENERGY_COMBO_6,
 	GAMEPLAY_PHASE_CHANGE,
 	TAKE_DAMAGE,
 	PLAYER_DIE,
@@ -20,7 +26,6 @@ enum SFX {
 	TRAP5_JUICE_SPLASH,
 	TRAP9_WATERMELON_FALL,
 	SIX_SEVEN,
-	TRAP3_BULLET_HIT_WALL,
 	HIDDEN_GAME_ATTACK,
 	HIDDEN_GAME_COMPLETE,
 	HIDDEN_GAME_LASER_READY,
@@ -198,6 +203,23 @@ func set_phase_bgm(phase: int) -> void:
 			set_bgm(BGM.GAMEPLAY_PHASE_4)
 		5:
 			set_bgm(BGM.GAMEPLAY_PHASE_5)
+
+
+func play_coconut_sfx(combo: int) -> void:
+	play_sfx(SFX.ENERGY_COLLECTED)
+	match combo:
+		0:
+			play_sfx(SFX.ENERGY_COMBO_1)
+		1:
+			play_sfx(SFX.ENERGY_COMBO_2)
+		2:
+			play_sfx(SFX.ENERGY_COMBO_3)
+		3:
+			play_sfx(SFX.ENERGY_COMBO_4)
+		4:
+			play_sfx(SFX.ENERGY_COMBO_5)
+		5:
+			play_sfx(SFX.ENERGY_COMBO_6)
 
 
 func _get_property_list() -> Array[Dictionary]:
