@@ -3,7 +3,6 @@ extends Node2D
 @export var player: CharacterBody2D
 @export var camera: Camera2D
 @export var health_label: Label
-@export var energy_balls_label: Label
 @export var energy_bar_label: Label
 @export var coconut_bar: Node2D
 @export var opponent_energy_bar_label: Label
@@ -44,6 +43,8 @@ var _is_shutting_down := false
 @onready var phase_timer = $PhaseTimer
 @onready var trap_request_scheduler: TrapRequestScheduler = $"../TrapRequestScheduler"
 @onready var agent_action_service: AgentActionService = $"../AgentActionService"
+@onready var pregame_countdown: Label = $"../SubViewport/PregameCountdown"
+@onready var skin_prefab = $"/StageLayer/AdvancedSkinPrefab"
 
 
 func _ready() -> void:
@@ -63,10 +64,9 @@ func _ready() -> void:
 	NetworkManager.energy_changed.connect(_on_network_energy_changed)
 	NetworkManager.health_changed.connect(_on_network_health_changed)
 	_setup_health_ui()
-	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
 	_update_energy_label()
 	_update_opponent_energy_label(0, 0)
-	_update_max_energy()
+	_update_max_energy(0)
 	_connect_agent_action_signals()
 	_connect_pause_menu()
 
@@ -80,18 +80,8 @@ func _ready() -> void:
 	game_duration_timer.start()
 	_update_time_label()
 
-	player_invincible = false
-
-	_begin_agents()
-
 	phase_timer.timeout.connect(_on_phase_timeout)
 	phase_timer.start(phase_duration[0])
-
-	_wall_animation()
-
-	Audio.set_phase_bgm(0)
-
-	#_show_test_result_after_delay()
 
 	player.get_node("ShadowSprite").z_index = Util.LAYERS["Player/ShadowSprite"]
 	player.get_node("BodySprite").z_index = Util.LAYERS["Player/BodySprite"]
@@ -99,9 +89,40 @@ func _ready() -> void:
 	player.get_node("JumpParticle").z_index = Util.LAYERS["Player/JumpParticle"]
 	player.get_node("LandParticle").z_index = Util.LAYERS["Player/LandParticle"]
 	player.reparent_land_particles()
+
 	energy_ball.z_index = Util.LAYERS["EnergyBall"]
 	$"../SubViewport/Stage/Walls".z_index = Util.LAYERS["Walls"]
 	coconut_bar.z_index = Util.LAYERS["CoconutBar/CoconutBar"]
+
+	player.hide()
+	player.skin_instance.hide()
+	energy_label.process_mode = Node.PROCESS_MODE_ALWAYS
+	for w in walls:
+		w.process_mode = Node.PROCESS_MODE_ALWAYS
+	_wall_animation()
+	energy_ball.hide()
+
+	get_tree().paused = true
+	await get_tree().create_timer(0.3).timeout
+	pregame_countdown.play_countdown()
+
+	await get_tree().create_timer(3.0).timeout
+	get_tree().paused = false
+	for w in walls:
+		w.process_mode = Node.PROCESS_MODE_PAUSABLE
+	energy_label.process_mode = Node.PROCESS_MODE_PAUSABLE
+
+	Audio.set_phase_bgm(0)
+	player_invincible = false
+	player.show()
+	player.skin_instance.show()
+	_begin_agents()
+
+	energy_ball._respawn_energy_ball()
+	await get_tree().create_timer(0.2).timeout
+	energy_ball.show()
+	await get_tree().create_timer(1.0).timeout
+	pregame_countdown.hide()
 
 
 func _exit_tree() -> void:
@@ -316,6 +337,7 @@ func _wall_animation() -> void:
 	for w in walls:
 		w.material.set_shader_parameter("offset", randf_range(0, 10))
 		var tween = create_tween()
+		tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 		(
 			tween
 			. tween_method(
@@ -347,12 +369,12 @@ func _on_phase_timeout() -> void:
 	_update_max_energy()
 
 
-func _update_max_energy() -> void:
-	var mxn = max_energy[min(current_phase, max_energy.size() - 1)]
-	energy_label._update_max_energy(mxn)
-	NetworkManager.update_max_energy(mxn)
-
-	Audio.set_phase_bgm(current_phase)
+func _update_max_energy(play_audio: bool = true) -> void:
+	var max = max_energy[min(current_phase, max_energy.size() - 1)]
+	energy_label._update_max_energy(max)
+	NetworkManager.update_max_energy(max)
+	if play_audio:
+		Audio.set_phase_bgm(current_phase)
 
 
 #region Control

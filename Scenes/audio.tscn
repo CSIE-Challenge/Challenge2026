@@ -67,6 +67,7 @@ stream_0/stream = ExtResource("10_01jh0")
 stream_1/stream = ExtResource("11_id0ld")
 
 [node name="Audio" type="Node" unique_id=664248620]
+process_mode = 3
 script = ExtResource("1_l04ps")
 menu_tracks = SubResource("AudioStreamRandomizer_mj7l2")
 gameplay_phase_0_tracks = ExtResource("3_qfbpw")

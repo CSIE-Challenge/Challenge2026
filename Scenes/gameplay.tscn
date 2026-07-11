@@ -20,6 +20,7 @@
 [ext_resource type="Script" uid="uid://d2y578q176xkm" path="res://Scripts/high_stage.gd" id="13_kj63f"]
 [ext_resource type="PackedScene" uid="uid://qp6jqbo10xw6" path="res://Scenes/coconut_bar/congratulation.tscn" id="12_kj63f"]
 [ext_resource type="PackedScene" uid="uid://cfqo7i5tygq4w" path="res://Scenes/energy_label.tscn" id="14_1ff3a"]
+[ext_resource type="Script" uid="uid://c368bhf05q5ee" path="res://Scripts/pregame_countdown.gd" id="14_icchp"]
 [ext_resource type="Texture2D" uid="uid://f5ertr28h6kq" path="res://Shapes/feather.svg" id="15_feather"]
 [ext_resource type="Script" uid="uid://ddqb3djaesce4" path="res://Scripts/health_icon.gd" id="16_health_icon"]
 [ext_resource type="FontFile" uid="uid://hp5u4fxb5ifw" path="res://Assets/fonts/PixeloidSans-Bold.ttf" id="16_ifha0"]
@@ -237,6 +238,9 @@ shader_parameter/scroll_speed = 15.0
 
 [sub_resource type="LabelSettings" id="LabelSettings_icchp"]
 font = ExtResource("16_ifha0")
+[sub_resource type="FontVariation" id="FontVariation_kj63f"]
+base_font = ExtResource("16_ifha0")
+variation_transform = Transform2D(1, 0.15, 0, 1, 0, 0)
 
 [sub_resource type="LabelSettings" id="LabelSettings_ifha0"]
 font = ExtResource("16_ifha0")
@@ -457,6 +461,29 @@ grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(100, 150)
 
+[node name="PregameCountdown" type="Label" parent="SubViewport" unique_id=839568335]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.0
+offset_top = -214.0
+offset_right = 34.0
+offset_bottom = -77.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.7058824, 0.09803922, 1)
+theme_override_colors/font_shadow_color = Color(1.0039686, 0.33479407, 0, 0.98039216)
+theme_override_colors/font_outline_color = Color(1, 0.7058824, 0.21568628, 1)
+theme_override_constants/shadow_offset_x = 6
+theme_override_constants/shadow_offset_y = 4
+theme_override_fonts/font = SubResource("FontVariation_kj63f")
+theme_override_font_sizes/font_size = 85
+text = "3"
+horizontal_alignment = 1
+script = ExtResource("14_icchp")
+
 [node name="HigherThanPlayer" type="SubViewport" parent="." unique_id=1579438163]
 transparent_bg = true
 size = Vector2i(480, 270)
@@ -467,12 +494,11 @@ size_2d_override_stretch = true
 position = Vector2(576, 324)
 script = ExtResource("13_kj63f")
 
-[node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "camera", "health_label", "energy_balls_label", "energy_bar_label", "coconut_bar", "opponent_energy_bar_label", "time_label", "result_screen", "pause_menu", "phase_label", "health_icon", "walls", "energy_label")]
+[node name="GameManager" type="Node2D" parent="." unique_id=1891556247 node_paths=PackedStringArray("player", "camera", "health_label", "energy_bar_label", "coconut_bar", "opponent_energy_bar_label", "time_label", "result_screen", "pause_menu", "phase_label", "health_icon", "walls", "energy_label")]
 script = ExtResource("1_kwrm5")
 player = NodePath("../SubViewport/Stage/Player")
 camera = NodePath("../GameCamera")
 health_label = NodePath("../HUD/HealthLabel")
-energy_balls_label = NodePath("../HUD/EnergyBallsLabel")
 energy_bar_label = NodePath("../HUD/EnergyBarLabel")
 coconut_bar = NodePath("../SubViewport/CoconutBar")
 opponent_energy_bar_label = NodePath("../HUD/OpponentEnergyBarLabel")

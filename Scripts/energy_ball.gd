@@ -32,7 +32,7 @@ func _ready() -> void:
 
 	_reload_from_game_data()
 	body_entered.connect(_on_body_entered)
-	_respawn_energy_ball()
+	#_respawn_energy_ball()
 
 
 func _reload_from_game_data() -> void:
