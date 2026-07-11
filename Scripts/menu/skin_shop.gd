@@ -200,6 +200,7 @@ func _on_item_action_requested(data: SkinData):
 
 
 func _on_detail_action_pressed():
+	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	if current_detail_data == null:
 		return
 	var data = current_detail_data
