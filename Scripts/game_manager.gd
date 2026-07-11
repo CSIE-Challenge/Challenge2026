@@ -34,6 +34,7 @@ var game_over := false
 var survival_started_msec := 0
 var trap_data = TrapData.new().data
 var current_phase := 0
+var elapsed_time: float = 0.0
 var _health_icon_ready := false
 var _is_paused := false
 var _is_shutting_down := false
@@ -428,7 +429,7 @@ func _connect_pause_menu() -> void:
 	pause_menu.close()
 
 
-func _on_pause_resume_requested() -> void:
+func _on_pause_resume_requested(_requested_elapsed_time: float) -> void:
 	_resume_gameplay()
 
 
@@ -454,9 +455,9 @@ func _pause_gameplay() -> void:
 		return
 
 	_is_paused = true
-	if pause_menu != null:
-		pause_menu.open()
 	get_tree().paused = true
+	if pause_menu != null:
+		pause_menu.open(elapsed_time)
 	Audio.pause_bgm()
 
 

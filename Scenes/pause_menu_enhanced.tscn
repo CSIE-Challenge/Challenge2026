@@ -1,0 +1,219 @@
+[gd_scene format=3 uid="uid://buxb1tqlk3gu4"]
+
+[ext_resource type="Theme" uid="uid://doboascpna6vx" path="res://Assets/themes/menu.tres" id="1_jxu5q"]
+[ext_resource type="Script" uid="uid://dmda1mw77k1h8" path="res://Scripts/pause_menu_enhanced.gd" id="2_jxu5q"]
+[ext_resource type="Texture2D" uid="uid://donxaay6o36v4" path="res://Shapes/tick.svg" id="3_q1nu4"]
+[ext_resource type="Script" uid="uid://cb74adv0y1hxa" path="res://Scripts/volume_slider.gd" id="3_t71ic"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jxu5q"]
+border_width_top = 10
+border_width_bottom = 10
+border_color = Color(0.6, 0.6, 0.6, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q1nu4"]
+
+[node name="PauseMenuEnhanced" type="CanvasLayer" unique_id=375776733]
+layer = 300
+script = ExtResource("2_jxu5q")
+
+[node name="Backdrop" type="ColorRect" parent="." unique_id=1746533672]
+offset_right = 1152.0
+offset_bottom = 648.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0.55)
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=926328968]
+offset_left = 256.0
+offset_top = 56.0
+offset_right = 906.0
+offset_bottom = 556.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_jxu5q")
+color = Color(0, 0, 0, 0.8)
+
+[node name="PanelContainer" type="PanelContainer" parent="ColorRect" unique_id=658835053]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -320.0
+offset_top = -225.0
+offset_right = 320.0
+offset_bottom = 225.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="ColorRect/PanelContainer" unique_id=1185287306]
+layout_mode = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/PanelContainer/MarginContainer" unique_id=1287928007]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="ActionContainer" type="VBoxContainer" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer" unique_id=346093945]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/ActionContainer" unique_id=389691001]
+layout_mode = 2
+theme_override_font_sizes/font_size = 44
+text = "Paused"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/ActionContainer" unique_id=2146960234]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="PhaseLabel" type="Label" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/ActionContainer/HBoxContainer" unique_id=549736298]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Phase 0"
+
+[node name="TimeSlider" type="HSlider" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/ActionContainer/HBoxContainer" unique_id=1118308166]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_icons/grabber = ExtResource("3_q1nu4")
+theme_override_icons/grabber_highlight = ExtResource("3_q1nu4")
+theme_override_icons/grabber_disabled = ExtResource("3_q1nu4")
+theme_override_styles/slider = SubResource("StyleBoxFlat_jxu5q")
+max_value = 300.0
+step = 0.01
+value = 100.0
+
+[node name="TimeLabel" type="Label" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/ActionContainer/HBoxContainer" unique_id=593574924]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "0:00"
+horizontal_alignment = 2
+
+[node name="HSeparator2" type="HSeparator" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/ActionContainer" unique_id=128204023]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_q1nu4")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/ActionContainer" unique_id=1704011090]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="ResumeButton" type="Button" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/ActionContainer/HBoxContainer2" unique_id=1672766635]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_font_sizes/font_size = 28
+text = "Continue"
+
+[node name="RestartButton" type="Button" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/ActionContainer/HBoxContainer2" unique_id=1754318696]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_font_sizes/font_size = 28
+text = "Restart"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/ActionContainer" unique_id=2132207873]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="MainMenuButton" type="Button" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/ActionContainer/HBoxContainer3" unique_id=1613495078]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_font_sizes/font_size = 28
+text = "Home"
+
+[node name="ExitButton" type="Button" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/ActionContainer/HBoxContainer3" unique_id=857557833]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_font_sizes/font_size = 28
+text = "Exit"
+
+[node name="Control" type="Control" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer" unique_id=2048236001]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer" unique_id=1569204983]
+layout_mode = 2
+
+[node name="Control2" type="Control" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer" unique_id=473936135]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="VolumeContainer" type="VBoxContainer" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer" unique_id=1079509747]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/VolumeContainer" unique_id=1168083539]
+layout_mode = 2
+theme_override_font_sizes/font_size = 44
+text = "Volume Settings"
+horizontal_alignment = 1
+
+[node name="MusicContainer" type="HBoxContainer" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/VolumeContainer" unique_id=792126965]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="MusicLabel" type="Label" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/VolumeContainer/MusicContainer" unique_id=1016900071]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Music"
+
+[node name="MusicSlider" type="HSlider" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/VolumeContainer/MusicContainer" unique_id=356254427]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.001
+script = ExtResource("3_t71ic")
+bus_name = "Music"
+
+[node name="ValueLabel" type="Label" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/VolumeContainer/MusicContainer" unique_id=1405787552]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "100"
+horizontal_alignment = 2
+
+[node name="SFXContainer" type="HBoxContainer" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/VolumeContainer" unique_id=1787582114]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="SFXLabel" type="Label" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/VolumeContainer/SFXContainer" unique_id=198577739]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "SFX"
+
+[node name="SFXSlider" type="HSlider" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/VolumeContainer/SFXContainer" unique_id=875384166]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.001
+script = ExtResource("3_t71ic")
+bus_name = "SFX"
+
+[node name="ValueLabel" type="Label" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/VolumeContainer/SFXContainer" unique_id=961669272]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "100"
+horizontal_alignment = 2
+
+[node name="Spacer" type="Control" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/VolumeContainer" unique_id=1773114292]
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+
+[connection signal="value_changed" from="ColorRect/PanelContainer/MarginContainer/VBoxContainer/ActionContainer/HBoxContainer/TimeSlider" to="." method="_on_time_slider_value_changed"]
+[connection signal="drag_ended" from="ColorRect/PanelContainer/MarginContainer/VBoxContainer/VolumeContainer/SFXContainer/SFXSlider" to="." method="_on_sfx_slider_drag_ended"]

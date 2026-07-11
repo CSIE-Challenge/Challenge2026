@@ -24,7 +24,7 @@
 [ext_resource type="Texture2D" uid="uid://f5ertr28h6kq" path="res://Shapes/feather.svg" id="15_feather"]
 [ext_resource type="Script" uid="uid://ddqb3djaesce4" path="res://Scripts/health_icon.gd" id="16_health_icon"]
 [ext_resource type="FontFile" uid="uid://hp5u4fxb5ifw" path="res://Assets/fonts/PixeloidSans-Bold.ttf" id="16_ifha0"]
-[ext_resource type="PackedScene" path="res://Scenes/pause_menu.tscn" id="17_pause_menu"]
+[ext_resource type="PackedScene" uid="uid://buxb1tqlk3gu4" path="res://Scenes/pause_menu_enhanced.tscn" id="21_8ipd1"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jb71e"]
 texture = ExtResource("8_rg35f")
@@ -661,8 +661,7 @@ label_settings = SubResource("LabelSettings_1ff3a")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PauseMenu" parent="HUD" unique_id=444701185 instance=ExtResource("17_pause_menu")]
-layer = 300
+[node name="PauseMenu" parent="HUD" unique_id=926328968 instance=ExtResource("21_8ipd1")]
 visible = false
 
 [node name="TrapRequestScheduler" type="Node" parent="." unique_id=578271909]
