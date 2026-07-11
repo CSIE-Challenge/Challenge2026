@@ -42,7 +42,7 @@ class Cmd:
     GET_OPPONENT_COMBO = "get_opponent_combo"
     GET_PHASE = "get_phase"
     GET_AVAILABLE_TRAPS = "get_available_traps"
-    GET_COOL_DOWN_TIME = "get_cool_down_time"
+    GET_COOLDOWN_TIME = "get_cooldown_time"
 
 
 class Status:

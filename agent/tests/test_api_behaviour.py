@@ -85,14 +85,14 @@ def test_get_opponent_combo_and_available_traps(client: GameClientBase) -> None:
         assert 1 <= trap_id <= 10
 
 
-def test_get_cool_down_time(client: GameClientBase) -> None:
-    result = client.get_cool_down_time(1)
+def test_get_cooldown_time(client: GameClientBase) -> None:
+    result = client.get_cooldown_time(1)
     assert isinstance(result, (int, float))
     assert result >= 0.0
 
 
-def test_get_cool_down_time_unknown_trap_is_apierror(client: GameClientBase) -> None:
-    result = client.get_cool_down_time(99)
+def test_get_cooldown_time_unknown_trap_is_apierror(client: GameClientBase) -> None:
+    result = client.get_cooldown_time(99)
     assert isinstance(result, ApiError)
     assert not result
     assert result.code == 404

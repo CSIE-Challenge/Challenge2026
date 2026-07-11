@@ -152,7 +152,7 @@ func get_available_traps() -> Array:
 	return available_traps
 
 
-func get_cool_down_time(trap_id: String) -> float:
+func get_cooldown_time(trap_id: String) -> float:
 	if not _is_known_trap(trap_id):
 		return -1.0
 

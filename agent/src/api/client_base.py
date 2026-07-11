@@ -355,7 +355,7 @@ class GameClientBase:
         """
         return self._call(protocol.Cmd.GET_AVAILABLE_TRAPS)
 
-    def get_cool_down_time(self, trap_id: int) -> float:
+    def get_cooldown_time(self, trap_id: int) -> float:
         """
         # Get Cooldown Time
         查詢指定陷阱剩餘冷卻秒數。
@@ -368,12 +368,12 @@ class GameClientBase:
 
         ## Example
         ```python
-        cd = client.get_cool_down_time(1)
+        cd = client.get_cooldown_time(1)
         if cd == 0.0:
             client.spawn_trap1(Vector2(120, 80))
         ```
         """
-        return self._call(protocol.Cmd.GET_COOL_DOWN_TIME, {"trap_id": trap_id})
+        return self._call(protocol.Cmd.GET_COOLDOWN_TIME, {"trap_id": trap_id})
 
     def heal(self) -> dict[str, Any]:
         """

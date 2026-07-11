@@ -128,7 +128,7 @@ func _register_commands() -> void:
 	register_command("get_opponent_combo", _cmd_get_opponent_combo)
 	register_command("get_phase", _cmd_get_phase)
 	register_command("get_available_traps", _cmd_get_available_traps)
-	register_command("get_cool_down_time", _cmd_get_cool_down_time)
+	register_command("get_cooldown_time", _cmd_get_cooldown_time)
 
 
 func register_command(cmd_name: String, handler: Callable) -> void:
@@ -358,14 +358,14 @@ func _cmd_get_available_traps(_args: Dictionary) -> Dictionary:
 	return ApiServer.ok(numbers)
 
 
-func _cmd_get_cool_down_time(args: Dictionary) -> Dictionary:
+func _cmd_get_cooldown_time(args: Dictionary) -> Dictionary:
 	var req := _read_required_int(args, "trap_id")
 	if not req["ok"]:
 		return ApiServer.err(400, req["reason"])
 	if not TRAP_IDS.has(req["value"]):
 		return ApiServer.err(404, "unknown_trap")
 	var action_service: AgentActionService = game.get_agent_action_service()
-	var cooldown: float = action_service.get_cool_down_time(TRAP_IDS[req["value"]])
+	var cooldown: float = action_service.get_cooldown_time(TRAP_IDS[req["value"]])
 	return ApiServer.ok(cooldown)
 
 
