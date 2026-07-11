@@ -11,8 +11,3 @@ true_name = "冠軍王者"
 description = "這讓我想起了一位黃紫配色的故人。喔不是，他是藍紫色的。"
 preview_texture = ExtResource("1_q3mce")
 skin_prefab = ExtResource("2_prefab")
-
-description = "這讓我想起了一位黃紫配色的故人。喔不是，他是藍紫色的。"
-
-is_achievement_unlock = false
-achievement_desc = ""
