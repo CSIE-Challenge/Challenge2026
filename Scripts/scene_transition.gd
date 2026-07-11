@@ -181,6 +181,7 @@ func transition_to(target_scene: String) -> void:
 func transition_to_wave(target_scene: String) -> void:
 	preload_scene_async(target_scene)
 	Audio.stop_all_sfx()
+	Audio.set_bgm(-1 as Audio.BGM)
 	get_tree().paused = true
 	var root = Control.new()
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)

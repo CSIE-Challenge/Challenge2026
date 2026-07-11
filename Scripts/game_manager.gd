@@ -475,6 +475,7 @@ func _close_pause_overlay_for_finish() -> void:
 
 
 func _shutdown_gameplay_for_scene_change() -> void:
+	Audio.set_bgm(-1 as Audio.BGM)
 	if _is_shutting_down:
 		return
 	_is_shutting_down = true
