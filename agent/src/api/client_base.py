@@ -403,11 +403,11 @@ class GameClientBase:
 
     def spawn_trap1(self, position: Vector2) -> bool:
         """
-        # Spawn Trap 1（踩踏地雷）
-        在指定位置放置一個「踩踏地雷」。
+        # Spawn Trap 1（請勿重壓）
+        在指定位置放置一個香蕉皮地雷。
 
         ## Parameters
-        - `position` (Vector2): 放置「踩踏地雷」的位置。
+        - `position` (Vector2): 放置「請勿重壓」的位置。
 
         ## Returns
         成功回傳 ``True``；失敗回傳 `ApiError`，
@@ -474,8 +474,8 @@ class GameClientBase:
         在 `position` 放置一片「大海嘯」，把踩上去的玩家往 `direction` 推。
 
         ## Parameters
-        - `position` (Vector2): 「大海嘯」的位置。
-        - `direction` (Direction):推動方向，可傳 `Direction.UP/DOWN/LEFT/RIGHT`。
+        - `position` (Vector2): 「大海嘯」的位置（中心點）。
+        - `direction` (Direction): 推動方向，可傳 `Direction.UP/DOWN/LEFT/RIGHT`。
 
         ## Returns
         成功回傳 ``True``；失敗回傳 `ApiError`（同 `spawn_trap1`）。
@@ -493,7 +493,7 @@ class GameClientBase:
     def spawn_trap5(self, position: Vector2) -> bool:
         """
         # Spawn Trap 5（小心地滑）
-        在 `position` 放置一塊溼滑的地面。
+        在 `position` 放置一塊溼滑的地面（中心點）。
 
         ## Parameters
         - `position` (Vector2): 「小心地滑」的位置。
@@ -511,10 +511,10 @@ class GameClientBase:
     def spawn_trap6(self, direction: Direction, speed: float) -> bool:
         """
         # Spawn Trap 6（熱情的迎賓舞）
-        產生一支「熱情的迎賓舞」，沿 `direction` 以 `speed` 掃過場地。
+        產生一列跳著迎賓舞的島民，沿 `direction` 以 `speed` 掃過場地。
 
         ## Parameters
-        - `direction` (Direction):掃描方向，可傳 `Direction.UP/DOWN/LEFT/RIGHT`。
+        - `direction` (Direction): 掃描方向，可傳 `Direction.UP/DOWN/LEFT/RIGHT`。
         - `speed` (float): 掃描線的移動速度。
 
         ## Returns
@@ -555,7 +555,7 @@ class GameClientBase:
     def spawn_trap8(self, start_position: Vector2, end_position: Vector2) -> bool:
         """
         # Spawn Trap 8（這是一條溝吧）
-        在 `start_position` 與 `end_position` 之間產生一道「這是一條溝吧」。
+        在 `start_position` 與 `end_position` 之間產生一道裂縫。
 
         ## Parameters
         - `start_position` (Vector2): 「這是一條溝吧」的起點。
@@ -579,12 +579,12 @@ class GameClientBase:
     ) -> bool:
         """
         # Spawn Trap 9（瓜瓜墜地）
-        從 `start_position` 發射迫擊砲彈，經過 `air_time` 秒後落在 `end_position`。
+        從 `start_position` 發射西瓜迫擊砲，經過 `air_time` 秒後落在 `end_position`。
 
         ## Parameters
-        - `start_position` (Vector2): 「瓜瓜墜地」的發射點。
-        - `end_position` (Vector2): 「瓜瓜」的落點。
-        - `air_time` (float): 「瓜瓜」的滯空秒數。
+        - `start_position` (Vector2): 西瓜的發射點。
+        - `end_position` (Vector2): 西瓜的落點。
+        - `air_time` (float): 西瓜的滯空秒數。
 
         ## Returns
         成功回傳 ``True``；失敗回傳 `ApiError`（同 `spawn_trap1`）。
