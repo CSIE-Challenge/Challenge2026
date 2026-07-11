@@ -62,6 +62,28 @@ func _ready() -> void:
 		mat.shader = shader
 		boss_sprite.material = mat
 
+	# 貼上玩家在 about 面板選擇的頭像作為 boss 的臉
+	if (
+		PlayerData.last_selected_avatar != ""
+		and ResourceLoader.exists(PlayerData.last_selected_avatar)
+	):
+		var tex = load(PlayerData.last_selected_avatar)
+		if tex:
+			var avatar_sprite = Sprite2D.new()
+			avatar_sprite.name = "AvatarFace"
+			avatar_sprite.texture = tex
+			avatar_sprite.position = Vector2(0, -110)
+
+			# head1.png 較小，在 about.tscn 中的 scale 為 1.7，而 head2 和 head3 為 1.0。
+			# 配合 about 的比例，若為 head1 則將比例乘上 1.7
+			var base_scale = 0.7
+			if PlayerData.last_selected_avatar.contains("head1.png"):
+				base_scale *= 1.7
+
+			avatar_sprite.scale = Vector2(base_scale, base_scale)
+			avatar_sprite.use_parent_material = true
+			boss_sprite.add_child(avatar_sprite)
+
 
 func _process(delta: float) -> void:
 	if not is_dead and not invincible:

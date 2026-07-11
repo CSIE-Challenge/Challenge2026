@@ -158,21 +158,31 @@ Challenge 2025 開發團隊
 [/center]"
 meta_underlined = false
 
-[node name="Close" type="Button" parent="Panel" unique_id=1956544565]
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel" unique_id=1242256173]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -44.0
-offset_top = -46.0
-offset_right = 44.0
-offset_bottom = -15.0
+offset_left = -164.0
+offset_top = -49.0
+offset_right = 164.0
+offset_bottom = -13.0
 grow_horizontal = 2
 grow_vertical = 0
+alignment = 1
+
+[node name="Close" type="Button" parent="Panel/HBoxContainer" unique_id=1956544565]
+layout_mode = 2
 theme_override_fonts/font = ExtResource("2_ohg52")
 text = "Back to Main"
+
+[node name="Scerct Stage" type="Button" parent="Panel/HBoxContainer" unique_id=2032550924]
+visible = false
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_ohg52")
+text = "Scerct Stage"
 
 [node name="CollectedLetter" type="RichTextLabel" parent="." unique_id=1442200721]
 layout_mode = 0
@@ -245,7 +255,8 @@ scale = Vector2(23.335, 23.335)
 shape = SubResource("CircleShape2D_mi8yn")
 
 [connection signal="meta_clicked" from="Panel/RichTextLabel" to="." method="_on_rich_text_label_meta_clicked"]
-[connection signal="pressed" from="Panel/Close" to="." method="_on_close_pressed"]
+[connection signal="pressed" from="Panel/HBoxContainer/Close" to="." method="_on_close_pressed"]
+[connection signal="pressed" from="Panel/HBoxContainer/Scerct Stage" to="." method="_on_secret_stage_pressed"]
 [connection signal="pressed" from="Debug" to="." method="_on_all_collected"]
 [connection signal="input_event" from="Head1/Area2D" to="." method="_on_sprite_input"]
 [connection signal="input_event" from="Head2/Area2D" to="." method="_on_sprite_input"]

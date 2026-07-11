@@ -1,6 +1,7 @@
 extends Control
 
 const HEAD_ROTATING_SPEED = 360
+const HiddenGameController = preload("res://Scripts/menu/hidden_game_controller.gd")
 
 var is_letter_collected = {
 	"0_C": false,
@@ -28,6 +29,9 @@ func _ready() -> void:
 	flying_letter.visible = false
 
 	richtextlabel.text = richtextlabel.text.replace("x.y.z", Global.game_version)
+
+	if PlayerData.has_entered_hidden_game:
+		$"Panel/HBoxContainer/Scerct Stage".visible = true
 
 
 func _process(delta: float) -> void:
@@ -65,7 +69,11 @@ func _on_sprite_input(viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 	head_click_cnt += 1
 	if head_click_cnt >= 5:
 		print("Hidden game unlocked.")
-		const HiddenGameController = preload("res://Scripts/menu/hidden_game_controller.gd")
+		PlayerData.has_entered_hidden_game = true
+		if head and head.texture:
+			PlayerData.last_selected_avatar = head.texture.resource_path
+		PlayerData.save_data()
+
 		HiddenGameController.reset_dialogue_state()
 		SceneTransition.transition_to("res://Scenes/menu/hidden_game.tscn")
 
@@ -144,3 +152,9 @@ func _update_collected_label() -> void:
 		else:
 			bbcodes[idx] = "[color=transparent]" + char + "[/color]"
 	collected_label.text = "".join(bbcodes)
+
+
+func _on_secret_stage_pressed() -> void:
+	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
+	HiddenGameController.reset_dialogue_state()
+	SceneTransition.transition_to("res://Scenes/menu/hidden_game.tscn")

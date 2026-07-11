@@ -30,6 +30,10 @@ static func reset_dialogue_state() -> void:
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	if not PlayerData.has_entered_hidden_game:
+		PlayerData.has_entered_hidden_game = true
+		PlayerData.save_data()
+
 	if PlayerData.equipped_skin == "undertale_skin":
 		Audio.set_bgm(Audio.BGM.HIDDEN_GAME_UNDERTALE)
 	else:
