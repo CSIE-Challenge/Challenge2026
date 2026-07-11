@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://utskinprefab"]
 
 [ext_resource type="Script" path="res://Scripts/skins/undertale_skin_prefab.gd" id="1_ut"]
-[ext_resource type="Texture2D" uid="uid://heart" path="res://Shapes/heart.png" id="2_heart"]
-[ext_resource type="Texture2D" uid="uid://crack" path="res://Shapes/crack.png" id="3_crack"]
+[ext_resource type="Texture2D" path="res://Shapes/heart.png" id="2_heart"]
+[ext_resource type="Texture2D" path="res://Shapes/crack.png" id="3_crack"]
 
 [node name="UndertaleSkinPrefab" type="Node2D"]
 script = ExtResource("1_ut")
