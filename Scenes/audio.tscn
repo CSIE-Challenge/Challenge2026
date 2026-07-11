@@ -29,6 +29,15 @@
 [ext_resource type="AudioStream" uid="uid://hhkgup5y7sfg" path="res://Assets/audio/SFX/electric_shock.mp3" id="22_0w0wh"]
 [ext_resource type="AudioStream" uid="uid://d2glsqhefcr0m" path="res://Assets/audio/SFX/juice_splash_2c.mp3" id="24_hfiiv"]
 [ext_resource type="AudioStream" uid="uid://dlaraob8lhjvk" path="res://Assets/audio/SFX/six_seven.mp3" id="26_oboth"]
+[ext_resource type="AudioStream" uid="uid://mi12das237oh" path="res://Assets/audio/SFX/get_coconut_2.mp3" id="6_fkw8n"]
+[ext_resource type="AudioStream" uid="uid://c67kpqx4keuyf" path="res://Assets/audio/SFX/set_trap.mp3" id="8_tyt1w"]
+[ext_resource type="AudioStream" uid="uid://oa1tcs2ewa07" path="res://Assets/audio/SFX/trap_1_remove_bananapeel.mp3" id="11_7stf1"]
+[ext_resource type="AudioStream" uid="uid://bslkb3wtlsp7s" path="res://Assets/audio/hidden_game/hidden_game_attack.mp3" id="18_mjojf"]
+[ext_resource type="AudioStream" uid="uid://cdtbqd6mcqhn3" path="res://Assets/audio/hidden_game/hidden_game_complete.mp3" id="19_0w0wh"]
+[ext_resource type="AudioStream" uid="uid://f87tomb66xja" path="res://Assets/audio/hidden_game/hidden_game_lazer_ready.mp3" id="20_bm6li"]
+[ext_resource type="AudioStream" uid="uid://b1pbbpehkh76w" path="res://Assets/audio/hidden_game/hidden_game_lazer_emit.mp3" id="21_hfiiv"]
+[ext_resource type="AudioStream" uid="uid://bakhld8ddwwhy" path="res://Assets/audio/hidden_game/hidden_game_typewriter 2.mp3" id="22_oboth"]
+[ext_resource type="AudioStream" uid="uid://x2gucqiypn8b" path="res://Assets/audio/hidden_game/hidden_game_typewriter.mp3" id="23_llcnc"]
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_mj7l2"]
 streams_count = 4
@@ -57,7 +66,7 @@ energy_collected_sfx = ExtResource("12_tf0nv")
 gameplay_phase_change_sfx = ExtResource("6_e0u3b")
 take_damage_sfx = ExtResource("7_e0u3b")
 player_die_sfx = ExtResource("15_aan0r")
-set_trap_sfx = null
+set_trap_sfx = ExtResource("8_tyt1w")
 scene_transition_wave_sfx = ExtResource("15_o1fue")
 trap1_mine_explode_sfx = ExtResource("10_38mwv")
 trap1_mine_disarm_sfx = ExtResource("17_n35fw")
@@ -66,6 +75,13 @@ trap3_seagull_hit_sfx = ExtResource("18_o1fue")
 trap5_juice_splash_sfx = ExtResource("24_hfiiv")
 trap9_watermelon_fall_sfx = ExtResource("19_o1fue")
 six_seven_sfx = ExtResource("26_oboth")
+trap3_bullet_hit_wall_sfx = ExtResource("11_7stf1")
+hidden_game_attack_sfx = ExtResource("18_mjojf")
+hidden_game_complete_sfx = ExtResource("19_0w0wh")
+hidden_game_laser_ready_sfx = ExtResource("20_bm6li")
+hidden_game_laser_emit_sfx = ExtResource("21_hfiiv")
+hidden_game_typewriter_sfx = ExtResource("22_oboth")
+hidden_game_typewriter_2_sfx = ExtResource("23_llcnc")
 
 [node name="BgmPlayer1" type="AudioStreamPlayer" parent="." unique_id=249781410]
 bus = &"Music"

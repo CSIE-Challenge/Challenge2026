@@ -18,6 +18,7 @@ var selected_choice_index: int = 0
 var choices_fully_appeared: bool = false
 var choice_labels: Array[RichTextLabel] = []
 var is_disabled: bool = false
+var typewriter_audio_player: AudioStreamPlayer = null
 
 @onready var dialogue_box = $Control/DialogueBox
 @onready var rich_text_label = $Control/DialogueBox/MarginContainer/RichTextLabel
@@ -37,6 +38,7 @@ func _input(event):
 		elif current_state == State.WAITING_INPUT:
 			current_state = State.TYPING
 			typewriter_timer.start()
+			_start_typewriter_sound()
 		elif current_state == State.WAITING_CHOICE:
 			if choices_fully_appeared:
 				_confirm_choice()
@@ -90,12 +92,14 @@ func _show_next_dialogue():
 
 	if current_state == State.TYPING:
 		typewriter_timer.start()
+		_start_typewriter_sound()
 
 
 func interrupt_dialogue():
 	dialogue_queue.clear()
 	current_choices.clear()
 	typewriter_timer.stop()
+	_stop_typewriter_sound()
 	if wait_timer and wait_timer.timeout.is_connected(_on_wait_finished):
 		wait_timer.timeout.disconnect(_on_wait_finished)
 	current_state = State.IDLE
@@ -149,6 +153,7 @@ func _on_typewriter_timeout():
 
 func _finish_typing():
 	typewriter_timer.stop()
+	_stop_typewriter_sound()
 	if dialogue_queue.is_empty() and current_choices.size() > 0:
 		_show_choices()
 	else:
@@ -167,6 +172,7 @@ func _process_commands(vis_chars: int):
 		elif cmd == "input":
 			current_state = State.WAITING_INPUT
 			typewriter_timer.stop()
+			_stop_typewriter_sound()
 		elif cmd.begins_with("speed="):
 			var speed = cmd.trim_prefix("speed=").to_float()
 			typewriter_timer.wait_time = speed
@@ -183,6 +189,7 @@ func _process_commands(vis_chars: int):
 func _start_wait(time: float):
 	current_state = State.WAITING_TIME
 	typewriter_timer.stop()
+	_stop_typewriter_sound()
 	wait_timer = get_tree().create_timer(time)
 	wait_timer.timeout.connect(_on_wait_finished)
 
@@ -191,6 +198,7 @@ func _on_wait_finished():
 	if current_state == State.WAITING_TIME:
 		current_state = State.TYPING
 		typewriter_timer.start()
+		_start_typewriter_sound()
 
 
 func _skip_typing():
@@ -310,3 +318,18 @@ func _confirm_choice():
 			_set_glitch(0.0)
 			choice_selected.emit(selected_choice_index)
 	)
+
+
+func _start_typewriter_sound():
+	if typewriter_audio_player and typewriter_audio_player.playing:
+		return
+	if randf() > 0.5:
+		typewriter_audio_player = Audio.play_sfx(Audio.SFX.HIDDEN_GAME_TYPEWRITER)
+	else:
+		typewriter_audio_player = Audio.play_sfx(Audio.SFX.HIDDEN_GAME_TYPEWRITER_2)
+
+
+func _stop_typewriter_sound():
+	if typewriter_audio_player and typewriter_audio_player.playing:
+		typewriter_audio_player.stop()
+	typewriter_audio_player = null

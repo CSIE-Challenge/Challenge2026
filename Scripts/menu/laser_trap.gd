@@ -60,6 +60,7 @@ func _ready() -> void:
 
 
 func _run_laser_sequence() -> void:
+	Audio.play_sfx(Audio.SFX.HIDDEN_GAME_LASER_READY)
 	# 初始為預警狀態：細線、半透明
 	laser_line.width = 1.5
 	laser_line.modulate = warning_color
@@ -78,6 +79,7 @@ func _run_laser_sequence() -> void:
 	# 【階段二：能量爆發】 (接續在預警後)
 	tween.tween_callback(
 		func():
+			Audio.play_sfx(Audio.SFX.HIDDEN_GAME_LASER_EMIT)
 			warning_tween.kill()  # 停止抖動
 
 			# A. 開啟物理傷害判定

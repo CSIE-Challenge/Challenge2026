@@ -1055,6 +1055,7 @@ func spawn_straight_arrow(pos: Vector2, dir: Vector2, speed: float, wait: float)
 
 # 測試用的環形飛劍攻擊招式
 func test_sword_attack(difficulty: int = 3) -> void:
+	Audio.play_sfx(Audio.SFX.HIDDEN_GAME_ATTACK)
 	is_attacking = true
 
 	# 同時在環形發射 8 把飛劍，生成在半徑 300 處，等待 1.0 秒後以速度 550 射向對角

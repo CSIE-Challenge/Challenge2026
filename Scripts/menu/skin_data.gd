@@ -4,10 +4,10 @@ class_name SkinData extends Resource  # 繼承自 Resource 是關鍵！
 # -- 基本資訊 --
 @export var skin_id: String = "skin_001"  # 程式內部辨識用的唯一ID
 @export var true_name: String = "預設皮膚"  # 皮膚的真實名稱
+@export var description: String = "這是一個很酷的皮膚！"  # 皮膚的介紹文字
 @export var hide_name: bool = false  # 如果玩家未擁有，是否要將名稱顯示為亂碼？
 
 # -- 獲取條件 --
-@export var price: int = 100  # 如果大於 0，代表可以用金幣購買
 @export var is_achievement_unlock: bool = false  # 是否為特殊成就解鎖（非金錢）
 @export var achievement_desc: String = ""  # 例如："通關困難模式解鎖"
 

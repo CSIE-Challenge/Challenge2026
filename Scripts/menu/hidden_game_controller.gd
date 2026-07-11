@@ -394,6 +394,7 @@ func _run_phase_5_final() -> bool:
 		await get_tree().create_timer(3.5).timeout
 
 		# 顯示 Complete!
+		Audio.play_sfx(Audio.SFX.HIDDEN_GAME_COMPLETE)
 		var complete_screen = $CanvasLayer/CompleteScreen
 		complete_screen.show()
 		var cr = complete_screen.get_node("ColorRect")
