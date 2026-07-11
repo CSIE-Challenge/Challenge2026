@@ -30,17 +30,24 @@
 [ext_resource type="AudioStream" uid="uid://d2glsqhefcr0m" path="res://Assets/audio/SFX/juice_splash_2c.mp3" id="24_hfiiv"]
 [ext_resource type="AudioStream" uid="uid://dlaraob8lhjvk" path="res://Assets/audio/SFX/six_seven.mp3" id="26_oboth"]
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_mj7l2"]
+streams_count = 4
+stream_0/stream = ExtResource("5_mjojf")
+stream_1/stream = ExtResource("3_k6wgq")
+stream_2/stream = ExtResource("4_q2wiq")
+stream_3/stream = ExtResource("2_aan0r")
+
 [node name="Audio" type="Node" unique_id=664248620]
 script = ExtResource("1_l04ps")
-menu_tracks = Array[AudioStream]([ExtResource("2_aan0r"), ExtResource("3_k6wgq"), ExtResource("4_q2wiq"), ExtResource("5_mjojf")])
-gameplay_phase_0_tracks = Array[AudioStream]([ExtResource("3_qfbpw")])
-gameplay_phase_1_tracks = Array[AudioStream]([ExtResource("4_r8i6a")])
-gameplay_phase_2_tracks = Array[AudioStream]([ExtResource("5_tf0nv")])
-gameplay_phase_3_tracks = Array[AudioStream]([ExtResource("6_n35fw")])
-gameplay_phase_4_tracks = Array[AudioStream]([ExtResource("7_o1fue")])
-gameplay_phase_5_tracks = Array[AudioStream]([ExtResource("8_tf0nv")])
-result_screen_tracks = Array[AudioStream]([ExtResource("8_r8i6a")])
-hidden_game_tracks = Array[AudioStream]([])
+menu_tracks = SubResource("AudioStreamRandomizer_mj7l2")
+gameplay_phase_0_tracks = ExtResource("3_qfbpw")
+gameplay_phase_1_tracks = ExtResource("4_r8i6a")
+gameplay_phase_2_tracks = ExtResource("5_tf0nv")
+gameplay_phase_3_tracks = ExtResource("6_n35fw")
+gameplay_phase_4_tracks = ExtResource("7_o1fue")
+gameplay_phase_5_tracks = ExtResource("8_tf0nv")
+result_screen_tracks = ExtResource("8_r8i6a")
+hidden_game_tracks = null
 jump_sfx = ExtResource("2_c8j57")
 land_sand_sfx = ExtResource("11_mjojf")
 land_juice_sfx = ExtResource("12_0w0wh")
