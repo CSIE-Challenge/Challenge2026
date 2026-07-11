@@ -84,10 +84,11 @@ func _ready() -> void:
 		add_child(player)
 		_sfx_players.append(player)
 
+	bgm_player.finished.connect(func(): bgm_player.play())
+	bgm_player2.finished.connect(func(): bgm_player2.play())
+
 	_current_player = bgm_player
 	_next_player = bgm_player2
-	_current_player.finished.connect(func(): _current_player.play())
-	_next_player.finished.connect(func(): _next_player.play())
 
 
 func set_bgm(bgm: BGM) -> void:
