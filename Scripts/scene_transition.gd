@@ -124,7 +124,6 @@ func _ach_on_animation_finished():
 
 func transition_to_fade(target_scene: String) -> void:
 	preload_scene_async(target_scene)
-	Audio.stop_all_sfx()
 	get_tree().paused = true
 	fade_rect.color.a = 0.0
 	var tween = create_tween()
@@ -142,7 +141,6 @@ func transition_to_fade(target_scene: String) -> void:
 
 func transition_to(target_scene: String) -> void:
 	preload_scene_async(target_scene)
-	Audio.stop_all_sfx()
 	get_tree().paused = true
 	top_bar.anchor_bottom = 0.0
 	bottom_bar.anchor_top = 1.0
@@ -180,7 +178,6 @@ func transition_to(target_scene: String) -> void:
 
 func transition_to_wave(target_scene: String) -> void:
 	preload_scene_async(target_scene)
-	Audio.stop_all_sfx()
 	Audio.set_bgm(-1 as Audio.BGM)
 	get_tree().paused = true
 	var root = Control.new()
@@ -300,7 +297,6 @@ func transition_to_wave(target_scene: String) -> void:
 
 func transition_to_distortion(target_scene: String) -> void:
 	preload_scene_async(target_scene)
-	Audio.stop_all_sfx()
 	Audio.play_sfx(Audio.SFX.SCENE_TRANSITION)
 	get_tree().paused = true
 	shader_rect.show()
