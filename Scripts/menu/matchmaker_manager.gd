@@ -69,7 +69,7 @@ func _ready() -> void:
 		join_room_button.disabled = false
 
 	_poll_timer = Timer.new()
-	_poll_timer.wait_time = 1.0
+	_poll_timer.wait_time = 1.0 / 15.0
 	_poll_timer.one_shot = false
 	_poll_timer.timeout.connect(_on_poll_tick)
 	add_child(_poll_timer)
