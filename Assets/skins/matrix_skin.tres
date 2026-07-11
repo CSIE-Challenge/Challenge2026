@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://c0w40u12dluti"]
+
+[ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_skindata"]
+[ext_resource type="PackedScene" uid="uid://matrixskin" path="res://Scenes/skins/matrix_skin_prefab.tscn" id="2_matrix"]
+
+[resource]
+script = ExtResource("1_skindata")
+skin_id = "matrix_skin"
+true_name = "駭客碼流"
+skin_prefab = ExtResource("2_matrix")
+is_silhouette = false
+description = "紫色的本體，拖曳著綠色程式碼的拖尾。"
+is_achievement_unlock = false
+achievement_desc = ""
+metadata/_custom_type_script = "uid://c6vuqckcyjdey"

@@ -36,6 +36,7 @@ scale = Vector2(0.2, 0.2)
 texture = ExtResource("2_circle")
 
 [node name="CPUParticles2D" type="CPUParticles2D" parent="." unique_id=116743951]
+local_coords = false
 emitting = false
 amount = 20
 texture = ExtResource("2_circle")
@@ -49,6 +50,7 @@ scale_amount_curve = SubResource("Curve_meteor_particles")
 color_ramp = SubResource("Gradient_particles")
 
 [node name="DeathParticles" type="CPUParticles2D" parent="."]
+local_coords = false
 emitting = false
 amount = 100
 texture = ExtResource("2_circle")

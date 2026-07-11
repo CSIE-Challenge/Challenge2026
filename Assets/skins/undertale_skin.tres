@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://utskintres"]
+
+[ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_skindata"]
+[ext_resource type="PackedScene" uid="uid://utskinprefab" path="res://Scenes/skins/undertale_skin_prefab.tscn" id="2_ut"]
+
+[resource]
+script = ExtResource("1_skindata")
+skin_id = "undertale_skin"
+true_name = "決心 (Determination)"
+description = "充滿決心的靈魂。即使碎裂了，也要保持決心！"
+skin_prefab = ExtResource("2_ut")
+metadata/_custom_type_script = "uid://c6vuqckcyjdey"

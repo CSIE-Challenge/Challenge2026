@@ -1,8 +1,12 @@
 extends BaseSkin
 
 @onready var sprite = $Sprite2D
+@onready var accretion_disk = $AccretionDisk
 @onready var suck_particles = $SuckParticles
 @onready var shockwave = $Shockwave
+
+func _process(delta):
+	accretion_disk.rotation += delta * 1.5
 
 
 func _ready():
@@ -89,18 +93,16 @@ func play_land():
 	tween.tween_property(sprite, "scale", Vector2(0.3, 0.1), 0.1).set_trans(Tween.TRANS_BACK)
 	tween.tween_property(sprite, "scale", Vector2(0.2, 0.2), 0.15)
 
-	shockwave.top_level = true
-	shockwave.global_position = self.global_position + Vector2(-150, -15)
-	shockwave.visible = true
-	shockwave.scale = Vector2(0.1, 1.0)
-	shockwave.modulate.a = 0.8
-
+	# Generate a new beautiful circular shockwave instead of the old ColorRect
+	var blast_ripple = Sprite2D.new()
+	blast_ripple.texture = sprite.texture
+	blast_ripple.modulate = Color(0.6, 0.1, 1.0, 1.0)
+	blast_ripple.top_level = true
+	blast_ripple.global_position = self.global_position
+	blast_ripple.scale = Vector2(0.1, 0.1)
+	add_child(blast_ripple)
+	
 	var st = create_tween()
-	(
-		st
-		. tween_property(shockwave, "scale", Vector2(1.5, 0.1), 0.2)
-		. set_trans(Tween.TRANS_EXPO)
-		. set_ease(Tween.EASE_OUT)
-	)
-	st.parallel().tween_property(shockwave, "modulate:a", 0.0, 0.2)
-	st.tween_callback(func(): shockwave.visible = false)
+	st.tween_property(blast_ripple, "scale", Vector2(1.5, 1.5), 0.3).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	st.parallel().tween_property(blast_ripple, "modulate:a", 0.0, 0.3)
+	st.tween_callback(blast_ripple.queue_free)

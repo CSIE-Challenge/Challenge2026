@@ -62,10 +62,9 @@ stream_2/stream = ExtResource("4_q2wiq")
 stream_3/stream = ExtResource("2_aan0r")
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_hg0v1"]
-streams_count = 3
+streams_count = 2
 stream_0/stream = ExtResource("10_01jh0")
 stream_1/stream = ExtResource("11_id0ld")
-stream_2/stream = ExtResource("12_yu0qa")
 
 [node name="Audio" type="Node" unique_id=664248620]
 script = ExtResource("1_l04ps")
@@ -78,6 +77,7 @@ gameplay_phase_4_tracks = ExtResource("7_o1fue")
 gameplay_phase_5_tracks = ExtResource("8_tf0nv")
 result_screen_tracks = ExtResource("8_r8i6a")
 hidden_game_tracks = SubResource("AudioStreamRandomizer_hg0v1")
+hidden_game_undertale_tracks = ExtResource("12_yu0qa")
 jump_sfx = ExtResource("2_c8j57")
 land_sand_sfx = ExtResource("11_mjojf")
 land_juice_sfx = ExtResource("12_0w0wh")

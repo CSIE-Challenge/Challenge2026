@@ -12,6 +12,11 @@ shader_parameter/rotation_speed = 5.0
 [node name="SingularitySkinPrefab" type="Node2D" unique_id=1831137622]
 script = ExtResource("1_sing")
 
+[node name="AccretionDisk" type="Sprite2D" parent="."]
+modulate = Color(0.8, 0.4, 1, 0.4)
+scale = Vector2(0.5, 0.15)
+texture = ExtResource("3_circle")
+
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1530450222]
 material = SubResource("ShaderMaterial_bh")
 scale = Vector2(0.2, 0.2)
@@ -27,12 +32,12 @@ color = Color(0.6, 0.1, 1, 0.8)
 
 [node name="SuckParticles" type="CPUParticles2D" parent="." unique_id=116106495]
 emitting = false
-amount = 40
+amount = 100
 texture = ExtResource("3_circle")
-lifetime = 0.4
+lifetime = 0.5
 one_shot = true
 emission_shape = 1
-emission_sphere_radius = 60.0
+emission_sphere_radius = 150.0
 gravity = Vector2(0, 0)
 radial_accel_min = -300.0
 radial_accel_max = -200.0

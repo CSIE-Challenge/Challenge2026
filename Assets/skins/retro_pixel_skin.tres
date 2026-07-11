@@ -7,7 +7,5 @@
 script = ExtResource("1_retro")
 skin_id = "retro_pixel_skin"
 true_name = "復古像素"
-price = 300
-is_silhouette = true
 skin_prefab = ExtResource("2_prefab")
 metadata/_custom_type_script = "uid://c6vuqckcyjdey"

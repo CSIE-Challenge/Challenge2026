@@ -24,11 +24,21 @@ var typewriter_audio_player: AudioStreamPlayer = null
 @onready var rich_text_label = $Control/DialogueBox/MarginContainer/RichTextLabel
 @onready var typewriter_timer = $TypewriterTimer
 @onready var choice_container = $Control/DialogueBox/ChoiceContainer
-
+@onready var prompt_label = $Control/DialogueBox/PromptLabel
 
 func _ready():
 	dialogue_box.hide()
+	prompt_label.hide()
 	typewriter_timer.timeout.connect(_on_typewriter_timeout)
+
+func _process(delta: float):
+	if prompt_label:
+		if current_state == State.WAITING_INPUT or (current_state == State.FINISHED and dialogue_queue.size() >= 0 and current_choices.size() == 0):
+			prompt_label.visible = true
+			var a = (sin(Time.get_ticks_msec() / 200.0) + 1.0) / 2.0
+			prompt_label.modulate.a = lerp(0.3, 1.0, a)
+		else:
+			prompt_label.visible = false
 
 
 func _input(event):

@@ -51,6 +51,7 @@ enum BGM {
 	GAMEPLAY_PHASE_5,
 	RESULT_SCREEN,
 	HIDDEN_GAME,
+	HIDDEN_GAME_UNDERTALE,
 }
 
 @export var sfx_pool_size := 8
