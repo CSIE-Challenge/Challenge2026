@@ -4,6 +4,7 @@ extends BaseSkin
 @onready var landing_effect = $Sprite2D2
 @onready var sprite = $Sprite2D
 
+
 func _ready():
 	var noise = FastNoiseLite.new()
 	noise.noise_type = FastNoiseLite.TYPE_SIMPLEX
@@ -11,7 +12,7 @@ func _ready():
 	var noise_tex = NoiseTexture2D.new()
 	noise_tex.seamless = true
 	noise_tex.noise = noise
-	
+
 	var mat = ShaderMaterial.new()
 	mat.shader = preload("res://Scenes/skins/planet_surface.gdshader")
 	mat.set_shader_parameter("time_scale", 0.2)

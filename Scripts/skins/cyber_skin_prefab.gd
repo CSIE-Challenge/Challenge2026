@@ -8,10 +8,12 @@ var last_pos: Vector2
 @onready var death_particles = $DeathParticles
 @onready var eat_particles = $EatParticles
 
+
 func _process(_delta):
 	if global_position.distance_to(last_pos) > 10.0:
 		spawn_trail()
 		last_pos = global_position
+
 
 func spawn_trail():
 	var clone = Sprite2D.new()
@@ -55,10 +57,10 @@ func play_die():
 func play_eat_ball():
 	sprite.material.set_shader_parameter("glitch_intensity", 1.0)
 	sprite.material.set_shader_parameter("chromatic_aberration", 1.0)
-	
+
 	eat_particles.restart()
 	eat_particles.emitting = true
-	
+
 	var tween = create_tween()
 	tween.tween_property(sprite.material, "shader_parameter/glitch_intensity", 0.5, 0.5)
 	tween.tween_property(sprite.material, "shader_parameter/chromatic_aberration", 0.8, 0.5)

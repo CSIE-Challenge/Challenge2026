@@ -88,9 +88,14 @@ func play_land():
 	floor_ripple.global_position = self.global_position + Vector2(0, 15)
 	floor_ripple.scale = Vector2(0.1, 0.05)
 	add_child(floor_ripple)
-	
+
 	var r_tween = create_tween()
-	r_tween.tween_property(floor_ripple, "scale", Vector2(1.5, 0.3), 0.3).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	(
+		r_tween
+		. tween_property(floor_ripple, "scale", Vector2(1.5, 0.3), 0.3)
+		. set_trans(Tween.TRANS_EXPO)
+		. set_ease(Tween.EASE_OUT)
+	)
 	r_tween.parallel().tween_property(floor_ripple, "modulate:a", 0.0, 0.3).set_delay(0.1)
 	r_tween.tween_callback(floor_ripple.queue_free)
 

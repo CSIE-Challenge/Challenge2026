@@ -42,13 +42,13 @@ func play_die():
 	pixel_particles.emitting = true
 	main_square.visible = false
 	trail_particles.emitting = false
-	
+
 	var white_line = ColorRect.new()
 	white_line.color = Color.WHITE
 	white_line.size = Vector2(50, 2)
 	white_line.position = Vector2(-25, -1)
 	add_child(white_line)
-	
+
 	var tw = create_tween()
 	tw.tween_property(white_line, "scale", Vector2(2.0, 0.1), 0.2)
 	tw.parallel().tween_property(white_line, "color:a", 0.0, 0.2)
@@ -98,7 +98,8 @@ func play_land():
 	# 沒有平滑的形變，只有生硬的壓扁
 	main_square.scale = Vector2(1.2, 0.5)
 	main_square.position = Vector2(
-		-main_square.size.x * 1.2 / 2.0, -main_square.size.y * 0.5 / 2.0 + (main_square.size.y * 0.25)
+		-main_square.size.x * 1.2 / 2.0,
+		-main_square.size.y * 0.5 / 2.0 + (main_square.size.y * 0.25)
 	)
 
 	await get_tree().create_timer(0.1).timeout

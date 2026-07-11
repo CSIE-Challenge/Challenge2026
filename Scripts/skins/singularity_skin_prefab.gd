@@ -5,6 +5,7 @@ extends BaseSkin
 @onready var suck_particles = $SuckParticles
 @onready var shockwave = $Shockwave
 
+
 func _process(delta):
 	accretion_disk.rotation += delta * 1.5
 
@@ -101,8 +102,13 @@ func play_land():
 	blast_ripple.global_position = self.global_position
 	blast_ripple.scale = Vector2(0.1, 0.1)
 	add_child(blast_ripple)
-	
+
 	var st = create_tween()
-	st.tween_property(blast_ripple, "scale", Vector2(1.5, 1.5), 0.3).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	(
+		st
+		. tween_property(blast_ripple, "scale", Vector2(1.5, 1.5), 0.3)
+		. set_trans(Tween.TRANS_EXPO)
+		. set_ease(Tween.EASE_OUT)
+	)
 	st.parallel().tween_property(blast_ripple, "modulate:a", 0.0, 0.3)
 	st.tween_callback(blast_ripple.queue_free)

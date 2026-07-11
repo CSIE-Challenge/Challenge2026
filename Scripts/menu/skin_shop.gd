@@ -12,10 +12,14 @@ var close_btn: Button
 var current_detail_data: SkinData = null
 # 為了避免明碼被偷看，這裡只儲存兌換碼的 SHA256 雜湊值
 var redeem_codes = {
-	"0dc5ed5eb7782898649bc21d8e9a3c80b4666d8e222c69dc052675392f72dfdb": "champion_skin", # CHALLENGE2026
-	"cdcf6811c9e9bb677d7b5ad45a58ad0833f53869b7ceebbe4672c7295c12f6fa": "ninja_skin",    # NINJA_GIFT
-	"9f7bfa37468a30117e552b93277da709afd94c0df899fbf8e48ecfcb709b8107": "golden_skin",   # RICH
-	"8169f1df4c3e57e67156554ded65480570cb74f65cdb50272f0b01acbc82abd5": "ALL_SKINS"      # UNLOCKALL
+	# CHALLENGE2026
+	"0dc5ed5eb7782898649bc21d8e9a3c80b4666d8e222c69dc052675392f72dfdb": "champion_skin",
+	# NINJA_GIFT
+	"cdcf6811c9e9bb677d7b5ad45a58ad0833f53869b7ceebbe4672c7295c12f6fa": "ninja_skin",
+	# RICH
+	"9f7bfa37468a30117e552b93277da709afd94c0df899fbf8e48ecfcb709b8107": "golden_skin",
+	# UNLOCKALL
+	"8169f1df4c3e57e67156554ded65480570cb74f65cdb50272f0b01acbc82abd5": "ALL_SKINS"
 }
 
 @onready var grid_container: GridContainer = $ScrollContainer/GridContainer
@@ -240,10 +244,10 @@ func _on_redeem_close_pressed():
 func _on_redeem_submit_pressed():
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	var code = redeem_input.text.strip_edges().to_upper()
-	var code_hash = code.sha256_text() # 將輸入的兌換碼進行 SHA256 雜湊
+	var code_hash = code.sha256_text()  # 將輸入的兌換碼進行 SHA256 雜湊
 	if redeem_codes.has(code_hash):
 		var skin_id = redeem_codes[code_hash]
-		
+
 		if skin_id == "ALL_SKINS":
 			var changed = false
 			for s in all_skins:
@@ -259,7 +263,7 @@ func _on_redeem_submit_pressed():
 			else:
 				show_message("已經擁有全部皮膚！")
 			return
-			
+
 		if not PlayerData.has_skin(skin_id):
 			PlayerData.unlocked_skins.append(skin_id)
 			PlayerData.save_data()  # 確保兌換後存檔
