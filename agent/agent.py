@@ -15,6 +15,8 @@ from api import *
 # 	 --- --- ---
 #    並放置玩家所在格子編號的陷阱
 
+# 另外 Agent 會在血量未滿時不斷嘗試回血
+
 # 如果你想要調整 Default Agent 並進行測試，你可以將其複製到一份新的 .py 檔中，
 # 並放在 /scripts 底下，鼓勵大家調整傳入陷阱中的各個參數看看效果如何！
 
@@ -22,6 +24,7 @@ MIN_COORDINATE = -220
 MAX_COORDINATE = 220
 PLAYER_RADIUS = 13
 FIELD_SIZE = 440
+MAX_HEALTH = 5
 
 
 def run(client):
@@ -29,6 +32,7 @@ def run(client):
     # 如果你不想在輸出看到形如 [api] xxx 的訊息，你可以把上面這行反註解掉
 
     previous_print_time = client.get_remaining_time()
+    heal_count = 0
     while True:
         position = client.get_opponent_player_position()
 
@@ -95,6 +99,12 @@ def run(client):
             print(f"Current Phase : {client.get_phase()}")
             print("----------------------------")
             previous_print_time = previous_print_time - 1.0
+
+        if client.get_my_health() < MAX_HEALTH:
+            if client.heal():
+                heal_count = heal_count + 1
+                print(f"Heal Success, Heal Count = {heal_count}")
+                print(f"Remaining Energy : {client.get_my_energy()}")
 
 
 # ruff: enable[F403]
