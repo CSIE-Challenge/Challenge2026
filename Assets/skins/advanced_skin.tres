@@ -8,6 +8,11 @@
 script = ExtResource("1_skindata")
 skin_id = "advanced_skin"
 true_name = "高級小球"
-price = 200
+description = "也是白色小球，但是......好像又有點不一樣？
+啊，我知道不一樣在哪了。
+比較高級。"
 preview_texture = ExtResource("1_circle")
 skin_prefab = ExtResource("2_prefab")
+
+is_achievement_unlock = true
+achievement_desc = "積分兌換"

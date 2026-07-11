@@ -8,6 +8,9 @@
 script = ExtResource("1_skindata")
 skin_id = "phantom_skin"
 true_name = "幽靈小球"
-price = 800
+description = "據說小球死了以後會變成幽靈，那幽靈是不是就不會再死了？"
 preview_texture = ExtResource("1_circle")
 skin_prefab = ExtResource("2_prefab")
+
+is_achievement_unlock = true
+achievement_desc = "積分兌換"

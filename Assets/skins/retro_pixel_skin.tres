@@ -8,4 +8,7 @@ script = ExtResource("1_retro")
 skin_id = "retro_pixel_skin"
 true_name = "復古像素"
 skin_prefab = ExtResource("2_prefab")
+description = "如果嫌螢幕不夠花，推薦你加入一點復古像素。"
+is_achievement_unlock = true
+achievement_desc = "積分兌換"
 metadata/_custom_type_script = "uid://c6vuqckcyjdey"

@@ -11,3 +11,8 @@ true_name = "流星尾跡"
 price = 200
 preview_texture = ExtResource("1_circle")
 skin_prefab = ExtResource("2_prefab")
+
+description = "猜猜看，這是離子尾還是塵埃尾？"
+
+is_achievement_unlock = true
+achievement_desc = "積分兌換"

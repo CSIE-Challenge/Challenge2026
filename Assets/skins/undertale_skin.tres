@@ -7,6 +7,9 @@
 script = ExtResource("1_skindata")
 skin_id = "undertale_skin"
 true_name = "決心 (Determination)"
-description = "充滿決心的靈魂。即使碎裂了，也要保持決心！"
+description = "「充滿決心的靈魂。即使碎裂了，也要保持決心！」
+對經典遊戲的致敬也許會增加閃避率......或者，能聽到一些熟悉的音樂響起？"
 skin_prefab = ExtResource("2_ut")
+is_achievement_unlock = true
+achievement_desc = "積分兌換"
 metadata/_custom_type_script = "uid://c6vuqckcyjdey"

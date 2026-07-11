@@ -8,6 +8,9 @@
 script = ExtResource("1_skindata")
 skin_id = "default_skin"
 true_name = "經典小球"
-price = 0
+description = "初始皮膚"
 preview_texture = ExtResource("1_k663x")
 skin_prefab = ExtResource("2_prefab")
+
+is_achievement_unlock = true
+achievement_desc = "積分兌換"

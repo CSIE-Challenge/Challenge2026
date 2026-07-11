@@ -11,4 +11,7 @@ true_name = "among_us"
 preview_texture = ExtResource("3_preview")
 skin_prefab = ExtResource("2_prefab")
 health_icon_texture = ExtResource("3_preview")
+description = "SUS"
+is_achievement_unlock = true
+achievement_desc = "積分兌換"
 metadata/_custom_type_script = "uid://c6vuqckcyjdey"
