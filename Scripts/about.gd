@@ -19,6 +19,7 @@ var head_click_cnt = 0
 @onready var heads = [$Head1, $Head2, $Head3]
 @onready var flying_letter = $FlyingLetter
 @onready var collected_label = $CollectedLetter
+@onready var richtextlabel = $Panel/RichTextLabel
 
 
 func _ready() -> void:
@@ -26,7 +27,7 @@ func _ready() -> void:
 		h.visible = false
 	flying_letter.visible = false
 
-	$Debug.visible = false and OS.is_debug_build()
+	richtextlabel.text = richtextlabel.text.replace("x.y.z", Global.game_version)
 
 
 func _process(delta: float) -> void:

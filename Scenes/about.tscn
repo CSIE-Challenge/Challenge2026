@@ -63,8 +63,8 @@ mouse_filter = 1
 theme_override_fonts/normal_font = ExtResource("2_ohg52")
 theme_override_fonts/bold_font = ExtResource("3_bo6cl")
 bbcode_enabled = true
-text = "[center][b][font_size=26][rainbow sat=0.8 val=0.9 freq=0.5]🌴 Coconut Snare In Evasion 🌴[/rainbow][/font_size][/b]
-[font_size=12][color=#a0aec0]Version 1.0.0[/color][/font_size]
+text = "[center][b][font_size=26][rainbow sat=0.8 val=0.9 freq=0.5]🌴 CSIE's Scenic Island Escape 🌴[/rainbow][/font_size][/b]
+[font_size=12][color=#a0aec0]Version x.y.z[/color][/font_size]
 [color=#4a5568][hr][/color]
 
 [font_size=18][b][color=#ed8936]🥥 Ab[wave amp=10 freq=2][url=1_O]o[/url][/wave]ut This Game 🥥[/color][/b][/font_size]
