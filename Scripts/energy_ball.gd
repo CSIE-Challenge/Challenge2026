@@ -72,8 +72,8 @@ func _spawn_energy_text() -> void:
 		Audio.play_sfx(Audio.SFX.SIX_SEVEN)
 
 
-func advance_phase() -> void:
-	energy_ball_phase = min(energy_ball_phase + 1, energy_gain.size() - 1)
+func change_phase(phase: int) -> void:
+	energy_ball_phase = phase
 
 
 func _respawn_energy_ball() -> void:

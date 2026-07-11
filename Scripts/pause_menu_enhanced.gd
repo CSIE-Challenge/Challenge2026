@@ -9,7 +9,10 @@ signal exit_requested
 var settings = ConfigFile.new()
 var temp_music_volume: float
 var temp_sfx_volume: float
-var phase_duration = GameData.new().data["game_manager"]["phase_duration"]
+var game_data = GameData.new().data
+var max_phase = game_data["game_manager"]["max_phase"]
+var game_duration = game_data["game_manager"]["game_duration"]
+var phase_duration = game_data["game_manager"]["phase_duration"]
 
 # gdlint: disable=max-line-length
 @onready var color_rect = $ColorRect
@@ -44,6 +47,7 @@ func close() -> void:
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_WHEN_PAUSED
+	_time_slider.max_value = game_duration
 	visible = false
 
 	_resume_button.button_up.connect(_on_resume_button_up)
@@ -52,21 +56,41 @@ func _ready() -> void:
 	_exit_button.button_up.connect(_on_exit_button_up)
 
 
+func _unhandled_input(event: InputEvent) -> void:
+	if not visible:
+		return
+	if event.is_action_pressed("pause"):
+		# Esc / pause key is the expected shortcut while paused.
+		get_viewport().set_input_as_handled()
+		_on_resume_button_up()
+
+
 func _on_resume_button_up() -> void:
 	if visible:
+		save()
+		close()
 		resume_requested.emit(_time_slider.value)
 
 
 func _on_restart_button_up() -> void:
-	restart_requested.emit()
+	if visible:
+		save()
+		close()
+		restart_requested.emit()
 
 
 func _on_main_menu_button_up() -> void:
-	main_menu_requested.emit()
+	if visible:
+		save()
+		close()
+		main_menu_requested.emit()
 
 
 func _on_exit_button_up() -> void:
-	exit_requested.emit()
+	if visible:
+		save()
+		close()
+		exit_requested.emit()
 
 
 #endregion
@@ -116,9 +140,10 @@ func _on_time_slider_value_changed(value: float) -> void:
 	var minute = int(floor(value)) / 60
 	var second = int(floor(value)) % 60
 	_time_label.text = "%02d:%02d" % [minute, second]
-	for i in range(len(phase_duration)):
+	for i in range(max_phase):
 		if value > phase_duration[i]:
 			value -= phase_duration[i]
 		else:
 			_phase_label.text = "Phase %d" % i
-			break
+			return
+	_phase_label.text = "Phase %d" % max_phase
