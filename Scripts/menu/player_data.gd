@@ -13,10 +13,12 @@ var equipped_skin: String = "default_skin":
 	set(value):
 		equipped_skin = value
 		skin_equipped.emit(equipped_skin)
-		save_data()  # 裝備變更時自動存檔
+		if not _is_loading:
+			save_data()  # 裝備變更時自動存檔
 
 var has_entered_hidden_game: bool = false
 var last_selected_avatar: String = ""
+var _is_loading: bool = false
 
 
 func _ready():
@@ -46,6 +48,7 @@ func save_data():
 
 func load_data():
 	if FileAccess.file_exists(SAVE_PATH):
+		_is_loading = true
 		# 使用加密模式開啟檔案讀取
 		var file = FileAccess.open_encrypted_with_pass(SAVE_PATH, FileAccess.READ, ENCRYPT_PASS)
 		if file:
@@ -57,6 +60,7 @@ func load_data():
 				has_entered_hidden_game = data.get("has_entered_hidden_game", false)
 				last_selected_avatar = data.get("last_selected_avatar", "")
 			file.close()
+		_is_loading = false
 	else:
 		save_data()
 
