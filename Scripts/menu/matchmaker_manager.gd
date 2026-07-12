@@ -87,6 +87,8 @@ func _ready() -> void:
 	_show_panel(Page.A)
 	ip_input.grab_focus()
 
+	code_input.gui_input.connect(_on_code_input_gui_input)
+
 	http_request.request_completed.connect(_on_request_completed)
 	poll_http_request.request_completed.connect(_on_poll_request_completed)
 
@@ -109,7 +111,8 @@ func _input(event: InputEvent) -> void:
 			Page.C:
 				_on_confirm_join_button_up()
 			Page.D:
-				_on_ready_button_up()
+				# _on_ready_button_up()
+				pass
 
 
 func _process(delta: float) -> void:
@@ -339,6 +342,11 @@ func _on_expire_b() -> void:
 
 
 # ── Panel C ────────────────────────────────────────────────────────────────
+
+
+func _on_code_input_gui_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and event.keycode == KEY_ENTER:
+		get_viewport().set_input_as_handled()
 
 
 func _on_code_text_changed(new_text: String) -> void:
