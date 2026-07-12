@@ -44,7 +44,11 @@ var _is_shutting_down := false
 @onready var energy_increase_timer = $EnergyIncreaseTimer
 @onready var trap_request_scheduler: TrapRequestScheduler = $"../TrapRequestScheduler"
 @onready var agent_action_service: AgentActionService = $"../AgentActionService"
+<<<<<<< HEAD
 @onready var pregame_countdown: Label = $"../HUD/PregameCountdown"
+=======
+@onready var pregame_countdown: Label = $"../SubViewport/PregameCountdown"
+>>>>>>> b3dadf2 (Release v1.0.0 (#260))
 
 
 func _ready() -> void:
@@ -142,9 +146,13 @@ func _physics_process(delta: float) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause"):
+<<<<<<< HEAD
 		if _is_multiplayer_game():
 			get_viewport().set_input_as_handled()
 			return
+=======
+		get_viewport().set_input_as_handled()
+>>>>>>> b3dadf2 (Release v1.0.0 (#260))
 		_handle_pause_toggle()
 
 
@@ -593,7 +601,10 @@ func _on_network_health_changed(peer_id: int, health: int) -> void:
 		if player.health <= 0 and not _is_multiplayer_game():
 			await player.die()
 			finish_game(1)
+<<<<<<< HEAD
 		_finish_game_if_peer_defeated(peer_id, health)
+=======
+>>>>>>> b3dadf2 (Release v1.0.0 (#260))
 		return
 
 	_update_opponent_energy_label(peer_id, NetworkManager.get_energy(peer_id))

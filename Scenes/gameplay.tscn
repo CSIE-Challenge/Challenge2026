@@ -462,6 +462,29 @@ grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(100, 150)
 
+[node name="PregameCountdown" type="Label" parent="SubViewport" unique_id=839568335]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.0
+offset_top = -214.0
+offset_right = 34.0
+offset_bottom = -77.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.7058824, 0.09803922, 1)
+theme_override_colors/font_shadow_color = Color(1.0039686, 0.33479407, 0, 0.98039216)
+theme_override_colors/font_outline_color = Color(1, 0.7058824, 0.21568628, 1)
+theme_override_constants/shadow_offset_x = 6
+theme_override_constants/shadow_offset_y = 4
+theme_override_fonts/font = SubResource("FontVariation_kj63f")
+theme_override_font_sizes/font_size = 85
+text = "3"
+horizontal_alignment = 1
+script = ExtResource("14_icchp")
+
 [node name="HigherThanPlayer" type="SubViewport" parent="." unique_id=1579438163]
 transparent_bg = true
 size = Vector2i(480, 270)

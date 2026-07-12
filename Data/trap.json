@@ -91,7 +91,7 @@
 		"path": "res://Scenes/traps/trap8-electric_arc.tscn",
 		"cooldown_times": 1.0,
 		"damage": 1,
-		"energy_costs": 15,
+		"energy_costs": 10,
 		"points_radius": 10,
 		"points_default_scale": [
 			0.15,
@@ -108,9 +108,15 @@
 	},
 	"trap9-mortar": {
 		"path": "res://Scenes/traps/trap9-mortar.tscn",
+<<<<<<< HEAD
 		"cooldown_times": 1.0,
 		"damage": 1,
 		"energy_costs": 12,
+=======
+		"cooldown_times": 1.5,
+		"damage": 1,
+		"energy_costs": 10,
+>>>>>>> b3dadf2 (Release v1.0.0 (#260))
 		"max_height": 300.0,
 		"gravity": 200.0,
 		"explosion_max_radius": 100.0,

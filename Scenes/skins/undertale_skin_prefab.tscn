@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://utskinprefab"]
 
+<<<<<<< HEAD
 [ext_resource type="Script" uid="uid://c7uxdkdax35vw" path="res://Scripts/skins/undertale_skin_prefab.gd" id="1_ut"]
 [ext_resource type="Texture2D" uid="uid://bwjrfhxvnylk8" path="res://Shapes/heart.png" id="2_heart"]
 [ext_resource type="Texture2D" uid="uid://wgi6fweb6vej" path="res://Shapes/crack.png" id="3_crack"]
@@ -23,12 +24,32 @@ scale = Vector2(0.12, 0.12)
 texture = ExtResource("2_heart")
 
 [node name="Crack" type="Sprite2D" parent="." unique_id=1073130574]
+=======
+[ext_resource type="Script" path="res://Scripts/skins/undertale_skin_prefab.gd" id="1_ut"]
+[ext_resource type="Texture2D" path="res://Shapes/heart.png" id="2_heart"]
+[ext_resource type="Texture2D" path="res://Shapes/crack.png" id="3_crack"]
+
+[node name="UndertaleSkinPrefab" type="Node2D"]
+script = ExtResource("1_ut")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+modulate = Color(1, 0, 0, 1)
+scale = Vector2(0.12, 0.12)
+texture = ExtResource("2_heart")
+
+[node name="Crack" type="Sprite2D" parent="."]
+>>>>>>> b3dadf2 (Release v1.0.0 (#260))
 visible = false
 modulate = Color(0, 0, 0, 1)
 scale = Vector2(0.12, 0.12)
 texture = ExtResource("3_crack")
 
+<<<<<<< HEAD
 [node name="DeathShards" type="CPUParticles2D" parent="." unique_id=567327771]
+=======
+[node name="DeathShards" type="CPUParticles2D" parent="."]
+>>>>>>> b3dadf2 (Release v1.0.0 (#260))
 emitting = false
 amount = 12
 texture = ExtResource("2_heart")
@@ -43,6 +64,7 @@ initial_velocity_max = 500.0
 scale_amount_min = 0.02
 scale_amount_max = 0.04
 color = Color(1, 0, 0, 1)
+<<<<<<< HEAD
 
 [node name="HeartEffect" type="CPUParticles2D" parent="." unique_id=2096618700]
 position = Vector2(3, 0)
@@ -57,3 +79,5 @@ scale_amount_min = 0.22
 scale_amount_max = 0.22
 scale_amount_curve = SubResource("Curve_7ktma")
 color_ramp = SubResource("Gradient_dymgi")
+=======
+>>>>>>> b3dadf2 (Release v1.0.0 (#260))

@@ -8,8 +8,11 @@ class_name SkinData extends Resource  # 繼承自 Resource 是關鍵！
 @export var hide_name: bool = false  # 如果玩家未擁有，是否要將名稱顯示為亂碼？
 
 # -- 獲取條件 --
+<<<<<<< HEAD
 @export var price: int = 100  # 商店顯示的價格（元）
 @export var price_text_override: String = ""  # 非空時取代「價格：xx 元」的顯示文字
+=======
+>>>>>>> b3dadf2 (Release v1.0.0 (#260))
 @export var is_achievement_unlock: bool = false  # 是否為特殊成就解鎖（非金錢）
 @export var achievement_desc: String = ""  # 例如："通關困難模式解鎖"
 

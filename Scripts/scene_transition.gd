@@ -162,8 +162,12 @@ func transition_to(target_scene: String) -> void:
 	)
 
 	tween.tween_callback(func(): await _switch_scene(target_scene))
+<<<<<<< HEAD
 	await scene_transition_finished
 	tween = create_tween()
+=======
+	tween.tween_interval(0.1)
+>>>>>>> b3dadf2 (Release v1.0.0 (#260))
 
 	# 快速拉開
 	tween.tween_property(top_bar, "anchor_bottom", 0.0, 0.3).set_trans(Tween.TRANS_EXPO).set_ease(
@@ -261,9 +265,13 @@ func transition_to_wave(target_scene: String) -> void:
 	)
 
 	tween.tween_callback(func(): await _switch_scene(target_scene))
+<<<<<<< HEAD
 
 	await scene_transition_finished
 	tween = create_tween()
+=======
+	tween.tween_interval(0.1)
+>>>>>>> b3dadf2 (Release v1.0.0 (#260))
 
 	# 退潮準備：粒子發射器回到左側
 	tween.tween_callback(func(): particles.position.x = -0.2 * vp_size.x)
@@ -445,5 +453,8 @@ func _switch_scene(target_scene: String) -> void:
 	else:
 		# 讀取失敗時 fallback 回同步讀取，至少能確保場景還是換得過去
 		get_tree().change_scene_to_file(target_scene)
+<<<<<<< HEAD
 
 	scene_transition_finished.emit()
+=======
+>>>>>>> b3dadf2 (Release v1.0.0 (#260))
