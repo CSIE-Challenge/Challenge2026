@@ -40,28 +40,44 @@ func _run_tests() -> void:
 	network_manager.health_rejected.connect(
 		func(_rejected_peer_id: int, reason: String) -> void: rejected_health_reasons.append(reason)
 	)
+	var max_health_cap: int = network_manager.get_max_health()
+	var max_energy_cap: int = network_manager.max_energy
+	var expected_health: int = max_health_cap
 
 	network_manager.request_add_energy(10)
 	_assert_eq(network_manager.get_energy(peer_id), 10, "energy should increase")
 	network_manager.request_add_energy(200)
-	_assert_eq(network_manager.get_energy(peer_id), 100, "energy should be capped")
+	_assert_eq(network_manager.get_energy(peer_id), max_energy_cap, "energy should be capped")
 	_assert(network_manager._server_spend_energy(peer_id, 30), "spend should pass")
-	_assert_eq(network_manager.get_energy(peer_id), 70, "energy should decrease")
+	_assert_eq(network_manager.get_energy(peer_id), max_energy_cap - 30, "energy should decrease")
 	_assert(not network_manager._server_spend_energy(peer_id, 80), "overspending should fail")
-	_assert_eq(network_manager.get_energy(peer_id), 70, "rejected spend should preserve energy")
+	_assert_eq(
+		network_manager.get_energy(peer_id),
+		max_energy_cap - 30,
+		"rejected spend should preserve energy"
+	)
 	_assert_eq(rejected_reasons.size(), 1, "rejected spend should emit once")
 
 	network_manager.energy_by_peer_id[42] = 50
 	network_manager.request_spend_peer_energy(42, 15)
 	_assert_eq(network_manager.get_energy(42), 35, "peer energy spend should affect target peer")
 
-	_assert_eq(network_manager.get_health(peer_id), 100, "default health should be max health")
+	_assert_eq(
+		network_manager.get_health(peer_id), max_health_cap, "default health should be max health"
+	)
 	network_manager.request_damage_health(25)
-	_assert_eq(network_manager.get_health(peer_id), 75, "damage should lower local health")
+	expected_health = clampi(max_health_cap - 25, 0, max_health_cap)
+	_assert_eq(
+		network_manager.get_health(peer_id), expected_health, "damage should lower local health"
+	)
 	network_manager.request_heal_health(10)
-	_assert_eq(network_manager.get_health(peer_id), 85, "heal should raise local health")
+	expected_health = clampi(expected_health + 10, 0, max_health_cap)
+	_assert_eq(
+		network_manager.get_health(peer_id), expected_health, "heal should raise local health"
+	)
 	network_manager.request_change_peer_health(peer_id, 1000)
-	_assert_eq(network_manager.get_health(peer_id), 100, "health should be capped")
+	expected_health = max_health_cap
+	_assert_eq(network_manager.get_health(peer_id), expected_health, "health should be capped")
 	network_manager.request_change_peer_health(999, -1)
 	_assert_eq(rejected_health_reasons.size(), 1, "unknown health peer should reject once")
 
@@ -75,15 +91,23 @@ func _run_tests() -> void:
 	network_manager.request_spend_opponent_energy(5)
 	_assert_eq(
 		network_manager.get_energy(peer_id),
-		min(energy_before_offline_opponent + 20, network_manager.MAX_ENERGY) - 5,
+		min(energy_before_offline_opponent + 20, max_energy_cap) - 5,
 		"offline opponent spend should affect self"
 	)
 	network_manager.request_damage_opponent_health(5)
+	expected_health = clampi(expected_health - 5, 0, max_health_cap)
 	_assert_eq(
-		network_manager.get_health(peer_id), 95, "offline opponent damage should affect self"
+		network_manager.get_health(peer_id),
+		expected_health,
+		"offline opponent damage should affect self"
 	)
 	network_manager.request_heal_opponent_health(3)
-	_assert_eq(network_manager.get_health(peer_id), 98, "offline opponent heal should affect self")
+	expected_health = clampi(expected_health + 3, 0, max_health_cap)
+	_assert_eq(
+		network_manager.get_health(peer_id),
+		expected_health,
+		"offline opponent heal should affect self"
+	)
 
 	print("NetworkManager tests passed")
 	network_manager.queue_free()

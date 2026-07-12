@@ -393,6 +393,15 @@ func _update_max_energy(play_audio: bool = true) -> void:
 		Audio.set_phase_bgm(current_phase)
 
 
+func get_current_max_energy_cap() -> int:
+	if max_energy.is_empty():
+		return 0
+
+	var idx: int = min(current_phase, max_energy.size() - 1)
+	var raw_cap: int = int(max_energy[idx])
+	return maxi(raw_cap, 0)
+
+
 #region Control
 func finish_game(player_died: bool = false, authoritative_stats: Dictionary = {}) -> void:
 	if game_over:
