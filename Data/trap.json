@@ -27,7 +27,7 @@
 	},
 	"trap3-tracing_bullet": {
 		"path": "res://Scenes/traps/trap3-tracing_bullet.tscn",
-		"cooldown_times": 1.5,
+		"cooldown_times": 2.0,
 		"damage": 1,
 		"energy_costs": 13,
 		"turn_rate": 1.7,
@@ -35,7 +35,8 @@
 		"min_speed": 200.0,
 		"spawn_x": 275.0,
 		"spawn_y": 275.0,
-		"wait_time": 1.0
+		"wait_time": 1.0,
+		"max_stock": 2
 	},
 	"trap4-conveyor": {
 		"path": "res://Scenes/traps/trap4-conveyor.tscn",
@@ -43,7 +44,7 @@
 		"damage": 0,
 		"energy_costs": 20,
 		"speed": 200,
-		"lifetime": 10,
+		"lifetime": 7,
 		"scale": 2.0,
 		"position_min_x": -100.0,
 		"position_max_x": 100.0,
@@ -52,7 +53,7 @@
 	},
 	"trap5-icefloor": {
 		"path": "res://Scenes/traps/trap5-icefloor.tscn",
-		"cooldown_times": 1.0,
+		"cooldown_times": 2.0,
 		"damage": 0,
 		"energy_costs": 5,
 		"lifetime": 5.0,
@@ -60,11 +61,12 @@
 		"position_min_x": -150.0,
 		"position_max_x": 150.0,
 		"position_min_y": -150.0,
-		"position_max_y": 150.0
+		"position_max_y": 150.0,
+		"max_stock": 3
 	},
 	"trap6-scanline": {
 		"path": "res://Scenes/traps/trap6-scanline.tscn",
-		"cooldown_times": 1.5,
+		"cooldown_times": 2.0,
 		"damage": 1,
 		"energy_costs": 20,
 		"min_speed": 120,
@@ -73,7 +75,7 @@
 	},
 	"trap7-spreading_ripples": {
 		"path": "res://Scenes/traps/trap7-spreading_ripples.tscn",
-		"cooldown_times": 1.0,
+		"cooldown_times": 2.0,
 		"damage": 1,
 		"energy_costs": 20,
 		"warning_time": 1.0,
@@ -89,9 +91,9 @@
 	},
 	"trap8-electric_arc": {
 		"path": "res://Scenes/traps/trap8-electric_arc.tscn",
-		"cooldown_times": 1.0,
+		"cooldown_times": 1.5,
 		"damage": 1,
-		"energy_costs": 10,
+		"energy_costs": 13,
 		"points_radius": 10,
 		"points_default_scale": [
 			0.15,
@@ -104,19 +106,14 @@
 		"delay_time": 2.0,
 		"duration_time": 2,
 		"spawn_x": 275.0,
-		"spawn_y": 275.0
+		"spawn_y": 275.0,
+		"max_stock": 2
 	},
 	"trap9-mortar": {
 		"path": "res://Scenes/traps/trap9-mortar.tscn",
-<<<<<<< HEAD
-		"cooldown_times": 1.0,
-		"damage": 1,
-		"energy_costs": 12,
-=======
 		"cooldown_times": 1.5,
 		"damage": 1,
-		"energy_costs": 10,
->>>>>>> b3dadf2 (Release v1.0.0 (#260))
+		"energy_costs": 12,
 		"max_height": 300.0,
 		"gravity": 200.0,
 		"explosion_max_radius": 100.0,
@@ -127,17 +124,19 @@
 		"spawn_x": 275.0,
 		"spawn_y": 275.0,
 		"max_end_position_x": 225.0,
-		"max_end_position_y": 225.0
+		"max_end_position_y": 225.0,
+		"max_stock": 2
 	},
 	"trap10-shotgun": {
 		"path": "res://Scenes/traps/trap10-shotgun.tscn",
-		"cooldown_times": 1.8,
+		"cooldown_times": 2.5,
 		"damage": 1,
-		"energy_costs": 15,
+		"energy_costs": 18,
 		"bullet_speed": 700.0,
 		"aiming_time": 1.5,
 		"aiming_line_color": "#F05F49",
 		"spawn_x": 258.0,
-		"spawn_y": 258.0
+		"spawn_y": 258.0,
+		"max_stock": 2
 	}
 }
