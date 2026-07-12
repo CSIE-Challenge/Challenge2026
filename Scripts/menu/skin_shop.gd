@@ -111,6 +111,16 @@ func _ready():
 	redeem_submit_btn.pressed.connect(_on_redeem_submit_pressed)
 
 
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and not event.pressed and event.keycode == KEY_ESCAPE:
+		if redeem_popup.visible:
+			_on_redeem_close_pressed()
+		elif detail_popup.visible:
+			_on_close_popup_pressed()
+		else:
+			_on_main_close_pressed()
+
+
 func _on_main_close_pressed():
 	# 離開商店回到主畫面
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)

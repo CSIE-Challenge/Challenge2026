@@ -60,6 +60,11 @@ func _process(delta: float) -> void:
 				_reset_marquee()
 
 
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and not event.pressed and event.keycode == KEY_ESCAPE:
+		_on_back_button_up()
+
+
 func _on_choose_button_up() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	_open_file_dialog()

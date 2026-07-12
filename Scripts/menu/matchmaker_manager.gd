@@ -93,6 +93,25 @@ func _ready() -> void:
 	NetworkManager.server_disconnected.connect(_on_server_disconnected)
 
 
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and not event.pressed and event.keycode == KEY_ESCAPE:
+		match _current_panel:
+			Page.A:
+				_on_back_button_up()
+			Page.B:
+				_on_back_b_button_up()
+			Page.C:
+				_on_back_c_button_up()
+			Page.D:
+				_on_back_d_button_up()
+	elif event is InputEventKey and not event.pressed and event.keycode == KEY_ENTER:
+		match _current_panel:
+			Page.C:
+				_on_confirm_join_button_up()
+			Page.D:
+				_on_ready_button_up()
+
+
 func _process(delta: float) -> void:
 	match _current_marquee_state:
 		MarqueeState.PAUSED_START:
