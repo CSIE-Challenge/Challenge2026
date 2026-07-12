@@ -244,11 +244,18 @@ func _get_cooldown_remaining(trap_id: String) -> float:
 
 func _start_cooldown(trap_id: String) -> void:
 	if _get_trap_max_stock(trap_id) > 1:
-		trap_cooldowns[trap_id] = clampf(
-			trap_cooldowns[trap_id] + _get_trap_cooldown_time(trap_id),
-			0,
-			_get_trap_cooldown_time(trap_id) * _get_trap_max_stock(trap_id)
-		)
+		if not trap_cooldowns.has(trap_id):
+			trap_cooldowns[trap_id] = clampf(
+				0.0 + _get_trap_cooldown_time(trap_id),
+				0,
+				_get_trap_cooldown_time(trap_id) * _get_trap_max_stock(trap_id)
+			)
+		else:
+			trap_cooldowns[trap_id] = clampf(
+				trap_cooldowns[trap_id] + _get_trap_cooldown_time(trap_id),
+				0,
+				_get_trap_cooldown_time(trap_id) * _get_trap_max_stock(trap_id)
+			)
 	else:
 		trap_cooldowns[trap_id] = _get_trap_cooldown_time(trap_id)
 
