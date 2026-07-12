@@ -53,6 +53,19 @@ var max_stock := {
 	"trap10-shotgun": trap_data["trap10-shotgun"].get("max_stock", 1)
 }
 
+var max_stock := {
+	"trap1-mine": trap_data["trap1-mine"].get("max_stock", 1),
+	"trap2-electric_ring": trap_data["trap2-electric_ring"].get("max_stock", 1),
+	"trap3-tracing_bullet": trap_data["trap3-tracing_bullet"].get("max_stock", 1),
+	"trap4-conveyor": trap_data["trap4-conveyor"].get("max_stock", 1),
+	"trap5-icefloor": trap_data["trap5-icefloor"].get("max_stock", 1),
+	"trap6-scanline": trap_data["trap6-scanline"].get("max_stock", 1),
+	"trap7-spreading_ripples": trap_data["trap7-spreading_ripples"].get("max_stock", 1),
+	"trap8-electric_arc": trap_data["trap8-electric_arc"].get("max_stock", 1),
+	"trap9-mortar": trap_data["trap9-mortar"].get("max_stock", 1),
+	"trap10-shotgun": trap_data["trap10-shotgun"].get("max_stock", 1)
+}
+
 # trap_cooldowns[trap_id] = remaining_seconds
 var trap_cooldowns: Dictionary = {}
 
