@@ -27,8 +27,8 @@ _CODE_MESSAGES = {
 class ApiError(Exception):
     """代表一次失敗的 API 呼叫。
 
-    任何 API 失敗時都會回傳這個物件
-    使用 ``if not result:`` 就能判斷失敗
+    任何 API 失敗時都會回傳這個物件，
+    用 ``isinstance(result, ApiError)`` 就能判斷失敗。
 
     屬性：
         reason (str): 失敗原因，例如 ``"insufficient_energy"``、``"cooldown_active"``。
@@ -86,7 +86,7 @@ class GameClientBase:
 
     ```
     result = client.spawn_trap1(Vector2(120, 80))
-    if not result:
+    if isinstance(result, ApiError):
         print(result.reason)  # 例如 insufficient_energy
     ```
 
@@ -393,7 +393,7 @@ class GameClientBase:
         ## Example
         ```python
         result = client.heal()
-        if result:
+        if not isinstance(result, ApiError):
             print(result["health"], result["heal_uses_left"])
         else:
             print(result.reason)
@@ -417,7 +417,7 @@ class GameClientBase:
         ## Example
         ```python
         result = client.spawn_trap1(Vector2(120, 80))
-        if not result:
+        if insinstance(result, ApiError):
             print(result.reason)
         ```
         """
@@ -430,7 +430,7 @@ class GameClientBase:
 
         ## Parameters
         - `delay_time` (float): 觸發前的延遲秒數。
-        - `radius` (float): 電環的半徑。
+        - `radius` (float): 「追蹤電圈」的半徑。
 
         ## Returns
         成功回傳 ``True``；失敗回傳 `ApiError`（同 `spawn_trap1`）。
@@ -451,9 +451,9 @@ class GameClientBase:
         從 `position` 以 `speed` 沿 `direction` 發射一隻「追跡海鷗」。
 
         ## Parameters
-        - `position` (Vector2): 子彈的發射位置。
-        - `direction` (Vector2): 子彈的初始方向。
-        - `speed` (float): 子彈的速度。
+        - `position` (Vector2): 海鷗的發射位置。
+        - `direction` (Vector2): 海鷗的初始方向。
+        - `speed` (float): 海鷗的飛行速度。
 
         ## Returns
         成功回傳 ``True``；失敗回傳 `ApiError`（同 `spawn_trap1`）。

@@ -3,7 +3,7 @@ import time
 
 # ruff: disable[F403]
 # ruff: disable[F405]
-from api import Direction, Vector2
+from api import ApiError, Direction, Vector2
 
 LOOP_DELAY_SEC = 1.0
 HEAL_HP_FRACTION = 0.95
@@ -16,7 +16,7 @@ SCAN_DIRECTIONS = [Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.LEFT
 
 def _spawn_scanline(client, direction: Direction) -> None:
     result = client.spawn_trap6(direction, SCANLINE_SPEED)
-    if result:
+    if not isinstance(result, ApiError):
         print(f"  scanline {direction.name} spawned")
     else:
         print(f"  scanline refused: {result.reason}")

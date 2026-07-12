@@ -210,7 +210,6 @@ func _adjust_collision_layer() -> void:
 	else:
 		collision_layer = 1 | 8
 		trap_cleaner.collision_mask = 0
-	print("trap cleaner collision layer:", trap_cleaner.collision_layer)
 
 
 func invincibility_toggle(on: bool):

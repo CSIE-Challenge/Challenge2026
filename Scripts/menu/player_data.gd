@@ -42,8 +42,6 @@ func save_data():
 		# store_var 會將 Dictionary 自動轉換並加密寫入
 		file.store_var(data)
 		file.close()
-	else:
-		printerr("存檔失敗！無法寫入檔案。")
 
 
 func load_data():
@@ -59,10 +57,7 @@ func load_data():
 				has_entered_hidden_game = data.get("has_entered_hidden_game", false)
 				last_selected_avatar = data.get("last_selected_avatar", "")
 			file.close()
-		else:
-			printerr("讀檔失敗！可能是檔案損毀或密碼錯誤。")
 	else:
-		print("沒有找到存檔，使用預設值並建立新存檔。")
 		save_data()
 
 
