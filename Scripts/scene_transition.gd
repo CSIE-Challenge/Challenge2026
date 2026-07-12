@@ -2,6 +2,8 @@ extends CanvasLayer
 
 signal transition_finished
 
+signal scene_transition_finished
+
 var ach_max_width: float = 350.0
 var ach_margin_x: float = 20.0
 var ach_border_thickness: float = 4.0
@@ -132,7 +134,8 @@ func transition_to_fade(target_scene: String) -> void:
 	# 切換場景
 	tween.tween_callback(func(): await _switch_scene(target_scene))
 	# 等待載入
-	tween.tween_interval(0.1)
+	await scene_transition_finished
+	tween = create_tween()
 	# 淡入畫面
 	tween.tween_property(fade_rect, "color:a", 0.0, 1.0)
 	tween.tween_callback(transition_finished.emit)
@@ -159,7 +162,8 @@ func transition_to(target_scene: String) -> void:
 	)
 
 	tween.tween_callback(func(): await _switch_scene(target_scene))
-	tween.tween_interval(0.1)
+	await scene_transition_finished
+	tween = create_tween()
 
 	# 快速拉開
 	tween.tween_property(top_bar, "anchor_bottom", 0.0, 0.3).set_trans(Tween.TRANS_EXPO).set_ease(
@@ -257,7 +261,9 @@ func transition_to_wave(target_scene: String) -> void:
 	)
 
 	tween.tween_callback(func(): await _switch_scene(target_scene))
-	tween.tween_interval(0.1)
+
+	await scene_transition_finished
+	tween = create_tween()
 
 	# 退潮準備：粒子發射器回到左側
 	tween.tween_callback(func(): particles.position.x = -0.2 * vp_size.x)
@@ -349,7 +355,8 @@ func transition_to_distortion(target_scene: String) -> void:
 
 	# 讓新場景載入後有短暫時間載入資源
 	# 將 append_interval 改為 tween_interval
-	tween.tween_interval(0.1)
+	await scene_transition_finished
+	tween = create_tween()
 
 	# ===== 階段四：黑幕拉開，同時畫面漸變復原 (0.6 秒) =====
 	# 將 append_property 改為 tween_property
@@ -438,3 +445,5 @@ func _switch_scene(target_scene: String) -> void:
 	else:
 		# 讀取失敗時 fallback 回同步讀取，至少能確保場景還是換得過去
 		get_tree().change_scene_to_file(target_scene)
+
+	scene_transition_finished.emit()
