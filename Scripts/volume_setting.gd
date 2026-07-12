@@ -36,6 +36,17 @@ func open() -> void:
 	)
 
 
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and not event.pressed and event.keycode == KEY_ESCAPE:
+		if self.visible:
+			_on_revert_button_button_up()
+			close()
+	elif event is InputEventKey and not event.pressed and event.keycode == KEY_ENTER:
+		if self.visible:
+			close()
+			get_viewport().set_input_as_handled()
+
+
 func close() -> void:
 	settings.set_value("Volume", "music", music_slider.value)
 	settings.set_value("Volume", "sfx", sfx_slider.value)

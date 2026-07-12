@@ -41,6 +41,11 @@ func _process(delta: float) -> void:
 	DisplayServer.cursor_set_shape(DisplayServer.CURSOR_ARROW)
 
 
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and not event.pressed and event.keycode == KEY_ESCAPE:
+		_on_close_pressed()
+
+
 func _on_close_pressed() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	SceneTransition.transition_to("res://Scenes/menu.tscn")
