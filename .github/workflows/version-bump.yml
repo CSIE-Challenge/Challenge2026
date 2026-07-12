@@ -1,0 +1,69 @@
+name: Version Bump
+
+# Requires: VERSION_BUMPER_APP_ID and VERSION_BUMPER_PRIVATE_KEY repo secrets
+# Requires: GitHub App added as bypass actor in main ruleset
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      bump_type:
+        description: "Version bump type"
+        required: true
+        type: choice
+        options:
+          - major
+          - patch
+
+jobs:
+  version-bump:
+    runs-on: ubuntu-latest
+    if: "!startsWith(github.event.head_commit.message, 'chore: bump version')"
+
+    steps:
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ secrets.VERSION_BUMPER_APP_ID }}
+          private-key: ${{ secrets.VERSION_BUMPER_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Configure git
+        run: |
+          git config user.name "${{ steps.app-token.outputs.app-slug }}[bot]"
+          git config user.email "${{ secrets.VERSION_BUMPER_APP_ID }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com"
+
+      - name: Bump version
+        id: bump
+        run: |
+          current=$(cat version.txt)
+          IFS='.' read -r major minor patch <<< "$current"
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            bump_type="${{ github.event.inputs.bump_type }}"
+          else
+            bump_type="minor"
+          fi
+
+          case "$bump_type" in
+            major) major=$((major + 1)); minor=0; patch=0 ;;
+            minor) minor=$((minor + 1)); patch=0 ;;
+            patch) patch=$((patch + 1)) ;;
+          esac
+
+          new_version="${major}.${minor}.${patch}"
+          echo "$new_version" > version.txt
+          echo "version=$new_version" >> $GITHUB_OUTPUT
+
+      - name: Commit and tag
+        run: |
+          git add version.txt
+          git commit -m "chore: bump version to ${{ steps.bump.outputs.version }}"
+          git tag "v${{ steps.bump.outputs.version }}"
+          git push
+          git push --tags
