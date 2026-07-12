@@ -68,7 +68,8 @@
 		"damage": 1,
 		"energy_costs": 20,
 		"min_speed": 120,
-		"max_speed": 250
+		"max_speed": 250,
+		"max_stock": 2
 	},
 	"trap7-spreading_ripples": {
 		"path": "res://Scenes/traps/trap7-spreading_ripples.tscn",
@@ -83,7 +84,8 @@
 		"position_min_y": -280.0,
 		"position_max_y": 280.0,
 		"min_expand_rate": 100.0,
-		"max_expand_rate": 200.0
+		"max_expand_rate": 200.0,
+		"max_stock": 2
 	},
 	"trap8-electric_arc": {
 		"path": "res://Scenes/traps/trap8-electric_arc.tscn",
