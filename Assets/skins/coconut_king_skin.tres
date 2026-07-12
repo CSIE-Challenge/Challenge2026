@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://coconutking_v2"]
+
+[ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_skindata"]
+[ext_resource type="Texture2D" uid="uid://d3jafh5p5cfo0" path="res://Shapes/coconut_tree/Coconut.png" id="2_preview"]
+[ext_resource type="PackedScene" uid="uid://xoc2t5ik3wnt" path="res://Scenes/skins/coconut_king_skin_prefab.tscn" id="3_prefab"]
+
+[resource]
+script = ExtResource("1_skindata")
+skin_id = "coconut_king_skin"
+true_name = "椰島之王"
+description = "頭戴海賊帽的椰子霸主，跳躍落地時金幣四濺。"
+hide_name = false
+is_achievement_unlock = true
+achievement_desc = "成為海賊王"
+is_silhouette = false
+preview_texture = ExtResource("2_preview")
+skin_prefab = ExtResource("3_prefab")
+health_icon_texture = ExtResource("2_preview")

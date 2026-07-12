@@ -31,6 +31,7 @@ var redeem_codes = {
 	"ee84277cbbe48dac2823530dc5fd607756216f6dfdda16b4b9eb2c9d90de468f": "among_us_skin",
 	"0de8197e0efb7a13ecf7ebe6ab3ea20541820eb509c68533c1c53c1f74aee096": "matrix_skin",
 	"99ce212dbfc057dd48d5532aacf9f0c76ac9f6a7cc3bac27b6be8e87525bc6e7": "undertale_skin",
+	"d82925a1cbba09cb6b74d679d5eb5bb4068022ac647e27c4119dc96648a28177": "coconut_king_skin",
 	"8169f1df4c3e57e67156554ded65480570cb74f65cdb50272f0b01acbc82abd5": "ALL_SKINS"
 }
 
