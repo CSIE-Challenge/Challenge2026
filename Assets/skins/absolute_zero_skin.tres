@@ -7,9 +7,9 @@
 [resource]
 script = ExtResource("1_abs")
 skin_id = "absolute_zero_skin"
-price = 100
 true_name = "絕對零度"
 description = "好冷喔，去跟熔岩火球坐一桌。"
+price = 30
 is_achievement_unlock = true
 achievement_desc = "積分兌換"
 skin_prefab = ExtResource("2_prefab")

@@ -23,8 +23,8 @@
 [ext_resource type="Resource" uid="uid://mongus" path="res://Assets/skins/among_us_skin.tres" id="21_amongus"]
 [ext_resource type="Resource" uid="uid://c0w40u12dluti" path="res://Assets/skins/matrix_skin.tres" id="22_matrix"]
 [ext_resource type="Resource" uid="uid://utskintres" path="res://Assets/skins/undertale_skin.tres" id="23_ut"]
+[ext_resource type="Resource" path="res://Assets/skins/coconut_king_skin.tres" id="24_coconut_king"]
 [ext_resource type="Texture2D" uid="uid://bcnx3b286mcb7" path="res://Shapes/background_blue.jpg" id="24_sf8f4"]
-[ext_resource type="Resource" uid="uid://coconutking_v2" path="res://Assets/skins/coconut_king_skin.tres" id="24_coconut_king"]
 
 [node name="SkinShop" type="Control" unique_id=1696416848]
 layout_mode = 3
@@ -96,6 +96,7 @@ theme_override_constants/v_separation = 32
 columns = 4
 
 [node name="DetailPopup" type="ColorRect" parent="." unique_id=1286263443]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -141,7 +142,7 @@ stretch = true
 transparent_bg = true
 handle_input_locally = false
 size = Vector2i(300, 300)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
 [node name="Camera2D" type="Camera2D" parent="DetailPopup/CenterContainer/PopupPanel/MarginContainer/HBoxContainer/PreviewVBox/SubViewportContainer/SubViewport" unique_id=968024652]
 position = Vector2(0, -60)

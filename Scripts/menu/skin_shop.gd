@@ -295,6 +295,13 @@ func refresh_all_items():
 		item.update_state()  # 呼叫 SkinItem 裡的 update_state() 重新判斷
 
 
+# 未擁有時顯示的價格文字，可被 price_text_override 覆寫
+func _get_price_text(data: SkinData) -> String:
+	if data.price_text_override != "":
+		return data.price_text_override
+	return "價格：%d 元" % data.price
+
+
 # ==========================================
 # 處理開啟詳細介紹頁面
 # ==========================================
@@ -312,10 +319,16 @@ func _on_item_detail_requested(data: SkinData):
 
 	# 2. 根據狀態更新視窗內容
 	if is_locked_silhouette:
-		detail_title.text = "????"
-		detail_desc.text = "未知的皮膚"
-		detail_cond.text = "價格：%d 元" % data.price
-		action_btn.visible = false
+		if data.hide_name:
+			detail_title.text = "????"
+			detail_desc.text = "未知的皮膚"
+		else:
+			detail_title.text = data.true_name
+			detail_desc.text = data.description
+		detail_cond.text = _get_price_text(data)
+		action_btn.visible = true
+		action_btn.text = "未解鎖"
+		action_btn.disabled = true
 		lock_icon.visible = true
 		# 鎖定狀態不載入模型
 	else:
@@ -332,13 +345,10 @@ func _on_item_detail_requested(data: SkinData):
 			else:
 				action_btn.text = "裝備"
 				action_btn.disabled = false
-		elif data.is_achievement_unlock:
-			detail_cond.text = "價格：%d 元" % data.price
+		else:
+			detail_cond.text = _get_price_text(data)
 			action_btn.text = "未解鎖"
 			action_btn.disabled = true
-		else:
-			detail_cond.text = "價格：%d 元" % data.price
-			action_btn.visible = false
 
 		# 預先載入舞台場景
 		var ShowcaseStageScene = preload("res://Scenes/menu/showcase_stage.tscn")

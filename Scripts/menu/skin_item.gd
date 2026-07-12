@@ -6,6 +6,7 @@ signal action_requested(data: SkinData)
 var skin_data: SkinData  # 儲存當前這個商品卡片對應的資料
 
 var sub_viewport: SubViewport
+var sub_viewport_container: SubViewportContainer
 
 # 設定好節點的參考 (請確保這些節點名稱與你場景中的一致)
 @onready
@@ -17,6 +18,7 @@ var preview_btn: TextureButton = $MarginContainer/VBoxContainer/PreviewContainer
 func _ready():
 	var path = "MarginContainer/VBoxContainer/PreviewContainer/SubViewportContainer/SubViewport"
 	sub_viewport = get_node(path)
+	sub_viewport_container = get_node("MarginContainer/VBoxContainer/PreviewContainer/SubViewportContainer")
 	# 綁定按鈕的點擊事件
 	preview_btn.pressed.connect(_on_preview_pressed)
 	action_btn.pressed.connect(_on_action_pressed)
@@ -50,11 +52,14 @@ func update_state():
 	var is_equipped = PlayerData.equipped_skin == skin_data.skin_id
 
 	# 1. 處理剪影效果 (Shader 或 Modulate)
+	# 活體預覽是畫在 SubViewportContainer 上的，也要一起塗黑才不會洩底
 	if not is_owned and skin_data.is_silhouette:
 		# 最簡單的剪影作法：將圖片塗黑
 		preview_btn.modulate = Color(0, 0, 0, 1)
+		sub_viewport_container.modulate = Color(0, 0, 0, 1)
 	else:
 		preview_btn.modulate = Color(1, 1, 1, 1)
+		sub_viewport_container.modulate = Color(1, 1, 1, 1)
 
 	# 2. 處理名稱顯示與亂碼
 	if not is_owned and skin_data.hide_name:
