@@ -7,7 +7,7 @@ var current_preview_model: Node = null  # 紀錄目前在 SubViewport 裡的皮�
 var instanced_items: Array[Control] = []  # 紀錄畫面上所有的商品節點
 
 var detail_viewport: SubViewport
-var close_btn: Button
+var close_btn: TextureButton
 
 var current_detail_data: SkinData = null
 # 為了避免明碼被偷看，這裡只儲存兌換碼的 SHA256 雜湊值
@@ -88,10 +88,7 @@ func _ready():
 		+ "SubViewportContainer/SubViewport"
 	)
 	detail_viewport = get_node(dv_path)
-	var cb_path = (
-		"DetailPopup/CenterContainer/PopupPanel/MarginContainer/HBoxContainer/"
-		+ "InfoVBox/CloseBtn"
-	)
+	var cb_path = "DetailPopup/LeaveBtn"
 	close_btn = get_node(cb_path)
 
 	# 商店開啟時，隱藏自己，準備做打開的特效

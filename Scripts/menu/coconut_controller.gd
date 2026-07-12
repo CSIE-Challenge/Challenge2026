@@ -9,7 +9,7 @@ var is_immutable = false
 
 var skin_instance = null
 
-var _debug: bool = false
+var _debug: bool = true
 
 @onready var body_sprite = $BodySprite
 @onready var shadow_sprite = $ShadowSprite

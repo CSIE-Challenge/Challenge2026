@@ -12,7 +12,7 @@ shader_parameter/rotation_speed = 5.0
 [node name="SingularitySkinPrefab" type="Node2D" unique_id=1831137622]
 script = ExtResource("1_sing")
 
-[node name="AccretionDisk" type="Sprite2D" parent="."]
+[node name="AccretionDisk" type="Sprite2D" parent="." unique_id=513634088]
 modulate = Color(0.8, 0.4, 1, 0.4)
 scale = Vector2(0.5, 0.15)
 texture = ExtResource("3_circle")
@@ -44,4 +44,3 @@ radial_accel_max = -200.0
 scale_amount_min = 0.01
 scale_amount_max = 0.03
 color = Color(0.8, 0.4, 1, 1)
-
