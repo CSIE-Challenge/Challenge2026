@@ -44,7 +44,7 @@ var _is_shutting_down := false
 @onready var energy_increase_timer = $EnergyIncreaseTimer
 @onready var trap_request_scheduler: TrapRequestScheduler = $"../TrapRequestScheduler"
 @onready var agent_action_service: AgentActionService = $"../AgentActionService"
-@onready var pregame_countdown: Label = $"../SubViewport/PregameCountdown"
+@onready var pregame_countdown: Label = $"../HUD/PregameCountdown"
 
 
 func _ready() -> void:

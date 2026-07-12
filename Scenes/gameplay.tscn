@@ -12,7 +12,7 @@
 [ext_resource type="Shader" uid="uid://flarch4chr80" path="res://Shaders/bounds.gdshader" id="7_r5xtw"]
 [ext_resource type="PackedScene" uid="uid://cwfs8yn4r4hjl" path="res://Scenes/energy_text.tscn" id="7_ra47u"]
 [ext_resource type="PackedScene" uid="uid://dukfpi8j30j5" path="res://Scenes/coconut_bar/coconut_bar.tscn" id="8_ltefv"]
-[ext_resource type="PackedScene" uid="uid://sy61e2606j8w" path="res://Scenes/result_screen.tscn" id="8_result"]
+[ext_resource type="PackedScene" path="res://Scenes/result_screen.tscn" id="8_result"]
 [ext_resource type="Texture2D" uid="uid://c1rj0im3pw7gd" path="res://Shapes/sand_background.png" id="8_rg35f"]
 [ext_resource type="Script" uid="uid://bs7ntuoxby0al" path="res://Scripts/trap_request_scheduler.gd" id="8_urrcd"]
 [ext_resource type="Script" uid="uid://c8r5j40yj4je7" path="res://Scripts/agent_action_service.gd" id="9_puebw"]
@@ -462,29 +462,6 @@ grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(100, 150)
 
-[node name="PregameCountdown" type="Label" parent="SubViewport" unique_id=839568335]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -36.0
-offset_top = -214.0
-offset_right = 34.0
-offset_bottom = -77.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(1, 0.7058824, 0.09803922, 1)
-theme_override_colors/font_shadow_color = Color(1.0039686, 0.33479407, 0, 0.98039216)
-theme_override_colors/font_outline_color = Color(1, 0.7058824, 0.21568628, 1)
-theme_override_constants/shadow_offset_x = 6
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("FontVariation_kj63f")
-theme_override_font_sizes/font_size = 85
-text = "3"
-horizontal_alignment = 1
-script = ExtResource("14_icchp")
-
 [node name="HigherThanPlayer" type="SubViewport" parent="." unique_id=1579438163]
 transparent_bg = true
 size = Vector2i(480, 270)
@@ -524,6 +501,29 @@ position = Vector2(1048, 512)
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=2039367638]
 layer = 0
+
+[node name="PregameCountdown" type="Label" parent="HUD" unique_id=839568335]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.0
+offset_top = -214.0
+offset_right = 34.0
+offset_bottom = -77.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.7058824, 0.09803922, 1)
+theme_override_colors/font_shadow_color = Color(1.0039686, 0.33479407, 0, 0.98039216)
+theme_override_colors/font_outline_color = Color(1, 0.7058824, 0.21568628, 1)
+theme_override_constants/shadow_offset_x = 6
+theme_override_constants/shadow_offset_y = 4
+theme_override_fonts/font = SubResource("FontVariation_kj63f")
+theme_override_font_sizes/font_size = 85
+text = "3"
+horizontal_alignment = 1
+script = ExtResource("14_icchp")
 
 [node name="EnergyBallsLabel" type="Label" parent="HUD" unique_id=312988717]
 offset_left = 876.0
