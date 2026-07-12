@@ -172,6 +172,27 @@ func get_cooldown_time(trap_id: String) -> float:
 	return _get_cooldown_remaining(trap_id)
 
 
+func get_current_stock(trap_id: String) -> int:
+	if not _is_known_trap(trap_id):
+		return -1
+	return _get_trap_stock_left(trap_id)
+
+
+func _get_trap_stock_left(trap_id: String) -> int:
+	var max_stock_count := _get_trap_max_stock(trap_id)
+	if max_stock_count <= 1:
+		return max_stock_count
+
+	var cooldown_time := _get_trap_cooldown_time(trap_id)
+	if cooldown_time <= 0.0:
+		return max_stock_count
+
+	var cooldown_remaining := _get_cooldown_remaining(trap_id)
+	var used_stocks := int(ceilf(cooldown_remaining / cooldown_time))
+	var current_stock := max_stock_count - used_stocks
+	return clamp(current_stock, 0, max_stock_count)
+
+
 func update_cooldowns(delta: float) -> void:
 	if delta <= 0.0:
 		return
@@ -223,10 +244,10 @@ func _get_trap_cooldown_time(trap_id: String) -> float:
 
 
 func _is_trap_on_cooldown(trap_id: String) -> bool:
-	if _get_trap_max_stock(trap_id) > 1:
-		return _get_cooldown_remaining(trap_id) > _get_trap_cooldown_time(trap_id)
-	else:
+	if _get_trap_max_stock(trap_id) <= 1:
 		return _get_cooldown_remaining(trap_id) > 0.0
+
+	return _get_trap_stock_left(trap_id) <= 0
 
 
 func _get_trap_max_stock(trap_id: String) -> int:

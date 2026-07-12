@@ -97,3 +97,17 @@ def test_get_cooldown_time_unknown_trap_is_apierror(client: GameClientBase) -> N
     assert not result
     assert result.code == 404
     assert result.reason == "unknown_trap"
+
+
+def test_get_current_stock_returns_int_for_known_trap(client: GameClientBase) -> None:
+    stock = client.get_current_stock(6)
+    assert isinstance(stock, int)
+    assert stock >= 0
+
+
+def test_get_current_stock_unknown_trap_is_apierror(client: GameClientBase) -> None:
+    result = client.get_current_stock(99)
+    assert isinstance(result, ApiError)
+    assert not result
+    assert result.code == 404
+    assert result.reason == "unknown_trap"

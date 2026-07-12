@@ -43,6 +43,7 @@ class Cmd:
     GET_PHASE = "get_phase"
     GET_AVAILABLE_TRAPS = "get_available_traps"
     GET_COOLDOWN_TIME = "get_cooldown_time"
+    GET_CURRENT_STOCK = "get_current_stock"
 
 
 class Status:

@@ -375,6 +375,26 @@ class GameClientBase:
         """
         return self._call(protocol.Cmd.GET_COOLDOWN_TIME, {"trap_id": trap_id})
 
+    def get_current_stock(self, trap_id: int) -> int:
+        """
+        # Get Current Stock
+        查詢指定陷阱目前的剩餘庫存數量。
+
+        ## Parameters
+        - `trap_id` (int): 陷阱編號 1 ~ 10，對應 ``trap1`` ~ ``trap10``。
+
+        ## Returns
+        回傳剩餘庫存數量（0 表示沒有庫存）；編號無效時回傳 :class:`ApiError`。
+
+        ## Example
+        ```python
+        stock = client.get_current_stock(1)
+        if stock > 0:
+            client.spawn_trap1(Vector2(120, 80))
+        ```
+        """
+        return self._call(protocol.Cmd.GET_CURRENT_STOCK, {"trap_id": trap_id})
+
     def heal(self) -> dict[str, Any]:
         """
         # Heal
