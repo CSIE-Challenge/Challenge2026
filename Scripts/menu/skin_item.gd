@@ -15,13 +15,19 @@ var preview_btn: TextureButton = $MarginContainer/VBoxContainer/PreviewContainer
 @onready var action_btn: Button = $MarginContainer/VBoxContainer/ActionBtn
 
 
+# gdlint:disable=max-line-length
 func _ready():
 	var path = "MarginContainer/VBoxContainer/PreviewContainer/SubViewportContainer/SubViewport"
 	sub_viewport = get_node(path)
-	sub_viewport_container = get_node("MarginContainer/VBoxContainer/PreviewContainer/SubViewportContainer")
+	sub_viewport_container = get_node(
+		"MarginContainer/VBoxContainer/PreviewContainer/SubViewportContainer"
+	)
 	# 綁定按鈕的點擊事件
 	preview_btn.pressed.connect(_on_preview_pressed)
 	action_btn.pressed.connect(_on_action_pressed)
+
+
+# gdlint:enable=max-line-length
 
 
 # ==========================================
