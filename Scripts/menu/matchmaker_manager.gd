@@ -85,6 +85,7 @@ func _ready() -> void:
 	add_child(_countdown_timer)
 
 	_show_panel(Page.A)
+	ip_input.grab_focus()
 
 	http_request.request_completed.connect(_on_request_completed)
 	poll_http_request.request_completed.connect(_on_poll_request_completed)
@@ -286,6 +287,7 @@ func _on_join_room_button_up() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	code_input.text = ""
 	_show_panel(Page.C)
+	code_input.grab_focus()
 
 
 func _on_back_button_up() -> void:

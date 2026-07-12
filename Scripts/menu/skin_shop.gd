@@ -224,6 +224,7 @@ func _on_open_redeem_pressed():
 	panel.scale = Vector2(0.5, 0.5)
 	panel.pivot_offset = panel.size / 2.0
 	var tween = create_tween()
+	redeem_input.grab_focus()
 	tween.parallel().tween_property(redeem_popup, "modulate:a", 1.0, 0.2)
 	(
 		tween
