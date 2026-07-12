@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://c0w40u12dluti"]
 
+[ext_resource type="Texture2D" uid="uid://rqvjb501k4qd" path="res://Shapes/hearts/matrix.svg" id="1_bihlv"]
 [ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_skindata"]
 [ext_resource type="PackedScene" uid="uid://matrixskin" path="res://Scenes/skins/matrix_skin_prefab.tscn" id="2_matrix"]
 
@@ -11,4 +12,5 @@ description = "網路上會炫技終端機噴一堆東西的影片都會被專�
 is_achievement_unlock = true
 achievement_desc = "積分兌換"
 skin_prefab = ExtResource("2_matrix")
+health_icon_texture = ExtResource("1_bihlv")
 metadata/_custom_type_script = "uid://c6vuqckcyjdey"
