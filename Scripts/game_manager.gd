@@ -142,8 +142,6 @@ func _physics_process(delta: float) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause"):
-		# In multiplayer, pausing only one client would desync the match.
-		# Consume Esc locally and keep both game instances running.
 		if _is_multiplayer_game():
 			get_viewport().set_input_as_handled()
 			return
@@ -592,8 +590,6 @@ func _on_network_health_changed(peer_id: int, health: int) -> void:
 		_update_health_display(clampi(health, 0, max_health))
 		if player == null:
 			return
-		# Single-player keeps the local death animation. Multiplayer ends
-		# immediately from the synchronized health event so both clients stop.
 		if player.health <= 0 and not _is_multiplayer_game():
 			await player.die()
 			finish_game(1)
@@ -608,8 +604,6 @@ func _finish_game_if_peer_defeated(peer_id: int, health: int) -> void:
 	if game_over or health > 0:
 		return
 
-	# Health is server-authoritative in multiplayer. Any peer reaching zero is
-	# enough to end the match on every client receiving the broadcast.
 	print("[GameManager] Peer %d health reached 0; finishing game" % peer_id)
 	finish_game()
 
