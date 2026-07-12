@@ -12,7 +12,8 @@ var _vel := Vector2.ZERO
 
 @onready var body = $Body
 @onready var face = $Body/Face
-@onready var coin_particles = $CoinParticles
+@onready var jump_particles = $CoinParticlesJump
+@onready var land_particles = $CoinParticlesLand
 @onready var death_particles = $DeathParticles
 @onready var wake_left = $WakeLeft
 @onready var wake_right = $WakeRight
@@ -85,16 +86,13 @@ func play_jump():
 	var tween = create_tween()
 	tween.tween_property(body, "scale", Vector2(0.8, 1.25), 0.1)
 	tween.tween_property(body, "scale", Vector2.ONE, 0.15)
-	_burst_coins()
+	jump_particles.restart()
+	jump_particles.emitting = true
 
 
 func play_land():
 	var tween = create_tween()
 	tween.tween_property(body, "scale", Vector2(1.25, 0.75), 0.1)
 	tween.tween_property(body, "scale", Vector2.ONE, 0.15)
-	_burst_coins()
-
-
-func _burst_coins():
-	coin_particles.restart()
-	coin_particles.emitting = true
+	land_particles.restart()
+	land_particles.emitting = true
