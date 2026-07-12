@@ -64,7 +64,7 @@ layout_mode = 2
 theme_override_constants/separation = 20
 
 [node name="MusicLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/MusicContainer" unique_id=1016900071]
-custom_minimum_size = Vector2(160, 0)
+custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.23529412, 0.22745098, 0.23529412, 1)
 theme_override_font_sizes/font_size = 30
@@ -80,6 +80,7 @@ script = ExtResource("2_gpihd")
 bus_name = "Music"
 
 [node name="ValueLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/MusicContainer" unique_id=1405787552]
+custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.23529412, 0.22745098, 0.23529412, 1)
 theme_override_font_sizes/font_size = 28
@@ -91,7 +92,7 @@ layout_mode = 2
 theme_override_constants/separation = 20
 
 [node name="SFXLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/SFXContainer" unique_id=198577739]
-custom_minimum_size = Vector2(160, 0)
+custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.23529412, 0.22745098, 0.23529412, 1)
 theme_override_font_sizes/font_size = 30
@@ -108,6 +109,7 @@ script = ExtResource("2_gpihd")
 bus_name = "SFX"
 
 [node name="ValueLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/SFXContainer" unique_id=961669272]
+custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.23529412, 0.22745098, 0.23529412, 1)
 theme_override_font_sizes/font_size = 28
