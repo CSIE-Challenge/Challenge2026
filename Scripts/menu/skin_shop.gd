@@ -314,7 +314,7 @@ func _on_item_detail_requested(data: SkinData):
 	if is_locked_silhouette:
 		detail_title.text = "????"
 		detail_desc.text = "未知的皮膚"
-		detail_cond.text = "解鎖條件：未知"
+		detail_cond.text = "價格：%d 元" % data.price
 		action_btn.visible = false
 		lock_icon.visible = true
 		# 鎖定狀態不載入模型
@@ -325,7 +325,7 @@ func _on_item_detail_requested(data: SkinData):
 		lock_icon.visible = false
 
 		if is_owned:
-			detail_cond.text = "狀態：已擁有"
+			detail_cond.text = "已擁有"
 			if is_equipped:
 				action_btn.text = "已裝備"
 				action_btn.disabled = true
@@ -333,11 +333,11 @@ func _on_item_detail_requested(data: SkinData):
 				action_btn.text = "裝備"
 				action_btn.disabled = false
 		elif data.is_achievement_unlock:
-			detail_cond.text = "解鎖條件：" + data.achievement_desc
+			detail_cond.text = "價格：%d 元" % data.price
 			action_btn.text = "未解鎖"
 			action_btn.disabled = true
 		else:
-			detail_cond.text = "請輸入兌換碼解鎖"
+			detail_cond.text = "價格：%d 元" % data.price
 			action_btn.visible = false
 
 		# 預先載入舞台場景

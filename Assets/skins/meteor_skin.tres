@@ -8,6 +8,7 @@
 [resource]
 script = ExtResource("1_skindata")
 skin_id = "meteor_skin"
+price = 100
 true_name = "流星尾跡"
 description = "猜猜看，這是離子尾還是塵埃尾？"
 is_achievement_unlock = true

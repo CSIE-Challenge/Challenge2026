@@ -9,6 +9,7 @@
 [resource]
 script = ExtResource("1_amongus_scr")
 skin_id = "among_us_skin"
+price = 100
 true_name = "可疑人物"
 description = "SUS"
 is_achievement_unlock = true

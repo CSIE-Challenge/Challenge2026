@@ -7,6 +7,7 @@
 [resource]
 script = ExtResource("1_skindata")
 skin_id = "matrix_skin"
+price = 100
 true_name = "終端字流"
 description = "網路上會炫技終端機噴一堆東西的影片都會被專業人士拿出來審視。但我一律推薦`sl | lolcat`"
 is_achievement_unlock = true

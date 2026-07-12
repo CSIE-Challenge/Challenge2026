@@ -8,8 +8,9 @@
 [resource]
 script = ExtResource("1_sing")
 skin_id = "singularity_skin"
+price = 100
 true_name = "黑洞奇異點"
-description = "會跳的黑洞，稀奇不？如果把陷阱吸到身上就糟糕了。"
+description = "會跳的黑洞，稀奇不？如果把陷阱\n吸到身上就糟糕了。"
 is_achievement_unlock = true
 achievement_desc = "積分兌換"
 is_silhouette = true

@@ -8,6 +8,7 @@
 [resource]
 script = ExtResource("1_skindata")
 skin_id = "magma_skin"
+price = 100
 true_name = "熔岩火球"
 description = "燃燒！！！"
 is_achievement_unlock = true

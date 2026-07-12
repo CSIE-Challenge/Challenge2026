@@ -8,8 +8,9 @@
 [resource]
 script = ExtResource("1_skindata")
 skin_id = "thunder_skin"
+price = 100
 true_name = "雷霆風暴"
-description = "寶寶肚肚打雷喽~"
+description = "寶寶肚肚打雷嘍~"
 is_achievement_unlock = true
 achievement_desc = "積分兌換"
 preview_texture = ExtResource("1_circle")

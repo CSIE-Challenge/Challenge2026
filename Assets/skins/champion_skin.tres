@@ -9,8 +9,9 @@
 [resource]
 script = ExtResource("1_skindata")
 skin_id = "champion_skin"
+price = 100
 true_name = "冠軍王者"
-description = "這讓我想起了一位黃紫配色的故人。喔不是，他是藍紫色的。"
+description = "這讓我想起了一位黃紫配色的故\n人。喔不是，他是藍紫色的。"
 preview_texture = ExtResource("1_q3mce")
 skin_prefab = ExtResource("2_prefab")
 health_icon_texture = ExtResource("1_j2aet")

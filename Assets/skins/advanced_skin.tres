@@ -8,8 +8,10 @@
 [resource]
 script = ExtResource("1_skindata")
 skin_id = "advanced_skin"
+price = 100
 true_name = "高級小球"
-description = "也是白色小球，但是......好像又有點不一樣？
+description = "也是白色小球，但是......
+好像又有點不一樣？
 啊，我知道不一樣在哪了。
 比較高級。"
 is_achievement_unlock = true

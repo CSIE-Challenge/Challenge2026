@@ -8,8 +8,9 @@
 [resource]
 script = ExtResource("1_skindata")
 skin_id = "ninja_skin"
+price = 100
 true_name = "暗影忍者"
-description = "弱者才用跳的，真正的高手會使用忍術。"
+description = "弱者才用跳的，真正的高手會使用\n忍術。"
 preview_texture = ExtResource("1_m8r85")
 skin_prefab = ExtResource("2_prefab")
 health_icon_texture = ExtResource("1_78l3d")
