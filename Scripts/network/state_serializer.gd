@@ -65,6 +65,7 @@ func _collect_state() -> Dictionary:
 		"peer_id": multiplayer.get_unique_id(),
 		"tick": Engine.get_physics_frames(),
 		"player": _serialize_player(player_node),
+		"max_energy_cap": _collect_max_energy_cap(),
 		"traps": _serialize_traps(),
 		"energy_balls": _serialize_energy_balls(),
 	}
@@ -94,6 +95,24 @@ func _serialize_player(p: Node) -> Dictionary:
 		"energy": energy,
 		"energy_ball_count": ball_count,
 	}
+
+
+func _collect_max_energy_cap() -> int:
+	if not game_manager:
+		return 0
+	if game_manager.has_method("get_current_max_energy_cap"):
+		return int(game_manager.get_current_max_energy_cap())
+
+	if not ("max_energy" in game_manager) or not ("current_phase" in game_manager):
+		return 0
+
+	var caps: Array = game_manager.max_energy
+	if typeof(caps) != TYPE_ARRAY or caps.is_empty():
+		return 0
+
+	var phase: int = int(game_manager.current_phase)
+	var index: int = min(phase, caps.size() - 1)
+	return int(caps[index])
 
 
 ## Collects all trap state from stage children.

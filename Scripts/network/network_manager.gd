@@ -25,17 +25,20 @@ signal demo_disconnected
 signal demo_state_received(data: Dictionary)
 
 const MAX_HEALTH := 5
+const DEFAULT_MAX_ENERGY := 35
 const DEFAULT_PORT := 7777
 const DEFAULT_SERVER_ADDRESS := "127.0.0.1"
 const MAX_CLIENTS := 3
 const READY_TIMEOUT_SECONDS := 90.0
 
-var max_energy = GameData.new().data["game_manager"]["max_energy"][0]
+var max_energy: int = DEFAULT_MAX_ENERGY
 var connected_peer_ids: Array[int] = []
 var energy_by_peer_id: Dictionary = {}
 var health_by_peer_id: Dictionary = {}
 var demo_peer_id: int = -1  # -1 when no demo is connected
 var max_health: int = MAX_HEALTH
+var _game_data: Dictionary = {}
+var _game_max_energy: Array = []
 var _client_states: Dictionary = {}  # peer_id → state snapshot Dictionary
 var _server_receive_count: int = 0
 var _demo_push_count: int = 0
@@ -45,6 +48,9 @@ var _ready_timeout_timer: Timer = null
 ## Called on startup. Connects multiplayer signals and handles command-line launch.
 func _ready() -> void:
 	_connect_multiplayer_signals()
+	_load_game_data()
+	var initial_caps: Array = _read_game_max_energy_caps()
+	max_energy = int(initial_caps[0]) if initial_caps.size() > 0 else DEFAULT_MAX_ENERGY
 	max_health = _load_max_health_from_game_json()
 	_start_from_command_line(OS.get_cmdline_user_args())
 
@@ -57,6 +63,9 @@ func _ready() -> void:
 ## Emits [signal server_started] on success, [signal server_start_failed] on error.
 func start_server(port := DEFAULT_PORT) -> Error:
 	stop_network()
+	_load_game_data()
+	var initial_caps: Array = _read_game_max_energy_caps()
+	max_energy = int(initial_caps[0]) if initial_caps.size() > 0 else DEFAULT_MAX_ENERGY
 
 	var peer := ENetMultiplayerPeer.new()
 	var error := peer.create_server(port, MAX_CLIENTS)
@@ -92,7 +101,17 @@ func join_server(address := DEFAULT_SERVER_ADDRESS, port := DEFAULT_PORT) -> Err
 
 
 func update_max_energy(new_max_energy: int) -> void:
-	max_energy = new_max_energy
+	var energy_caps: Array = _read_game_max_energy_caps()
+	var ceiling_cap: int = int(energy_caps[-1]) if energy_caps.size() > 0 else DEFAULT_MAX_ENERGY
+	max_energy = clampi(new_max_energy, 0, ceiling_cap)
+
+	if multiplayer.is_server():
+		return
+
+	if not _can_process_local_network_request():
+		return
+
+	rpc_id(1, "_server_set_max_energy_cap", max_energy)
 
 
 ## Closes the current connection and resets the multiplayer peer to offline mode.
@@ -105,6 +124,9 @@ func stop_network() -> void:
 	energy_by_peer_id.clear()
 	health_by_peer_id.clear()
 	_client_states.clear()
+	_refresh_game_max_energy_caps()
+	var initial_caps: Array = _read_game_max_energy_caps()
+	max_energy = int(initial_caps[0]) if initial_caps.size() > 0 else DEFAULT_MAX_ENERGY
 
 
 ## Returns true if the server can accept more clients based on [param connected_client_count].
@@ -163,16 +185,48 @@ func get_max_health() -> int:
 
 
 func _load_max_health_from_game_json() -> int:
-	var game_data: Dictionary = GameData.new().data
-	if typeof(game_data) != TYPE_DICTIONARY:
+	if typeof(_game_data) != TYPE_DICTIONARY:
 		return MAX_HEALTH
 
-	var player_data: Dictionary = game_data.get("player", {})
+	var player_data: Dictionary = _game_data.get("player", {})
 	if typeof(player_data) != TYPE_DICTIONARY:
 		return MAX_HEALTH
 
 	var configured := int(player_data.get("max_health", MAX_HEALTH))
 	return max(1, configured)
+
+
+func _read_game_max_energy_caps() -> Array:
+	return _game_max_energy if not _game_max_energy.is_empty() else [DEFAULT_MAX_ENERGY]
+
+
+func _refresh_game_max_energy_caps() -> void:
+	var normalized_caps: Array = []
+	if typeof(_game_data) != TYPE_DICTIONARY:
+		_game_max_energy = [DEFAULT_MAX_ENERGY]
+		return
+
+	var manager_data: Dictionary = _game_data.get("game_manager", {})
+	if typeof(manager_data) != TYPE_DICTIONARY:
+		_game_max_energy = [DEFAULT_MAX_ENERGY]
+		return
+
+	var raw_caps: Array = manager_data.get("max_energy", [])
+	if typeof(raw_caps) != TYPE_ARRAY:
+		_game_max_energy = [DEFAULT_MAX_ENERGY]
+		return
+
+	for value in raw_caps:
+		if typeof(value) in [TYPE_INT, TYPE_FLOAT]:
+			var parsed: int = int(value)
+			if parsed > 0:
+				normalized_caps.append(parsed)
+
+	if normalized_caps.is_empty():
+		_game_max_energy = [DEFAULT_MAX_ENERGY]
+		return
+
+	_game_max_energy = normalized_caps
 
 
 ## Returns every peer for which this client has authoritative status cache.
@@ -509,6 +563,22 @@ func _server_request_change_peer_health(peer_id: int, delta: int) -> void:
 	_server_change_health(peer_id, delta, sender_id)
 
 
+@rpc("any_peer", "call_remote", "reliable")
+func _server_set_max_energy_cap(requested_cap: int) -> void:
+	if not multiplayer.is_server():
+		return
+
+	var sender_id := multiplayer.get_remote_sender_id()
+	if not connected_peer_ids.has(sender_id):
+		return
+
+	var capped_cap := _clamp_reported_max_energy_cap(requested_cap)
+	if capped_cap <= max_energy:
+		return
+
+	max_energy = capped_cap
+
+
 func _sync_energy_to_peer(target_peer_id: int) -> void:
 	for peer_id in energy_by_peer_id:
 		if peer_id == target_peer_id:
@@ -674,6 +744,7 @@ func _server_receive_state(state: Dictionary) -> void:
 		return
 
 	_store_client_state(sender_id, state)
+	_update_server_max_energy_from_state(state)
 	_server_receive_count += 1
 	if _server_receive_count % 30 == 1:
 		print(
@@ -687,6 +758,33 @@ func _server_receive_state(state: Dictionary) -> void:
 				]
 			)
 		)
+
+
+func _update_server_max_energy_from_state(state: Dictionary) -> void:
+	if not state.has("max_energy_cap"):
+		return
+
+	var reported_cap := int(state.get("max_energy_cap"))
+	var capped_cap := _clamp_reported_max_energy_cap(reported_cap)
+	if capped_cap <= max_energy:
+		return
+
+	max_energy = capped_cap
+
+
+func _clamp_reported_max_energy_cap(reported_cap: int) -> int:
+	var energy_caps: Array = _read_game_max_energy_caps()
+	if energy_caps.is_empty():
+		return DEFAULT_MAX_ENERGY
+
+	var floor_cap: int = int(energy_caps[0])
+	var ceil_cap: int = int(energy_caps[energy_caps.size() - 1])
+	return clampi(reported_cap, floor_cap, ceil_cap)
+
+
+func _load_game_data() -> void:
+	_game_data = GameData.new().data
+	_refresh_game_max_energy_caps()
 
 
 ## Public: attempt to register [param peer_id] as the demo spectator.
