@@ -46,7 +46,7 @@ func _ready() -> void:
 	tween.set_parallel(true)
 	tween.tween_property(wave_animation.material, "shader_parameter/reverse_reveal", 0.0, 0.5)
 	tween.tween_property(rectshape, "size", Vector2(100, 0), 0.5)
-	tween.tween_property(collision_shape, "position", Vector2(75, 0), 0.5)
+	tween.tween_property(collision_shape, "position", Vector2(0, 75), 0.5)
 	await tween.finished
 	_destroy_trap()
 
