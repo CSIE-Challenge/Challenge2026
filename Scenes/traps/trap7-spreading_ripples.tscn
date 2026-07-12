@@ -7,8 +7,8 @@
 radius = 96.25487
 
 [sub_resource type="Curve" id="Curve_msq6u"]
-_data = [Vector2(0, 0.5373474), 0.0, 0.94283897, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
-point_count = 2
+_data = [Vector2(0, 0), 0.0, 3.9205892, 0, 0, Vector2(0.11730205, 0.53654194), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
 
 [sub_resource type="CurveTexture" id="CurveTexture_2fqos"]
 curve = SubResource("Curve_msq6u")
