@@ -1,7 +1,7 @@
 class_name Trap6Scanline
 extends Area2D
 
-const LINE_SHIFT := 500  # 圖片中心和 Area2D 的中心的距離是 (500, 500)
+const LINE_SHIFT := 300  # 生成時偏移位置
 
 @export var oscillate_frequency: float = 0.5
 @export var oscillate_amplitude: float = 20
@@ -19,6 +19,7 @@ var line_pos := Vector2(0, 0)
 var time := 0.0
 var is_demo := false
 var hula_rotate := false
+var start_moving := false
 
 @onready var visual_line = $Hulas
 
@@ -62,19 +63,22 @@ func _ready() -> void:
 			hula.rotation = -PI / 2
 	scale = Vector2(0, 1)
 	var tween = create_tween()
-	tween.tween_property(self, "scale", Vector2(1, 1), 0.15)
+	tween.tween_property(self, "scale", Vector2(1, 1), 0.25)
+	await tween.finished
+	start_moving = true
 
 
 func _physics_process(delta: float) -> void:
-	position += velocity * delta
-	time += delta
-	visual_line.position.x = sin(time * TAU * oscillate_frequency) * oscillate_amplitude
-	visual_line.scale.x = sign(visual_line.position.x)
-	if abs(line_dir.x) > 0.1:
-		if visual_line.position.x > 0.1:
-			visual_line.rotation = 0
-		else:
-			visual_line.rotation = PI
+	if start_moving:
+		position += velocity * delta
+		time += delta
+		visual_line.position.x = sin(time * TAU * oscillate_frequency) * oscillate_amplitude
+		visual_line.scale.x = sign(visual_line.position.x)
+		if abs(line_dir.x) > 0.1:
+			if visual_line.position.x > 0.1:
+				visual_line.rotation = 0
+			else:
+				visual_line.rotation = PI
 
 
 func _on_body_entered(_body: Node2D) -> void:
