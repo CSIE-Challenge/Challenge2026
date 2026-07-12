@@ -12,7 +12,7 @@
 [ext_resource type="Shader" uid="uid://flarch4chr80" path="res://Shaders/bounds.gdshader" id="7_r5xtw"]
 [ext_resource type="PackedScene" uid="uid://cwfs8yn4r4hjl" path="res://Scenes/energy_text.tscn" id="7_ra47u"]
 [ext_resource type="PackedScene" uid="uid://dukfpi8j30j5" path="res://Scenes/coconut_bar/coconut_bar.tscn" id="8_ltefv"]
-[ext_resource type="PackedScene" path="res://Scenes/result_screen.tscn" id="8_result"]
+[ext_resource type="PackedScene" uid="uid://sy61e2606j8w" path="res://Scenes/result_screen.tscn" id="8_result"]
 [ext_resource type="Texture2D" uid="uid://c1rj0im3pw7gd" path="res://Shapes/sand_background.png" id="8_rg35f"]
 [ext_resource type="Script" uid="uid://bs7ntuoxby0al" path="res://Scripts/trap_request_scheduler.gd" id="8_urrcd"]
 [ext_resource type="Script" uid="uid://c8r5j40yj4je7" path="res://Scripts/agent_action_service.gd" id="9_puebw"]
@@ -584,9 +584,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -465.0
+offset_left = -467.0
 offset_top = -45.0
-offset_right = -378.0
+offset_right = -380.0
 offset_bottom = 10.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -602,9 +602,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -493.0
+offset_left = -495.0
 offset_top = -88.0
-offset_right = -350.0
+offset_right = -352.0
 offset_bottom = -23.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -622,9 +622,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -481.0
+offset_left = -483.0
 offset_top = -131.0
-offset_right = -361.0
+offset_right = -363.0
 offset_bottom = -76.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -642,9 +642,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -494.0
+offset_left = -496.0
 offset_top = -174.0
-offset_right = -351.0
+offset_right = -353.0
 offset_bottom = -109.0
 grow_horizontal = 2
 grow_vertical = 2
