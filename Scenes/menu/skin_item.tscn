@@ -2,29 +2,29 @@
 
 [ext_resource type="Script" uid="uid://dvkvsved733vi" path="res://Scripts/menu/skin_item.gd" id="1_mpx8h"]
 
-[node name="SkinItem" type="PanelContainer"]
+[node name="SkinItem" type="PanelContainer" unique_id=2113402073]
 custom_minimum_size = Vector2(200, 280)
 offset_right = 200.0
 offset_bottom = 280.0
 script = ExtResource("1_mpx8h")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=411776343]
 layout_mode = 2
 theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 16
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 16
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=666849492]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="PreviewContainer" type="Control" parent="MarginContainer/VBoxContainer"]
+[node name="PreviewContainer" type="Control" parent="MarginContainer/VBoxContainer" unique_id=652605397]
 custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="MarginContainer/VBoxContainer/PreviewContainer"]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="MarginContainer/VBoxContainer/PreviewContainer" unique_id=1777735923]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -33,16 +33,16 @@ grow_horizontal = 2
 grow_vertical = 2
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="MarginContainer/VBoxContainer/PreviewContainer/SubViewportContainer"]
+[node name="SubViewport" type="SubViewport" parent="MarginContainer/VBoxContainer/PreviewContainer/SubViewportContainer" unique_id=953151839]
 transparent_bg = true
 handle_input_locally = false
-size = Vector2i(168, 120)
+size = Vector2i(168, 145)
 render_target_update_mode = 4
 
-[node name="Camera2D" type="Camera2D" parent="MarginContainer/VBoxContainer/PreviewContainer/SubViewportContainer/SubViewport"]
+[node name="Camera2D" type="Camera2D" parent="MarginContainer/VBoxContainer/PreviewContainer/SubViewportContainer/SubViewport" unique_id=376296986]
 zoom = Vector2(1.2, 1.2)
 
-[node name="PreviewButton" type="TextureButton" parent="MarginContainer/VBoxContainer/PreviewContainer"]
+[node name="PreviewButton" type="TextureButton" parent="MarginContainer/VBoxContainer/PreviewContainer" unique_id=334121927]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -52,11 +52,12 @@ grow_vertical = 2
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1103216834]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.99215686, 0.9647059, 0.8862745, 1)
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ActionBtn" type="Button" parent="MarginContainer/VBoxContainer"]
+[node name="ActionBtn" type="Button" parent="MarginContainer/VBoxContainer" unique_id=1039439943]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2

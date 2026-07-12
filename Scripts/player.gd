@@ -36,6 +36,7 @@ var juice_count := 0
 @onready var jump_particle = $JumpParticle
 @onready var land_particle = $LandParticle
 @onready var remote_land_particle = $RemoteTransform2D
+@onready var trap_cleaner = $TrapCleaner
 
 
 func _ready() -> void:
@@ -45,6 +46,9 @@ func _ready() -> void:
 	jump_particle.process_material.set("color_initial_ramp", sand_particle)
 
 	health = max_health
+	shadow_sprite.visible = false
+	trap_cleaner.body_entered.connect(_on_body_entered)
+	trap_cleaner.area_entered.connect(_on_area_entered)
 	for x in range(4):
 		for y in range(4):
 			all_sand_tiles.append(Vector2i(x, y))
@@ -128,6 +132,7 @@ func _update_sand_tilemap():
 func _jump():
 	if isjumping:
 		return
+	shadow_sprite.visible = true
 	jump_particle.restart()
 	jump_particle.emitting = true
 	isjumping = true
@@ -155,6 +160,13 @@ func _jump_process(delta: float):
 		_adjust_collision_layer()
 		land_particle.restart()
 		land_particle.emitting = true
+		shadow_sprite.visible = false
+		if juice_count > 0:
+			Audio.play_sfx(Audio.SFX.LAND_JUICE)
+		elif is_in_water:
+			Audio.play_sfx(Audio.SFX.LAND_WATER)
+		else:
+			Audio.play_sfx(Audio.SFX.LAND_SAND)
 		if is_instance_valid(skin_instance):
 			skin_instance.global_position = self.global_position
 			if skin_instance.has_method("play_land"):
@@ -178,13 +190,26 @@ func _invincible_flicker() -> void:
 		skin_instance.modulate.a = modulate.a
 
 
+func _on_body_entered(body: Node2D):
+	if body.has_method("seagull_die"):
+		body.seagull_die()
+
+
+func _on_area_entered(area: Area2D):
+	if area.get_parent().has_method("disarm"):
+		area.get_parent().disarm()
+
+
 func _adjust_collision_layer() -> void:
 	if isjumping:
 		collision_layer = 0
+		trap_cleaner.collision_mask = 0
 	elif isinvincible:
 		collision_layer = 8
+		trap_cleaner.collision_mask = 4
 	else:
 		collision_layer = 1 | 8
+		trap_cleaner.collision_mask = 0
 
 
 func invincibility_toggle(on: bool):
@@ -203,7 +228,11 @@ func _on_energy_ball_collected(_energy_amount: int) -> void:
 func die():
 	$ShadowSprite.hide()
 	if is_instance_valid(skin_instance) and skin_instance.has_method("play_die"):
+		skin_instance.process_mode = Node.PROCESS_MODE_WHEN_PAUSED
+		get_tree().paused = true
 		await skin_instance.play_die()
+		skin_instance.process_mode = Node.PROCESS_MODE_INHERIT
+		get_tree().paused = false
 
 
 func adjust_particle() -> void:

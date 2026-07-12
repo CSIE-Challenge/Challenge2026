@@ -1,6 +1,19 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://g07734grvl8l"]
 
-[ext_resource type="Script" path="res://Scripts/menu/matchmaker_manager.gd" id="1_mm"]
+[ext_resource type="Theme" uid="uid://doboascpna6vx" path="res://Assets/themes/menu.tres" id="1_fp7ma"]
+[ext_resource type="Script" uid="uid://d2t3qqueuohaw" path="res://Scripts/menu/matchmaker_manager.gd" id="1_mm"]
+[ext_resource type="Shader" uid="uid://1ydmxa2a26q" path="res://Shaders/blur_background.gdshader" id="3_ffihv"]
+[ext_resource type="Texture2D" uid="uid://6rrr8k2xscjn" path="res://Shapes/background_yellow.jpg" id="3_h4iwl"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_h4iwl"]
+resource_local_to_scene = true
+shader = ExtResource("3_ffihv")
+shader_parameter/blur_amount = 0.8
+shader_parameter/tint_color = Color(0.99215686, 0.95686275, 0.8980392, 0.27058825)
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_h4iwl"]
+color = Color(0.31037527, 0.36370277, 0.40675202, 1)
+thickness = 3
 
 [node name="Matchmaker" type="Control" unique_id=2000000001]
 layout_mode = 3
@@ -9,6 +22,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_fp7ma")
 script = ExtResource("1_mm")
 
 [node name="Panel" type="Panel" parent="." unique_id=2000000002]
@@ -19,116 +33,123 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel" unique_id=2000000003]
+[node name="TextureRect" type="TextureRect" parent="Panel" unique_id=647960505]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.0
-anchor_right = 0.5
-anchor_bottom = 0.0
-offset_left = -350.0
-offset_top = 40.0
-offset_right = 350.0
-offset_bottom = 165.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
-grow_vertical = 0
-theme_override_constants/separation = 10
+grow_vertical = 2
+texture = ExtResource("3_h4iwl")
+expand_mode = 1
 
-[node name="IPLabel" type="Label" parent="Panel/VBoxContainer" unique_id=2000000004]
+[node name="ColorRect" type="ColorRect" parent="Panel/TextureRect" unique_id=1604018818]
+material = SubResource("ShaderMaterial_h4iwl")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margins" type="MarginContainer" parent="Panel" unique_id=402481553]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 226
+theme_override_constants/margin_top = 80
+theme_override_constants/margin_right = 226
+theme_override_constants/margin_bottom = 80
+
+[node name="Content" type="VBoxContainer" parent="Panel/Margins" unique_id=1474863966]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "Matchmaker Server:"
+theme_override_constants/separation = 24
+
+[node name="TitleLabel" type="Label" parent="Panel/Margins/Content" unique_id=2000000008]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 56
+text = "Match Preperation"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Panels" type="Control" parent="Panel/Margins/Content" unique_id=482365547]
+layout_mode = 2
+size_flags_vertical = 6
+
+[node name="PanelA" type="VBoxContainer" parent="Panel/Margins/Content/Panels" unique_id=2000000007]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+
+[node name="IPContainer" type="VBoxContainer" parent="Panel/Margins/Content/Panels/PanelA" unique_id=2000000003]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="IPLabel" type="Label" parent="Panel/Margins/Content/Panels/PanelA/IPContainer" unique_id=2000000004]
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+text = "Enter Server Address"
 horizontal_alignment = 1
 
-[node name="IPInput" type="LineEdit" parent="Panel/VBoxContainer" unique_id=2000000005]
+[node name="ErrorLabel" type="Label" parent="Panel/Margins/Content/Panels/PanelA/IPContainer" unique_id=2000000009]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.76, 0.28170666, 0.2736, 1)
+theme_override_font_sizes/font_size = 26
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="IPInput" type="LineEdit" parent="Panel/Margins/Content/Panels/PanelA/IPContainer" unique_id=2000000005]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
 placeholder_text = "127.0.0.1:3000"
-horizontal_alignment = 1
 
-[node name="HSeparator" type="HSeparator" parent="Panel/VBoxContainer" unique_id=2000000006]
-layout_mode = 2
-
-[node name="PanelA" type="VBoxContainer" parent="Panel" unique_id=2000000007]
-visible = true
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -350.0
-offset_top = -150.0
-offset_right = 350.0
-offset_bottom = 150.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 15
-
-[node name="TitleLabel" type="Label" parent="Panel/PanelA" unique_id=2000000008]
-custom_minimum_size = Vector2(0, 60)
-layout_mode = 2
-theme_override_font_sizes/font_size = 48
-text = "建立或加入房間"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="ErrorLabel" type="Label" parent="Panel/PanelA" unique_id=2000000009]
-layout_mode = 2
-theme_override_font_sizes/font_size = 22
-text = ""
-horizontal_alignment = 1
-
-[node name="CreateRoomButton" type="Button" parent="Panel/PanelA" unique_id=2000000010]
+[node name="CreateRoomButton" type="Button" parent="Panel/Margins/Content/Panels/PanelA" unique_id=2000000010]
 custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
 theme_override_font_sizes/font_size = 34
-text = "創建房間"
+disabled = true
+text = "Create a Room"
 
-[node name="JoinRoomButton" type="Button" parent="Panel/PanelA" unique_id=2000000011]
+[node name="JoinRoomButton" type="Button" parent="Panel/Margins/Content/Panels/PanelA" unique_id=2000000011]
 custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
 theme_override_font_sizes/font_size = 34
-text = "加入房間"
+disabled = true
+text = "Join a Room"
 
-[node name="BackButton" type="Button" parent="Panel/PanelA" unique_id=2000000012]
+[node name="BackButton" type="Button" parent="Panel/Margins/Content/Panels/PanelA" unique_id=2000000012]
 custom_minimum_size = Vector2(0, 55)
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
-text = "返回"
+text = "Back"
 
-[node name="PanelB" type="VBoxContainer" parent="Panel" unique_id=2000000013]
-visible = false
+[node name="PanelB" type="VBoxContainer" parent="Panel/Margins/Content/Panels" unique_id=2000000013]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -350.0
-offset_top = -150.0
-offset_right = 350.0
-offset_bottom = 150.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 15
 
-[node name="CountdownLabel" type="Label" parent="Panel/PanelB" unique_id=2000000014]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-theme_override_font_sizes/font_size = 36
-text = "剩餘 60 秒"
-horizontal_alignment = 1
-
-[node name="TitleLabel" type="Label" parent="Panel/PanelB" unique_id=2000000015]
+[node name="TitleLabel" type="Label" parent="Panel/Margins/Content/Panels/PanelB" unique_id=2000000015]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 theme_override_font_sizes/font_size = 48
-text = "房間號碼"
+text = "Room Code"
 horizontal_alignment = 1
 
-[node name="CodeLabel" type="Label" parent="Panel/PanelB" unique_id=2000000016]
+[node name="CodeLabel" type="Label" parent="Panel/Margins/Content/Panels/PanelB" unique_id=2000000016]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 theme_override_font_sizes/font_size = 56
@@ -136,134 +157,147 @@ text = "------"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="BackButtonB" type="Button" parent="Panel/PanelB" unique_id=2000000017]
+[node name="CountdownLabel" type="Label" parent="Panel/Margins/Content/Panels/PanelB" unique_id=2000000014]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Time Remaining: 60s"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BackButtonB" type="Button" parent="Panel/Margins/Content/Panels/PanelB" unique_id=2000000017]
 custom_minimum_size = Vector2(0, 55)
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
-text = "返回"
+text = "Back"
 
-[node name="PanelC" type="VBoxContainer" parent="Panel" unique_id=2000000018]
+[node name="PanelC" type="VBoxContainer" parent="Panel/Margins/Content/Panels" unique_id=2000000018]
 visible = false
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -350.0
-offset_top = -150.0
-offset_right = 350.0
-offset_bottom = 150.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 15
 
-[node name="TitleLabel" type="Label" parent="Panel/PanelC" unique_id=2000000019]
-custom_minimum_size = Vector2(0, 60)
+[node name="CodeContainer" type="VBoxContainer" parent="Panel/Margins/Content/Panels/PanelC" unique_id=1754271166]
 layout_mode = 2
-theme_override_font_sizes/font_size = 48
-text = "加入房間"
+theme_override_constants/separation = 8
+
+[node name="TitleLabel" type="Label" parent="Panel/Margins/Content/Panels/PanelC/CodeContainer" unique_id=2000000019]
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+text = "Enter Room Code"
 horizontal_alignment = 1
 
-[node name="CodeInput" type="LineEdit" parent="Panel/PanelC" unique_id=2000000020]
+[node name="ErrorLabel" type="Label" parent="Panel/Margins/Content/Panels/PanelC/CodeContainer" unique_id=2000000021]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.76, 0.28170666, 0.2736, 1)
+theme_override_font_sizes/font_size = 26
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CodeInput" type="LineEdit" parent="Panel/Margins/Content/Panels/PanelC/CodeContainer" unique_id=2000000020]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 placeholder_text = "ABC123"
-horizontal_alignment = 1
 
-[node name="ErrorLabel" type="Label" parent="Panel/PanelC" unique_id=2000000021]
-layout_mode = 2
-theme_override_font_sizes/font_size = 22
-text = ""
-horizontal_alignment = 1
-
-[node name="ConfirmJoinButton" type="Button" parent="Panel/PanelC" unique_id=2000000022]
+[node name="ConfirmJoinButton" type="Button" parent="Panel/Margins/Content/Panels/PanelC" unique_id=2000000022]
 custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
 theme_override_font_sizes/font_size = 34
-text = "確認"
+text = "Confirm"
 
-[node name="BackButtonC" type="Button" parent="Panel/PanelC" unique_id=2000000023]
+[node name="BackButtonC" type="Button" parent="Panel/Margins/Content/Panels/PanelC" unique_id=2000000023]
 custom_minimum_size = Vector2(0, 55)
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
-text = "返回"
+text = "Back"
 
-[node name="PanelD" type="VBoxContainer" parent="Panel" unique_id=2000000024]
+[node name="PanelD" type="VBoxContainer" parent="Panel/Margins/Content/Panels" unique_id=2000000024]
 visible = false
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -350.0
-offset_top = -220.0
-offset_right = 350.0
-offset_bottom = 220.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 12
 
-[node name="CountdownLabel" type="Label" parent="Panel/PanelD" unique_id=2000000025]
+[node name="StatusLabel" type="Label" parent="Panel/Margins/Content/Panels/PanelD" unique_id=2000000025]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "90s - Waiting for Players..."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Panel/Margins/Content/Panels/PanelD" unique_id=2000000027]
+layout_mode = 2
+theme_override_constants/separation = 1
+theme_override_styles/separator = SubResource("StyleBoxLine_h4iwl")
+
+[node name="MarqueeText" type="Control" parent="Panel/Margins/Content/Panels/PanelD" unique_id=1870431390]
+clip_contents = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="AgentLabel" type="Label" parent="Panel/Margins/Content/Panels/PanelD/MarqueeText" unique_id=2000000028]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 28
+text = "Default Agent"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ChooseAgentButton" type="Button" parent="Panel/Margins/Content/Panels/PanelD" unique_id=2000000029]
+custom_minimum_size = Vector2(0, 76)
+layout_mode = 2
 theme_override_font_sizes/font_size = 36
-text = "剩餘 90 秒"
-horizontal_alignment = 1
+text = "Select a .py File"
 
-[node name="StatusLabel" type="Label" parent="Panel/PanelD" unique_id=2000000026]
-custom_minimum_size = Vector2(0, 40)
+[node name="DefaultAgentButton" type="Button" parent="Panel/Margins/Content/Panels/PanelD" unique_id=2000000030]
+custom_minimum_size = Vector2(0, 76)
 layout_mode = 2
-theme_override_font_sizes/font_size = 28
-text = "等待雙方確認..."
-horizontal_alignment = 1
+theme_override_font_sizes/font_size = 36
+text = "Use Default Agent"
 
-[node name="HSeparator" type="HSeparator" parent="Panel/PanelD" unique_id=2000000027]
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/Margins/Content/Panels/PanelD" unique_id=2133947759]
 layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 28
 
-[node name="AgentLabel" type="Label" parent="Panel/PanelD" unique_id=2000000028]
-custom_minimum_size = Vector2(0, 40)
+[node name="BackButton" type="Button" parent="Panel/Margins/Content/Panels/PanelD/HBoxContainer" unique_id=2000000032]
+custom_minimum_size = Vector2(300, 60)
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "Agent: 使用預設"
-horizontal_alignment = 1
+theme_override_font_sizes/font_size = 36
+text = "Back"
 
-[node name="ChooseAgentButton" type="Button" parent="Panel/PanelD" unique_id=2000000029]
-custom_minimum_size = Vector2(0, 55)
+[node name="ReadyButton" type="Button" parent="Panel/Margins/Content/Panels/PanelD/HBoxContainer" unique_id=2000000031]
+custom_minimum_size = Vector2(300, 60)
 layout_mode = 2
-theme_override_font_sizes/font_size = 28
-text = "選擇 Agent 檔案..."
-
-[node name="DefaultAgentButton" type="Button" parent="Panel/PanelD" unique_id=2000000030]
-custom_minimum_size = Vector2(0, 55)
-layout_mode = 2
-theme_override_font_sizes/font_size = 28
-text = "使用預設 Agent"
-
-[node name="ReadyButton" type="Button" parent="Panel/PanelD" unique_id=2000000031]
-custom_minimum_size = Vector2(0, 70)
-layout_mode = 2
-theme_override_font_sizes/font_size = 34
-text = "確認"
-
-[node name="BackButtonD" type="Button" parent="Panel/PanelD" unique_id=2000000032]
-custom_minimum_size = Vector2(0, 55)
-layout_mode = 2
-theme_override_font_sizes/font_size = 28
-text = "返回"
+theme_override_font_sizes/font_size = 36
+text = "Confirm"
 
 [node name="HTTPRequest" type="HTTPRequest" parent="." unique_id=2000000033]
 
-[connection signal="text_changed" from="Panel/VBoxContainer/IPInput" to="." method="_on_ip_text_changed"]
-[connection signal="button_up" from="Panel/PanelA/CreateRoomButton" to="." method="_on_create_room_button_up"]
-[connection signal="button_up" from="Panel/PanelA/JoinRoomButton" to="." method="_on_join_room_button_up"]
-[connection signal="button_up" from="Panel/PanelA/BackButton" to="." method="_on_back_button_up"]
-[connection signal="button_up" from="Panel/PanelB/BackButtonB" to="." method="_on_back_b_button_up"]
-[connection signal="button_up" from="Panel/PanelC/ConfirmJoinButton" to="." method="_on_confirm_join_button_up"]
-[connection signal="button_up" from="Panel/PanelC/BackButtonC" to="." method="_on_back_c_button_up"]
-[connection signal="button_up" from="Panel/PanelD/ChooseAgentButton" to="." method="_on_choose_agent_button_up"]
-[connection signal="button_up" from="Panel/PanelD/DefaultAgentButton" to="." method="_on_default_agent_button_up"]
-[connection signal="button_up" from="Panel/PanelD/ReadyButton" to="." method="_on_ready_button_up"]
-[connection signal="button_up" from="Panel/PanelD/BackButtonD" to="." method="_on_back_d_button_up"]
+[node name="PollHTTPRequest" type="HTTPRequest" parent="."]
+
+[connection signal="text_changed" from="Panel/Margins/Content/Panels/PanelA/IPContainer/IPInput" to="." method="_on_ip_text_changed"]
+[connection signal="button_up" from="Panel/Margins/Content/Panels/PanelA/CreateRoomButton" to="." method="_on_create_room_button_up"]
+[connection signal="button_up" from="Panel/Margins/Content/Panels/PanelA/JoinRoomButton" to="." method="_on_join_room_button_up"]
+[connection signal="button_up" from="Panel/Margins/Content/Panels/PanelA/BackButton" to="." method="_on_back_button_up"]
+[connection signal="button_up" from="Panel/Margins/Content/Panels/PanelB/BackButtonB" to="." method="_on_back_b_button_up"]
+[connection signal="text_changed" from="Panel/Margins/Content/Panels/PanelC/CodeContainer/CodeInput" to="." method="_on_code_text_changed"]
+[connection signal="button_up" from="Panel/Margins/Content/Panels/PanelC/ConfirmJoinButton" to="." method="_on_confirm_join_button_up"]
+[connection signal="button_up" from="Panel/Margins/Content/Panels/PanelC/BackButtonC" to="." method="_on_back_c_button_up"]
+[connection signal="button_up" from="Panel/Margins/Content/Panels/PanelD/ChooseAgentButton" to="." method="_on_choose_agent_button_up"]
+[connection signal="button_up" from="Panel/Margins/Content/Panels/PanelD/DefaultAgentButton" to="." method="_on_default_agent_button_up"]
+[connection signal="button_up" from="Panel/Margins/Content/Panels/PanelD/HBoxContainer/BackButton" to="." method="_on_back_d_button_up"]
+[connection signal="button_up" from="Panel/Margins/Content/Panels/PanelD/HBoxContainer/ReadyButton" to="." method="_on_ready_button_up"]

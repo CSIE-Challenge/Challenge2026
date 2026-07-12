@@ -2,9 +2,15 @@ extends BaseSkin
 
 const GOLDEN_RING_SHADER = preload("res://Shaders/golden_ring.gdshader")
 
+var died = false
 @onready var sprite = $Sprite2D
 @onready var particles = $CPUParticles2D
 @onready var death_particles = $DeathParticles
+
+
+func _process(_delta: float) -> void:
+	if !died:
+		sprite.material.set_shader_parameter("alpha", modulate.a)
 
 
 func play_spawn():
@@ -21,13 +27,15 @@ func play_spawn():
 
 
 func play_die():
+	died = true
+	sprite.material.set_shader_parameter("alpha", 1.0)
 	death_particles.restart()
 	death_particles.emitting = true
 	var tween = create_tween()
 	tween.tween_property(sprite, "scale", Vector2.ZERO, 0.2).set_trans(Tween.TRANS_BACK).set_ease(
 		Tween.EASE_IN
 	)
-	tween.parallel().tween_property(sprite, "modulate:a", 0.0, 0.2)
+	tween.parallel().tween_property(sprite.material, "shader_parameter/alpha", 0.0, 0.2)
 	if tween:
 		await tween.finished
 	else:

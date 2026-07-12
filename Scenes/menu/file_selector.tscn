@@ -1,6 +1,16 @@
 [gd_scene format=3 uid="uid://dpb2k7n4xq8r1"]
 
 [ext_resource type="Script" uid="uid://d12302hng4qob" path="res://Scripts/menu/file_selector.gd" id="1_fsel"]
+[ext_resource type="Theme" uid="uid://doboascpna6vx" path="res://Assets/themes/menu.tres" id="1_uhvui"]
+[ext_resource type="Shader" uid="uid://1ydmxa2a26q" path="res://Shaders/blur_background.gdshader" id="3_bynsp"]
+[ext_resource type="Texture2D" uid="uid://6rrr8k2xscjn" path="res://Shapes/background_yellow.jpg" id="3_j5u1q"]
+[ext_resource type="FontFile" uid="uid://vmmbbrsm1jdl" path="res://Assets/fonts/PixelMplus12-Bold.ttf" id="5_j5u1q"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bynsp"]
+resource_local_to_scene = true
+shader = ExtResource("3_bynsp")
+shader_parameter/blur_amount = 0.8
+shader_parameter/tint_color = Color(0.99215686, 0.95686275, 0.8980392, 0.27058825)
 
 [node name="FileSelector" type="Control" unique_id=657745238]
 layout_mode = 3
@@ -9,9 +19,29 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_uhvui")
 script = ExtResource("1_fsel")
 
 [node name="Panel" type="Panel" parent="." unique_id=1040663082]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="Panel" unique_id=161045964]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_j5u1q")
+expand_mode = 1
+
+[node name="ColorRect" type="ColorRect" parent="Panel/TextureRect" unique_id=1243083317]
+material = SubResource("ShaderMaterial_bynsp")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -35,48 +65,62 @@ grow_vertical = 2
 theme_override_constants/separation = 18
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Panel/VBoxContainer" unique_id=1495341892]
-custom_minimum_size = Vector2(0, 90)
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
-theme_override_font_sizes/normal_font_size = 50
+theme_override_font_sizes/normal_font_size = 56
 bbcode_enabled = true
-text = "選擇 Agent"
+text = "Select an Agent"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SelectedFileLabel" type="Label" parent="Panel/VBoxContainer" unique_id=2112170224]
-custom_minimum_size = Vector2(0, 50)
+[node name="MarqueeText" type="Control" parent="Panel/VBoxContainer" unique_id=798382814]
+clip_contents = true
+custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+
+[node name="SelectedFileLabel" type="Label" parent="Panel/VBoxContainer/MarqueeText" unique_id=2112170224]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("5_j5u1q")
+theme_override_font_sizes/font_size = 32
 text = "Default Agent"
 horizontal_alignment = 1
 vertical_alignment = 1
-autowrap_mode = 2
 
 [node name="ChooseButton" type="Button" parent="Panel/VBoxContainer" unique_id=112334409]
-custom_minimum_size = Vector2(0, 70)
-layout_mode = 2
-theme_override_font_sizes/font_size = 34
-text = "選擇 .py 檔案…"
-
-[node name="DefaultButton" type="Button" parent="Panel/VBoxContainer" unique_id=2116977867]
-custom_minimum_size = Vector2(0, 70)
-layout_mode = 2
-theme_override_font_sizes/font_size = 34
-text = "使用預設 Agent"
-
-[node name="EnterGameButton" type="Button" parent="Panel/VBoxContainer" unique_id=1606200751]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
-text = "進入遊戲"
+text = "Select a .py File"
 
-[node name="BackButton" type="Button" parent="Panel/VBoxContainer" unique_id=531443659]
-custom_minimum_size = Vector2(0, 55)
+[node name="DefaultButton" type="Button" parent="Panel/VBoxContainer" unique_id=2116977867]
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
-theme_override_font_sizes/font_size = 28
-text = "返回"
+theme_override_font_sizes/font_size = 40
+text = "Use Default Agent"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer" unique_id=378196176]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 40
+
+[node name="BackButton" type="Button" parent="Panel/VBoxContainer/HBoxContainer" unique_id=531443659]
+custom_minimum_size = Vector2(330, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Back"
+
+[node name="EnterGameButton" type="Button" parent="Panel/VBoxContainer/HBoxContainer" unique_id=1606200751]
+custom_minimum_size = Vector2(330, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Start!"
 
 [connection signal="button_up" from="Panel/VBoxContainer/ChooseButton" to="." method="_on_choose_button_up"]
 [connection signal="button_up" from="Panel/VBoxContainer/DefaultButton" to="." method="_on_default_button_up"]
-[connection signal="button_up" from="Panel/VBoxContainer/EnterGameButton" to="." method="_on_enter_game_button_up"]
-[connection signal="button_up" from="Panel/VBoxContainer/BackButton" to="." method="_on_back_button_up"]
+[connection signal="button_up" from="Panel/VBoxContainer/HBoxContainer/BackButton" to="." method="_on_back_button_up"]
+[connection signal="button_up" from="Panel/VBoxContainer/HBoxContainer/EnterGameButton" to="." method="_on_enter_game_button_up"]

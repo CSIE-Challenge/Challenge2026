@@ -13,6 +13,7 @@ var is_armed := false
 var isjumping_2_frame_ago := false
 var isjumping_1_frame_ago := false
 var is_demo := false
+var player: CharacterBody2D
 
 @onready var mine_warning: Sprite2D = $MineWarning
 @onready var mine_body: Sprite2D = $MineBody
@@ -26,6 +27,8 @@ func _ready() -> void:
 	$MineBody.z_index = Util.LAYERS["Trap1Mine/MineBody"]
 	$SpawnParticle.z_index = Util.LAYERS["Trap1Mine/SpawnParticle"]
 	$ExplosionParticle.z_index = Util.LAYERS["Trap1Mine/ExplosionParticle"]
+	player = Global.game_manager.player
+	explosion_area.collision_layer = 0
 
 
 static func initialize(pos: Vector2) -> Trap1Mine:
@@ -46,6 +49,7 @@ func start_arming_sequence() -> void:
 
 
 func on_arming_complete() -> void:
+	explosion_area.collision_layer = 4
 	spawn_particle.emitting = true
 	mine_warning.visible = false
 	mine_body.visible = true
@@ -56,9 +60,8 @@ func on_arming_complete() -> void:
 	tween.tween_property(mine_body, "scale", Vector2(0.5, 0.5), 0.5)
 
 	# Check if the player is already standing inside the hitbox when arming finishes
-	var player = Global.game_manager.player
 	if explosion_area.overlaps_body(player) and not player.isjumping:
-		disarm((position - player.position).normalized())
+		disarm()
 
 
 func explode() -> void:
@@ -75,7 +78,8 @@ func explode() -> void:
 	queue_free()
 
 
-func disarm(direction: Vector2) -> void:
+func disarm() -> void:
+	var direction = (position - player.position).normalized()
 	Audio.play_sfx(Audio.SFX.TRAP1_MINE_DISARM)
 	set_process(false)
 	set_physics_process(false)
@@ -94,7 +98,7 @@ func _physics_process(_delta: float) -> void:
 		if isjumping_2_frame_ago and not player.isjumping:
 			explode()
 		elif not player.isjumping:
-			disarm((position - player.position).normalized())
+			disarm()
 
 	isjumping_2_frame_ago = isjumping_1_frame_ago
 	isjumping_1_frame_ago = player.isjumping

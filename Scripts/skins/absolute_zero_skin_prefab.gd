@@ -53,7 +53,7 @@ func play_die():
 func play_eat_ball():
 	var tween = create_tween()
 	tween.tween_property(sprite, "modulate", Color(1.0, 1.0, 1.0, 1.0), 0.1)
-	tween.tween_property(sprite, "modulate", Color(0.6, 0.9, 1.0, 0.7), 0.2)
+	tween.tween_property(sprite, "modulate", Color(0.6, 0.9, 1.0, 1.0), 0.2)
 	tween.parallel().tween_property(sprite, "scale", Vector2(0.25, 0.25), 0.1)
 	tween.chain().tween_property(sprite, "scale", Vector2(0.2, 0.2), 0.2)
 
@@ -79,6 +79,25 @@ func play_land():
 	var tween = create_tween()
 	tween.tween_property(sprite, "scale", Vector2(0.28, 0.12), 0.1).set_trans(Tween.TRANS_BACK)
 	tween.tween_property(sprite, "scale", Vector2(0.2, 0.2), 0.15)
+
+	# Ice Floor Ripple
+	var floor_ripple = Sprite2D.new()
+	floor_ripple.texture = sprite.texture
+	floor_ripple.modulate = Color(0.6, 0.95, 1.0, 0.8)
+	floor_ripple.top_level = true
+	floor_ripple.global_position = self.global_position + Vector2(0, 15)
+	floor_ripple.scale = Vector2(0.1, 0.05)
+	add_child(floor_ripple)
+
+	var r_tween = create_tween()
+	(
+		r_tween
+		. tween_property(floor_ripple, "scale", Vector2(1.5, 0.3), 0.3)
+		. set_trans(Tween.TRANS_EXPO)
+		. set_ease(Tween.EASE_OUT)
+	)
+	r_tween.parallel().tween_property(floor_ripple, "modulate:a", 0.0, 0.3).set_delay(0.1)
+	r_tween.tween_callback(floor_ripple.queue_free)
 
 	# Spawn Ice Spikes
 	for i in range(5):

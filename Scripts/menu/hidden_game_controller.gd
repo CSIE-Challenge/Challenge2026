@@ -30,6 +30,14 @@ static func reset_dialogue_state() -> void:
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	if not PlayerData.has_entered_hidden_game:
+		PlayerData.has_entered_hidden_game = true
+		PlayerData.save_data()
+
+	if PlayerData.equipped_skin == "undertale_skin":
+		Audio.set_bgm(Audio.BGM.HIDDEN_GAME_UNDERTALE)
+	else:
+		Audio.set_bgm(Audio.BGM.HIDDEN_GAME)
 	if player:
 		player.player_died.connect(_on_player_died)
 
@@ -46,6 +54,7 @@ func _ready() -> void:
 
 func _on_player_died() -> void:
 	is_player_dead = true
+	Audio.stop_all_sfx()
 	# 若玩家死亡時對話正在進行，立刻打斷
 	if Dialogue.current_state != Dialogue.State.IDLE:
 		Dialogue.interrupt_dialogue()
@@ -205,7 +214,14 @@ func _run_phase_3() -> bool:
 		await wait_or_die(5.0)
 
 	if is_player_dead and not is_aborted:
-		Dialogue.start_dialogue(["哈！會追著你的就沒辦法了吧！"])
+		if not seen_dialogues.has("death_3_rocket"):
+			seen_dialogues["death_3_rocket"] = true
+			Dialogue.start_dialogue(["哈！會追著你的就沒辦法了吧！"])
+			await Dialogue.dialogue_finished
+		else:
+			await get_tree().create_timer(1.0).timeout
+		SceneTransition.transition_to(HIDDEN_SCENE_PATH)
+		return true
 	if not seen_dialogues.has("intro_3"):
 		seen_dialogues["intro_3"] = true
 		Dialogue.start_dialogue(
@@ -394,6 +410,7 @@ func _run_phase_5_final() -> bool:
 		await get_tree().create_timer(3.5).timeout
 
 		# 顯示 Complete!
+		Audio.play_sfx(Audio.SFX.HIDDEN_GAME_COMPLETE)
 		var complete_screen = $CanvasLayer/CompleteScreen
 		complete_screen.show()
 		var cr = complete_screen.get_node("ColorRect")
@@ -434,6 +451,7 @@ func _run_phase_5_final() -> bool:
 
 		# 玩家按下後，呼叫 SceneTransition 的淡出轉場回主選單
 		Dialogue.is_disabled = true
+		Audio.stop_all_sfx()
 		SceneTransition.transition_to_fade(MENU_SCENE_PATH)
 		return true
 
@@ -456,6 +474,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		Dialogue.is_disabled = true
 		Dialogue.dialogue_box.hide()
 		Dialogue.dialogue_queue.clear()
+		Audio.stop_all_sfx()
 		SceneTransition.transition_to_fade(MENU_SCENE_PATH)
 
 

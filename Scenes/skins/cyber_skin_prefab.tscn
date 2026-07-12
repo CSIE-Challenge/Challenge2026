@@ -6,23 +6,27 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_glitch"]
 shader = ExtResource("2_shader")
-shader_parameter/glitch_intensity = 0.3
-shader_parameter/glitch_intensity = 0.3
-shader_parameter/chromatic_aberration = 0.5
+shader_parameter/glitch_intensity = 0.5
+shader_parameter/chromatic_aberration = 0.8
 
 [sub_resource type="Curve" id="Curve_cyber"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="Gradient" id="Gradient_cyber_death"]
-colors = PackedColorArray(0.1, 0.9, 0.5, 1, 0.0, 0.4, 0.2, 0)
+colors = PackedColorArray(1, 1, 1, 1, 0.2, 0.2, 0.2, 0)
 
 [node name="CyberSkinPrefab" type="Node2D"]
 script = ExtResource("1_cyber")
 
+[node name="Glow" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.3)
+scale = Vector2(0.28, 0.28)
+texture = ExtResource("3_square")
+
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_glitch")
-modulate = Color(0.1, 0.9, 0.5, 1)
+modulate = Color(1, 1, 1, 1)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("3_square")
 
@@ -43,5 +47,23 @@ damping_min = 50.0
 damping_max = 100.0
 scale_amount_min = 0.02
 scale_amount_max = 0.08
+scale_amount_curve = SubResource("Curve_cyber")
+color_ramp = SubResource("Gradient_cyber_death")
+
+[node name="EatParticles" type="CPUParticles2D" parent="."]
+material = SubResource("ShaderMaterial_glitch")
+emitting = false
+amount = 30
+texture = ExtResource("3_square")
+lifetime = 0.6
+one_shot = true
+explosiveness = 0.8
+randomness = 0.5
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 50.0
+initial_velocity_max = 200.0
+scale_amount_min = 0.02
+scale_amount_max = 0.06
 scale_amount_curve = SubResource("Curve_cyber")
 color_ramp = SubResource("Gradient_cyber_death")

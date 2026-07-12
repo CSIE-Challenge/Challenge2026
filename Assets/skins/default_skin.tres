@@ -2,12 +2,16 @@
 
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="1_k663x"]
 [ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_skindata"]
+[ext_resource type="Texture2D" uid="uid://cc3p7kc0bs0jx" path="res://Shapes/hearts/default.svg" id="1_xnksu"]
 [ext_resource type="PackedScene" uid="uid://defaultskin" path="res://Scenes/skins/default_skin_prefab.tscn" id="2_prefab"]
 
 [resource]
 script = ExtResource("1_skindata")
 skin_id = "default_skin"
 true_name = "經典小球"
-price = 0
+description = "初始皮膚"
+is_achievement_unlock = true
+achievement_desc = "積分兌換"
 preview_texture = ExtResource("1_k663x")
 skin_prefab = ExtResource("2_prefab")
+health_icon_texture = ExtResource("1_xnksu")

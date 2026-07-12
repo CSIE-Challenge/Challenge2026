@@ -111,9 +111,6 @@ scale_min = 0.02
 scale_max = 0.03
 scale_curve = SubResource("CurveTexture_3ko3v")
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_s34uc"]
-size = Vector2(12.335, 31.215)
-
 [sub_resource type="Animation" id="Animation_s34uc"]
 length = 0.001
 tracks/0/type = "value"
@@ -173,14 +170,6 @@ lifetime = 0.6
 one_shot = true
 explosiveness = 1.0
 process_material = SubResource("ParticleProcessMaterial_w7crh")
-
-[node name="Area2D" type="Area2D" parent="." unique_id=1240886516]
-position = Vector2(1.505, 0)
-collision_layer = 0
-collision_mask = 2
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=479264808]
-shape = SubResource("RectangleShape2D_s34uc")
 
 [node name="WaitTimer" type="Timer" parent="." unique_id=2010512349]
 one_shot = true

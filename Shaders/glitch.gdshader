@@ -19,7 +19,7 @@ void fragment() {
 	
 	uv.x += glitch_offset;
 	
-	// Chromatic Aberration
+	// Chromatic Aberration (keep shape offset)
 	float ca = chromatic_aberration * 0.05;
 	vec4 color_r = texture(TEXTURE, uv + vec2(ca, 0.0));
 	vec4 color_g = texture(TEXTURE, uv);
@@ -27,15 +27,25 @@ void fragment() {
 	
 	vec4 tex_color = vec4(color_r.r, color_g.g, color_b.b, color_g.a);
 	
-	// Multiply by COLOR to preserve CanvasItem modulate
+	// Multiply by COLOR
 	vec4 final_color = tex_color * COLOR;
 	
-	// Create blocky noise for solid shapes to make glitch visible
+	// Blocky noise
 	if (glitch_intensity > 0.1) {
 		float block_noise = rand(floor(uv * 15.0) + vec2(t, 0.0));
 		if (block_noise > 0.8) {
 			final_color.rgb = vec3(1.0) - final_color.rgb; // invert color
 		}
+	}
+	
+	// Grayscale filter
+	float gray = dot(final_color.rgb, vec3(0.299, 0.587, 0.114));
+	final_color.rgb = vec3(gray);
+	
+	// TV Static noise overlay
+	float static_noise = rand(uv * 100.0 + vec2(t, t));
+	if (final_color.a > 0.0) {
+		final_color.rgb = mix(final_color.rgb, vec3(static_noise), 0.5 * glitch_intensity);
 	}
 	
 	// Scanlines

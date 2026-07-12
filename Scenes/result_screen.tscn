@@ -1,78 +1,195 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://sy61e2606j8w"]
 
-[ext_resource type="Script" path="res://Scripts/result_screen.gd" id="1_result"]
+[ext_resource type="Script" uid="uid://brqtb34ab82qi" path="res://Scripts/result_screen.gd" id="1_result"]
+[ext_resource type="Script" uid="uid://ddqb3djaesce4" path="res://Scripts/health_icon.gd" id="2_ndexe"]
+[ext_resource type="FontFile" uid="uid://hp5u4fxb5ifw" path="res://Assets/fonts/PixeloidSans-Bold.ttf" id="2_o517f"]
+[ext_resource type="Texture2D" uid="uid://du0qdbs7y7rcf" path="res://Shapes/result_background.JPG" id="2_qk7ap"]
+[ext_resource type="Texture2D" uid="uid://f5ertr28h6kq" path="res://Shapes/feather.svg" id="3_o517f"]
 
-[node name="ResultScreen" type="CanvasLayer"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ib03x"]
+bg_color = Color(0.27450982, 0.27450982, 0.23529412, 0.7019608)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n8x6i"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 1, 0.92156863)
+corner_radius_top_left = 26
+corner_radius_top_right = 27
+corner_radius_bottom_right = 26
+corner_radius_bottom_left = 27
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_qk7ap"]
+color = Color(1, 1, 1, 1)
+thickness = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qk7ap"]
+bg_color = Color(0.27450982, 0.1764706, 0.078431375, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 7
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o517f"]
+bg_color = Color(0.18431373, 0.12156863, 0.07058824, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 7
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ndexe"]
+bg_color = Color(0.33333334, 0.21568628, 0.101960786, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 7
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 7
+
+[node name="ResultScreen" type="CanvasLayer" unique_id=250910659]
+process_mode = 3
 layer = 100
 visible = false
 script = ExtResource("1_result")
 
-[node name="Background" type="ColorRect" parent="."]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.055, 0.075, 0.11, 0.94)
-mouse_filter = 0
-
-[node name="CenterContainer" type="CenterContainer" parent="."]
+[node name="ResultRoot" type="Control" parent="." unique_id=80173994]
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="CenterContainer"]
-custom_minimum_size = Vector2(520, 470)
+[node name="Background" type="TextureRect" parent="ResultRoot" unique_id=50513428]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -373.0
+offset_top = -130.0
+offset_right = 141.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_qk7ap")
+expand_mode = 2
+stretch_mode = 5
 
-[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/PanelContainer"]
+[node name="CenterContainer" type="CenterContainer" parent="ResultRoot" unique_id=863430935]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Panel" type="Panel" parent="ResultRoot/CenterContainer" unique_id=1170119724]
+custom_minimum_size = Vector2(1152, 648)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ib03x")
+
+[node name="PanelContainer" type="PanelContainer" parent="ResultRoot/CenterContainer" unique_id=1914732084]
+custom_minimum_size = Vector2(580, 420)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_n8x6i")
+
+[node name="MarginContainer" type="MarginContainer" parent="ResultRoot/CenterContainer/PanelContainer" unique_id=533272811]
+layout_mode = 2
+mouse_filter = 2
 theme_override_constants/margin_left = 44
 theme_override_constants/margin_top = 32
 theme_override_constants/margin_right = 44
 theme_override_constants/margin_bottom = 32
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/PanelContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="ResultRoot/CenterContainer/PanelContainer/MarginContainer" unique_id=94432051]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
 theme_override_constants/separation = 14
 
-[node name="TitleLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="TitleLabel" type="Label" parent="ResultRoot/CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1068592199]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_o517f")
 theme_override_font_sizes/font_size = 36
 text = "RESULT"
 horizontal_alignment = 1
 
-[node name="Separator" type="HSeparator" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="Separator" type="HSeparator" parent="ResultRoot/CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=412927854]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_qk7ap")
 
-[node name="EnergySpentLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
-unique_name_in_owner = true
-theme_override_font_sizes/font_size = 22
-text = "Total Energy Spent: 0"
+[node name="HBoxContainer" type="HBoxContainer" parent="ResultRoot/CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=224187305]
+layout_mode = 2
+theme_override_constants/separation = 0
 
-[node name="EnergyBallsLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="StatNamesLabel" type="Label" parent="ResultRoot/CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=635769938]
 unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/line_spacing = 7
+theme_override_fonts/font = ExtResource("2_o517f")
 theme_override_font_sizes/font_size = 22
-text = "Energy Balls Collected: 0"
+text = "Survival Time
+Remaining Health
+Energy Balls Collected
+Jumps
+Distance Traveled
+Total Energy Spent"
 
-[node name="JumpCountLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="StatValuesLabel" type="Label" parent="ResultRoot/CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=119839190]
 unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/line_spacing = 7
+theme_override_fonts/font = ExtResource("2_o517f")
 theme_override_font_sizes/font_size = 22
-text = "Jumps: 0"
+horizontal_alignment = 2
 
-[node name="DistanceLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
-unique_name_in_owner = true
-theme_override_font_sizes/font_size = 22
-text = "Distance Traveled: 0.0"
+[node name="spacer" type="Control" parent="ResultRoot/CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=419185334]
+custom_minimum_size = Vector2(0, 6.7)
+layout_mode = 2
 
-[node name="SurvivalTimeLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
-unique_name_in_owner = true
-theme_override_font_sizes/font_size = 22
-text = "Survival Time: 0.0 seconds"
+[node name="HBoxContainer2" type="HBoxContainer" parent="ResultRoot/CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1952087552]
+layout_mode = 2
+theme_override_constants/separation = 145
+alignment = 1
 
-[node name="RemainingHealthLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
-unique_name_in_owner = true
-theme_override_font_sizes/font_size = 22
-text = "Remaining Health: 0"
+[node name="HomeButton" type="Button" parent="ResultRoot/CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=882486403]
+custom_minimum_size = Vector2(150, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("2_o517f")
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("StyleBoxFlat_qk7ap")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_o517f")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ndexe")
+text = "Home"
 
-[node name="TrapCountLabel" type="Label" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
-unique_name_in_owner = true
-theme_override_font_sizes/font_size = 22
-text = "Traps Placed: 0"
+[node name="ExitButton" type="Button" parent="ResultRoot/CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=2007003856]
+custom_minimum_size = Vector2(150, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("2_o517f")
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("StyleBoxFlat_qk7ap")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_o517f")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ndexe")
+text = "Exit"
+
+[node name="HealthIcons" type="HBoxContainer" parent="ResultRoot" unique_id=970283826]
+layout_mode = 0
+offset_left = 300.0
+offset_top = 350.0
+offset_right = 300.0
+offset_bottom = 350.0
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+alignment = 1
+script = ExtResource("2_ndexe")
+unit_icon = ExtResource("3_o517f")
+icon_size = Vector2(30, 30)
+
+[connection signal="button_up" from="ResultRoot/CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/HomeButton" to="." method="_on_home_button_button_up"]
+[connection signal="button_up" from="ResultRoot/CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/ExitButton" to="." method="_on_exit_button_button_up"]

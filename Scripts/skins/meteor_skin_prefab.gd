@@ -2,6 +2,7 @@ extends BaseSkin
 
 var is_active = false
 var max_trail_points = 25
+var eaten_ball = false
 
 @onready var sprite = $Sprite2D
 @onready var trail = $Line2D
@@ -12,6 +13,8 @@ var max_trail_points = 25
 func _ready():
 	trail.top_level = true
 	trail.clear_points()
+	trail.hide()
+	particles.emitting = false
 
 
 func _process(_delta):
@@ -27,7 +30,7 @@ func play_spawn():
 	scale = Vector2.ZERO
 	is_active = true
 	trail.clear_points()
-	particles.emitting = true
+	#particles.emitting = true
 	var tween = create_tween()
 	tween.tween_property(self, "scale", Vector2.ONE, 0.4).set_trans(Tween.TRANS_SPRING).set_ease(
 		Tween.EASE_OUT
@@ -53,9 +56,14 @@ func play_die():
 
 
 func play_eat_ball():
+	if !eaten_ball:
+		eaten_ball = true
+		trail.clear_points()
+		trail.visible = true
+		particles.emitting = true
 	var tween = create_tween()
-	tween.tween_property(sprite, "modulate", Color(2.0, 2.0, 2.0, 1.0), 0.1)
 	tween.tween_property(sprite, "modulate", Color(1.0, 1.0, 1.0, 1.0), 0.2)
+	tween.tween_property(sprite, "modulate", Color(0.6, 0.9, 1.0, 1.0), 0.2)
 
 
 func play_jump():

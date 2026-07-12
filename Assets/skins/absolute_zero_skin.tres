@@ -1,13 +1,16 @@
 [gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://bs0eroskinres"]
 
 [ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_abs"]
+[ext_resource type="Texture2D" uid="uid://4egdohbt4n5q" path="res://Shapes/hearts/absolute_zero.svg" id="1_pbtrc"]
 [ext_resource type="PackedScene" uid="uid://bs0eroskin" path="res://Scenes/skins/absolute_zero_skin_prefab.tscn" id="2_prefab"]
 
 [resource]
 script = ExtResource("1_abs")
 skin_id = "absolute_zero_skin"
 true_name = "絕對零度"
-price = 300
-is_silhouette = true
+description = "好冷喔，去跟熔岩火球坐一桌。"
+is_achievement_unlock = true
+achievement_desc = "積分兌換"
 skin_prefab = ExtResource("2_prefab")
+health_icon_texture = ExtResource("1_pbtrc")
 metadata/_custom_type_script = "uid://c6vuqckcyjdey"

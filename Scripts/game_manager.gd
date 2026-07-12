@@ -23,6 +23,7 @@ var max_health = int(game_data["player"]["max_health"])
 var max_phase = game_data["game_manager"]["max_phase"]
 var phase_duration = game_data["game_manager"]["phase_duration"]
 var max_energy = game_data["game_manager"]["max_energy"]
+var heal_costs = game_data["heal"]["energy_costs"]
 
 var energy_ball_count := 0
 var energy_amount := 0
@@ -32,7 +33,8 @@ var player_invincible := false
 var game_over := false
 var survival_started_msec := 0
 var trap_data = TrapData.new().data
-var current_phase := 0
+var current_phase: int = 0
+var elapsed_time: float = 0.0
 var _health_icon_ready := false
 var _is_paused := false
 var _is_shutting_down := false
@@ -40,10 +42,9 @@ var _is_shutting_down := false
 @onready var energy_ball: Node2D = $"../SubViewport/Stage/EnergyBall"
 @onready var player_invincibility_timer = $PlayerInvincibilityTimer
 @onready var energy_increase_timer = $EnergyIncreaseTimer
-@onready var game_duration_timer = $GameDurationTimer
-@onready var phase_timer = $PhaseTimer
 @onready var trap_request_scheduler: TrapRequestScheduler = $"../TrapRequestScheduler"
 @onready var agent_action_service: AgentActionService = $"../AgentActionService"
+@onready var pregame_countdown: Label = $"../SubViewport/PregameCountdown"
 
 
 func _ready() -> void:
@@ -63,10 +64,9 @@ func _ready() -> void:
 	NetworkManager.energy_changed.connect(_on_network_energy_changed)
 	NetworkManager.health_changed.connect(_on_network_health_changed)
 	_setup_health_ui()
-	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
 	_update_energy_label()
 	_update_opponent_energy_label(0, 0)
-	_update_max_energy()
+	_update_max_energy(false)
 	_connect_agent_action_signals()
 	_connect_pause_menu()
 
@@ -75,23 +75,7 @@ func _ready() -> void:
 
 	energy_increase_timer.wait_time = energy_increase_period[current_phase]
 
-	game_duration_timer.wait_time = game_duration
-	game_duration_timer.timeout.connect(_on_game_duration_timeout)
-	game_duration_timer.start()
 	_update_time_label()
-
-	player_invincible = false
-
-	_begin_agents()
-
-	phase_timer.timeout.connect(_on_phase_timeout)
-	phase_timer.start(phase_duration[0])
-
-	_wall_animation()
-
-	Audio.set_phase_bgm(0)
-
-	#_show_test_result_after_delay()
 
 	player.get_node("ShadowSprite").z_index = Util.LAYERS["Player/ShadowSprite"]
 	player.get_node("BodySprite").z_index = Util.LAYERS["Player/BodySprite"]
@@ -99,9 +83,41 @@ func _ready() -> void:
 	player.get_node("JumpParticle").z_index = Util.LAYERS["Player/JumpParticle"]
 	player.get_node("LandParticle").z_index = Util.LAYERS["Player/LandParticle"]
 	player.reparent_land_particles()
+
 	energy_ball.z_index = Util.LAYERS["EnergyBall"]
 	$"../SubViewport/Stage/Walls".z_index = Util.LAYERS["Walls"]
 	coconut_bar.z_index = Util.LAYERS["CoconutBar/CoconutBar"]
+
+	player.hide()
+	player.skin_instance.hide()
+	energy_label.process_mode = Node.PROCESS_MODE_ALWAYS
+	for w in walls:
+		w.process_mode = Node.PROCESS_MODE_ALWAYS
+	_wall_animation()
+	energy_ball.hide()
+
+	get_tree().paused = true
+	await get_tree().create_timer(0.3).timeout
+	pregame_countdown.play_countdown()
+	Audio.play_sfx(Audio.SFX.PREGAME_COUNTDOWN)
+
+	await get_tree().create_timer(3.0).timeout
+	get_tree().paused = false
+	for w in walls:
+		w.process_mode = Node.PROCESS_MODE_PAUSABLE
+	energy_label.process_mode = Node.PROCESS_MODE_PAUSABLE
+
+	Audio.set_phase_bgm(0)
+	player_invincible = false
+	player.show()
+	player.skin_instance.show()
+	_begin_agents()
+
+	energy_ball._respawn_energy_ball()
+	await get_tree().create_timer(0.2).timeout
+	energy_ball.show()
+	await get_tree().create_timer(1.0).timeout
+	pregame_countdown.hide()
 
 
 func _exit_tree() -> void:
@@ -113,13 +129,20 @@ func _physics_process(delta: float) -> void:
 	# Energy regen is NOT here -- it ticks discretely via EnergyIncreaseTimer.
 	if game_over:
 		return
-	_update_time_label()
+	if not _is_paused:
+		elapsed_time += delta
+		_update_time_label()
+		_update_phase()
+		if elapsed_time >= game_duration:
+			_on_game_duration_timeout()
+
 	agent_action_service.update_cooldowns(delta)
 	trap_request_scheduler.process_requests()
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause"):
+		get_viewport().set_input_as_handled()
 		_handle_pause_toggle()
 
 
@@ -156,7 +179,8 @@ func _resolve_bundle_dir() -> String:
 	if OS.has_feature("editor"):
 		var root := ProjectSettings.globalize_path("res://")
 		return root.path_join("agent/build").path_join(_bundle_platform_label())
-	return OS.get_executable_path().get_base_dir().path_join("agent")
+	# Launcher layout: the exe sits in GameBuilds/ with the bundle beside it.
+	return OS.get_executable_path().get_base_dir().get_base_dir().path_join("agent")
 
 
 func _bundle_platform_label() -> String:
@@ -202,10 +226,8 @@ func get_opponent_player_velocity() -> Vector2:
 	return current_player.velocity
 
 
-func get_remaining_time() -> float:
-	if game_duration_timer == null:
-		return 0.0
-	return maxf(0.0, game_duration_timer.time_left)
+func get_elapsed_time() -> float:
+	return elapsed_time
 
 
 func get_opponent_combo() -> int:
@@ -315,6 +337,7 @@ func _wall_animation() -> void:
 	for w in walls:
 		w.material.set_shader_parameter("offset", randf_range(0, 10))
 		var tween = create_tween()
+		tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 		(
 			tween
 			. tween_method(
@@ -338,40 +361,52 @@ func _on_game_duration_timeout() -> void:
 	finish_game()
 
 
-func _on_phase_timeout() -> void:
-	current_phase = min(current_phase + 1, max_phase)
-	energy_ball.advance_phase()
-	phase_timer.start(phase_duration[current_phase])
-	phase_label.text = "%d" % current_phase
-	_update_max_energy()
+func _calculate_phase(time: float) -> int:
+	for i in range(max_phase):
+		if time >= phase_duration[i]:
+			time -= phase_duration[i]
+		else:
+			return i
+	return max_phase
 
 
-func _update_max_energy() -> void:
-	var max = max_energy[min(current_phase, max_energy.size() - 1)]
-	energy_label._update_max_energy(max)
-	NetworkManager.update_max_energy(max)
+func _update_phase() -> void:
+	var new_phase := _calculate_phase(elapsed_time)
+	if new_phase != current_phase:
+		current_phase = new_phase
+		energy_ball.change_phase(current_phase)
+		phase_label.text = "%d" % current_phase
+		_update_max_energy()
 
-	Audio.set_phase_bgm(current_phase)
+
+func _update_max_energy(play_audio: bool = true) -> void:
+	var mxn = max_energy[min(current_phase, max_energy.size() - 1)]
+	energy_label._update_max_energy(mxn)
+	NetworkManager.update_max_energy(mxn)
+	if play_audio:
+		Audio.set_phase_bgm(current_phase)
 
 
 #region Control
-func finish_game(authoritative_stats: Dictionary = {}) -> void:
+func finish_game(player_died: bool = false, authoritative_stats: Dictionary = {}) -> void:
 	if game_over:
 		return
+	Audio.stop_all_audio_2d()
+	Audio.stop_all_audio()
+	if player_died:
+		Audio.play_sfx(Audio.SFX.PLAYER_DIE)
 	_close_pause_overlay_for_finish()
 	game_over = true
 	get_tree().paused = true
 	energy_increase_timer.stop()
 	player_invincibility_timer.stop()
-	game_duration_timer.stop()
-	phase_timer.stop()
 	if trap_request_scheduler != null:
 		trap_request_scheduler.clear()
 	player.set_physics_process(false)
 	player.collision_layer = 0
 	player.collision_mask = 0
 
-	var survival_time := (Time.get_ticks_msec() - survival_started_msec) / 1000.0
+	var survival_time := elapsed_time
 	(
 		result_screen
 		. show_results(
@@ -392,13 +427,22 @@ func _connect_pause_menu() -> void:
 	if pause_menu == null:
 		return
 	pause_menu.resume_requested.connect(_on_pause_resume_requested)
+	pause_menu.restart_requested.connect(_on_pause_restart_requested)
 	pause_menu.main_menu_requested.connect(_on_pause_main_menu_requested)
 	pause_menu.exit_requested.connect(_on_pause_exit_requested)
 	pause_menu.close()
 
 
-func _on_pause_resume_requested() -> void:
+func _on_pause_resume_requested(requested_elapsed_time: float) -> void:
+	elapsed_time = requested_elapsed_time
+	_update_time_label()
+	_update_phase()
 	_resume_gameplay()
+
+
+func _on_pause_restart_requested() -> void:
+	_shutdown_gameplay_for_scene_change()
+	SceneTransition.transition_to_wave("res://Scenes/gameplay.tscn")
 
 
 func _on_pause_main_menu_requested() -> void:
@@ -418,9 +462,9 @@ func _pause_gameplay() -> void:
 		return
 
 	_is_paused = true
-	if pause_menu != null:
-		pause_menu.open()
 	get_tree().paused = true
+	if pause_menu != null:
+		pause_menu.open(elapsed_time)
 	Audio.pause_bgm()
 
 
@@ -445,6 +489,7 @@ func _close_pause_overlay_for_finish() -> void:
 
 
 func _shutdown_gameplay_for_scene_change() -> void:
+	Audio.set_bgm(-1 as Audio.BGM)
 	if _is_shutting_down:
 		return
 	_is_shutting_down = true
@@ -471,8 +516,6 @@ func _shutdown_gameplay_for_scene_change() -> void:
 func _stop_gameplay_timers() -> void:
 	energy_increase_timer.stop()
 	player_invincibility_timer.stop()
-	game_duration_timer.stop()
-	phase_timer.stop()
 
 
 func _clear_gameplay_backend_state() -> void:
@@ -505,7 +548,7 @@ func _shutdown_running_agents() -> void:
 
 func _on_energyball_collected(energy_gain: int) -> void:
 	energy_ball_count += 1
-	coconut_bar.coconut_count = energy_ball_count
+	coconut_bar._update_coconut_count(energy_ball_count)
 	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
 	NetworkManager.request_add_energy(energy_gain)
 
@@ -543,7 +586,7 @@ func _on_network_health_changed(peer_id: int, health: int) -> void:
 			return
 		if player.health <= 0:
 			await player.die()
-			finish_game()
+			finish_game(1)
 		return
 
 	_update_opponent_energy_label(peer_id, NetworkManager.get_energy(peer_id))
@@ -554,9 +597,8 @@ func _update_time_label() -> void:
 	# Show whole seconds still remaining (counts down game_duration -> 0).
 	# The label uses right alignment, so digits stay anchored at the right edge
 	# (e.g. "180", "99", "1" all keep the ones digit in the same spot).
-	var seconds_left := int(ceil(game_duration_timer.time_left))
-	var minute = seconds_left / 60
-	var second = seconds_left % 60
+	var minute = int(floor(elapsed_time)) / 60
+	var second = int(floor(elapsed_time)) % 60
 	time_label.text = "%02d:%02d" % [minute, second]
 
 

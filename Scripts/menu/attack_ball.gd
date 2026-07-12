@@ -27,6 +27,7 @@ func _ready() -> void:
 func _on_body_entered(body: Node2D) -> void:
 	# 請根據您專案中椰子玩家的節點名稱或 Group 做判定
 	if body.name == "coconut" or body.is_in_group("player"):
+		Audio.play_sfx(Audio.SFX.HIDDEN_GAME_GET_ATTACKBALL)
 		# 1. 禁用碰撞，避免重複觸發，並隱藏本體
 		collision_shape.set_deferred("disabled", true)
 		sprite.hide()

@@ -1,102 +1,144 @@
 [gd_scene format=3 uid="uid://fh2uubspqhku"]
 
 [ext_resource type="Script" uid="uid://dwkms4oc73qao" path="res://Scripts/volume_setting.gd" id="1_qeyc0"]
+[ext_resource type="Theme" uid="uid://doboascpna6vx" path="res://Assets/themes/menu.tres" id="1_uwnqj"]
 [ext_resource type="Script" uid="uid://cb74adv0y1hxa" path="res://Scripts/volume_slider.gd" id="2_gpihd"]
-
-[sub_resource type="Theme" id="Theme_qeyc0"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gpihd"]
-bg_color = Color(0.03137255, 0.039215688, 0.050980393, 0.9019608)
+[ext_resource type="Theme" uid="uid://cmvy433xb5tse" path="res://Assets/themes/main_menu_buttons.tres" id="4_nfjsg"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uwnqj"]
-bg_color = Color(0.19607843, 0.19607843, 0.19607843, 1)
+bg_color = Color(0.83137256, 0.92941177, 0.9411765, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.16470589, 0.30588236, 0.34117648, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y8amn"]
-bg_color = Color(0.11764706, 0.11764706, 0.11764706, 0.8627451)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tj36u"]
-bg_color = Color(0.39215687, 0.39215687, 0.39215687, 0.8627451)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nfjsg"]
-bg_color = Color(0.19607843, 0.19607843, 0.19607843, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8j1ee"]
-bg_color = Color(0.11764706, 0.11764706, 0.11764706, 0.8627451)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m7ul2"]
-bg_color = Color(0.39215687, 0.39215687, 0.39215687, 0.8627451)
-
-[node name="VolumeSetting" type="Node2D" unique_id=942546627]
+[node name="VolumeSetting" type="ColorRect" unique_id=926328968]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_uwnqj")
+color = Color(0, 0, 0, 0.8)
 script = ExtResource("1_qeyc0")
 
-[node name="Panel" type="Panel" parent="." unique_id=59809851]
-offset_left = 200.0
-offset_top = 206.0
-offset_right = 999.0
-offset_bottom = 589.0
-theme = SubResource("Theme_qeyc0")
-theme_override_styles/panel = SubResource("StyleBoxFlat_gpihd")
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=658835053]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -320.0
+offset_top = -150.0
+offset_right = 320.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_uwnqj")
 
-[node name="Label" type="Label" parent="." unique_id=1168083539]
-offset_left = 512.0
-offset_top = 230.0
-offset_right = 672.0
-offset_bottom = 285.0
-theme_override_font_sizes/font_size = 40
-text = "音量設置"
-
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1079509747]
-offset_left = 338.0
-offset_top = 338.0
-offset_right = 873.0
-offset_bottom = 572.0
-theme_override_constants/separation = 12
-
-[node name="MusicLabel" type="Label" parent="VBoxContainer" unique_id=1016900071]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=1185287306]
 layout_mode = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_right = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer" unique_id=1079509747]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1168083539]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.23529412, 0.22745098, 0.23529412, 1)
+theme_override_font_sizes/font_size = 44
+text = "Volume Settings"
+horizontal_alignment = 1
+
+[node name="MusicContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=792126965]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="MusicLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/MusicContainer" unique_id=1016900071]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.23529412, 0.22745098, 0.23529412, 1)
+theme_override_font_sizes/font_size = 30
 text = "Music"
 
-[node name="MusicSlider" type="HSlider" parent="VBoxContainer" unique_id=356254427]
+[node name="MusicSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer/MusicContainer" unique_id=356254427]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
 max_value = 1.0
 step = 0.001
 script = ExtResource("2_gpihd")
 bus_name = "Music"
 
-[node name="SFXLabel" type="Label" parent="VBoxContainer" unique_id=198577739]
+[node name="ValueLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/MusicContainer" unique_id=1405787552]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.23529412, 0.22745098, 0.23529412, 1)
+theme_override_font_sizes/font_size = 28
+text = "100"
+horizontal_alignment = 2
+
+[node name="SFXContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1787582114]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="SFXLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/SFXContainer" unique_id=198577739]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.23529412, 0.22745098, 0.23529412, 1)
+theme_override_font_sizes/font_size = 30
 text = "SFX"
 
-[node name="SFXSlider" type="HSlider" parent="VBoxContainer" unique_id=875384166]
+[node name="SFXSlider" type="HSlider" parent="PanelContainer/MarginContainer/VBoxContainer/SFXContainer" unique_id=875384166]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
 max_value = 1.0
 step = 0.001
+value = 0.42
 script = ExtResource("2_gpihd")
 bus_name = "SFX"
 
-[node name="SaveButton" type="Button" parent="." unique_id=1875221553]
-offset_left = 620.0
-offset_top = 485.0
-offset_right = 700.0
-offset_bottom = 521.0
-theme_override_font_sizes/font_size = 20
-theme_override_styles/normal = SubResource("StyleBoxFlat_uwnqj")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_y8amn")
-theme_override_styles/hover = SubResource("StyleBoxFlat_tj36u")
-text = "儲存
-"
+[node name="ValueLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer/SFXContainer" unique_id=961669272]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.23529412, 0.22745098, 0.23529412, 1)
+theme_override_font_sizes/font_size = 28
+text = "100"
+horizontal_alignment = 2
 
-[node name="RevertButton" type="Button" parent="." unique_id=1501094021]
-offset_left = 495.0
-offset_top = 485.0
-offset_right = 575.0
-offset_bottom = 521.0
-theme_override_font_sizes/font_size = 20
-theme_override_styles/normal = SubResource("StyleBoxFlat_nfjsg")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_8j1ee")
-theme_override_styles/hover = SubResource("StyleBoxFlat_m7ul2")
-text = "復原"
+[node name="Spacer" type="Control" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1773114292]
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
 
-[connection signal="drag_ended" from="VBoxContainer/SFXSlider" to="." method="_on_sfx_slider_drag_ended"]
-[connection signal="button_up" from="SaveButton" to="." method="_on_save_button_button_up"]
-[connection signal="button_up" from="RevertButton" to="." method="_on_revert_button_button_up"]
+[node name="ButtonContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1562080205]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 100
+
+[node name="RevertButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/ButtonContainer" unique_id=1501094021]
+custom_minimum_size = Vector2(180, 52)
+layout_mode = 2
+size_flags_horizontal = 10
+theme = ExtResource("4_nfjsg")
+theme_override_font_sizes/font_size = 28
+text = "Reset"
+
+[node name="SaveButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/ButtonContainer" unique_id=1875221553]
+custom_minimum_size = Vector2(180, 52)
+layout_mode = 2
+size_flags_horizontal = 0
+theme = ExtResource("4_nfjsg")
+theme_override_font_sizes/font_size = 30
+text = "Save"
+
+[connection signal="drag_ended" from="PanelContainer/MarginContainer/VBoxContainer/SFXContainer/SFXSlider" to="." method="_on_sfx_slider_drag_ended"]
+[connection signal="button_up" from="PanelContainer/MarginContainer/VBoxContainer/ButtonContainer/RevertButton" to="." method="_on_revert_button_button_up"]
+[connection signal="button_up" from="PanelContainer/MarginContainer/VBoxContainer/ButtonContainer/SaveButton" to="." method="_on_save_button_button_up"]

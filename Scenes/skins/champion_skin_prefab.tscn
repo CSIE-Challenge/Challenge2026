@@ -10,42 +10,38 @@ glow_enabled = true
 glow_levels/1 = 1.0
 glow_levels/2 = 1.0
 glow_levels/3 = 0.5
-glow_levels/5 = 0.0
 glow_intensity = 1.5
 glow_strength = 1.2
 glow_blend_mode = 0
-glow_hdr_threshold = 1.0
 
-[node name="ChampionSkinPrefab" type="Node2D"]
+[node name="ChampionSkinPrefab" type="Node2D" unique_id=2147066253]
 script = ExtResource("1_champ")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=975637695]
 environment = SubResource("Environment_glow")
 
-[node name="Core" type="Sprite2D" parent="."]
+[node name="Core" type="Sprite2D" parent="." unique_id=677667346]
 modulate = Color(2, 2, 2, 1)
 scale = Vector2(0.1, 0.1)
 texture = ExtResource("3_circle")
 
-[node name="Ring1" type="Sprite2D" parent="."]
+[node name="Ring1" type="Sprite2D" parent="." unique_id=1221120547]
 modulate = Color(0, 3, 4, 1)
 scale = Vector2(0.18, 0.18)
 texture = ExtResource("2_square")
 
-[node name="Ring2" type="Sprite2D" parent="."]
+[node name="Ring2" type="Sprite2D" parent="." unique_id=831944858]
 modulate = Color(4, 0, 2, 1)
 rotation = 0.785398
 scale = Vector2(0.18, 0.18)
 texture = ExtResource("2_square")
 
-[node name="Confetti" type="CPUParticles2D" parent="."]
-local_coords = false
+[node name="Confetti" type="CPUParticles2D" parent="." unique_id=478952604]
 emitting = false
 amount = 30
-lifetime = 1.0
+texture = ExtResource("2_square")
 one_shot = true
 explosiveness = 0.8
-texture = ExtResource("2_square")
 emission_shape = 1
 emission_sphere_radius = 15.0
 direction = Vector2(0, -1)
@@ -61,14 +57,14 @@ color = Color(2, 2, 1, 1)
 hue_variation_min = -1.0
 hue_variation_max = 1.0
 
-[node name="DeathParticles" type="CPUParticles2D" parent="."]
+[node name="DeathParticles" type="CPUParticles2D" parent="." unique_id=1380160611]
 emitting = false
 amount = 150
+texture = ExtResource("2_square")
 lifetime = 1.5
 one_shot = true
 explosiveness = 1.0
 randomness = 0.5
-texture = ExtResource("2_square")
 emission_shape = 1
 emission_sphere_radius = 10.0
 direction = Vector2(0, -1)

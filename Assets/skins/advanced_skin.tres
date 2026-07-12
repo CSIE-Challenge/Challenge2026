@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://dvancedtres"]
 
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="1_circle"]
+[ext_resource type="Texture2D" uid="uid://cc3p7kc0bs0jx" path="res://Shapes/hearts/default.svg" id="1_f7bi6"]
 [ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_skindata"]
 [ext_resource type="PackedScene" uid="uid://dvancedskin" path="res://Scenes/skins/advanced_skin_prefab.tscn" id="2_prefab"]
 
@@ -8,6 +9,11 @@
 script = ExtResource("1_skindata")
 skin_id = "advanced_skin"
 true_name = "高級小球"
-price = 200
+description = "也是白色小球，但是......好像又有點不一樣？
+啊，我知道不一樣在哪了。
+比較高級。"
+is_achievement_unlock = true
+achievement_desc = "積分兌換"
 preview_texture = ExtResource("1_circle")
 skin_prefab = ExtResource("2_prefab")
+health_icon_texture = ExtResource("1_f7bi6")

@@ -143,8 +143,8 @@ func play_eat_ball():
 	var tween = create_tween()
 	tween.tween_property(sprite, "scale", Vector2(0.07, 0.07), 0.1)
 	tween.tween_property(sprite, "scale", Vector2(0.05, 0.05), 0.1)
-	heart_particles.restart()
-	heart_particles.emitting = true
+	#heart_particles.restart()
+	#heart_particles.emitting = true
 
 
 func play_die():

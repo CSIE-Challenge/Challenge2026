@@ -9,7 +9,7 @@ var trap_request_scheduler: TrapRequestScheduler
 var game_data := GameData.new()
 var default_heal_uses: int = game_data.data["heal"]["uses"]
 var default_heal_amount: int = game_data.data["heal"]["amount"]
-var default_heal_energy_cost: int = game_data.data["heal"]["energy_cost"]
+var default_heal_energy_cost: int = game_data.data["heal"]["energy_costs"][0]
 var heal_uses_left: int = default_heal_uses
 
 var trap_data = TrapData.new().data
@@ -152,7 +152,7 @@ func get_available_traps() -> Array:
 	return available_traps
 
 
-func get_cool_down_time(trap_id: String) -> float:
+func get_cooldown_time(trap_id: String) -> float:
 	if not _is_known_trap(trap_id):
 		return -1.0
 
@@ -266,8 +266,11 @@ func _make_heal_result(ok: bool, reason: String) -> Dictionary:
 	return {
 		"ok": ok,
 		"health": NetworkManager.get_health(owner_peer_id),
-		"max_health": NetworkManager.get_max_health(),
 		"energy": NetworkManager.get_energy(owner_peer_id),
 		"heal_uses_left": heal_uses_left,
 		"reason": reason,
 	}
+
+
+func update_heal_cost(new_cost: int) -> void:
+	default_heal_amount = new_cost

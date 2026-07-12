@@ -8,6 +8,7 @@ var target_scale: Vector2
 
 var start_pos: Vector2
 var current_spin_speed: float = 0.0  # 用於動態自轉加速
+var boomerang_audio: AudioStreamPlayer
 
 @onready var sprite = $Sprite2D
 @onready var sprite2 = $Sprite2D2
@@ -60,9 +61,11 @@ func _ready() -> void:
 	prep.tween_property(self, "current_spin_speed", spin_velocity, duration)  # 自轉角速度從 0 加速到目標值
 
 	# 【階段二：朝向目標移動】 (串接，使用 TRANS_QUAD 做出慢出慢停的飄逸感)
+	tween.chain().tween_callback(
+		func(): boomerang_audio = Audio.play_sfx(Audio.SFX.HIDDEN_GAME_BOOMERANG)
+	)
 	(
 		tween
-		. chain()
 		. tween_property(self, "position", target_pos, travel_time)
 		. set_trans(Tween.TRANS_QUAD)
 		. set_ease(Tween.EASE_OUT)
@@ -94,3 +97,8 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	# 每幀自轉：角速度 current_spin_speed 會隨 Tween 的加速而同步加速
 	rotation += current_spin_speed * delta
+
+
+func _exit_tree() -> void:
+	if boomerang_audio and is_instance_valid(boomerang_audio):
+		boomerang_audio.stop()
