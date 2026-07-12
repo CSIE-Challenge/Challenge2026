@@ -52,7 +52,7 @@
 	},
 	"trap5-icefloor": {
 		"path": "res://Scenes/traps/trap5-icefloor.tscn",
-		"cooldown_times": 2.0,
+		"cooldown_times": 1.0,
 		"damage": 0,
 		"energy_costs": 5,
 		"lifetime": 5.0,
@@ -68,7 +68,8 @@
 		"damage": 1,
 		"energy_costs": 20,
 		"min_speed": 120,
-		"max_speed": 250
+		"max_speed": 250,
+		"max_stock": 2
 	},
 	"trap7-spreading_ripples": {
 		"path": "res://Scenes/traps/trap7-spreading_ripples.tscn",
@@ -83,13 +84,14 @@
 		"position_min_y": -280.0,
 		"position_max_y": 280.0,
 		"min_expand_rate": 100.0,
-		"max_expand_rate": 200.0
+		"max_expand_rate": 200.0,
+		"max_stock": 2
 	},
 	"trap8-electric_arc": {
 		"path": "res://Scenes/traps/trap8-electric_arc.tscn",
 		"cooldown_times": 1.0,
 		"damage": 1,
-		"energy_costs": 10,
+		"energy_costs": 15,
 		"points_radius": 10,
 		"points_default_scale": [
 			0.15,
@@ -106,14 +108,14 @@
 	},
 	"trap9-mortar": {
 		"path": "res://Scenes/traps/trap9-mortar.tscn",
-		"cooldown_times": 1.5,
+		"cooldown_times": 1.0,
 		"damage": 1,
-		"energy_costs": 10,
+		"energy_costs": 12,
 		"max_height": 300.0,
 		"gravity": 200.0,
 		"explosion_max_radius": 100.0,
 		"explosion_expand_speed": 400.0,
-		"stay_time": 0.25,
+		"stay_time": 0.2,
 		"min_air_time": 1.5,
 		"max_air_time": 2.5,
 		"spawn_x": 275.0,

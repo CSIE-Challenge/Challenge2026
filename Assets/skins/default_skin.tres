@@ -8,6 +8,7 @@
 [resource]
 script = ExtResource("1_skindata")
 skin_id = "default_skin"
+price = 100
 true_name = "經典小球"
 description = "初始皮膚"
 is_achievement_unlock = true

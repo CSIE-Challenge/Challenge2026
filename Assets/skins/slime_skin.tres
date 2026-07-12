@@ -9,8 +9,11 @@
 script = ExtResource("1_skindata")
 skin_id = "slime_skin"
 true_name = "史萊姆球"
-description = "看起來弱小、軟爛、卻又激不起任何人的同情心。
-你可以祈禱他有天變成史萊姆王，統治異世界之類的。"
+description = "看起來弱小、軟爛、
+卻又激不起任何人的同情心。
+你可以祈禱他有天變成史萊姆王，
+統治異世界之類的。"
+price = 30
 is_achievement_unlock = true
 achievement_desc = "積分兌換"
 preview_texture = ExtResource("1_circle")

@@ -40,6 +40,19 @@ var trap_cooldown_times := {
 	"trap10-shotgun": trap_data["trap10-shotgun"]["cooldown_times"],
 }
 
+var max_stock := {
+	"trap1-mine": trap_data["trap1-mine"].get("max_stock", 1),
+	"trap2-electric_ring": trap_data["trap2-electric_ring"].get("max_stock", 1),
+	"trap3-tracing_bullet": trap_data["trap3-tracing_bullet"].get("max_stock", 1),
+	"trap4-conveyor": trap_data["trap4-conveyor"].get("max_stock", 1),
+	"trap5-icefloor": trap_data["trap5-icefloor"].get("max_stock", 1),
+	"trap6-scanline": trap_data["trap6-scanline"].get("max_stock", 1),
+	"trap7-spreading_ripples": trap_data["trap7-spreading_ripples"].get("max_stock", 1),
+	"trap8-electric_arc": trap_data["trap8-electric_arc"].get("max_stock", 1),
+	"trap9-mortar": trap_data["trap9-mortar"].get("max_stock", 1),
+	"trap10-shotgun": trap_data["trap10-shotgun"].get("max_stock", 1)
+}
+
 # trap_cooldowns[trap_id] = remaining_seconds
 var trap_cooldowns: Dictionary = {}
 
@@ -206,12 +219,20 @@ func _get_trap_cost(trap_id: String) -> int:
 func _get_trap_cooldown_time(trap_id: String) -> float:
 	if not trap_cooldown_times.has(trap_id):
 		return 0.0
-
 	return trap_cooldown_times[trap_id]
 
 
 func _is_trap_on_cooldown(trap_id: String) -> bool:
-	return _get_cooldown_remaining(trap_id) > 0.0
+	if _get_trap_max_stock(trap_id) > 1:
+		return _get_cooldown_remaining(trap_id) > _get_trap_cooldown_time(trap_id)
+	else:
+		return _get_cooldown_remaining(trap_id) > 0.0
+
+
+func _get_trap_max_stock(trap_id: String) -> int:
+	if not max_stock.has(trap_id):
+		return 0
+	return max_stock[trap_id]
 
 
 func _get_cooldown_remaining(trap_id: String) -> float:
@@ -222,7 +243,21 @@ func _get_cooldown_remaining(trap_id: String) -> float:
 
 
 func _start_cooldown(trap_id: String) -> void:
-	trap_cooldowns[trap_id] = _get_trap_cooldown_time(trap_id)
+	if _get_trap_max_stock(trap_id) > 1:
+		if not trap_cooldowns.has(trap_id):
+			trap_cooldowns[trap_id] = clampf(
+				0.0 + _get_trap_cooldown_time(trap_id),
+				0,
+				_get_trap_cooldown_time(trap_id) * _get_trap_max_stock(trap_id)
+			)
+		else:
+			trap_cooldowns[trap_id] = clampf(
+				trap_cooldowns[trap_id] + _get_trap_cooldown_time(trap_id),
+				0,
+				_get_trap_cooldown_time(trap_id) * _get_trap_max_stock(trap_id)
+			)
+	else:
+		trap_cooldowns[trap_id] = _get_trap_cooldown_time(trap_id)
 
 
 func _has_enough_energy(trap_id: String) -> bool:

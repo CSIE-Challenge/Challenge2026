@@ -116,10 +116,11 @@ layout_mode = 2
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/ActionContainer" unique_id=1704011090]
 layout_mode = 2
-theme_override_constants/separation = 20
+size_flags_horizontal = 4
+theme_override_constants/separation = 50
 
 [node name="ResumeButton" type="Button" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/ActionContainer/HBoxContainer2" unique_id=1672766635]
-custom_minimum_size = Vector2(200, 60)
+custom_minimum_size = Vector2(250, 60)
 layout_mode = 2
 size_flags_horizontal = 10
 theme = ExtResource("4_t71ic")
@@ -127,7 +128,7 @@ theme_override_font_sizes/font_size = 28
 text = "Continue"
 
 [node name="RestartButton" type="Button" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/ActionContainer/HBoxContainer2" unique_id=1754318696]
-custom_minimum_size = Vector2(200, 60)
+custom_minimum_size = Vector2(250, 60)
 layout_mode = 2
 size_flags_horizontal = 10
 theme = ExtResource("4_t71ic")
@@ -140,10 +141,11 @@ layout_mode = 2
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/ActionContainer" unique_id=2132207873]
 layout_mode = 2
-theme_override_constants/separation = 20
+size_flags_horizontal = 4
+theme_override_constants/separation = 50
 
 [node name="MainMenuButton" type="Button" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/ActionContainer/HBoxContainer3" unique_id=1613495078]
-custom_minimum_size = Vector2(200, 60)
+custom_minimum_size = Vector2(250, 60)
 layout_mode = 2
 size_flags_horizontal = 10
 theme = ExtResource("4_t71ic")
@@ -151,7 +153,7 @@ theme_override_font_sizes/font_size = 28
 text = "Home"
 
 [node name="ExitButton" type="Button" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/ActionContainer/HBoxContainer3" unique_id=857557833]
-custom_minimum_size = Vector2(200, 60)
+custom_minimum_size = Vector2(250, 60)
 layout_mode = 2
 size_flags_horizontal = 10
 theme = ExtResource("4_t71ic")
@@ -200,6 +202,7 @@ script = ExtResource("3_t71ic")
 bus_name = "Music"
 
 [node name="ValueLabel" type="Label" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/VolumeContainer/MusicContainer" unique_id=1405787552]
+custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
 text = "100"
@@ -225,6 +228,7 @@ script = ExtResource("3_t71ic")
 bus_name = "SFX"
 
 [node name="ValueLabel" type="Label" parent="ColorRect/PanelContainer/MarginContainer/VBoxContainer/VolumeContainer/SFXContainer" unique_id=961669272]
+custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
 text = "100"

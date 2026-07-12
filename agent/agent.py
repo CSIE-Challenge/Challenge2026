@@ -22,7 +22,7 @@ from api import *
 
 MIN_COORDINATE = -220
 MAX_COORDINATE = 220
-PLAYER_RADIUS = 13
+PLAYER_RADIUS = 13.5
 FIELD_SIZE = 440
 MAX_HEALTH = 5
 HEAL_THRESHOLD = 1
@@ -73,7 +73,7 @@ def run(client):
                     client.spawn_trap2(1.0, 70.0)  # 調整傳入它的參數！
                 elif target_trap == 3:
                     client.spawn_trap3(
-                        Vector2(145.0, 220.0), Direction.UP, 100.0
+                        Vector2(145.0, 220.0), Vector2(0.0, -1.0), 100.0
                     )  # 調整傳入它的參數！
                 elif target_trap == 4:
                     client.spawn_trap4(

@@ -31,6 +31,7 @@ var redeem_codes = {
 	"ee84277cbbe48dac2823530dc5fd607756216f6dfdda16b4b9eb2c9d90de468f": "among_us_skin",
 	"0de8197e0efb7a13ecf7ebe6ab3ea20541820eb509c68533c1c53c1f74aee096": "matrix_skin",
 	"99ce212dbfc057dd48d5532aacf9f0c76ac9f6a7cc3bac27b6be8e87525bc6e7": "undertale_skin",
+	"d82925a1cbba09cb6b74d679d5eb5bb4068022ac647e27c4119dc96648a28177": "coconut_king_skin",
 	"8169f1df4c3e57e67156554ded65480570cb74f65cdb50272f0b01acbc82abd5": "ALL_SKINS"
 }
 
@@ -294,6 +295,13 @@ func refresh_all_items():
 		item.update_state()  # 呼叫 SkinItem 裡的 update_state() 重新判斷
 
 
+# 未擁有時顯示的價格文字，可被 price_text_override 覆寫
+func _get_price_text(data: SkinData) -> String:
+	if data.price_text_override != "":
+		return data.price_text_override
+	return "價格：%d 元" % data.price
+
+
 # ==========================================
 # 處理開啟詳細介紹頁面
 # ==========================================
@@ -311,10 +319,16 @@ func _on_item_detail_requested(data: SkinData):
 
 	# 2. 根據狀態更新視窗內容
 	if is_locked_silhouette:
-		detail_title.text = "????"
-		detail_desc.text = "未知的皮膚"
-		detail_cond.text = "解鎖條件：未知"
-		action_btn.visible = false
+		if data.hide_name:
+			detail_title.text = "????"
+			detail_desc.text = "未知的皮膚"
+		else:
+			detail_title.text = data.true_name
+			detail_desc.text = data.description
+		detail_cond.text = _get_price_text(data)
+		action_btn.visible = true
+		action_btn.text = "未解鎖"
+		action_btn.disabled = true
 		lock_icon.visible = true
 		# 鎖定狀態不載入模型
 	else:
@@ -324,20 +338,17 @@ func _on_item_detail_requested(data: SkinData):
 		lock_icon.visible = false
 
 		if is_owned:
-			detail_cond.text = "狀態：已擁有"
+			detail_cond.text = "已擁有"
 			if is_equipped:
 				action_btn.text = "已裝備"
 				action_btn.disabled = true
 			else:
 				action_btn.text = "裝備"
 				action_btn.disabled = false
-		elif data.is_achievement_unlock:
-			detail_cond.text = "解鎖條件：" + data.achievement_desc
+		else:
+			detail_cond.text = _get_price_text(data)
 			action_btn.text = "未解鎖"
 			action_btn.disabled = true
-		else:
-			detail_cond.text = "請輸入兌換碼解鎖"
-			action_btn.visible = false
 
 		# 預先載入舞台場景
 		var ShowcaseStageScene = preload("res://Scenes/menu/showcase_stage.tscn")

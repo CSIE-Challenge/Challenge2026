@@ -72,7 +72,7 @@ func _physics_process(delta: float) -> void:
 		for body in get_overlapping_bodies():
 			if body == Global.game_manager.player:
 				var distance = global_position.distance_to(body.global_position)
-				if abs(distance - collision_shape.radius) <= (ring_thickness / 2):
+				if abs(distance - collision_shape.radius) <= (ring_thickness / 2 + 13.5):
 					Global.player_hit.emit(damage)
 		if collision_shape.radius >= max_radius:
 			is_expanding = false

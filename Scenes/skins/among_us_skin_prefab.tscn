@@ -2,6 +2,10 @@
 
 [ext_resource type="Script" uid="uid://ccq118brpqmer" path="res://Scripts/skins/among_us_skin_prefab.gd" id="1_amongus"]
 
+[sub_resource type="Gradient" id="Gradient_gj0op"]
+offsets = PackedFloat32Array(0, 0.63590604, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
+
 [node name="AmongUsSkinPrefab" type="Node2D" unique_id=139175558]
 script = ExtResource("1_amongus")
 
@@ -24,3 +28,4 @@ initial_velocity_max = 300.0
 scale_amount_min = 4.0
 scale_amount_max = 8.0
 color = Color(1, 0, 0, 1)
+color_ramp = SubResource("Gradient_gj0op")

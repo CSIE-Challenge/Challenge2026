@@ -44,7 +44,7 @@ var _is_shutting_down := false
 @onready var energy_increase_timer = $EnergyIncreaseTimer
 @onready var trap_request_scheduler: TrapRequestScheduler = $"../TrapRequestScheduler"
 @onready var agent_action_service: AgentActionService = $"../AgentActionService"
-@onready var pregame_countdown: Label = $"../SubViewport/PregameCountdown"
+@onready var pregame_countdown: Label = $"../HUD/PregameCountdown"
 
 
 func _ready() -> void:
@@ -142,7 +142,9 @@ func _physics_process(delta: float) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause"):
-		get_viewport().set_input_as_handled()
+		if _is_multiplayer_game():
+			get_viewport().set_input_as_handled()
+			return
 		_handle_pause_toggle()
 
 
@@ -156,6 +158,10 @@ func _handle_pause_toggle() -> void:
 		_resume_gameplay()
 	else:
 		_pause_gameplay()
+
+
+func _is_multiplayer_game() -> bool:
+	return not Global.single_player
 
 
 #region Agent
@@ -584,12 +590,22 @@ func _on_network_health_changed(peer_id: int, health: int) -> void:
 		_update_health_display(clampi(health, 0, max_health))
 		if player == null:
 			return
-		if player.health <= 0:
+		if player.health <= 0 and not _is_multiplayer_game():
 			await player.die()
 			finish_game(1)
+		_finish_game_if_peer_defeated(peer_id, health)
 		return
 
 	_update_opponent_energy_label(peer_id, NetworkManager.get_energy(peer_id))
+	_finish_game_if_peer_defeated(peer_id, health)
+
+
+func _finish_game_if_peer_defeated(peer_id: int, health: int) -> void:
+	if game_over or health > 0:
+		return
+
+	print("[GameManager] Peer %d health reached 0; finishing game" % peer_id)
+	finish_game()
 
 
 #region UI

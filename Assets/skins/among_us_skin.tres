@@ -11,6 +11,7 @@ script = ExtResource("1_amongus_scr")
 skin_id = "among_us_skin"
 true_name = "可疑人物"
 description = "SUS"
+price = 200
 is_achievement_unlock = true
 achievement_desc = "積分兌換"
 preview_texture = ExtResource("3_preview")

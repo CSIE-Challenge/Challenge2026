@@ -30,6 +30,7 @@ var agent_file := ""
 var _conn: WebSocketConnection
 var _command_handlers: Dictionary[String, Callable] = {}
 var _agent_pid := -1
+var _agent_script_path := ""
 var _reap_accum := 0.0
 
 
@@ -70,6 +71,10 @@ func _spawn_agent_process(token: String) -> void:
 	if OS.has_feature("linux") or OS.has_feature("macos"):
 		OS.execute("chmod", ["+x", python])
 
+	if OS.has_feature("macos") and Global.single_player and agent_file != "":
+		_spawn_agent_process_macos_terminal(token, python, runner, libs)
+		return
+
 	OS.set_environment("PYTHONPATH", libs)
 	OS.set_environment("CHALLENGE_WS_URL", "ws://127.0.0.1:%d" % ApiServer.port)
 	OS.set_environment("CHALLENGE_TOKEN", token)
@@ -87,6 +92,37 @@ func _spawn_agent_process(token: String) -> void:
 	print("[API Server] agent process pid: %d" % _agent_pid)
 
 
+func _spawn_agent_process_macos_terminal(
+	token: String, python: String, runner: String, libs: String
+) -> void:
+	var short_token := token.left(8)
+	var script_path := "/tmp/challenge_agent_%s.command" % short_token
+	var pid_path := "/tmp/challenge_agent_%s.pid" % short_token
+	var url := "ws://127.0.0.1:%d" % ApiServer.port
+
+	var content := "#!/bin/bash\n"
+	content += 'echo $$ > "%s"\n' % pid_path
+	content += 'export PYTHONPATH="%s"\n' % libs
+	content += 'export CHALLENGE_WS_URL="%s"\n' % url
+	content += 'export CHALLENGE_TOKEN="%s"\n' % token
+	content += 'export CHALLENGE_AGENT_PATH="%s"\n' % agent_file
+	content += "export CHALLENGE_AGENT_LOG=1\n"
+	content += 'exec "%s" -s "%s"\n' % [python, runner]
+
+	var file := FileAccess.open(script_path, FileAccess.WRITE)
+	if file == null:
+		printerr("[API Server] failed to create agent launch script: %s" % script_path)
+		return
+	file.store_string(content)
+	file.close()
+
+	OS.execute("chmod", ["+x", script_path])
+	OS.execute("open", ["-a", "Terminal", script_path])
+	_agent_script_path = script_path
+	_agent_pid = -1
+	print("[API Server] agent launched in Terminal.app")
+
+
 func _bundle_python() -> String:
 	if OS.has_feature("windows"):
 		return bundle_dir + "/python/python.exe"
@@ -94,6 +130,20 @@ func _bundle_python() -> String:
 
 
 func _exit_tree() -> void:
+	if _agent_script_path != "":
+		var pid_path := _agent_script_path.replace(".command", ".pid")
+		if FileAccess.file_exists(pid_path):
+			var pid_file := FileAccess.open(pid_path, FileAccess.READ)
+			if pid_file:
+				var pid_str := pid_file.get_as_text().strip_edges()
+				pid_file.close()
+				var pid := pid_str.to_int()
+				if pid > 0 and OS.is_process_running(pid):
+					OS.kill(pid)
+					print("[API Server] agent process %d stopped" % pid)
+			DirAccess.remove_absolute(pid_path)
+		DirAccess.remove_absolute(_agent_script_path)
+		_agent_script_path = ""
 	if _agent_pid >= 0 and OS.is_process_running(_agent_pid):
 		OS.kill(_agent_pid)
 		print("[API Server] agent process %d stopped" % _agent_pid)
