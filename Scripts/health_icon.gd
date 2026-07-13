@@ -20,6 +20,7 @@ func _ready() -> void:
 
 	if has_node("/root/PlayerData"):
 		var player_data_node = get_node("/root/PlayerData")
+		# Keep the UI icon in sync with the matchmaker-assigned player skin.
 		var skin_id: String = (
 			Global.skin_override if Global.skin_override != "" else player_data_node.equipped_skin
 		)

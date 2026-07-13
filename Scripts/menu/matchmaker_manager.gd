@@ -542,6 +542,7 @@ func _on_poll_status_response(data: Dictionary) -> void:
 		NetworkManager.cancel_ready_timeout.rpc_id(1)
 		Global.single_player = false
 		Global.agent_file = str(agent_path)
+		# Server decides whether this match should use our skin or the opponent's skin.
 		Global.skin_override = str(data.get("match_skin", ""))
 		Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 		SceneTransition.transition_to(GAMEPLAY_SCENE)

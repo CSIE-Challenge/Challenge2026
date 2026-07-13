@@ -99,6 +99,7 @@ function normalizeAgentScript(value) {
 }
 
 function normalizeSkinId(value) {
+    // Skin ids come from Godot resource filenames, so keep only simple path-safe ids.
     const skin = String(value || "default_skin");
     if (!/^[A-Za-z0-9_-]+$/.test(skin)) {
         return "default_skin";
@@ -107,6 +108,7 @@ function normalizeSkinId(value) {
 }
 
 function readAgentUploadEnabled() {
+    // The matchmaker owns this toggle so clients do not need different launch flags.
     try {
         const raw = fs.readFileSync(UPLOAD_AGENT_FLAG_PATH, "utf8").trim().toLowerCase();
         return ["1", "true", "yes", "on"].includes(raw);
@@ -392,6 +394,8 @@ const server = http.createServer(async (req, res) => {
         const uploadAgentToOpponent = readAgentUploadEnabled();
         if (playerId && room.playerIds.includes(playerId)) {
             const opponentId = room.playerIds.find((id) => id !== playerId);
+            // Upload mode ON: run the opponent's agent and keep this player's skin.
+            // Upload mode OFF: run this player's own agent, but render the opponent's skin.
             const targetAgentPlayerId = uploadAgentToOpponent
                 ? room.playerIds.find((id) => id !== playerId)
                 : playerId;
