@@ -11,6 +11,7 @@ var stage: Node2D
 var high_stage: Node2D
 var single_player: bool = false
 var agent_file: String = ""
+var skin_override: String = ""
 
 var settings = ConfigFile.new()
 var game_version: String = "0.0.0"

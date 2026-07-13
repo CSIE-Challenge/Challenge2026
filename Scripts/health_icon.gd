@@ -20,7 +20,10 @@ func _ready() -> void:
 
 	if has_node("/root/PlayerData"):
 		var player_data_node = get_node("/root/PlayerData")
-		var skin_path = "res://Assets/skins/" + player_data_node.equipped_skin + ".tres"
+		var skin_id: String = (
+			Global.skin_override if Global.skin_override != "" else player_data_node.equipped_skin
+		)
+		var skin_path = "res://Assets/skins/" + skin_id + ".tres"
 		if ResourceLoader.exists(skin_path):
 			var skin_data = load(skin_path) as SkinData
 			if skin_data and skin_data.health_icon_texture:

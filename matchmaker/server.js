@@ -52,6 +52,7 @@ const CODE_LENGTH = 6;
  * @property {string[]} playerIds
  * @property {Set<string>} readyPlayerIds
  * @property {Map<string, {filename: string, source: string}|null>} agentScripts
+ * @property {Map<string, string>} skins
  * @property {boolean} gameStarted
  * @property {import("child_process").ChildProcess} process
  * @property {ReturnType<typeof setTimeout>} expireTimer
@@ -95,6 +96,14 @@ function normalizeAgentScript(value) {
         filename: filename.replace(/[^\w.\-]/g, "_") || "agent.py",
         source,
     };
+}
+
+function normalizeSkinId(value) {
+    const skin = String(value || "default_skin");
+    if (!/^[A-Za-z0-9_-]+$/.test(skin)) {
+        return "default_skin";
+    }
+    return skin;
 }
 
 function readAgentUploadEnabled() {
@@ -242,6 +251,7 @@ const server = http.createServer(async (req, res) => {
             playerIds: [playerId],
             readyPlayerIds: new Set(),
             agentScripts: new Map(),
+            skins: new Map(),
             gameStarted: false,
             process: proc,
             expireTimer: setTimeout(() => expireRoom(code), 60_000),
@@ -303,6 +313,7 @@ const server = http.createServer(async (req, res) => {
         const body = await parseBody(req);
         const code = body.code?.toUpperCase?.() || "";
         const playerId = body.player_id || "";
+        const skin = normalizeSkinId(body.skin);
         let agentScript;
 
         try {
@@ -334,6 +345,7 @@ const server = http.createServer(async (req, res) => {
 
         room.readyPlayerIds.add(playerId);
         room.agentScripts.set(playerId, agentScript);
+        room.skins.set(playerId, skin);
         if (agentScript) {
             console.log(
                 `[Matchmaker] Room ${code} received agent ${agentScript.filename} ` +
@@ -376,13 +388,19 @@ const server = http.createServer(async (req, res) => {
         }
 
         let opponentAgent = null;
+        let matchSkin = "default_skin";
         const uploadAgentToOpponent = readAgentUploadEnabled();
         if (playerId && room.playerIds.includes(playerId)) {
-            const targetPlayerId = uploadAgentToOpponent
+            const opponentId = room.playerIds.find((id) => id !== playerId);
+            const targetAgentPlayerId = uploadAgentToOpponent
                 ? room.playerIds.find((id) => id !== playerId)
                 : playerId;
-            if (targetPlayerId) {
-                opponentAgent = room.agentScripts.get(targetPlayerId) || null;
+            const targetSkinPlayerId = uploadAgentToOpponent ? playerId : opponentId;
+            if (targetAgentPlayerId) {
+                opponentAgent = room.agentScripts.get(targetAgentPlayerId) || null;
+            }
+            if (targetSkinPlayerId) {
+                matchSkin = room.skins.get(targetSkinPlayerId) || "default_skin";
             }
         }
 
@@ -393,6 +411,7 @@ const server = http.createServer(async (req, res) => {
             game_started: room.gameStarted,
             upload_agent_to_opponent: uploadAgentToOpponent,
             opponent_agent: opponentAgent,
+            match_skin: matchSkin,
         }));
         return;
     }

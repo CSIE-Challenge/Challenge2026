@@ -460,7 +460,12 @@ func _on_ready_button_up() -> void:
 	_update_status_label()
 	_post(
 		"/qiaohu/ready",
-		{"code": _room_code, "player_id": _player_id, "agent": agent_payload.get("agent")},
+		{
+			"code": _room_code,
+			"player_id": _player_id,
+			"agent": agent_payload.get("agent"),
+			"skin": PlayerData.equipped_skin,
+		},
 		"ready"
 	)
 
@@ -537,6 +542,7 @@ func _on_poll_status_response(data: Dictionary) -> void:
 		NetworkManager.cancel_ready_timeout.rpc_id(1)
 		Global.single_player = false
 		Global.agent_file = str(agent_path)
+		Global.skin_override = str(data.get("match_skin", ""))
 		Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 		SceneTransition.transition_to(GAMEPLAY_SCENE)
 
