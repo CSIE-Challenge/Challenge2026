@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://rbtskinprefab"]
+[gd_scene format=3 uid="uid://bt7b7aypikv78"]
 
 [ext_resource type="Script" uid="uid://rbtskingd" path="res://Scripts/skins/red_black_tree_skin_prefab.gd" id="1_rbtgd"]
 [ext_resource type="Texture2D" uid="uid://rbtbodysvg" path="res://Shapes/rbt_body.svg" id="2_body"]

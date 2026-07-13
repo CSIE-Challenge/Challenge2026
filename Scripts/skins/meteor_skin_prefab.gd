@@ -15,13 +15,10 @@ func _ready():
 	trail.clear_points()
 	trail.hide()
 	particles.emitting = false
-<<<<<<< HEAD
 	await get_tree().create_timer(4.0).timeout
 	trail.clear_points()
 	trail.visible = true
 	particles.emitting = true
-=======
->>>>>>> b3dadf2 (Release v1.0.0 (#260))
 
 
 func _process(_delta):
@@ -63,19 +60,11 @@ func play_die():
 
 
 func play_eat_ball():
-<<<<<<< HEAD
 #	if !eaten_ball:
 #		eaten_ball = true
 #		trail.clear_points()
 #		trail.visible = true
 #		particles.emitting = true
-=======
-	if !eaten_ball:
-		eaten_ball = true
-		trail.clear_points()
-		trail.visible = true
-		particles.emitting = true
->>>>>>> b3dadf2 (Release v1.0.0 (#260))
 	var tween = create_tween()
 	tween.tween_property(sprite, "modulate", Color(1.0, 1.0, 1.0, 1.0), 0.2)
 	tween.tween_property(sprite, "modulate", Color(0.6, 0.9, 1.0, 1.0), 0.2)

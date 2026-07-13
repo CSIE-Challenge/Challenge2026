@@ -1,6 +1,5 @@
 [gd_scene format=3 uid="uid://matrixskin"]
 
-<<<<<<< HEAD
 [ext_resource type="Script" uid="uid://ba8m63yj0s71s" path="res://Scripts/skins/matrix_skin_prefab.gd" id="1_matrix"]
 [ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_circle"]
 
@@ -9,15 +8,5 @@ script = ExtResource("1_matrix")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1107991063]
 modulate = Color(0.6, 0.1, 1, 1)
-=======
-[ext_resource type="Script" path="res://Scripts/skins/matrix_skin_prefab.gd" id="1_matrix"]
-[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_circle"]
-
-[node name="MatrixSkinPrefab" type="Node2D"]
-script = ExtResource("1_matrix")
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-modulate = Color(0.6, 0.1, 1.0, 1.0)
->>>>>>> b3dadf2 (Release v1.0.0 (#260))
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("2_circle")

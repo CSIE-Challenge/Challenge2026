@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://cldwh66u3axjp" path="res://Scripts/about.gd" id="1_vbrdd"]
 [ext_resource type="Texture2D" uid="uid://di85rde5vj61d" path="res://Shapes/about/head1.png" id="2_0p54k"]
-<<<<<<< HEAD
 [ext_resource type="Texture2D" uid="uid://bcnx3b286mcb7" path="res://Shapes/background_blue.jpg" id="2_bo6cl"]
 [ext_resource type="FontFile" uid="uid://uwn4vst4fceu" path="res://Assets/fonts/Cubic_11.ttf" id="2_ohg52"]
 [ext_resource type="FontFile" uid="uid://vmmbbrsm1jdl" path="res://Assets/fonts/PixelMplus12-Bold.ttf" id="3_bo6cl"]
@@ -16,13 +15,6 @@
 shader = ExtResource("3_hvhuj")
 shader_parameter/blur_amount = 0.8
 shader_parameter/tint_color = Color(0.06, 0.06, 0.06, 0.7137255)
-=======
-[ext_resource type="FontFile" uid="uid://uwn4vst4fceu" path="res://Assets/fonts/Cubic_11.ttf" id="2_ohg52"]
-[ext_resource type="FontFile" uid="uid://vmmbbrsm1jdl" path="res://Assets/fonts/PixelMplus12-Bold.ttf" id="3_bo6cl"]
-[ext_resource type="Texture2D" uid="uid://bhwl54uv2nr7k" path="res://Shapes/about/effect.png" id="5_mi8yn"]
-[ext_resource type="Texture2D" uid="uid://mcjrdtc3bh68" path="res://Shapes/about/head2.png" id="6_xifaj"]
-[ext_resource type="Texture2D" uid="uid://bxll3uvdhnv4u" path="res://Shapes/about/head3.png" id="7_f6w75"]
->>>>>>> b3dadf2 (Release v1.0.0 (#260))
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_m6yjq"]
 blend_mode = 1
@@ -64,7 +56,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
-<<<<<<< HEAD
 
 [node name="TextureRect" type="TextureRect" parent="Panel" unique_id=1057302548]
 layout_mode = 1
@@ -84,8 +75,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-=======
->>>>>>> b3dadf2 (Release v1.0.0 (#260))
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Panel" unique_id=1619510258]
 layout_mode = 1
@@ -209,7 +198,6 @@ offset_right = 164.0
 offset_bottom = -13.0
 grow_horizontal = 2
 grow_vertical = 0
-<<<<<<< HEAD
 theme_override_constants/separation = 12
 alignment = 1
 
@@ -217,25 +205,13 @@ alignment = 1
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 theme = ExtResource("6_hvhuj")
-=======
-alignment = 1
-
-[node name="Close" type="Button" parent="Panel/HBoxContainer" unique_id=1956544565]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("2_ohg52")
->>>>>>> b3dadf2 (Release v1.0.0 (#260))
 text = "Back to Main"
 
 [node name="Scerct Stage" type="Button" parent="Panel/HBoxContainer" unique_id=2032550924]
 visible = false
-<<<<<<< HEAD
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 theme = ExtResource("6_hvhuj")
-=======
-layout_mode = 2
-theme_override_fonts/font = ExtResource("2_ohg52")
->>>>>>> b3dadf2 (Release v1.0.0 (#260))
 text = "Scerct Stage"
 
 [node name="CollectedLetter" type="RichTextLabel" parent="." unique_id=1442200721]

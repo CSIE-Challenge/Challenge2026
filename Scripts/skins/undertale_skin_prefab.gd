@@ -3,10 +3,7 @@ extends BaseSkin
 @onready var sprite = $Sprite2D
 @onready var death_shards = $DeathShards
 @onready var crack = $Crack
-<<<<<<< HEAD
 @onready var heart_effect: CPUParticles2D = $HeartEffect
-=======
->>>>>>> b3dadf2 (Release v1.0.0 (#260))
 
 
 func play_spawn():
@@ -38,16 +35,8 @@ func play_die():
 
 
 func play_eat_ball():
-<<<<<<< HEAD
 	heart_effect.restart()
 	heart_effect.emitting = true
-=======
-	return
-	var tween = create_tween()
-	for i in range(4):
-		tween.tween_property(sprite, "modulate:a", 0.0, 0.05)
-		tween.tween_property(sprite, "modulate:a", 1.0, 0.05)
->>>>>>> b3dadf2 (Release v1.0.0 (#260))
 
 
 func play_jump():
