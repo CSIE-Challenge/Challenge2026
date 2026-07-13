@@ -60,7 +60,7 @@ var redeem_codes = {}
 
 
 func _ready():
-	redeem_codes = PlayerData.redeem_codes
+	redeem_codes = PlayerData.REDEEM_CODES
 	var dv_path = (
 		"DetailPopup/CenterContainer/PopupPanel/MarginContainer/HBoxContainer/PreviewVBox/"
 		+ "SubViewportContainer/SubViewport"
