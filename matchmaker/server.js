@@ -29,6 +29,9 @@ const PORT_START = parseInt(process.env.PORT_RANGE_START || "7777", 10);
 const PORT_END = parseInt(process.env.PORT_RANGE_END || "7791", 10);
 const GAME_IP = process.env.GAME_IP || "127.0.0.1";
 const MAX_AGENT_BYTES = parseInt(process.env.MAX_AGENT_BYTES || "262144", 10);
+const UPLOAD_AGENT_FLAG_PATH =
+    process.env.UPLOAD_AGENT_FLAG_PATH ||
+    new URL("upload_agent_enabled.txt", import.meta.url).pathname;
 
 /** @type {Set<number>} */
 const freePorts = new Set();
@@ -92,6 +95,15 @@ function normalizeAgentScript(value) {
         filename: filename.replace(/[^\w.\-]/g, "_") || "agent.py",
         source,
     };
+}
+
+function readAgentUploadEnabled() {
+    try {
+        const raw = fs.readFileSync(UPLOAD_AGENT_FLAG_PATH, "utf8").trim().toLowerCase();
+        return ["1", "true", "yes", "on"].includes(raw);
+    } catch {
+        return false;
+    }
 }
 
 const GODOT_BIN = process.env.GODOT_BIN || "godot";
@@ -364,10 +376,13 @@ const server = http.createServer(async (req, res) => {
         }
 
         let opponentAgent = null;
+        const uploadAgentToOpponent = readAgentUploadEnabled();
         if (playerId && room.playerIds.includes(playerId)) {
-            const opponentId = room.playerIds.find((id) => id !== playerId);
-            if (opponentId) {
-                opponentAgent = room.agentScripts.get(opponentId) || null;
+            const targetPlayerId = uploadAgentToOpponent
+                ? room.playerIds.find((id) => id !== playerId)
+                : playerId;
+            if (targetPlayerId) {
+                opponentAgent = room.agentScripts.get(targetPlayerId) || null;
             }
         }
 
@@ -376,6 +391,7 @@ const server = http.createServer(async (req, res) => {
             player_count: room.playerIds.length,
             ready_count: room.readyPlayerIds.size,
             game_started: room.gameStarted,
+            upload_agent_to_opponent: uploadAgentToOpponent,
             opponent_agent: opponentAgent,
         }));
         return;
