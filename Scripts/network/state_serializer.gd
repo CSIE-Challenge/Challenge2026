@@ -65,6 +65,7 @@ func _collect_state() -> Dictionary:
 		"peer_id": multiplayer.get_unique_id(),
 		"tick": Engine.get_physics_frames(),
 		"player": _serialize_player(player_node),
+		"max_energy_cap": _collect_max_energy_cap(),
 		"traps": _serialize_traps(),
 		"energy_balls": _serialize_energy_balls(),
 	}
@@ -96,6 +97,24 @@ func _serialize_player(p: Node) -> Dictionary:
 	}
 
 
+func _collect_max_energy_cap() -> int:
+	if not game_manager:
+		return 0
+	if game_manager.has_method("get_current_max_energy_cap"):
+		return int(game_manager.get_current_max_energy_cap())
+
+	if not ("max_energy" in game_manager) or not ("current_phase" in game_manager):
+		return 0
+
+	var caps: Array = game_manager.max_energy
+	if typeof(caps) != TYPE_ARRAY or caps.is_empty():
+		return 0
+
+	var phase: int = int(game_manager.current_phase)
+	var index: int = min(phase, caps.size() - 1)
+	return int(caps[index])
+
+
 ## Collects all trap state from stage children.
 func _serialize_traps() -> Array[Dictionary]:
 	var traps: Array[Dictionary] = []
@@ -113,8 +132,8 @@ func _serialize_traps() -> Array[Dictionary]:
 ## Returns an empty Dictionary if the node is not a recognized trap.
 ## v2: delegates to the trap's own serialize_state() method.
 func _serialize_single_trap(node: Node) -> Dictionary:
-	if node.has_method("serialize_state"):
-		var data: Dictionary = node.serialize_state()
+	if node.has_method("_serialize_state"):
+		var data: Dictionary = node._serialize_state()
 		data["id"] = _get_trap_id(node)
 		return data
 	return {}

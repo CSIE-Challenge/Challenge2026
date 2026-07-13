@@ -8,6 +8,8 @@ const GAMEPLAY_SCENE := "res://Scenes/gameplay.tscn"
 const SETTINGS_PATH := "user://player_settings.cfg"
 const SETTINGS_SECTION := "matchmaker"
 const DEFAULT_AGENT_DIR := "agent/scripts"
+const UPLOADED_AGENT_DIR := "uploaded_agents"
+const MAX_AGENT_BYTES := 262144
 
 var _matchmaker_ip := ""
 var _room_code := ""
@@ -83,11 +85,35 @@ func _ready() -> void:
 	add_child(_countdown_timer)
 
 	_show_panel(Page.A)
+	ip_input.grab_focus()
+
+	code_input.gui_input.connect(_on_code_input_gui_input)
 
 	http_request.request_completed.connect(_on_request_completed)
 	poll_http_request.request_completed.connect(_on_poll_request_completed)
 
 	NetworkManager.server_disconnected.connect(_on_server_disconnected)
+
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and not event.pressed and event.keycode == KEY_ESCAPE:
+		match _current_panel:
+			Page.A:
+				_on_back_button_up()
+			Page.B:
+				_on_back_b_button_up()
+			Page.C:
+				_on_back_c_button_up()
+			Page.D:
+				# _on_back_d_button_up()
+				pass
+	elif event is InputEventKey and not event.pressed and event.keycode == KEY_ENTER:
+		match _current_panel:
+			Page.C:
+				_on_confirm_join_button_up()
+			Page.D:
+				# _on_ready_button_up()
+				pass
 
 
 func _process(delta: float) -> void:
@@ -284,6 +310,7 @@ func _on_join_room_button_up() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	code_input.text = ""
 	_show_panel(Page.C)
+	code_input.grab_focus()
 
 
 func _on_back_button_up() -> void:
@@ -316,6 +343,11 @@ func _on_expire_b() -> void:
 
 
 # ── Panel C ────────────────────────────────────────────────────────────────
+
+
+func _on_code_input_gui_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and event.keycode == KEY_ENTER:
+		get_viewport().set_input_as_handled()
 
 
 func _on_code_text_changed(new_text: String) -> void:
@@ -417,11 +449,20 @@ func _on_default_agent_button_up() -> void:
 
 func _on_ready_button_up() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
+	var agent_payload := _build_agent_upload_payload()
+	if agent_payload.get("error", "") != "":
+		_handle_error(agent_payload["error"])
+		return
+
 	_confirmed = true
 	ready_button.disabled = true
 	ready_button.text = "Confirmed"
 	_update_status_label()
-	_post("/qiaohu/ready", {"code": _room_code, "player_id": _player_id}, "ready")
+	_post(
+		"/qiaohu/ready",
+		{"code": _room_code, "player_id": _player_id, "agent": agent_payload.get("agent")},
+		"ready"
+	)
 
 
 func _on_ready_response(data: Dictionary) -> void:
@@ -467,7 +508,7 @@ func _reset_marquee():
 func _on_poll_tick() -> void:
 	if _poll_pending:
 		return
-	_http_get("/qiaohu/status?code=" + _room_code, "poll_status")
+	_http_get("/qiaohu/status?code=%s&player_id=%s" % [_room_code, _player_id], "poll_status")
 
 
 func _on_poll_status_response(data: Dictionary) -> void:
@@ -488,10 +529,14 @@ func _on_poll_status_response(data: Dictionary) -> void:
 		_enter_panel_d()
 
 	if game_started:
+		var opponent_agent_path: Variant = _save_opponent_agent(data.get("opponent_agent"))
+		if opponent_agent_path == null:
+			return
+
 		_stop_all_timers()
 		NetworkManager.cancel_ready_timeout.rpc_id(1)
 		Global.single_player = false
-		Global.agent_file = _selected_agent
+		Global.agent_file = str(opponent_agent_path)
 		Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 		SceneTransition.transition_to(GAMEPLAY_SCENE)
 
@@ -551,6 +596,81 @@ func _open_file_dialog() -> void:
 func _on_agent_file_selected(path: String) -> void:
 	_selected_agent = path
 	_update_agent_label()
+
+
+func _build_agent_upload_payload() -> Dictionary:
+	if _selected_agent == "":
+		return {"agent": null, "error": ""}
+	if not FileAccess.file_exists(_selected_agent):
+		return {"agent": null, "error": "Selected agent file does not exist"}
+
+	var bytes := FileAccess.get_file_as_bytes(_selected_agent)
+	if bytes.is_empty() and FileAccess.get_open_error() != OK:
+		return {"agent": null, "error": "Unable to read selected agent"}
+	if bytes.size() > MAX_AGENT_BYTES:
+		return {"agent": null, "error": "Selected agent is too large"}
+
+	print("[Matchmaker] Uploading agent %s (%d bytes)" % [_selected_agent, bytes.size()])
+	return {
+		"agent":
+		{
+			"filename": _selected_agent.get_file(),
+			"source": bytes.get_string_from_utf8(),
+		},
+		"error": "",
+	}
+
+
+func _save_opponent_agent(agent_value: Variant) -> Variant:
+	if agent_value == null:
+		return ""
+	if typeof(agent_value) != TYPE_DICTIONARY:
+		_handle_error("Invalid opponent agent from server")
+		return null
+
+	var agent_data: Dictionary = agent_value
+	var source := str(agent_data.get("source", ""))
+	if source == "":
+		return ""
+
+	var root_dir := DirAccess.open("user://")
+	if root_dir == null or root_dir.make_dir_recursive(UPLOADED_AGENT_DIR) != OK:
+		_handle_error("Unable to prepare opponent agent directory")
+		return null
+
+	var filename := _safe_agent_filename(str(agent_data.get("filename", "agent.py")))
+	var path := (
+		"user://%s/%s_%s_%s"
+		% [
+			UPLOADED_AGENT_DIR,
+			_safe_agent_filename(_room_code),
+			_safe_agent_filename(_player_id),
+			filename,
+		]
+	)
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	if file == null:
+		_handle_error("Unable to save opponent agent")
+		return null
+	file.store_string(source)
+	file.close()
+	var global_path := ProjectSettings.globalize_path(path)
+	print("[Matchmaker] Saved opponent agent to %s" % global_path)
+	return global_path
+
+
+func _safe_agent_filename(value: String) -> String:
+	const ALLOWED := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.-"
+	var safe := ""
+	for index in value.length():
+		var character := value.substr(index, 1)
+		if ALLOWED.contains(character):
+			safe += character
+		else:
+			safe += "_"
+	if safe == "":
+		return "agent.py"
+	return safe
 
 
 func _resolve_initial_directory() -> String:

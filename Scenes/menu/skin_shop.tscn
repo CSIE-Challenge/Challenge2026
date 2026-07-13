@@ -23,7 +23,7 @@
 [ext_resource type="Resource" uid="uid://mongus" path="res://Assets/skins/among_us_skin.tres" id="21_amongus"]
 [ext_resource type="Resource" uid="uid://c0w40u12dluti" path="res://Assets/skins/matrix_skin.tres" id="22_matrix"]
 [ext_resource type="Resource" uid="uid://utskintres" path="res://Assets/skins/undertale_skin.tres" id="23_ut"]
-[ext_resource type="Resource" path="res://Assets/skins/coconut_king_skin.tres" id="24_coconut_king"]
+[ext_resource type="Resource" uid="uid://inx5cyyebnp7" path="res://Assets/skins/coconut_king_skin.tres" id="24_coconut_king"]
 [ext_resource type="Texture2D" uid="uid://bcnx3b286mcb7" path="res://Shapes/background_blue.jpg" id="24_sf8f4"]
 
 [node name="SkinShop" type="Control" unique_id=1696416848]
@@ -76,6 +76,18 @@ offset_bottom = 72.0
 grow_horizontal = 0
 text = "兌換碼"
 
+[node name="CloseButton" type="Button" parent="." unique_id=1021904816]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -80.0
+offset_top = 24.0
+offset_right = -32.0
+offset_bottom = 72.0
+grow_horizontal = 0
+text = "X"
+
 [node name="ScrollContainer" type="ScrollContainer" parent="." unique_id=1120197911]
 layout_mode = 1
 anchors_preset = 15
@@ -96,7 +108,6 @@ theme_override_constants/v_separation = 32
 columns = 4
 
 [node name="DetailPopup" type="ColorRect" parent="." unique_id=1286263443]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -105,6 +116,18 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.8)
 
+[node name="LeaveBtn" type="TextureButton" parent="DetailPopup" unique_id=909763086]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -7.0
+offset_top = -6.0
+offset_right = 7.0
+offset_bottom = 6.0
+grow_horizontal = 2
+grow_vertical = 2
+
 [node name="CenterContainer" type="CenterContainer" parent="DetailPopup" unique_id=888556601]
 layout_mode = 1
 anchors_preset = 15
@@ -112,6 +135,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="PopupPanel" type="PanelContainer" parent="DetailPopup/CenterContainer" unique_id=1994634052]
 custom_minimum_size = Vector2(700, 400)
@@ -142,7 +166,7 @@ stretch = true
 transparent_bg = true
 handle_input_locally = false
 size = Vector2i(300, 300)
-render_target_update_mode = 0
+render_target_update_mode = 4
 
 [node name="Camera2D" type="Camera2D" parent="DetailPopup/CenterContainer/PopupPanel/MarginContainer/HBoxContainer/PreviewVBox/SubViewportContainer/SubViewport" unique_id=968024652]
 position = Vector2(0, -60)
@@ -172,16 +196,16 @@ theme_override_font_sizes/font_size = 18
 text = "這是一個皮膚的介紹文字。"
 autowrap_mode = 2
 
+[node name="Spacer" type="Control" parent="DetailPopup/CenterContainer/PopupPanel/MarginContainer/HBoxContainer/InfoVBox" unique_id=271712002]
+layout_mode = 2
+size_flags_vertical = 3
+
 [node name="ConditionLabel" type="Label" parent="DetailPopup/CenterContainer/PopupPanel/MarginContainer/HBoxContainer/InfoVBox" unique_id=739881522]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.8, 0, 1)
 theme_override_font_sizes/font_size = 24
 text = "價格: 100"
 horizontal_alignment = 1
-
-[node name="Spacer" type="Control" parent="DetailPopup/CenterContainer/PopupPanel/MarginContainer/HBoxContainer/InfoVBox" unique_id=271712002]
-layout_mode = 2
-size_flags_vertical = 3
 
 [node name="ActionBtn" type="Button" parent="DetailPopup/CenterContainer/PopupPanel/MarginContainer/HBoxContainer/InfoVBox" unique_id=1774753994]
 custom_minimum_size = Vector2(0, 64)
@@ -190,6 +214,7 @@ theme_override_font_sizes/font_size = 24
 text = "購買"
 
 [node name="CloseBtn" type="Button" parent="DetailPopup/CenterContainer/PopupPanel/MarginContainer/HBoxContainer/InfoVBox" unique_id=321572184]
+visible = false
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 text = "關閉"
@@ -261,15 +286,3 @@ text = "確認兌換"
 custom_minimum_size = Vector2(160, 48)
 layout_mode = 2
 text = "取消"
-
-[node name="CloseButton" type="Button" parent="." unique_id=1021904816]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -80.0
-offset_top = 24.0
-offset_right = -32.0
-offset_bottom = 72.0
-grow_horizontal = 0
-text = "X"

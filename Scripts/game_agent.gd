@@ -179,6 +179,7 @@ func _register_commands() -> void:
 	register_command("get_phase", _cmd_get_phase)
 	register_command("get_available_traps", _cmd_get_available_traps)
 	register_command("get_cooldown_time", _cmd_get_cooldown_time)
+	register_command("get_current_stock", _cmd_get_current_stock)
 
 
 func register_command(cmd_name: String, handler: Callable) -> void:
@@ -417,6 +418,17 @@ func _cmd_get_cooldown_time(args: Dictionary) -> Dictionary:
 	var action_service: AgentActionService = game.get_agent_action_service()
 	var cooldown: float = action_service.get_cooldown_time(TRAP_IDS[req["value"]])
 	return ApiServer.ok(cooldown)
+
+
+func _cmd_get_current_stock(args: Dictionary) -> Dictionary:
+	var req := _read_required_int(args, "trap_id")
+	if not req["ok"]:
+		return ApiServer.err(400, req["reason"])
+	if not TRAP_IDS.has(req["value"]):
+		return ApiServer.err(404, "unknown_trap")
+	var action_service: AgentActionService = game.get_agent_action_service()
+	var stock: int = action_service.get_current_stock(TRAP_IDS[req["value"]])
+	return ApiServer.ok(stock)
 
 
 func _cmd_heal(_args: Dictionary) -> Dictionary:

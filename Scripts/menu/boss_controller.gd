@@ -132,7 +132,7 @@ func rand_attack(new_difficulty: int = -1):
 		current_attack_interrupted = false
 
 		if not is_attacking and not is_paused:
-			var rand_val = randi_range(0, 8)
+			var rand_val = randi_range(0, 12)
 			match rand_val:
 				0:
 					await rhythm_attack(current_difficulty)
@@ -141,11 +141,7 @@ func rand_attack(new_difficulty: int = -1):
 				2:
 					await emit_rocket(current_difficulty)
 				3:
-					var rand_val2 = randi_range(
-						DifficultyParams.BOOMERANG_MODE_RANGE_MIN,
-						DifficultyParams.BOOMERANG_MODE_RANGE_MAX
-					)
-					await emit_boomerang(rand_val2, current_difficulty)
+					await emit_boomerang(5, current_difficulty)
 				4:
 					await squeeze_attack(current_difficulty)
 				5:
@@ -156,6 +152,14 @@ func rand_attack(new_difficulty: int = -1):
 					await road_attack(current_difficulty)
 				8:
 					await sweeper_attack(current_difficulty)
+				9:
+					await emit_boomerang(1, current_difficulty)
+				10:
+					await emit_boomerang(2, current_difficulty)
+				11:
+					await emit_boomerang(3, current_difficulty)
+				12:
+					await emit_boomerang(4, current_difficulty)
 
 		var cooldown = DifficultyParams.get_val(
 			DifficultyParams.ATTACK_COOLDOWN, current_difficulty

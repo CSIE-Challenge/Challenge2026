@@ -10,6 +10,14 @@ var fade_tween: Tween
 @onready var result_root: Control = $ResultRoot
 
 
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and not event.pressed:
+		if event.keycode == KEY_ESCAPE or event.keycode == KEY_ENTER:
+			if visible:
+				_on_home_button_button_up()
+				get_viewport().set_input_as_handled()
+
+
 func show_results(results: Dictionary) -> void:
 	var survival_seconds := int(results.get("survival_time", 0.0))
 

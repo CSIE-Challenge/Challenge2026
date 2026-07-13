@@ -222,6 +222,8 @@ func _run_tests() -> void:
 	mock_gm.player = mock_player
 	mock_gm.energy_amount = 42
 	mock_gm.energy_ball_count = 3
+	mock_gm.current_phase = 2
+	mock_gm.max_energy = [35, 50, 60, 70, 77, 85]
 	serializer.game_manager = mock_gm
 	serializer.stage = mock_stage
 
@@ -229,12 +231,14 @@ func _run_tests() -> void:
 	_assert(state.has("peer_id"), "state should have peer_id")
 	_assert(state.has("tick"), "state should have tick")
 	_assert(state.has("player"), "state should have player")
+	_assert(state.has("max_energy_cap"), "state should have max_energy_cap")
 	_assert(state.has("traps"), "state should have traps")
 	_assert(state.has("energy_balls"), "state should have energy_balls")
 
 	var player_section: Dictionary = state["player"]
 	_assert_eq(player_section["energy"], 42, "player energy in state")
 	_assert_eq(player_section["energy_ball_count"], 3, "energy_ball_count in state")
+	_assert_eq(state["max_energy_cap"], 60, "max energy cap in state")
 	_assert(state["traps"].size() >= 9, "state should include at least 9 traps")
 
 	# TEST 24: v2 traps in collected state have correct structure

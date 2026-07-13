@@ -7,7 +7,7 @@ var current_preview_model: Node = null  # 紀錄目前在 SubViewport 裡的皮�
 var instanced_items: Array[Control] = []  # 紀錄畫面上所有的商品節點
 
 var detail_viewport: SubViewport
-var close_btn: Button
+var close_btn: TextureButton
 
 var current_detail_data: SkinData = null
 # 為了避免明碼被偷看，這裡只儲存兌換碼的 SHA256 雜湊值
@@ -88,10 +88,7 @@ func _ready():
 		+ "SubViewportContainer/SubViewport"
 	)
 	detail_viewport = get_node(dv_path)
-	var cb_path = (
-		"DetailPopup/CenterContainer/PopupPanel/MarginContainer/HBoxContainer/"
-		+ "InfoVBox/CloseBtn"
-	)
+	var cb_path = "DetailPopup/LeaveBtn"
 	close_btn = get_node(cb_path)
 
 	# 商店開啟時，隱藏自己，準備做打開的特效
@@ -112,6 +109,16 @@ func _ready():
 	open_redeem_btn.pressed.connect(_on_open_redeem_pressed)
 	redeem_close_btn.pressed.connect(_on_redeem_close_pressed)
 	redeem_submit_btn.pressed.connect(_on_redeem_submit_pressed)
+
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and not event.pressed and event.keycode == KEY_ESCAPE:
+		if redeem_popup.visible:
+			_on_redeem_close_pressed()
+		elif detail_popup.visible:
+			_on_close_popup_pressed()
+		else:
+			_on_main_close_pressed()
 
 
 func _on_main_close_pressed():
@@ -227,6 +234,7 @@ func _on_open_redeem_pressed():
 	panel.scale = Vector2(0.5, 0.5)
 	panel.pivot_offset = panel.size / 2.0
 	var tween = create_tween()
+	redeem_input.grab_focus()
 	tween.parallel().tween_property(redeem_popup, "modulate:a", 1.0, 0.2)
 	(
 		tween
