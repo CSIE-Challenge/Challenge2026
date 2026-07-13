@@ -10,31 +10,7 @@ var detail_viewport: SubViewport
 var close_btn: TextureButton
 
 var current_detail_data: SkinData = null
-# 為了避免明碼被偷看，這裡只儲存兌換碼的 SHA256 雜湊值
-var redeem_codes = {
-	"84f6a2c702e037e57b2289af71a2d28d68cde6934d70b097fb8884b62db3fb69": "default_skin",
-	"886f2cb86c4ba333f9b506a2db58d64bac1c81e17688b4d2df6733665c65e450": "advanced_skin",
-	"011f2f0e62048585e4701d1e95a385f737ac8052fb677f65fe90a9f90b1c5592": "phantom_skin",
-	"ef642fe2c39f36d7c74431eb57e1db70e19a1e68ad7ce2c0a4447ba4bd65fc6f": "magma_skin",
-	"1a4c586e7f3f6e9e83937a15628e8aa40ba2341d492427bd9eabf12a932103c0": "slime_skin",
-	"3a914c541596e1220b923997fd13801de891f111213e92b83b69b0fbd5472dad": "meteor_skin",
-	"aa357d92e50512b9daf4678746573b442d8fd50061419e1db6e0c5cc1ca48071": "cyber_skin",
-	"94b7e668432447c355089493495f7b1eb6e12a90baf41f0208b23d53ab4a7c01": "thunder_skin",
-	"799634aac05bd322a90fefa1c95adc04cce484e1e0dbb27688e6125083d95c3b": "golden_skin",
-	"adf68bdabbf43a3e6d96b8e793bcfd5b899e9793c7d99d09d90bd8165f4c3c2b": "ninja_skin",
-	"a12ea7da335092449afb85d4be6f650f1397583379286ce66dec64f31e9c14f2": "attack_ball_skin",
-	"dca2e322ffde134f1b77e229aff58efe26701c4df696fca51fd9f1ea2fe5feb3": "champion_skin",
-	"7223de97ceedcb7fe277ce6e732b279792e1ba5a3eeb4f34565e589d3cd225a8": "singularity_skin",
-	"bb78f50c0237b6008c936b121de44c27ad060bf10493bce5175fc6c6fcc1441a": "absolute_zero_skin",
-	"955fb8b06f12ee1177042fbb1c0ae2f0e07e96c917bd4d4a1ec84f49026944c2": "retro_pixel_skin",
-	"b1febad03912a9c1e7524b552b9646acd16c0152f3510aea8884124fd3757203": "chicken_skin",
-	"ee84277cbbe48dac2823530dc5fd607756216f6dfdda16b4b9eb2c9d90de468f": "among_us_skin",
-	"0de8197e0efb7a13ecf7ebe6ab3ea20541820eb509c68533c1c53c1f74aee096": "matrix_skin",
-	"99ce212dbfc057dd48d5532aacf9f0c76ac9f6a7cc3bac27b6be8e87525bc6e7": "undertale_skin",
-	"d82925a1cbba09cb6b74d679d5eb5bb4068022ac647e27c4119dc96648a28177": "coconut_king_skin",
-	"e0bebd22819993425814866b62701e2919ea26f1370499c1037b53b9d49c2c8a": "red_black_tree_skin",
-	"8169f1df4c3e57e67156554ded65480570cb74f65cdb50272f0b01acbc82abd5": "ALL_SKINS"
-}
+var redeem_codes = {}
 
 @onready var grid_container: GridContainer = $ScrollContainer/GridContainer
 
@@ -84,6 +60,7 @@ var redeem_codes = {
 
 
 func _ready():
+	redeem_codes = PlayerData.redeem_codes
 	var dv_path = (
 		"DetailPopup/CenterContainer/PopupPanel/MarginContainer/HBoxContainer/PreviewVBox/"
 		+ "SubViewportContainer/SubViewport"
@@ -265,33 +242,16 @@ func _on_redeem_close_pressed():
 func _on_redeem_submit_pressed():
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	var code = redeem_input.text.strip_edges().to_upper()
-	var code_hash = code.sha256_text()  # 將輸入的兌換碼進行 SHA256 雜湊
+	var code_hash = code.sha256_text()
 	if redeem_codes.has(code_hash):
 		var skin_id = redeem_codes[code_hash]
 
-		if skin_id == "ALL_SKINS":
-			var changed = false
-			for s in all_skins:
-				if s != null and not PlayerData.has_skin(s.skin_id):
-					PlayerData.unlocked_skins.append(s.skin_id)
-					PlayerData.skin_unlocked.emit(s.skin_id)
-					changed = true
-			if changed:
-				PlayerData.save_data()
-				show_message("秘技：解鎖全部皮膚！")
-				redeem_input.text = ""
-				populate_shop()
-			else:
-				show_message("已經擁有全部皮膚！")
-			return
-
 		if not PlayerData.has_skin(skin_id):
-			PlayerData.unlocked_skins.append(skin_id)
-			PlayerData.save_data()  # 確保兌換後存檔
+			PlayerData.add_entered_code(code)
 			PlayerData.skin_unlocked.emit(skin_id)
 			show_message("兌換成功！")
 			redeem_input.text = ""
-			populate_shop()  # 重新排序與刷新
+			populate_shop()
 		else:
 			show_message("已經兌換過此皮膚！")
 	else:

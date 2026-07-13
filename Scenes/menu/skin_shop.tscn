@@ -111,6 +111,7 @@ theme_override_constants/v_separation = 32
 columns = 4
 
 [node name="DetailPopup" type="ColorRect" parent="." unique_id=1286263443]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -169,7 +170,7 @@ stretch = true
 transparent_bg = true
 handle_input_locally = false
 size = Vector2i(300, 300)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
 [node name="Camera2D" type="Camera2D" parent="DetailPopup/CenterContainer/PopupPanel/MarginContainer/HBoxContainer/PreviewVBox/SubViewportContainer/SubViewport" unique_id=968024652]
 position = Vector2(0, -60)
@@ -260,7 +261,7 @@ alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.99215686, 0.9647059, 0.8862745, 1)
 theme_override_font_sizes/font_size = 32
-text = "兌換皮膚"
+text = "兌換造型"
 horizontal_alignment = 1
 
 [node name="RedeemInput" type="LineEdit" parent="RedeemPopup/CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1352494103]
