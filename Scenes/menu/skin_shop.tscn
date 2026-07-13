@@ -24,10 +24,10 @@
 [ext_resource type="Resource" uid="uid://c0w40u12dluti" path="res://Assets/skins/matrix_skin.tres" id="22_matrix"]
 [ext_resource type="Resource" uid="uid://utskintres" path="res://Assets/skins/undertale_skin.tres" id="23_ut"]
 [ext_resource type="Resource" uid="uid://inx5cyyebnp7" path="res://Assets/skins/coconut_king_skin.tres" id="24_coconut_king"]
-[ext_resource type="Resource" uid="uid://rbttresskin" path="res://Assets/skins/red_black_tree_skin.tres" id="25_rbt"]
-[ext_resource type="Resource" uid="uid://perryskindata" path="res://Assets/skins/perry_skin.tres" id="26_perry"]
-[ext_resource type="Resource" uid="uid://byoxln6hdbrny" path="res://Assets/skins/claude_skin.tres" id="27_claude"]
 [ext_resource type="Texture2D" uid="uid://bcnx3b286mcb7" path="res://Shapes/background_blue.jpg" id="24_sf8f4"]
+[ext_resource type="Resource" uid="uid://rbttresskin" path="res://Assets/skins/red_black_tree_skin.tres" id="25_rbt"]
+[ext_resource type="Resource" uid="uid://dsj57msqxqnjy" path="res://Assets/skins/perry_skin.tres" id="26_perry"]
+[ext_resource type="Resource" uid="uid://byoxln6hdbrny" path="res://Assets/skins/claude_skin.tres" id="27_claude"]
 
 [node name="SkinShop" type="Control" unique_id=1696416848]
 layout_mode = 3
