@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://perryskindata"]
+
+[ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_perry_scr"]
+[ext_resource type="Texture2D" uid="uid://bgjfsuwx1lk7i" path="res://Shapes/Circle.svg" id="2_preview"]
+[ext_resource type="PackedScene" uid="uid://perryskinprefab" path="res://Scenes/skins/perry_skin_prefab.tscn" id="3_prefab"]
+[ext_resource type="Texture2D" uid="uid://cc3p7kc0bs0jx" path="res://Shapes/hearts/default.svg" id="4_health"]
+
+[resource]
+script = ExtResource("1_perry_scr")
+skin_id = "perry_skin"
+true_name = "鴨嘴獸泰瑞"
+description = "咕嚕嚕嚕嚕嚕⋯⋯（特務 P 登場！）"
+price = 300
+is_achievement_unlock = true
+achievement_desc = "積分兌換"
+preview_texture = ExtResource("2_preview")
+skin_prefab = ExtResource("3_prefab")
+health_icon_texture = ExtResource("4_health")
+metadata/_custom_type_script = "uid://c6vuqckcyjdey"
