@@ -32,10 +32,11 @@ var entered_codes: Array = []
 
 var equipped_skin: String = "default_skin":
 	set(value):
-		equipped_skin = value
-		skin_equipped.emit(equipped_skin)
-		if not _is_loading:
-			save_data()
+		if has_skin(value):
+			equipped_skin = value
+			skin_equipped.emit(equipped_skin)
+			if not _is_loading:
+				save_data()
 
 var has_entered_hidden_game: bool = false
 var last_selected_avatar: String = ""
@@ -82,9 +83,10 @@ func has_skin(skin_id: String) -> bool:
 		return true
 
 	for code in entered_codes:
-		var h = code.sha256_text()
-		if REDEEM_CODES.get(h) == skin_id:
-			return true
+		if typeof(code) == TYPE_STRING:
+			var h = code.sha256_text()
+			if REDEEM_CODES.get(h) == skin_id:
+				return true
 
 	return false
 
