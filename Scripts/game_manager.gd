@@ -72,6 +72,7 @@ func _ready() -> void:
 
 	agent_action_service.setup_services(self, trap_request_scheduler)
 	trap_request_scheduler.initialize()
+	_sync_heal_cost_with_current_phase()
 
 	energy_increase_timer.wait_time = energy_increase_period[current_phase]
 
@@ -383,6 +384,7 @@ func _update_phase() -> void:
 		energy_ball.change_phase(current_phase)
 		phase_label.text = "%d" % current_phase
 		_update_max_energy()
+		_sync_heal_cost_with_current_phase()
 
 
 func _update_max_energy(play_audio: bool = true) -> void:
@@ -391,6 +393,22 @@ func _update_max_energy(play_audio: bool = true) -> void:
 	NetworkManager.update_max_energy(mxn)
 	if play_audio:
 		Audio.set_phase_bgm(current_phase)
+
+
+func _sync_heal_cost_with_current_phase() -> void:
+	if agent_action_service == null:
+		return
+	if not heal_costs is Array:
+		return
+
+	var cost_count: int = heal_costs.size()
+	if cost_count <= 0:
+		return
+
+	var idx: int = clampi(current_phase, 0, cost_count - 1)
+	var phase_cost: int = int(float(heal_costs[idx]))
+	var clamped_cost: int = maxi(phase_cost, 0)
+	agent_action_service.update_heal_cost(clamped_cost)
 
 
 func get_current_max_energy_cap() -> int:
