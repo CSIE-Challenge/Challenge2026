@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://rbttresskin"]
+
+[ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_skindata"]
+[ext_resource type="PackedScene" uid="uid://rbtskinprefab" path="res://Scenes/skins/red_black_tree_skin_prefab.tscn" id="2_prefab"]
+[ext_resource type="Texture2D" uid="uid://rbticon1" path="res://Shapes/hearts/red_black_tree.svg" id="3_icon1"]
+[ext_resource type="Texture2D" uid="uid://rbticon2" path="res://Shapes/hearts/red_black_tree2.svg" id="4_icon2"]
+
+[resource]
+script = ExtResource("1_skindata")
+skin_id = "red_black_tree_skin"
+true_name = "紅黑樹"
+description = "每次插入都是紅色，然後默默 recolor。\n穩定，平衡，但內心住著一把火。"
+price = 0
+price_text_override = "兌換碼解鎖"
+skin_prefab = ExtResource("2_prefab")
+health_icon_texture = ExtResource("3_icon1")
+health_icon_texture2 = ExtResource("4_icon2")
+metadata/_custom_type_script = "uid://c6vuqckcyjdey"

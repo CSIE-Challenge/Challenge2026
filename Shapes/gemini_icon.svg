@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="100" height="100" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gTop" gradientUnits="userSpaceOnUse" x1="50" y1="50" x2="50" y2="4">
+      <stop offset="0" stop-color="#FBD5D0"/>
+      <stop offset="1" stop-color="#EA4335"/>
+    </linearGradient>
+    <linearGradient id="gRight" gradientUnits="userSpaceOnUse" x1="50" y1="50" x2="96" y2="50">
+      <stop offset="0" stop-color="#CFE0FC"/>
+      <stop offset="1" stop-color="#4285F4"/>
+    </linearGradient>
+    <linearGradient id="gBottom" gradientUnits="userSpaceOnUse" x1="50" y1="50" x2="50" y2="96">
+      <stop offset="0" stop-color="#CFEAD6"/>
+      <stop offset="1" stop-color="#34A853"/>
+    </linearGradient>
+    <linearGradient id="gLeft" gradientUnits="userSpaceOnUse" x1="50" y1="50" x2="4" y2="50">
+      <stop offset="0" stop-color="#FDEEC2"/>
+      <stop offset="1" stop-color="#FBBC05"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#gTop)"    d="M50,50 C38,33 42,16 48,7 Q50,4 52,7 C58,16 62,33 50,50 Z"/>
+  <path fill="url(#gRight)"  d="M50,50 C67,38 84,42 93,48 Q96,50 93,52 C84,58 67,62 50,50 Z"/>
+  <path fill="url(#gBottom)" d="M50,50 C62,67 58,84 52,93 Q50,96 48,93 C42,84 38,67 50,50 Z"/>
+  <path fill="url(#gLeft)"   d="M50,50 C33,62 16,58 7,52 Q4,50 7,48 C16,42 33,38 50,50 Z"/>
+</svg>
