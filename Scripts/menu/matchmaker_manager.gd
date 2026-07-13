@@ -105,7 +105,8 @@ func _input(event: InputEvent) -> void:
 			Page.C:
 				_on_back_c_button_up()
 			Page.D:
-				_on_back_d_button_up()
+				# _on_back_d_button_up()
+				pass
 	elif event is InputEventKey and not event.pressed and event.keycode == KEY_ENTER:
 		match _current_panel:
 			Page.C:
