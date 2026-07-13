@@ -25,7 +25,10 @@ const REDEEM_CODES = {
 	"468bca4cf3a7f99b8fe1029f1c96a3f093c771b5ecec5a24c992db9145eb18f4": "among_us_skin",
 	"9539642517f75d9067977dbbe3dd6b6c3b26e1f6bdddfec9458c0ef0c035cd1d": "matrix_skin",
 	"e13d147447354677737fe0de9ec3379bdbd0ace0f5f7f28eb8c7cca2169a93f5": "undertale_skin",
-	"372e8ba7ce62b4d77e68a848a6ceed4d2a1b545b322b519dc60228be672bafa4": "coconut_king_skin"
+	"372e8ba7ce62b4d77e68a848a6ceed4d2a1b545b322b519dc60228be672bafa4": "coconut_king_skin",
+	"cc2f55d090a86899aeff8915f84e4dda53cdc45cfc3b2c1ec20d90d183fa3b69": "claude_skin",
+	"d031c4f465df0276f570a84d981a34e946f25e411f6e414d0416094802c38448": "perry_skin",
+	"b8ecc695944657ff55e46cf5799950dd4f97e7270fc83f9ffe82d2b5a4122c47": "red_black_tree_skin"
 }
 
 var entered_codes: Array = []
