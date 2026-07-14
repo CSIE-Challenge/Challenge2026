@@ -1,0 +1,57 @@
+[gd_scene format=3 uid="uid://d04v020dpi6bm"]
+
+[ext_resource type="Script" uid="uid://threebodycocoscript" path="res://Scripts/skins/three_body_coconut_skin_prefab.gd" id="1_tbc"]
+[ext_resource type="Texture2D" uid="uid://coconutbody3b" path="res://Shapes/coconut_body.svg" id="2_coco"]
+
+[sub_resource type="Curve" id="Curve_tbc"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_fade"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[node name="ThreeBodyCoconutSkinPrefab" type="Node2D"]
+script = ExtResource("1_tbc")
+
+[node name="SpawnParticles" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 16
+texture = ExtResource("2_coco")
+lifetime = 0.5
+one_shot = true
+explosiveness = 0.9
+emission_shape = 1
+emission_sphere_radius = 14.0
+direction = Vector2(0, -1)
+spread = 180.0
+gravity = Vector2(0, -20)
+initial_velocity_min = 40.0
+initial_velocity_max = 90.0
+scale_amount_min = 0.04
+scale_amount_max = 0.08
+scale_amount_curve = SubResource("Curve_tbc")
+color = Color(0.85, 0.65, 0.4, 1)
+color_ramp = SubResource("Gradient_fade")
+
+[node name="DeathParticles" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 34
+texture = ExtResource("2_coco")
+lifetime = 0.7
+one_shot = true
+explosiveness = 1.0
+randomness = 1.0
+emission_shape = 1
+emission_sphere_radius = 10.0
+spread = 180.0
+gravity = Vector2(0, 300)
+initial_velocity_min = 120.0
+initial_velocity_max = 360.0
+angular_velocity_min = -360.0
+angular_velocity_max = 360.0
+scale_amount_min = 0.04
+scale_amount_max = 0.09
+scale_amount_curve = SubResource("Curve_tbc")
+color = Color(0.5, 0.4, 0.55, 1)
+color_ramp = SubResource("Gradient_fade")
