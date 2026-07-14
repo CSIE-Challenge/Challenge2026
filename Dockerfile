@@ -43,7 +43,8 @@ WORKDIR /app
 COPY --chown=godot:godot . .
 RUN chown godot:godot /app
 
-USER godot
+# The entrypoint fixes the named import-cache volume owner, then drops to godot.
+USER root
 
 # Godot import moved to docker-entrypoint.sh with conditional cache check.
 # This avoids re-importing on every image rebuild.
