@@ -21,4 +21,9 @@ services:
       - GAME_IP=${GAME_IP:-127.0.0.1}         # public IP clients connect to
       - GODOT_BIN=godot
       - GODOT_PROJECT_PATH=/app
+    volumes:
+      - godot-import-cache:/app/.godot
     restart: unless-stopped
+
+volumes:
+  godot-import-cache:

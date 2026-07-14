@@ -63,7 +63,7 @@ func _ready() -> void:
 			hula.rotation = -PI / 2
 	scale = Vector2(0, 1)
 	var tween = create_tween()
-	tween.tween_property(self, "scale", Vector2(1, 1), 0.25)
+	tween.tween_property(self, "scale", Vector2(1, 1), 0.3)
 	await tween.finished
 	start_moving = true
 
@@ -79,6 +79,9 @@ func _physics_process(delta: float) -> void:
 				visual_line.rotation = 0
 			else:
 				visual_line.rotation = PI
+
+		if abs(position.x) > 500 or abs(position.y) > 500:
+			queue_free()
 
 
 func _on_body_entered(_body: Node2D) -> void:

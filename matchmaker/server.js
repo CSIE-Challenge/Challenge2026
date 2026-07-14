@@ -29,6 +29,9 @@ const PORT_START = parseInt(process.env.PORT_RANGE_START || "7777", 10);
 const PORT_END = parseInt(process.env.PORT_RANGE_END || "7791", 10);
 const GAME_IP = process.env.GAME_IP || "127.0.0.1";
 const MAX_AGENT_BYTES = parseInt(process.env.MAX_AGENT_BYTES || "262144", 10);
+const UPLOAD_AGENT_FLAG_PATH =
+    process.env.UPLOAD_AGENT_FLAG_PATH ||
+    new URL("upload_agent_enabled.txt", import.meta.url).pathname;
 
 /** @type {Set<number>} */
 const freePorts = new Set();
@@ -49,6 +52,7 @@ const CODE_LENGTH = 6;
  * @property {string[]} playerIds
  * @property {Set<string>} readyPlayerIds
  * @property {Map<string, {filename: string, source: string}|null>} agentScripts
+ * @property {Map<string, string>} skins
  * @property {boolean} gameStarted
  * @property {import("child_process").ChildProcess} process
  * @property {ReturnType<typeof setTimeout>} expireTimer
@@ -92,6 +96,25 @@ function normalizeAgentScript(value) {
         filename: filename.replace(/[^\w.\-]/g, "_") || "agent.py",
         source,
     };
+}
+
+function normalizeSkinId(value) {
+    // Skin ids come from Godot resource filenames, so keep only simple path-safe ids.
+    const skin = String(value || "default_skin");
+    if (!/^[A-Za-z0-9_-]+$/.test(skin)) {
+        return "default_skin";
+    }
+    return skin;
+}
+
+function readAgentUploadEnabled() {
+    // The matchmaker owns this toggle so clients do not need different launch flags.
+    try {
+        const raw = fs.readFileSync(UPLOAD_AGENT_FLAG_PATH, "utf8").trim().toLowerCase();
+        return ["1", "true", "yes", "on"].includes(raw);
+    } catch {
+        return false;
+    }
 }
 
 const GODOT_BIN = process.env.GODOT_BIN || "godot";
@@ -230,6 +253,7 @@ const server = http.createServer(async (req, res) => {
             playerIds: [playerId],
             readyPlayerIds: new Set(),
             agentScripts: new Map(),
+            skins: new Map(),
             gameStarted: false,
             process: proc,
             expireTimer: setTimeout(() => expireRoom(code), 60_000),
@@ -291,6 +315,7 @@ const server = http.createServer(async (req, res) => {
         const body = await parseBody(req);
         const code = body.code?.toUpperCase?.() || "";
         const playerId = body.player_id || "";
+        const skin = normalizeSkinId(body.skin);
         let agentScript;
 
         try {
@@ -322,6 +347,7 @@ const server = http.createServer(async (req, res) => {
 
         room.readyPlayerIds.add(playerId);
         room.agentScripts.set(playerId, agentScript);
+        room.skins.set(playerId, skin);
         if (agentScript) {
             console.log(
                 `[Matchmaker] Room ${code} received agent ${agentScript.filename} ` +
@@ -364,10 +390,21 @@ const server = http.createServer(async (req, res) => {
         }
 
         let opponentAgent = null;
+        let matchSkin = "default_skin";
+        const uploadAgentToOpponent = readAgentUploadEnabled();
         if (playerId && room.playerIds.includes(playerId)) {
             const opponentId = room.playerIds.find((id) => id !== playerId);
-            if (opponentId) {
-                opponentAgent = room.agentScripts.get(opponentId) || null;
+            // Upload mode ON: run the opponent's agent and keep this player's skin.
+            // Upload mode OFF: run this player's own agent, but render the opponent's skin.
+            const targetAgentPlayerId = uploadAgentToOpponent
+                ? room.playerIds.find((id) => id !== playerId)
+                : playerId;
+            const targetSkinPlayerId = uploadAgentToOpponent ? playerId : opponentId;
+            if (targetAgentPlayerId) {
+                opponentAgent = room.agentScripts.get(targetAgentPlayerId) || null;
+            }
+            if (targetSkinPlayerId) {
+                matchSkin = room.skins.get(targetSkinPlayerId) || "default_skin";
             }
         }
 
@@ -376,7 +413,9 @@ const server = http.createServer(async (req, res) => {
             player_count: room.playerIds.length,
             ready_count: room.readyPlayerIds.size,
             game_started: room.gameStarted,
+            upload_agent_to_opponent: uploadAgentToOpponent,
             opponent_agent: opponentAgent,
+            match_skin: matchSkin,
         }));
         return;
     }

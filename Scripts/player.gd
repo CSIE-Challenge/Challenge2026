@@ -52,7 +52,9 @@ func _ready() -> void:
 	for x in range(4):
 		for y in range(4):
 			all_sand_tiles.append(Vector2i(x, y))
-	var skin_path = "res://Assets/skins/" + PlayerData.equipped_skin + ".tres"
+	# Multiplayer matches may temporarily use the skin assigned by the matchmaker.
+	var skin_id := Global.skin_override if Global.skin_override != "" else PlayerData.equipped_skin
+	var skin_path = "res://Assets/skins/" + skin_id + ".tres"
 	var skin_data = load(skin_path)
 	if skin_data and skin_data.skin_prefab:
 		skin_instance = skin_data.skin_prefab.instantiate()

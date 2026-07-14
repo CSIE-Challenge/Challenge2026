@@ -1,0 +1,92 @@
+[gd_scene format=3 uid="uid://steelbrainprefab"]
+
+[ext_resource type="Script" uid="uid://steelbrainskinscript" path="res://Scripts/skins/steel_brain_skin_prefab.gd" id="1_brain"]
+[ext_resource type="Texture2D" uid="uid://bevp5kggljn50" path="res://Shapes/steel_brain_icon.svg" id="2_brain"]
+
+[sub_resource type="Curve" id="Curve_brain"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_spark"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="Gradient" id="Gradient_fade"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[node name="SteelBrainSkinPrefab" type="Node2D"]
+script = ExtResource("1_brain")
+
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="Icon" type="Sprite2D" parent="Visual"]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_brain")
+
+[node name="SparkTrail" type="CPUParticles2D" parent="."]
+local_coords = false
+emitting = false
+amount = 14
+texture = ExtResource("2_brain")
+lifetime = 0.8
+explosiveness = 0.0
+emission_shape = 1
+emission_sphere_radius = 6.0
+direction = Vector2(0, -1)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 0.0
+initial_velocity_max = 20.0
+angular_velocity_min = -120.0
+angular_velocity_max = 120.0
+scale_amount_min = 0.05
+scale_amount_max = 0.1
+scale_amount_curve = SubResource("Curve_brain")
+color_ramp = SubResource("Gradient_spark")
+
+[node name="SpawnParticles" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 18
+texture = ExtResource("2_brain")
+lifetime = 0.5
+one_shot = true
+explosiveness = 0.9
+emission_shape = 1
+emission_sphere_radius = 12.0
+direction = Vector2(0, -1)
+spread = 180.0
+gravity = Vector2(0, -20)
+initial_velocity_min = 40.0
+initial_velocity_max = 90.0
+scale_amount_min = 0.05
+scale_amount_max = 0.1
+scale_amount_curve = SubResource("Curve_brain")
+color = Color(0.7, 0.85, 0.95, 1)
+color_ramp = SubResource("Gradient_fade")
+
+[node name="GroundArcs" type="Node2D" parent="."]
+position = Vector2(0, 3)
+z_index = -1
+
+[node name="DeathParticles" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 40
+texture = ExtResource("2_brain")
+lifetime = 0.7
+one_shot = true
+explosiveness = 1.0
+randomness = 1.0
+emission_shape = 1
+emission_sphere_radius = 8.0
+spread = 180.0
+gravity = Vector2(0, 300)
+initial_velocity_min = 120.0
+initial_velocity_max = 380.0
+angular_velocity_min = -360.0
+angular_velocity_max = 360.0
+scale_amount_min = 0.05
+scale_amount_max = 0.12
+scale_amount_curve = SubResource("Curve_brain")
+color = Color(0.75, 0.85, 0.95, 1)
+color_ramp = SubResource("Gradient_fade")

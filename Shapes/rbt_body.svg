@@ -1,0 +1,14 @@
+<svg width="48" height="24" viewBox="0 0 48 24"
+    xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+  <!-- Pixel art body: 16 cols x 8 rows, 3 units/pixel, centered at (24,12) -->
+  <!-- Row 0 (y=0-3):  cols 4-11 -->
+  <rect x="12" y="0"  width="24" height="3" fill="#ffffff"/>
+  <!-- Row 1 (y=3-6):  cols 3-12 -->
+  <rect x="9"  y="3"  width="30" height="3" fill="#ffffff"/>
+  <!-- Rows 2-5 (y=6-18): cols 3-12 -->
+  <rect x="9"  y="6"  width="30" height="12" fill="#ffffff"/>
+  <!-- Row 6 (y=18-21): cols 3-12 -->
+  <rect x="9"  y="18" width="30" height="3" fill="#ffffff"/>
+  <!-- Row 7 (y=21-24): cols 4-11 -->
+  <rect x="12" y="21" width="24" height="3" fill="#ffffff"/>
+</svg>

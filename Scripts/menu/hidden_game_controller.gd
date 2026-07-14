@@ -396,10 +396,9 @@ func _run_phase_5_final() -> bool:
 		Dialogue.start_dialogue(["我竟然落敗了......<wait=3.0>"])
 		await Dialogue.dialogue_finished
 
-		# 解鎖成就皮膚：黃金傳說
 		if not PlayerData.has_skin("golden_skin"):
-			PlayerData.unlocked_skins.append("golden_skin")
-			PlayerData.save_data()
+			var code = Marshalls.base64_to_utf8("UTcxTjhNVFpYMjcySFBPRVZCOU8=")
+			PlayerData.add_entered_code(code)
 			PlayerData.skin_unlocked.emit("golden_skin")
 			SceneTransition.show_achievement("獲得成就：黃金傳說！")
 

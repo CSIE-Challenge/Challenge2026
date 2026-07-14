@@ -34,6 +34,7 @@ func _on_single_button_button_up() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	Global.single_player = true
 	Global.agent_file = ""
+	Global.skin_override = ""
 	SceneTransition.transition_to(FILE_SELECTOR_SCENE)
 
 
@@ -41,6 +42,7 @@ func _on_double_button_button_up() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	Global.single_player = false
 	Global.agent_file = ""
+	Global.skin_override = ""
 	SceneTransition.transition_to(MATCHMAKER_SCENE)
 
 

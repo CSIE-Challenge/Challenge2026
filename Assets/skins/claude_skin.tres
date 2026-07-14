@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://byoxln6hdbrny"]
+
+[ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_claude_scr"]
+[ext_resource type="Texture2D" uid="uid://claudeicon" path="res://Shapes/claude_icon.svg" id="2_icon"]
+[ext_resource type="PackedScene" uid="uid://dwcygv6ya8q8" path="res://Scenes/skins/claude_skin_prefab.tscn" id="3_prefab"]
+
+[resource]
+script = ExtResource("1_claude_scr")
+skin_id = "claude_skin"
+true_name = "Claude 星芒"
+description = "AI 活動限定獎勵。走起路來還會灑落 Gemini 的星光。"
+price = 500
+is_achievement_unlock = true
+achievement_desc = "AI 活動獎勵"
+preview_texture = ExtResource("2_icon")
+skin_prefab = ExtResource("3_prefab")
+health_icon_texture = ExtResource("2_icon")
+metadata/_custom_type_script = "uid://c6vuqckcyjdey"

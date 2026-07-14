@@ -460,7 +460,12 @@ func _on_ready_button_up() -> void:
 	_update_status_label()
 	_post(
 		"/qiaohu/ready",
-		{"code": _room_code, "player_id": _player_id, "agent": agent_payload.get("agent")},
+		{
+			"code": _room_code,
+			"player_id": _player_id,
+			"agent": agent_payload.get("agent"),
+			"skin": PlayerData.equipped_skin,
+		},
 		"ready"
 	)
 
@@ -529,14 +534,16 @@ func _on_poll_status_response(data: Dictionary) -> void:
 		_enter_panel_d()
 
 	if game_started:
-		var opponent_agent_path: Variant = _save_opponent_agent(data.get("opponent_agent"))
-		if opponent_agent_path == null:
+		var agent_path: Variant = _save_match_agent(data.get("opponent_agent"))
+		if agent_path == null:
 			return
 
 		_stop_all_timers()
 		NetworkManager.cancel_ready_timeout.rpc_id(1)
 		Global.single_player = false
-		Global.agent_file = str(opponent_agent_path)
+		Global.agent_file = str(agent_path)
+		# Server decides whether this match should use our skin or the opponent's skin.
+		Global.skin_override = str(data.get("match_skin", ""))
 		Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 		SceneTransition.transition_to(GAMEPLAY_SCENE)
 
@@ -621,11 +628,11 @@ func _build_agent_upload_payload() -> Dictionary:
 	}
 
 
-func _save_opponent_agent(agent_value: Variant) -> Variant:
+func _save_match_agent(agent_value: Variant) -> Variant:
 	if agent_value == null:
 		return ""
 	if typeof(agent_value) != TYPE_DICTIONARY:
-		_handle_error("Invalid opponent agent from server")
+		_handle_error("Invalid agent from server")
 		return null
 
 	var agent_data: Dictionary = agent_value
@@ -635,7 +642,7 @@ func _save_opponent_agent(agent_value: Variant) -> Variant:
 
 	var root_dir := DirAccess.open("user://")
 	if root_dir == null or root_dir.make_dir_recursive(UPLOADED_AGENT_DIR) != OK:
-		_handle_error("Unable to prepare opponent agent directory")
+		_handle_error("Unable to prepare agent directory")
 		return null
 
 	var filename := _safe_agent_filename(str(agent_data.get("filename", "agent.py")))
@@ -650,12 +657,12 @@ func _save_opponent_agent(agent_value: Variant) -> Variant:
 	)
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	if file == null:
-		_handle_error("Unable to save opponent agent")
+		_handle_error("Unable to save agent")
 		return null
 	file.store_string(source)
 	file.close()
 	var global_path := ProjectSettings.globalize_path(path)
-	print("[Matchmaker] Saved opponent agent to %s" % global_path)
+	print("[Matchmaker] Saved match agent to %s" % global_path)
 	return global_path
 
 

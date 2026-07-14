@@ -43,9 +43,11 @@ WORKDIR /app
 COPY --chown=godot:godot . .
 RUN chown godot:godot /app
 
-USER godot
+# The entrypoint fixes the named import-cache volume owner, then drops to godot.
+USER root
 
-RUN godot --headless --import --path /app
+# Godot import moved to docker-entrypoint.sh with conditional cache check.
+# This avoids re-importing on every image rebuild.
 
 # Actual port range set via PORT_RANGE_START/END env vars (see docker-compose.yml)
 EXPOSE 3000/tcp
@@ -54,4 +56,4 @@ EXPOSE 7777-7791/udp
 ENV GODOT_BIN=godot
 ENV GODOT_PROJECT_PATH=/app
 
-ENTRYPOINT ["dumb-init", "--", "node", "matchmaker/server.js"]
+ENTRYPOINT ["/app/docker-entrypoint.sh"]

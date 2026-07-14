@@ -329,4 +329,4 @@ func _make_heal_result(ok: bool, reason: String) -> Dictionary:
 
 
 func update_heal_cost(new_cost: int) -> void:
-	default_heal_amount = new_cost
+	default_heal_energy_cost = maxi(new_cost, 0)

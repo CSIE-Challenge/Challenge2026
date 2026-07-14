@@ -183,6 +183,7 @@ func transition_to(target_scene: String) -> void:
 func transition_to_wave(target_scene: String) -> void:
 	preload_scene_async(target_scene)
 	Audio.set_bgm(-1 as Audio.BGM)
+	Audio.play_sfx(Audio.SFX.SCENE_TRANSITION_WAVE)
 	get_tree().paused = true
 	var root = Control.new()
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -261,7 +262,6 @@ func transition_to_wave(target_scene: String) -> void:
 	)
 
 	tween.tween_callback(func(): await _switch_scene(target_scene))
-
 	await scene_transition_finished
 	tween = create_tween()
 
@@ -297,8 +297,6 @@ func transition_to_wave(target_scene: String) -> void:
 	tween.tween_callback(root.queue_free)
 	tween.tween_callback(transition_finished.emit)
 	get_tree().paused = false
-
-	Audio.play_sfx(Audio.SFX.SCENE_TRANSITION_WAVE)
 
 
 func transition_to_distortion(target_scene: String) -> void:
@@ -445,5 +443,4 @@ func _switch_scene(target_scene: String) -> void:
 	else:
 		# 讀取失敗時 fallback 回同步讀取，至少能確保場景還是換得過去
 		get_tree().change_scene_to_file(target_scene)
-
 	scene_transition_finished.emit()

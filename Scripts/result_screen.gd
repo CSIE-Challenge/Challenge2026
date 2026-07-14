@@ -8,6 +8,8 @@ var fade_tween: Tween
 @onready var health_icon = $"ResultRoot/HealthIcons"
 @onready var vboxcontainer = %VBoxContainer
 @onready var result_root: Control = $ResultRoot
+@onready var title_label: Label = %TitleLabel
+@onready var border_panel: PanelContainer = $"ResultRoot/CenterContainer/PanelContainer"
 
 
 func _input(event: InputEvent) -> void:
@@ -18,7 +20,7 @@ func _input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 
 
-func show_results(results: Dictionary) -> void:
+func show_results(results: Dictionary, state: int) -> void:
 	var survival_seconds := int(results.get("survival_time", 0.0))
 
 	var names: Array[String] = [
@@ -27,7 +29,7 @@ func show_results(results: Dictionary) -> void:
 		"Energy Balls Collected",
 		"Jumps",
 		"Distance Traveled",
-		"Total Energy Spent"
+		"Total Energy Spent",
 	]
 
 	var values: Array[String] = [
@@ -38,6 +40,34 @@ func show_results(results: Dictionary) -> void:
 		"%.1f" % float(results.get("distance_traveled", 0.0)),
 		str(int(results.get("energy_spent", 0))),
 	]
+
+	var opponent_energy_balls := int(results.get("opponent_energy_balls", -1))
+	if opponent_energy_balls >= 0:
+		# This row is multiplayer-only; single-player leaves opponent_energy_balls at -1.
+		names.insert(3, "Opponent Energy Balls")
+		values.insert(3, str(opponent_energy_balls))
+
+	if state == 0:
+		title_label.text = "RESULT"
+		title_label.modulate = Color.WHITE
+	elif state == 1:
+		title_label.text = "DRAW"
+		title_label.modulate = Color.LIGHT_SKY_BLUE
+	elif state == 2:
+		title_label.text = "WIN by forfeit"
+		title_label.modulate = Color.LIGHT_GREEN
+	elif state == 3:
+		title_label.text = "WIN"
+		title_label.modulate = Color.LAWN_GREEN
+	else:
+		title_label.text = "LOSE"
+		title_label.modulate = Color(1, 0.48, 0.38, 1)
+	var panel_style_box = StyleBoxFlat.new()
+	panel_style_box.border_color = title_label.modulate
+	panel_style_box.bg_color = Color(0, 0, 0, 0)
+	panel_style_box.set_border_width_all(3)
+	panel_style_box.set_corner_radius_all(27)
+	border_panel.add_theme_stylebox_override("panel", panel_style_box)
 
 	stat_names_label.text = "\n".join(names)
 	stat_values_label.text = "\n".join(values)

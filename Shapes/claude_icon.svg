@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="100" height="100" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(50,50)" fill="#D97757">
+    <g id="ray"><rect x="-4.2" y="-46" width="8.4" height="38" rx="4.2"/></g>
+    <use href="#ray" transform="rotate(30)"/>
+    <use href="#ray" transform="rotate(60)"/>
+    <use href="#ray" transform="rotate(90)"/>
+    <use href="#ray" transform="rotate(120)"/>
+    <use href="#ray" transform="rotate(150)"/>
+    <use href="#ray" transform="rotate(180)"/>
+    <use href="#ray" transform="rotate(210)"/>
+    <use href="#ray" transform="rotate(240)"/>
+    <use href="#ray" transform="rotate(270)"/>
+    <use href="#ray" transform="rotate(300)"/>
+    <use href="#ray" transform="rotate(330)"/>
+    <circle cx="0" cy="0" r="9"/>
+  </g>
+</svg>
