@@ -51,6 +51,7 @@ var _ready_timeout_timer: Timer = null
 var _gameplay_loaded_peer_ids: Array[int] = []
 var _countdown_start_released := false
 var _time_up_peer_ids: Array[int] = []
+var _match_peer_ids: Array[int] = []
 
 
 ## Called on startup. Connects multiplayer signals and handles command-line launch.
@@ -401,10 +402,19 @@ func _on_peer_connected(peer_id: int) -> void:
 
 ## Removes a disconnected peer from the tracked list and emits [signal player_disconnected].
 func _on_peer_disconnected(peer_id: int) -> void:
+	if multiplayer.is_server():
+		_finish_game_if_match_peer_disconnected(peer_id)
+
+	# The result RPC and peer_disconnected signal may arrive in either order.
+	var preserve_match_stats := (
+		not multiplayer.is_server() and _countdown_start_released and not game_finished
+	)
+
 	connected_peer_ids.erase(peer_id)
-	energy_by_peer_id.erase(peer_id)
-	health_by_peer_id.erase(peer_id)
-	energy_ball_count_by_peer_id.erase(peer_id)
+	if not preserve_match_stats:
+		energy_by_peer_id.erase(peer_id)
+		health_by_peer_id.erase(peer_id)
+		energy_ball_count_by_peer_id.erase(peer_id)
 	_time_up_peer_ids.erase(peer_id)
 	_client_states.erase(peer_id)
 	_gameplay_loaded_peer_ids.erase(peer_id)
@@ -422,6 +432,23 @@ func _on_peer_disconnected(peer_id: int) -> void:
 	if multiplayer.is_server() and connected_peer_ids.is_empty():
 		print("[NetworkManager] All peers disconnected — exiting server")
 		get_tree().quit(0)
+
+
+func _finish_game_if_match_peer_disconnected(peer_id: int) -> void:
+	if game_finished or _match_peer_ids.size() != 2 or not _match_peer_ids.has(peer_id):
+		return
+
+	var winner_peer_ids: Array = []
+	for match_peer_id in _match_peer_ids:
+		if match_peer_id != peer_id and connected_peer_ids.has(match_peer_id):
+			winner_peer_ids.append(match_peer_id)
+
+	if winner_peer_ids.size() != 1:
+		return
+
+	game_finished = true
+	print("[NetworkManager] Peer %d disconnected; opponent wins by forfeit" % peer_id)
+	_broadcast_multiplayer_finish(winner_peer_ids, false, true)
 
 
 func _on_ready_timeout() -> void:
@@ -497,6 +524,12 @@ func _get_required_gameplay_loaded_peer_count() -> int:
 
 
 func _server_release_countdown_start() -> void:
+	# A forfeit is only possible after this fixed participant list is captured.
+	_match_peer_ids.clear()
+	for peer_id in connected_peer_ids:
+		if peer_id != demo_peer_id:
+			_match_peer_ids.append(peer_id)
+
 	_countdown_start_released = true
 	_gameplay_loaded_peer_ids.clear()
 	countdown_start_released.emit()
@@ -514,6 +547,7 @@ func _client_release_countdown_start() -> void:
 
 func _reset_countdown_start_sync() -> void:
 	_gameplay_loaded_peer_ids.clear()
+	_match_peer_ids.clear()
 	_countdown_start_released = false
 
 
