@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://bjmt7uss2sq4u"]
+
+[ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_tbc_scr"]
+[ext_resource type="Texture2D" uid="uid://coconutbody3b" path="res://Shapes/coconut_body.svg" id="2_icon"]
+[ext_resource type="PackedScene" uid="uid://d04v020dpi6bm" path="res://Scenes/skins/three_body_coconut_skin_prefab.tscn" id="3_prefab"]
+
+[resource]
+script = ExtResource("1_tbc_scr")
+skin_id = "three_body_coconut_skin"
+true_name = "三體椰"
+description = "三顆椰子受混沌的三體引力糾纏。不定時在恆紀元與亂紀元之間輪替，亂紀元降臨時墜入黑暗、狂舞不休。"
+price = 1200
+is_achievement_unlock = true
+achievement_desc = "黑暗椰林法則・特殊獎勵"
+preview_texture = ExtResource("2_icon")
+skin_prefab = ExtResource("3_prefab")
+health_icon_texture = ExtResource("2_icon")
+metadata/_custom_type_script = "uid://c6vuqckcyjdey"
