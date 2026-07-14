@@ -45,7 +45,8 @@ RUN chown godot:godot /app
 
 USER godot
 
-RUN godot --headless --import --path /app
+# Godot import moved to docker-entrypoint.sh with conditional cache check.
+# This avoids re-importing on every image rebuild.
 
 # Actual port range set via PORT_RANGE_START/END env vars (see docker-compose.yml)
 EXPOSE 3000/tcp
