@@ -25,6 +25,7 @@ func _ready():
 	# 綁定按鈕的點擊事件
 	preview_btn.pressed.connect(_on_preview_pressed)
 	action_btn.pressed.connect(_on_action_pressed)
+	action_btn.clip_text = true
 
 
 # gdlint:enable=max-line-length
@@ -87,7 +88,14 @@ func update_state():
 		action_btn.disabled = true
 		action_btn.modulate = Color(0.8, 0.8, 0.8, 1)  # 顯示為灰色標籤
 		if skin_data.is_achievement_unlock:
-			action_btn.text = skin_data.achievement_desc
+			if skin_data.achievement_desc != "":
+				action_btn.text = skin_data.achievement_desc
+			elif skin_data.price_text_override != "":
+				action_btn.text = skin_data.price_text_override
+			else:
+				action_btn.text = "未解鎖"
+		elif skin_data.price_text_override != "":
+			action_btn.text = skin_data.price_text_override
 		else:
 			action_btn.text = "未解鎖"
 

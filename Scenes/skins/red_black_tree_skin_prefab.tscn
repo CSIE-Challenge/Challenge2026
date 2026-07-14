@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bt7b7aypikv78"]
 
-[ext_resource type="Script" uid="uid://rbtskingd" path="res://Scripts/skins/red_black_tree_skin_prefab.gd" id="1_rbtgd"]
-[ext_resource type="Texture2D" uid="uid://rbtbodysvg" path="res://Shapes/rbt_body.svg" id="2_body"]
+[ext_resource type="Script" uid="uid://bj7hq0q3tg8bi" path="res://Scripts/skins/red_black_tree_skin_prefab.gd" id="1_rbtgd"]
+[ext_resource type="Texture2D" uid="uid://bx3l0ae3g5j00" path="res://Shapes/rbt_body.svg" id="2_body"]
 [ext_resource type="Texture2D" uid="uid://dle4xt8upfg42" path="res://Shapes/Square.svg" id="3_square"]
 
 [node name="RbtSkinPrefab" type="Node2D"]

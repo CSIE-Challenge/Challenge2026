@@ -83,6 +83,8 @@ func _ready():
 	main_close_btn.pressed.connect(_on_main_close_pressed)
 	action_btn.pressed.connect(_on_detail_action_pressed)
 
+	detail_cond.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+
 	redeem_popup.visible = false
 	open_redeem_btn.pressed.connect(_on_open_redeem_pressed)
 	redeem_close_btn.pressed.connect(_on_redeem_close_pressed)
@@ -318,7 +320,16 @@ func _on_item_detail_requested(data: SkinData):
 				action_btn.modulate = Color(1, 1, 1, 1)  # 正常顏色
 				action_btn.disabled = false
 		elif data.is_achievement_unlock:
-			detail_cond.text = "解鎖條件：" + data.achievement_desc
+			var desc_text = data.achievement_desc
+			if desc_text == "":
+				desc_text = data.price_text_override
+			if desc_text == "":
+				desc_text = "成就解鎖"
+			detail_cond.text = "解鎖條件：" + desc_text
+			action_btn.text = "未解鎖"
+			action_btn.disabled = true
+		elif data.price_text_override != "":
+			detail_cond.text = "解鎖條件：" + data.price_text_override
 			action_btn.text = "未解鎖"
 			action_btn.modulate = Color(0.8, 0.8, 0.8, 1)  # 顯示為灰色標籤
 			action_btn.disabled = true

@@ -12,7 +12,7 @@ true_name = "紅黑樹"
 description = "每次插入都是紅色，然後默默 recolor。
 穩定，平衡，但內心住著一把火。"
 price = 0
-price_text_override = "Tung Tung Tung Tung Tung Tung Tung Tung Tung  Sahur 的得力助手"
+price_text_override = "Tung Tung Tung Tung Tung Tung Tung Tung Tung Sahur 的得力助手"
 skin_prefab = ExtResource("2_prefab")
 health_icon_texture = ExtResource("3_icon1")
 health_icon_texture2 = ExtResource("4_icon2")
