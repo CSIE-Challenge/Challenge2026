@@ -28,7 +28,8 @@ const REDEEM_CODES = {
 	"372e8ba7ce62b4d77e68a848a6ceed4d2a1b545b322b519dc60228be672bafa4": "coconut_king_skin",
 	"cc2f55d090a86899aeff8915f84e4dda53cdc45cfc3b2c1ec20d90d183fa3b69": "claude_skin",
 	"d031c4f465df0276f570a84d981a34e946f25e411f6e414d0416094802c38448": "perry_skin",
-	"b8ecc695944657ff55e46cf5799950dd4f97e7270fc83f9ffe82d2b5a4122c47": "red_black_tree_skin"
+	"b8ecc695944657ff55e46cf5799950dd4f97e7270fc83f9ffe82d2b5a4122c47": "red_black_tree_skin",
+	"00fa4fd199ea24468a1f25cfc66e988e89ef1cdf2b94db9fca1b7819482d182c": "steel_brain_skin"
 }
 
 var entered_codes: Array = []
