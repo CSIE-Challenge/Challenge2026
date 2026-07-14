@@ -209,13 +209,6 @@ func _handle_error(msg: String) -> void:
 			printerr("[Matchmaker] ", msg)
 
 
-func _validate_game_connection() -> bool:
-	if _game_ip == "" or _game_port < 1 or _game_port > 65535:
-		_handle_error("Invalid server response")
-		return false
-	return true
-
-
 func _on_request_completed(
 	result: int, _code: int, _headers: PackedStringArray, body: PackedByteArray
 ) -> void:
@@ -299,9 +292,6 @@ func _on_create_room_response(data: Dictionary) -> void:
 	_player_id = data.get("player_id", "")
 
 	print("[Matchmaker] Room created: ", _room_code, " game at ", _game_ip, ":", _game_port)
-
-	if not _validate_game_connection():
-		return
 
 	var err := NetworkManager.join_server(_game_ip, _game_port)
 	if err != OK:
@@ -388,9 +378,6 @@ func _on_join_room_response(data: Dictionary) -> void:
 	_room_code = code_input.text.strip_edges().to_upper()
 
 	print("[Matchmaker] Joined room ", _room_code, " game at ", _game_ip, ":", _game_port)
-
-	if not _validate_game_connection():
-		return
 
 	var err := NetworkManager.join_server(_game_ip, _game_port)
 	if err != OK:
