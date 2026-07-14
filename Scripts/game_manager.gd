@@ -38,6 +38,7 @@ var elapsed_time: float = 0.0
 var _health_icon_ready := false
 var _is_paused := false
 var _is_shutting_down := false
+var _time_up_finish_requested := false
 
 @onready var energy_ball: Node2D = $"../SubViewport/Stage/EnergyBall"
 @onready var player_invincibility_timer = $PlayerInvincibilityTimer
@@ -69,6 +70,7 @@ func _ready() -> void:
 	_update_max_energy(false)
 	_connect_agent_action_signals()
 	_connect_pause_menu()
+	NetworkManager.multiplayer_finish.connect(multiplayer_game_finish_call)
 
 	agent_action_service.setup_services(self, trap_request_scheduler)
 	trap_request_scheduler.initialize()
@@ -133,7 +135,7 @@ func _physics_process(delta: float) -> void:
 	if game_over:
 		return
 	if not _is_paused:
-		elapsed_time += delta
+		elapsed_time = minf(elapsed_time + delta, game_duration)
 		_update_time_label()
 		_update_phase()
 		if elapsed_time >= game_duration:
@@ -367,6 +369,13 @@ func on_player_hit(damage: int) -> void:
 
 
 func _on_game_duration_timeout() -> void:
+	if _is_multiplayer_game():
+		if _time_up_finish_requested:
+			return
+		if NetworkManager.request_time_up_finish():
+			_time_up_finish_requested = true
+			return
+
 	finish_game()
 
 
@@ -423,12 +432,23 @@ func get_current_max_energy_cap() -> int:
 
 
 #region Control
-func finish_game(player_died: bool = false, authoritative_stats: Dictionary = {}) -> void:
+func multiplayer_game_finish_call(winner_peer_ids: Array, draw: bool, forfeit: bool) -> void:
+	if draw:
+		finish_game(1)
+	elif forfeit:
+		finish_game(2)
+	elif multiplayer.get_unique_id() in winner_peer_ids:
+		finish_game(3)
+	else:
+		finish_game(4)
+
+
+func finish_game(state: int = 0, authoritative_stats: Dictionary = {}) -> void:
 	if game_over:
 		return
 	Audio.stop_all_audio_2d()
 	Audio.stop_all_audio()
-	if player_died:
+	if player.health <= 0:
 		Audio.play_sfx(Audio.SFX.PLAYER_DIE)
 	_close_pause_overlay_for_finish()
 	game_over = true
@@ -440,7 +460,6 @@ func finish_game(player_died: bool = false, authoritative_stats: Dictionary = {}
 	player.set_physics_process(false)
 	player.collision_layer = 0
 	player.collision_mask = 0
-
 	var survival_time := elapsed_time
 	var opponent_peer_id := NetworkManager.get_opponent_peer_id()
 	var opponent_energy_balls := -1
@@ -459,7 +478,8 @@ func finish_game(player_died: bool = false, authoritative_stats: Dictionary = {}
 				"survival_time": survival_time,
 				"remaining_health": player.health,
 				"trap_count": authoritative_stats.get("trap_count", 0),
-			}
+			},
+			state
 		)
 	)
 
@@ -629,7 +649,6 @@ func _on_network_health_changed(peer_id: int, health: int) -> void:
 			return
 		if player.health <= 0 and not _is_multiplayer_game():
 			await player.die()
-			finish_game(1)
 		_finish_game_if_peer_defeated(peer_id, health)
 		return
 
@@ -638,7 +657,7 @@ func _on_network_health_changed(peer_id: int, health: int) -> void:
 
 
 func _finish_game_if_peer_defeated(peer_id: int, health: int) -> void:
-	if game_over or health > 0:
+	if game_over or health > 0 or _is_multiplayer_game():
 		return
 
 	print("[GameManager] Peer %d health reached 0; finishing game" % peer_id)

@@ -25,6 +25,7 @@ signal demo_connected(peer_id: int)
 signal demo_disconnected
 signal demo_state_received(data: Dictionary)
 signal countdown_start_released
+signal multiplayer_finish(winner_peer_ids: Array, draw: bool, forfeit: bool)
 
 const MAX_HEALTH := 5
 const DEFAULT_MAX_ENERGY := 35
@@ -40,6 +41,7 @@ var health_by_peer_id: Dictionary = {}
 var energy_ball_count_by_peer_id: Dictionary = {}
 var demo_peer_id: int = -1  # -1 when no demo is connected
 var max_health: int = MAX_HEALTH
+var game_finished: bool = false
 var _game_data: Dictionary = {}
 var _game_max_energy: Array = []
 var _client_states: Dictionary = {}  # peer_id → state snapshot Dictionary
@@ -48,6 +50,7 @@ var _demo_push_count: int = 0
 var _ready_timeout_timer: Timer = null
 var _gameplay_loaded_peer_ids: Array[int] = []
 var _countdown_start_released := false
+var _time_up_peer_ids: Array[int] = []
 
 
 ## Called on startup. Connects multiplayer signals and handles command-line launch.
@@ -63,6 +66,7 @@ func _ready() -> void:
 	if multiplayer.is_server() and not _has_demo_flag(OS.get_cmdline_user_args()):
 		var collector: Node = load("res://Scripts/network/state_collector.gd").new()
 		add_child(collector)
+	game_finished = false
 
 
 ## Creates an ENet server on [param port] and hands it to the multiplayer system.
@@ -79,11 +83,13 @@ func start_server(port := DEFAULT_PORT) -> Error:
 		server_start_failed.emit(error)
 		return error
 
+	game_finished = false
 	multiplayer.multiplayer_peer = peer
 	connected_peer_ids.clear()
 	energy_by_peer_id.clear()
 	health_by_peer_id.clear()
 	energy_ball_count_by_peer_id.clear()
+	_time_up_peer_ids.clear()
 	_client_states.clear()
 	_reset_countdown_start_sync()
 	server_started.emit(port)
@@ -146,6 +152,8 @@ func stop_network() -> void:
 	energy_ball_count_by_peer_id.clear()
 	_client_states.clear()
 	_reset_countdown_start_sync()
+	_time_up_peer_ids.clear()
+	game_finished = false
 	_refresh_game_max_energy_caps()
 	var initial_caps: Array = _read_game_max_energy_caps()
 	max_energy = int(initial_caps[0]) if initial_caps.size() > 0 else DEFAULT_MAX_ENERGY
@@ -397,6 +405,7 @@ func _on_peer_disconnected(peer_id: int) -> void:
 	energy_by_peer_id.erase(peer_id)
 	health_by_peer_id.erase(peer_id)
 	energy_ball_count_by_peer_id.erase(peer_id)
+	_time_up_peer_ids.erase(peer_id)
 	_client_states.erase(peer_id)
 	_gameplay_loaded_peer_ids.erase(peer_id)
 
@@ -585,6 +594,23 @@ func request_heal_health(amount: int) -> void:
 	request_change_peer_health(multiplayer.get_unique_id(), amount)
 
 
+func request_time_up_finish() -> bool:
+	if game_finished:
+		return false
+
+	var peer: MultiplayerPeer = multiplayer.multiplayer_peer
+	if peer == null or peer is OfflineMultiplayerPeer:
+		return false
+	if peer.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED:
+		return false
+
+	if multiplayer.is_server():
+		_server_register_time_up_finish(multiplayer.get_unique_id())
+	else:
+		rpc_id(1, "_server_request_time_up_finish")
+	return true
+
+
 ## Changes a specific peer's health. Positive [param delta] heals, negative damages.
 func request_change_peer_health(peer_id: int, delta: int) -> void:
 	if delta == 0:
@@ -674,6 +700,15 @@ func _server_request_change_peer_health(peer_id: int, delta: int) -> void:
 		return
 
 	_server_change_health(peer_id, delta, sender_id)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func _server_request_time_up_finish() -> void:
+	if not multiplayer.is_server():
+		return
+
+	var sender_id := multiplayer.get_remote_sender_id()
+	_server_register_time_up_finish(sender_id)
 
 
 @rpc("any_peer", "call_remote", "reliable")
@@ -807,6 +842,20 @@ func _server_change_health(peer_id: int, delta: int, reject_peer_id := -1) -> bo
 	health_by_peer_id[peer_id] = new_health
 	_broadcast_health(peer_id, new_health)
 
+	var player_peer_ids: Array
+	for peer_id0 in connected_peer_ids:
+		if peer_id0 != demo_peer_id:
+			player_peer_ids.append(peer_id0)
+
+	if new_health <= 0 and not game_finished:
+		game_finished = true
+		if len(player_peer_ids) == 0:
+			return false
+		elif len(player_peer_ids) == 1:
+			_broadcast_multiplayer_finish(player_peer_ids, false, true)
+		elif len(player_peer_ids) == 2:
+			_broadcast_multiplayer_result(player_peer_ids)
+
 	# print(
 	# 	(
 	# 		"Health change peer=%d delta=%d old=%d new=%d"
@@ -825,6 +874,57 @@ func _server_set_energy_ball_count_for_peer(peer_id: int, count: int) -> void:
 	# Keep the latest count in the same peer-keyed cache style as energy and health.
 	energy_ball_count_by_peer_id[peer_id] = normalized_count
 	_broadcast_energy_ball_count(peer_id, normalized_count)
+
+
+func _server_register_time_up_finish(peer_id: int) -> void:
+	if game_finished:
+		return
+	if peer_id == demo_peer_id or not connected_peer_ids.has(peer_id):
+		return
+	if not _time_up_peer_ids.has(peer_id):
+		_time_up_peer_ids.append(peer_id)
+
+	var player_peer_ids: Array = []
+	for player_peer_id in connected_peer_ids:
+		if player_peer_id != demo_peer_id:
+			player_peer_ids.append(player_peer_id)
+
+	if player_peer_ids.size() < 2:
+		return
+	for player_peer_id in player_peer_ids:
+		if not _time_up_peer_ids.has(player_peer_id):
+			return
+
+	game_finished = true
+	_broadcast_multiplayer_result(player_peer_ids)
+
+
+func _broadcast_multiplayer_result(player_peer_ids: Array) -> void:
+	var health0 = get_health(player_peer_ids[0])
+	var health1 = get_health(player_peer_ids[1])
+	var ball0 = get_energy_ball_count(player_peer_ids[0])
+	var ball1 = get_energy_ball_count(player_peer_ids[1])
+	if health0 <= 0 and health1 <= 0:
+		_broadcast_multiplayer_finish(player_peer_ids, true, false)
+	elif health0 != health1:
+		var winner_id = player_peer_ids[0 if health0 > health1 else 1]
+		_broadcast_multiplayer_finish([winner_id], false, false)
+	elif ball0 != ball1:
+		var winner_id = player_peer_ids[0 if ball0 > ball1 else 1]
+		_broadcast_multiplayer_finish([winner_id], false, false)
+	else:
+		_broadcast_multiplayer_finish(player_peer_ids, true, false)
+
+
+func _broadcast_multiplayer_finish(winner_peer_ids: Array, draw: bool, forfeit: bool) -> void:
+	multiplayer_finish.emit(winner_peer_ids, draw, forfeit)
+	rpc("_client_multiplayer_finish", winner_peer_ids, draw, forfeit)
+
+
+@rpc("authority", "call_remote", "reliable")
+func _client_multiplayer_finish(winner_peer_ids: Array, draw: bool, forfeit: bool) -> void:
+	game_finished = true
+	multiplayer_finish.emit(winner_peer_ids, draw, forfeit)
 
 
 func _broadcast_energy(peer_id: int, energy: int) -> void:
