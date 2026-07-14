@@ -195,6 +195,7 @@ func _on_detail_action_pressed():
 		PlayerData.equipped_skin = data.skin_id
 		refresh_all_items()
 		action_btn.text = "已裝備"
+		action_btn.modulate = Color(0.2, 1.0, 0.2, 1)  # 高亮綠色
 		action_btn.disabled = true
 
 
@@ -310,16 +311,20 @@ func _on_item_detail_requested(data: SkinData):
 			detail_cond.text = "已擁有"
 			if is_equipped:
 				action_btn.text = "已裝備"
+				action_btn.modulate = Color(0.2, 1.0, 0.2, 1)  # 高亮綠色
 				action_btn.disabled = true
 			else:
 				action_btn.text = "裝備"
+				action_btn.modulate = Color(1, 1, 1, 1)  # 正常顏色
 				action_btn.disabled = false
 		elif data.is_achievement_unlock:
 			detail_cond.text = "解鎖條件：" + data.achievement_desc
 			action_btn.text = "未解鎖"
+			action_btn.modulate = Color(0.8, 0.8, 0.8, 1)  # 顯示為灰色標籤
 			action_btn.disabled = true
 		else:
 			detail_cond.text = "請輸入兌換碼解鎖"
+			action_btn.modulate = Color(0.8, 0.8, 0.8, 1)  # 顯示為灰色標籤
 			action_btn.visible = false
 
 		# 預先載入舞台場景
