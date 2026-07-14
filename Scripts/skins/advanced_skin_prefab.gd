@@ -7,6 +7,8 @@ var tween: Tween
 
 
 func play_spawn():
+	var tween = create_tween()
+	tween.tween_property(sprite, "modulate:a", 1.0, 0.2)
 	await get_tree().process_frame
 
 

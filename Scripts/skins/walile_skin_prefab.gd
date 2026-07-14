@@ -6,7 +6,7 @@ const BODY_SWAY_MAGNITUDE = 10
 const EYES_SWAY_MAGNITUDE = 4
 const TIRES_SWAY_MAGNITUDE = 3
 const SWAY_SPEED = 0.8
-const DROP_TIME = 0.8
+const DROP_TIME = 0.5
 const GRAVITY = 5
 
 var body_list: Array[Sprite2D]
@@ -87,7 +87,7 @@ func play_spawn():
 		tween = create_tween()
 		(
 			tween
-			. tween_property(body_list[i], "position:y", body_y[i], DROP_TIME / 2)
+			. tween_property(body_list[i], "position:y", body_y[i], DROP_TIME)
 			. set_trans(Tween.TRANS_BOUNCE)
 			. set_ease(Tween.EASE_OUT)
 			. set_delay(0.1 * i)
@@ -142,14 +142,14 @@ func play_jump():
 		tween = create_tween()
 		(
 			tween
-			. tween_property(body_list[i], "position:y", body_y[i] - body_height[i], DROP_TIME / 2)
+			. tween_property(body_list[i], "position:y", body_y[i] - body_height[i], DROP_TIME)
 			. set_trans(Tween.TRANS_QUART)
 			. set_ease(Tween.EASE_OUT)
 			. set_delay(body_height[i] / 150)
 		)
 		(
 			tween
-			. tween_property(body_list[i], "position:y", body_y[i], DROP_TIME / 2)
+			. tween_property(body_list[i], "position:y", body_y[i], DROP_TIME)
 			. set_trans(Tween.TRANS_QUART)
 			. set_ease(Tween.EASE_IN)
 		)
@@ -170,14 +170,14 @@ func play_land():
 		tween = create_tween()
 		(
 			tween
-			. tween_property(body_list[i], "position:y", body_y[i] + body_height[i], DROP_TIME / 5)
+			. tween_property(body_list[i], "position:y", body_y[i] + body_height[i], DROP_TIME / 3)
 			. set_trans(Tween.TRANS_QUART)
 			. set_ease(Tween.EASE_OUT)
 			. set_delay(body_height[i] / 30)
 		)
 		(
 			tween
-			. tween_property(body_list[i], "position:y", body_y[i], DROP_TIME / 5)
+			. tween_property(body_list[i], "position:y", body_y[i], DROP_TIME / 3)
 			. set_trans(Tween.TRANS_QUART)
 			. set_ease(Tween.EASE_IN)
 		)

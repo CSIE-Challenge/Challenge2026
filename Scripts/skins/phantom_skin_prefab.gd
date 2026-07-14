@@ -12,13 +12,17 @@ func _ready():
 
 
 func play_spawn():
-	scale = Vector2.ZERO
+	sprite.scale = Vector2.ZERO
 	ghost_fire.restart()
 	ghost_fire.emitting = true
 	var tween = create_tween()
-	tween.tween_property(self, "scale", Vector2.ONE, 0.6).set_trans(Tween.TRANS_SPRING).set_ease(
-		Tween.EASE_OUT
+	(
+		tween
+		. tween_property(sprite, "scale", Vector2.ONE * 0.2, 0.6)
+		. set_trans(Tween.TRANS_SPRING)
+		. set_ease(Tween.EASE_OUT)
 	)
+	tween.parallel().tween_property(sprite, "modulate:a", 0.6, 0.6)
 	_start_hover()
 	if tween:
 		await tween.finished
