@@ -442,12 +442,17 @@ func finish_game(player_died: bool = false, authoritative_stats: Dictionary = {}
 	player.collision_mask = 0
 
 	var survival_time := elapsed_time
+	var opponent_peer_id := NetworkManager.get_opponent_peer_id()
+	var opponent_energy_balls := -1
+	if _is_multiplayer_game() and opponent_peer_id != -1:
+		opponent_energy_balls = NetworkManager.get_energy_ball_count(opponent_peer_id)
 	(
 		result_screen
 		. show_results(
 			{
 				"energy_spent": authoritative_stats.get("energy_spent", total_energy_spent),
 				"energy_balls": energy_ball_count,
+				"opponent_energy_balls": opponent_energy_balls,
 				"jump_count": player.jump_count,
 				"distance_traveled": player.distance_traveled,
 				"survival_time": survival_time,
@@ -585,6 +590,7 @@ func _on_energyball_collected(energy_gain: int) -> void:
 	energy_ball_count += 1
 	coconut_bar._update_coconut_count(energy_ball_count)
 	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
+	NetworkManager.update_energy_ball_count(energy_ball_count)
 	NetworkManager.request_add_energy(energy_gain)
 
 

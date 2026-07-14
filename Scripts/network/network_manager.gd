@@ -20,6 +20,7 @@ signal energy_changed(peer_id: int, energy: int)
 signal energy_rejected(peer_id: int, reason: String)
 signal health_changed(peer_id: int, health: int)
 signal health_rejected(peer_id: int, reason: String)
+signal energy_ball_count_changed(peer_id: int, count: int)
 signal demo_connected(peer_id: int)
 signal demo_disconnected
 signal demo_state_received(data: Dictionary)
@@ -36,6 +37,7 @@ var max_energy: int = DEFAULT_MAX_ENERGY
 var connected_peer_ids: Array[int] = []
 var energy_by_peer_id: Dictionary = {}
 var health_by_peer_id: Dictionary = {}
+var energy_ball_count_by_peer_id: Dictionary = {}
 var demo_peer_id: int = -1  # -1 when no demo is connected
 var max_health: int = MAX_HEALTH
 var _game_data: Dictionary = {}
@@ -81,6 +83,7 @@ func start_server(port := DEFAULT_PORT) -> Error:
 	connected_peer_ids.clear()
 	energy_by_peer_id.clear()
 	health_by_peer_id.clear()
+	energy_ball_count_by_peer_id.clear()
 	_client_states.clear()
 	_reset_match_start_sync()
 	server_started.emit(port)
@@ -119,6 +122,18 @@ func update_max_energy(new_max_energy: int) -> void:
 	rpc_id(1, "_server_set_max_energy_cap", max_energy)
 
 
+func update_energy_ball_count(count: int) -> void:
+	var normalized_count: int = maxi(count, 0)
+	if not _can_process_local_network_request():
+		return
+
+	if multiplayer.is_server():
+		_ensure_local_peer_state()
+		_server_set_energy_ball_count_for_peer(multiplayer.get_unique_id(), normalized_count)
+	else:
+		rpc_id(1, "_server_set_energy_ball_count", normalized_count)
+
+
 ## Closes the current connection and resets the multiplayer peer to offline mode.
 func stop_network() -> void:
 	if multiplayer.multiplayer_peer:
@@ -128,6 +143,7 @@ func stop_network() -> void:
 	connected_peer_ids.clear()
 	energy_by_peer_id.clear()
 	health_by_peer_id.clear()
+	energy_ball_count_by_peer_id.clear()
 	_client_states.clear()
 	_reset_match_start_sync()
 	_refresh_game_max_energy_caps()
@@ -183,6 +199,11 @@ func get_energy(peer_id: int) -> int:
 ## Returns the server-approved health for [param peer_id].
 func get_health(peer_id: int) -> int:
 	return int(health_by_peer_id.get(peer_id, max_health))
+
+
+## Returns the server-approved number of energy balls collected by [param peer_id].
+func get_energy_ball_count(peer_id: int) -> int:
+	return int(energy_ball_count_by_peer_id.get(peer_id, 0))
 
 
 ## Returns the configured gameplay health cap loaded from Data/game.json.
@@ -347,10 +368,13 @@ func _on_peer_connected(peer_id: int) -> void:
 		connected_peer_ids.append(peer_id)
 	energy_by_peer_id[peer_id] = 0
 	health_by_peer_id[peer_id] = max_health
+	energy_ball_count_by_peer_id[peer_id] = 0
 	_broadcast_energy(peer_id, 0)
 	_broadcast_health(peer_id, max_health)
+	_broadcast_energy_ball_count(peer_id, 0)
 	_sync_energy_to_peer(peer_id)
 	_sync_health_to_peer(peer_id)
+	_sync_energy_ball_count_to_peer(peer_id)
 
 	player_connected.emit(peer_id)
 	print("Peer connected: %d (%d/%d)" % [peer_id, connected_peer_ids.size(), MAX_CLIENTS])
@@ -372,6 +396,7 @@ func _on_peer_disconnected(peer_id: int) -> void:
 	connected_peer_ids.erase(peer_id)
 	energy_by_peer_id.erase(peer_id)
 	health_by_peer_id.erase(peer_id)
+	energy_ball_count_by_peer_id.erase(peer_id)
 	_client_states.erase(peer_id)
 	_countdown_finished_peer_ids.erase(peer_id)
 
@@ -666,6 +691,20 @@ func _server_set_max_energy_cap(requested_cap: int) -> void:
 	max_energy = capped_cap
 
 
+@rpc("any_peer", "call_remote", "reliable")
+func _server_set_energy_ball_count(count: int) -> void:
+	if not multiplayer.is_server():
+		return
+
+	var sender_id := multiplayer.get_remote_sender_id()
+	if sender_id == 0:
+		sender_id = multiplayer.get_unique_id()
+	if not connected_peer_ids.has(sender_id) and sender_id != multiplayer.get_unique_id():
+		return
+
+	_server_set_energy_ball_count_for_peer(sender_id, count)
+
+
 func _sync_energy_to_peer(target_peer_id: int) -> void:
 	for peer_id in energy_by_peer_id:
 		if peer_id == target_peer_id:
@@ -678,6 +717,15 @@ func _sync_health_to_peer(target_peer_id: int) -> void:
 		if peer_id == target_peer_id:
 			continue
 		_client_set_health.rpc_id(target_peer_id, peer_id, get_health(peer_id))
+
+
+func _sync_energy_ball_count_to_peer(target_peer_id: int) -> void:
+	for peer_id in energy_ball_count_by_peer_id:
+		if peer_id == target_peer_id:
+			continue
+		_client_set_energy_ball_count.rpc_id(
+			target_peer_id, peer_id, get_energy_ball_count(peer_id)
+		)
 
 
 func _server_reject_energy(peer_id: int, reason: String) -> void:
@@ -767,6 +815,15 @@ func _server_change_health(peer_id: int, delta: int, reject_peer_id := -1) -> bo
 	return true
 
 
+func _server_set_energy_ball_count_for_peer(peer_id: int, count: int) -> void:
+	var normalized_count: int = maxi(count, 0)
+	if get_energy_ball_count(peer_id) == normalized_count:
+		return
+
+	energy_ball_count_by_peer_id[peer_id] = normalized_count
+	_broadcast_energy_ball_count(peer_id, normalized_count)
+
+
 func _broadcast_energy(peer_id: int, energy: int) -> void:
 	energy_changed.emit(peer_id, energy)
 	rpc("_client_set_energy", peer_id, energy)
@@ -775,6 +832,11 @@ func _broadcast_energy(peer_id: int, energy: int) -> void:
 func _broadcast_health(peer_id: int, health: int) -> void:
 	health_changed.emit(peer_id, health)
 	rpc("_client_set_health", peer_id, health)
+
+
+func _broadcast_energy_ball_count(peer_id: int, count: int) -> void:
+	energy_ball_count_changed.emit(peer_id, count)
+	rpc("_client_set_energy_ball_count", peer_id, count)
 
 
 @rpc("authority", "call_remote", "reliable")
@@ -787,6 +849,12 @@ func _client_set_energy(peer_id: int, energy: int) -> void:
 func _client_set_health(peer_id: int, health: int) -> void:
 	health_by_peer_id[peer_id] = health
 	health_changed.emit(peer_id, health)
+
+
+@rpc("authority", "call_remote", "reliable")
+func _client_set_energy_ball_count(peer_id: int, count: int) -> void:
+	energy_ball_count_by_peer_id[peer_id] = count
+	energy_ball_count_changed.emit(peer_id, count)
 
 
 ## Public APIs should still work in single-player; offline mode is treated as local authority.
@@ -809,6 +877,8 @@ func _ensure_local_peer_state() -> void:
 		energy_by_peer_id[peer_id] = 0
 	if not health_by_peer_id.has(peer_id):
 		health_by_peer_id[peer_id] = max_health
+	if not energy_ball_count_by_peer_id.has(peer_id):
+		energy_ball_count_by_peer_id[peer_id] = 0
 
 
 ## Public: store a state snapshot for [param peer_id].

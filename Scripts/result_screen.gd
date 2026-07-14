@@ -39,6 +39,11 @@ func show_results(results: Dictionary) -> void:
 		str(int(results.get("energy_spent", 0))),
 	]
 
+	var opponent_energy_balls := int(results.get("opponent_energy_balls", -1))
+	if opponent_energy_balls >= 0:
+		names.insert(3, "Opponent Energy Balls")
+		values.insert(3, str(opponent_energy_balls))
+
 	stat_names_label.text = "\n".join(names)
 	stat_values_label.text = "\n".join(values)
 
