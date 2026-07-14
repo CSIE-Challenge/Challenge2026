@@ -54,4 +54,4 @@ EXPOSE 7777-7791/udp
 ENV GODOT_BIN=godot
 ENV GODOT_PROJECT_PATH=/app
 
-ENTRYPOINT ["dumb-init", "--", "node", "matchmaker/server.js"]
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
