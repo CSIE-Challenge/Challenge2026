@@ -99,10 +99,14 @@ func _ready() -> void:
 
 	get_tree().paused = true
 	await get_tree().create_timer(0.3).timeout
-	pregame_countdown.play_countdown()
 	Audio.play_sfx(Audio.SFX.PREGAME_COUNTDOWN)
+	await pregame_countdown.play_countdown()
 
-	await get_tree().create_timer(3.0).timeout
+	if _is_multiplayer_game():
+		pregame_countdown.text = "Waiting for opponent..."
+		pregame_countdown.show()
+	await NetworkManager.wait_for_match_start_after_countdown()
+	pregame_countdown.hide()
 	get_tree().paused = false
 	for w in walls:
 		w.process_mode = Node.PROCESS_MODE_PAUSABLE
@@ -117,8 +121,6 @@ func _ready() -> void:
 	energy_ball._respawn_energy_ball()
 	await get_tree().create_timer(0.2).timeout
 	energy_ball.show()
-	await get_tree().create_timer(1.0).timeout
-	pregame_countdown.hide()
 
 
 func _exit_tree() -> void:

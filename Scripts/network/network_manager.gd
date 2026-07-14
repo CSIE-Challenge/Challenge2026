@@ -23,6 +23,7 @@ signal health_rejected(peer_id: int, reason: String)
 signal demo_connected(peer_id: int)
 signal demo_disconnected
 signal demo_state_received(data: Dictionary)
+signal match_start_released
 
 const MAX_HEALTH := 5
 const DEFAULT_MAX_ENERGY := 35
@@ -43,10 +44,13 @@ var _client_states: Dictionary = {}  # peer_id → state snapshot Dictionary
 var _server_receive_count: int = 0
 var _demo_push_count: int = 0
 var _ready_timeout_timer: Timer = null
+var _countdown_finished_peer_ids: Array[int] = []
+var _match_start_released := false
 
 
 ## Called on startup. Connects multiplayer signals and handles command-line launch.
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	_connect_multiplayer_signals()
 	_load_game_data()
 	var initial_caps: Array = _read_game_max_energy_caps()
@@ -78,6 +82,7 @@ func start_server(port := DEFAULT_PORT) -> Error:
 	energy_by_peer_id.clear()
 	health_by_peer_id.clear()
 	_client_states.clear()
+	_reset_match_start_sync()
 	server_started.emit(port)
 	print("Network server started on UDP port %d, max clients: %d" % [port, MAX_CLIENTS])
 	return OK
@@ -124,6 +129,7 @@ func stop_network() -> void:
 	energy_by_peer_id.clear()
 	health_by_peer_id.clear()
 	_client_states.clear()
+	_reset_match_start_sync()
 	_refresh_game_max_energy_caps()
 	var initial_caps: Array = _read_game_max_energy_caps()
 	max_energy = int(initial_caps[0]) if initial_caps.size() > 0 else DEFAULT_MAX_ENERGY
@@ -254,6 +260,26 @@ func get_opponent_peer_id() -> int:
 	return -1
 
 
+## Multiplayer start barrier used after the local pregame countdown finishes.
+## Clients report completion to the server; the server releases both players together.
+func wait_for_match_start_after_countdown() -> void:
+	_match_start_released = false
+	if _is_offline_mode():
+		_match_start_released = true
+		return
+	if not _can_process_local_network_request():
+		_match_start_released = true
+		return
+
+	if multiplayer.is_server():
+		_server_mark_countdown_finished(multiplayer.get_unique_id())
+	else:
+		rpc_id(1, "_server_countdown_finished")
+
+	if not _match_start_released:
+		await match_start_released
+
+
 ## Parses command-line [param args] and starts the appropriate network mode automatically.
 func _start_from_command_line(args: Array) -> void:
 	var mode := get_startup_mode(args)
@@ -347,6 +373,7 @@ func _on_peer_disconnected(peer_id: int) -> void:
 	energy_by_peer_id.erase(peer_id)
 	health_by_peer_id.erase(peer_id)
 	_client_states.erase(peer_id)
+	_countdown_finished_peer_ids.erase(peer_id)
 
 	if connected_peer_ids.size() < 2 and _ready_timeout_timer != null:
 		_ready_timeout_timer.stop()
@@ -393,6 +420,66 @@ func _on_connection_failed() -> void:
 func _on_server_disconnected() -> void:
 	server_disconnected.emit()
 	print("Disconnected from server")
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func _server_countdown_finished() -> void:
+	if not multiplayer.is_server():
+		return
+
+	var sender_id := multiplayer.get_remote_sender_id()
+	if not connected_peer_ids.has(sender_id):
+		return
+	if sender_id == demo_peer_id:
+		return
+
+	_server_mark_countdown_finished(sender_id)
+
+
+func _server_mark_countdown_finished(peer_id: int) -> void:
+	if _match_start_released:
+		return
+	if not _countdown_finished_peer_ids.has(peer_id):
+		_countdown_finished_peer_ids.append(peer_id)
+
+	var required_count := _get_required_countdown_peer_count()
+	print(
+		(
+			"[NetworkManager] Countdown finished: %d/%d"
+			% [_countdown_finished_peer_ids.size(), required_count]
+		)
+	)
+	if required_count > 0 and _countdown_finished_peer_ids.size() >= required_count:
+		_server_release_match_start()
+
+
+func _get_required_countdown_peer_count() -> int:
+	var player_count := 0
+	for peer_id in connected_peer_ids:
+		if peer_id != demo_peer_id:
+			player_count += 1
+	return min(2, max(1, player_count))
+
+
+func _server_release_match_start() -> void:
+	_match_start_released = true
+	_countdown_finished_peer_ids.clear()
+	match_start_released.emit()
+	rpc("_client_release_match_start")
+	print("[NetworkManager] Match start released")
+
+
+@rpc("authority", "call_remote", "reliable")
+func _client_release_match_start() -> void:
+	if _match_start_released:
+		return
+	_match_start_released = true
+	match_start_released.emit()
+
+
+func _reset_match_start_sync() -> void:
+	_countdown_finished_peer_ids.clear()
+	_match_start_released = false
 
 
 ## Searches [param args] for a named argument and returns its value.
