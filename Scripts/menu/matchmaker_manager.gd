@@ -216,6 +216,10 @@ func _on_request_completed(
 	var tag := _pending_request
 	_pending_request = ""
 
+	if tag == "check_server":
+		_on_check_server_response(result)
+		return
+
 	var data: Dictionary
 	var test_json := JSON.new()
 	if test_json.parse(body_str) == OK:
@@ -308,6 +312,32 @@ func _on_create_room_response(data: Dictionary) -> void:
 
 func _on_join_room_button_up() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
+	if _matchmaker_ip == "":
+		_handle_error("Please enter a server address")
+		return
+
+	create_room_button.disabled = true
+	join_room_button.disabled = true
+
+	_pending_request = "check_server"
+	http_request.timeout = 5.0
+	var url := "http://" + _matchmaker_ip + "/qiaohu/status"
+	var err := http_request.request(url)
+	if err != OK:
+		_on_check_server_response(HTTPRequest.RESULT_CANT_CONNECT)
+
+
+func _on_check_server_response(result: int) -> void:
+	http_request.timeout = 0.0
+	create_room_button.disabled = false
+	join_room_button.disabled = false
+
+	if result != HTTPRequest.RESULT_SUCCESS:
+		_handle_error("Cannot reach server")
+		return
+
+	error_label_a.visible = false
+	error_label_a.text = ""
 	code_input.text = ""
 	_show_panel(Page.C)
 	code_input.grab_focus()
