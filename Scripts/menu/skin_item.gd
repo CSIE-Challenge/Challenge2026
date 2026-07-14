@@ -76,7 +76,7 @@ func update_state():
 	# 3. 處理下方按鈕狀態 (購買/裝備/已裝備)
 	if is_equipped:
 		action_btn.text = "已裝備"
-		action_btn.disabled = false
+		action_btn.disabled = true
 		action_btn.modulate = Color(0.2, 1.0, 0.2, 1)  # 高亮綠色
 	elif is_owned:
 		action_btn.text = "裝備"
