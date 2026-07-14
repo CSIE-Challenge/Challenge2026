@@ -452,6 +452,7 @@ func _server_countdown_finished() -> void:
 	if not multiplayer.is_server():
 		return
 
+	# Only gameplay players participate in the start barrier; demo spectators do not block start.
 	var sender_id := multiplayer.get_remote_sender_id()
 	if not connected_peer_ids.has(sender_id):
 		return
@@ -696,6 +697,7 @@ func _server_set_energy_ball_count(count: int) -> void:
 	if not multiplayer.is_server():
 		return
 
+	# Clients only report their own collected ball count; the server tags it by sender id.
 	var sender_id := multiplayer.get_remote_sender_id()
 	if sender_id == 0:
 		sender_id = multiplayer.get_unique_id()
@@ -820,6 +822,7 @@ func _server_set_energy_ball_count_for_peer(peer_id: int, count: int) -> void:
 	if get_energy_ball_count(peer_id) == normalized_count:
 		return
 
+	# Keep the latest count in the same peer-keyed cache style as energy and health.
 	energy_ball_count_by_peer_id[peer_id] = normalized_count
 	_broadcast_energy_ball_count(peer_id, normalized_count)
 

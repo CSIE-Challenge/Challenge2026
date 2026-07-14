@@ -41,6 +41,7 @@ func show_results(results: Dictionary) -> void:
 
 	var opponent_energy_balls := int(results.get("opponent_energy_balls", -1))
 	if opponent_energy_balls >= 0:
+		# This row is multiplayer-only; single-player leaves opponent_energy_balls at -1.
 		names.insert(3, "Opponent Energy Balls")
 		values.insert(3, str(opponent_energy_balls))
 

@@ -445,6 +445,7 @@ func finish_game(player_died: bool = false, authoritative_stats: Dictionary = {}
 	var opponent_peer_id := NetworkManager.get_opponent_peer_id()
 	var opponent_energy_balls := -1
 	if _is_multiplayer_game() and opponent_peer_id != -1:
+		# ResultScreen treats -1 as "hide opponent count", so only fill this in multiplayer.
 		opponent_energy_balls = NetworkManager.get_energy_ball_count(opponent_peer_id)
 	(
 		result_screen
@@ -590,6 +591,7 @@ func _on_energyball_collected(energy_gain: int) -> void:
 	energy_ball_count += 1
 	coconut_bar._update_coconut_count(energy_ball_count)
 	energy_balls_label.text = "Energy Balls: %d" % energy_ball_count
+	# Share the running total so the opponent can show it on the result screen.
 	NetworkManager.update_energy_ball_count(energy_ball_count)
 	NetworkManager.request_add_energy(energy_gain)
 
