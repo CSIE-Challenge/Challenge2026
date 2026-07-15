@@ -99,8 +99,6 @@ func play_spawn():
 		await tween.finished
 	else:
 		await get_tree().process_frame
-	for i in body_list.size():
-		print("%d: " % i, body_list[i].position)
 	is_spawning = false
 
 

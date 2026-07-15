@@ -6,7 +6,7 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gold"]
 shader = ExtResource("2_shader")
-shader_parameter/base_color = Color(1, 0.84, 0, 1)
+shader_parameter/base_color = Color(1, 0.8, 0.1, 1)
 shader_parameter/shine_speed = 3.0
 shader_parameter/alpha = 1.0
 
