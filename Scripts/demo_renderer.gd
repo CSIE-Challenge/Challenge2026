@@ -10,6 +10,12 @@ const FALLBACK_HEALTH_TEXTURE = preload("res://Shapes/feather.svg")
 
 @export var stage_a: Node2D
 @export var stage_b: Node2D
+@export var time_label: Label
+@export var pregame_countdown: Label
+@export var screen_a_energy: Node2D
+@export var screen_a_health: Node2D
+@export var screen_b_energy: Node2D
+@export var screen_b_health: Node2D
 
 var _ghosts_a: Dictionary = {}
 var _ghosts_b: Dictionary = {}
@@ -18,6 +24,7 @@ var _balls_b: Dictionary = {}
 var _player_a: Node2D
 var _player_b: Node2D
 var _screens: Array = []
+var _countdown_triggered: bool = false
 
 
 func _ready() -> void:
@@ -56,8 +63,9 @@ func _ready() -> void:
 			"prev_player": {},
 			"proxy": null,
 			"loaded_skin_id": "",
-			"energy_label": null,
+			"energy_label": screen_a_energy,
 			"energy_value": 0,
+			"health_root": screen_a_health,
 			"health_icons": [],
 			"health_value": -1,
 		},
@@ -69,8 +77,9 @@ func _ready() -> void:
 			"prev_player": {},
 			"proxy": null,
 			"loaded_skin_id": "",
-			"energy_label": null,
+			"energy_label": screen_b_energy,
 			"energy_value": 0,
+			"health_root": screen_b_health,
 			"health_icons": [],
 			"health_value": -1,
 		},
@@ -82,6 +91,14 @@ func _identify_as_demo(nm: Node) -> void:
 
 
 func _on_demo_state_received(combined: Dictionary) -> void:
+	var elapsed: float = combined.get("elapsed_time", 0.0)
+	_update_time_display(elapsed)
+
+	if not _countdown_triggered and elapsed < 0.0:
+		_countdown_triggered = true
+		if pregame_countdown and pregame_countdown.has_method("play_countdown"):
+			pregame_countdown.play_countdown()
+
 	var screens: Array = combined.get("screens", [])
 	for i in range(mini(screens.size(), 2)):
 		_apply_screen(_screens[i], screens[i])
@@ -106,7 +123,6 @@ func _apply_screen(screen: Dictionary, screen_data: Dictionary) -> void:
 	_update_energy_balls(screen, stage, balls)
 
 	# Apply energy and health HUD (server-authoritative values)
-	_ensure_screen_hud(screen)
 	var energy: int = screen_data.get("energy", 0)
 	var health: int = screen_data.get("health", 0)
 	var skin_id: String = player_state.get("skin_id", "")
@@ -127,6 +143,16 @@ func _apply_screen(screen: Dictionary, screen_data: Dictionary) -> void:
 
 ## Recursively disables game logic callbacks on [param node] and its children.
 ## Layer 1 defense: stops _process, _physics_process, Area2D monitoring, Timers.
+func _update_time_display(elapsed: float) -> void:
+	if not time_label:
+		return
+	if elapsed < 0.0:
+		return
+	var minute := int(floor(elapsed)) / 60
+	var second := int(floor(elapsed)) % 60
+	time_label.text = "%02d:%02d" % [minute, second]
+
+
 func _suppress_game_logic(node: Node) -> void:
 	node.set_process(false)
 	node.set_physics_process(false)
@@ -398,11 +424,7 @@ func _update_energy_hud(screen: Dictionary, energy: int, max_energy: int) -> voi
 ## Rebuilds the health icon row for [param screen] based on [param skin_id]
 ## and [param max_health]. Only recreates icons when skin or max_health changes.
 func _update_health_hud(screen: Dictionary, skin_id: String, max_health: int) -> void:
-	var stage: Node2D = screen["stage"]
-	if not stage:
-		return
-
-	var health_root: Node2D = stage.get_node_or_null("HealthHUD")
+	var health_root: Node2D = screen.get("health_root")
 	if not health_root:
 		return
 

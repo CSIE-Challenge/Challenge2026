@@ -86,6 +86,18 @@ shader_parameter/offset = 0.0
 shader_parameter/blocks_count = 8.0
 shader_parameter/crack_width = 0.0
 
+[ext_resource type="Script" uid="uid://c368bhf05q5ee" path="res://Scripts/pregame_countdown.gd" id="2_countdown"]
+[ext_resource type="PackedScene" uid="uid://cfqo7i5tygq4w" path="res://Scenes/energy_label.tscn" id="3_energy"]
+[ext_resource type="FontFile" uid="uid://hp5u4fxb5ifw" path="res://Assets/fonts/PixeloidSans-Bold.ttf" id="4_font"]
+
+[sub_resource type="FontVariation" id="FontVariation_countdown"]
+base_font = ExtResource("4_font")
+variation_transform = Transform2D(1, 0.15, 0, 1, 0, 0)
+
+[sub_resource type="LabelSettings" id="LabelSettings_tcdmn"]
+font = ExtResource("4_font")
+font_size = 40
+
 [node name="DemoMain" type="Control" unique_id=1296044060]
 layout_mode = 3
 anchors_preset = 15
@@ -280,5 +292,71 @@ offset_left = -2.0
 offset_right = 14.0
 color = Color(0.6, 0.6, 0.6, 1)
 
-[node name="DemoRenderer" type="Node" parent="." unique_id=270139706]
+[node name="HUD" type="CanvasLayer" parent="." unique_id=1320686328]
+layer = 10
+
+[node name="PregameCountdown" type="Label" parent="HUD" unique_id=1745412148]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.0
+offset_top = -214.0
+offset_right = 34.0
+offset_bottom = -77.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.7058824, 0.09803922, 1)
+theme_override_colors/font_shadow_color = Color(1.0039686, 0.33479407, 0, 0.98039216)
+theme_override_colors/font_outline_color = Color(1, 0.7058824, 0.21568628, 1)
+theme_override_constants/shadow_offset_x = 6
+theme_override_constants/shadow_offset_y = 4
+theme_override_fonts/font = SubResource("FontVariation_countdown")
+theme_override_font_sizes/font_size = 85
+text = "3"
+horizontal_alignment = 1
+script = ExtResource("2_countdown")
+
+[node name="TimeLabel" type="Label" parent="HUD" unique_id=985672380]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -60.0
+offset_top = -309.0
+offset_right = 60.0
+offset_bottom = -254.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_colors/font_color = Color(0.11764706, 0.11764706, 0.13725491, 1)
+theme_override_font_sizes/font_size = 44
+text = "0:00"
+label_settings = SubResource("LabelSettings_tcdmn")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScreenA_Energy" parent="HUD" unique_id=1909958148 instance=ExtResource("3_energy")]
+position = Vector2(88, 44)
+
+[node name="ScreenA_Health" type="Node2D" parent="HUD" unique_id=261805975]
+position = Vector2(338, 44)
+
+[node name="ScreenB_Energy" parent="HUD" unique_id=1762839106 instance=ExtResource("3_energy")]
+position = Vector2(719, 44)
+
+[node name="ScreenB_Health" type="Node2D" parent="HUD" unique_id=1056993462]
+position = Vector2(969, 44)
+
+[node name="DemoRenderer" type="Node" parent="." unique_id=295691669 node_paths=PackedStringArray("stage_a", "stage_b", "time_label", "pregame_countdown", "screen_a_energy", "screen_a_health", "screen_b_energy", "screen_b_health")]
 script = ExtResource("1_demo")
+stage_a = NodePath("../ScreenA/SubViewport/StageA")
+stage_b = NodePath("../ScreenB/SubViewport/StageB")
+time_label = NodePath("../HUD/TimeLabel")
+pregame_countdown = NodePath("../HUD/PregameCountdown")
+screen_a_energy = NodePath("../HUD/ScreenA_Energy")
+screen_a_health = NodePath("../HUD/ScreenA_Health")
+screen_b_energy = NodePath("../HUD/ScreenB_Energy")
+screen_b_health = NodePath("../HUD/ScreenB_Health")
