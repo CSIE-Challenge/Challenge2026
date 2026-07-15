@@ -101,6 +101,7 @@ func _ready() -> void:
 
 	get_tree().paused = true
 	await get_tree().create_timer(0.3).timeout
+	Audio.set_bgm(Audio.BGM.NONE)
 	if _is_multiplayer_game():
 		pregame_countdown.text = "Waiting for opponent..."
 		pregame_countdown.show()
