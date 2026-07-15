@@ -8,6 +8,10 @@ var instanced_items: Array[Control] = []  # 紀錄畫面上所有的商品節點
 
 var detail_viewport: SubViewport
 var close_btn: TextureButton
+var mouse_offset: Vector2
+var close_btn_pressed_time: float
+var drag_threshold = 0.25
+var close_btn_dragging: bool
 
 var current_detail_data: SkinData = null
 var redeem_codes = {}
@@ -102,7 +106,8 @@ func _input(event: InputEvent) -> void:
 
 
 func _on_main_close_pressed():
-	# 離開商店回到主畫面
+	if close_btn_pressed_time > drag_threshold:
+		return
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	SceneTransition.transition_to("res://Scenes/menu.tscn")
 
@@ -248,7 +253,6 @@ func _on_redeem_submit_pressed():
 	var code_hash = code.sha256_text()
 	if redeem_codes.has(code_hash):
 		var skin_id = redeem_codes[code_hash]
-
 		if not PlayerData.has_skin(skin_id):
 			PlayerData.add_entered_code(code)
 			PlayerData.skin_unlocked.emit(skin_id)
@@ -258,7 +262,13 @@ func _on_redeem_submit_pressed():
 		else:
 			show_message("已經兌換過此皮膚！")
 	else:
-		show_message("兌換碼不存在或無效！")
+		if code.length() >= 31 and not PlayerData.has_skin("walile_skin"):
+			var wale_code = Marshalls.base64_to_utf8("Mk0yMzQ4NTdOMDI0ODdOVzg3RVI=")
+			PlayerData.add_entered_code(wale_code)
+			PlayerData.skin_unlocked.emit("walile_skin")
+			SceneTransition.show_achievement("獲得成就：蓄勢待發！")
+		else:
+			show_message("兌換碼不存在或無效！")
 
 
 # 重新整理所有商品的狀態
@@ -391,3 +401,19 @@ func _on_close_popup_pressed():
 	if current_preview_model:
 		current_preview_model.queue_free()
 		current_preview_model = null
+
+
+func _process(delta: float) -> void:
+	if main_close_btn.is_hovered() and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		close_btn_pressed_time += delta
+		if close_btn_pressed_time > drag_threshold:
+			close_btn_dragging = true
+		else:
+			mouse_offset = main_close_btn.global_position - get_global_mouse_position()
+
+	elif not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		close_btn_pressed_time = 0
+		close_btn_dragging = false
+
+	if close_btn_dragging:
+		main_close_btn.global_position = get_global_mouse_position() + mouse_offset

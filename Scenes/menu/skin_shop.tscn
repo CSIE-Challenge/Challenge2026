@@ -28,9 +28,9 @@
 [ext_resource type="Resource" uid="uid://rbttresskin" path="res://Assets/skins/red_black_tree_skin.tres" id="25_rbt"]
 [ext_resource type="Resource" uid="uid://dsj57msqxqnjy" path="res://Assets/skins/perry_skin.tres" id="26_perry"]
 [ext_resource type="Resource" uid="uid://byoxln6hdbrny" path="res://Assets/skins/claude_skin.tres" id="27_claude"]
-[ext_resource type="Resource" uid="uid://steelbrainskinres" path="res://Assets/skins/steel_brain_skin.tres" id="28_steel_brain"]
-[ext_resource type="Resource" uid="uid://bjmt7uss2sq4u" path="res://Assets/skins/three_body_coconut_skin.tres" id="29_tbc"]
+[ext_resource type="Resource" uid="uid://cm33sfpemndxe" path="res://Assets/skins/steel_brain_skin.tres" id="28_steel_brain"]
 [ext_resource type="Resource" uid="uid://dsn4c7df8o3dy" path="res://Assets/skins/walile_skin.tres" id="28_v4wv5"]
+[ext_resource type="Resource" uid="uid://bjmt7uss2sq4u" path="res://Assets/skins/three_body_coconut_skin.tres" id="29_tbc"]
 
 [node name="SkinShop" type="Control" unique_id=1696416848]
 layout_mode = 3
@@ -82,18 +82,6 @@ offset_bottom = 72.0
 grow_horizontal = 0
 text = "兌換碼"
 
-[node name="CloseButton" type="Button" parent="." unique_id=1021904816]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -80.0
-offset_top = 24.0
-offset_right = -32.0
-offset_bottom = 72.0
-grow_horizontal = 0
-text = "X"
-
 [node name="ScrollContainer" type="ScrollContainer" parent="." unique_id=1120197911]
 layout_mode = 1
 anchors_preset = 15
@@ -112,6 +100,18 @@ size_flags_horizontal = 3
 theme_override_constants/h_separation = 32
 theme_override_constants/v_separation = 32
 columns = 4
+
+[node name="CloseButton" type="Button" parent="." unique_id=1021904816]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -80.0
+offset_top = 24.0
+offset_right = -32.0
+offset_bottom = 72.0
+grow_horizontal = 0
+text = "X"
 
 [node name="DetailPopup" type="ColorRect" parent="." unique_id=1286263443]
 layout_mode = 1
@@ -269,7 +269,7 @@ horizontal_alignment = 1
 [node name="RedeemInput" type="LineEdit" parent="RedeemPopup/CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1352494103]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-placeholder_text = "請輸入兌換碼..."
+placeholder_text = "🗲 請輸入兌換碼 🗲"
 alignment = 1
 
 [node name="MessageLabel" type="Label" parent="RedeemPopup/CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=983312105]
