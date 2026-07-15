@@ -8,14 +8,18 @@ from enum import Enum
 class Vector2:
     """二維向量。正的 x 表示往右，正的 y 表示往下。"""
 
+    _DECIMALS = 5
+    """座標保留的小數位數；避免產生過長的浮點數傳給伺服器。"""
+
+    _EPSILON = 10.0**-_DECIMALS
+    """對應 ``_DECIMALS`` 的容差，用於相等判斷與零向量判定。"""
+
     def __init__(self, x: float = 0.0, y: float = 0.0) -> None:
-        self.x = float(x)
+        self.x = round(float(x), Vector2._DECIMALS)
         """x 座標"""
 
-        self.y = float(y)
+        self.y = round(float(y), Vector2._DECIMALS)
         """y 座標"""
-
-        # 2D 旋轉矩陣
 
     @classmethod
     def from_list(cls, data: list[float]) -> Vector2:
@@ -67,8 +71,8 @@ class Vector2:
         """判斷相等 (v1 == v2)"""
         if not isinstance(other, Vector2):
             return False
-        return math.isclose(self.x, other.x, abs_tol=1e-5) and math.isclose(
-            self.y, other.y, abs_tol=1e-5
+        return math.isclose(self.x, other.x, abs_tol=Vector2._EPSILON) and math.isclose(
+            self.y, other.y, abs_tol=Vector2._EPSILON
         )
 
     def __ne__(self, other: object) -> bool:
@@ -89,14 +93,14 @@ class Vector2:
     def normalized(self) -> Vector2:
         """回傳長度為 1 的新向量，不會改變原向量"""
         mag = self.magnitude
-        if mag > 1e-5:
+        if mag > Vector2._EPSILON:
             return self / mag
         return Vector2(0.0, 0.0)
 
     def normalize(self) -> None:
         """將此向量自身的長度化為 1"""
         mag = self.magnitude
-        if mag > 1e-5:
+        if mag > Vector2._EPSILON:
             self.x /= mag
             self.y /= mag
         else:
