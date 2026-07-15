@@ -267,6 +267,7 @@ func _on_redeem_submit_pressed():
 			PlayerData.add_entered_code(wale_code)
 			PlayerData.skin_unlocked.emit("walile_skin")
 			SceneTransition.show_achievement("獲得成就：蓄勢待發！")
+			refresh_all_items()
 		else:
 			show_message("兌換碼不存在或無效！")
 
