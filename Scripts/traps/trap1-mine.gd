@@ -27,6 +27,8 @@ func _ready() -> void:
 	$MineBody.z_index = Util.LAYERS["Trap1Mine/MineBody"]
 	$SpawnParticle.z_index = Util.LAYERS["Trap1Mine/SpawnParticle"]
 	$ExplosionParticle.z_index = Util.LAYERS["Trap1Mine/ExplosionParticle"]
+	if is_demo:
+		return
 	player = Global.game_manager.player
 	explosion_area.collision_layer = 0
 

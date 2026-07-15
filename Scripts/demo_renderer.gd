@@ -275,6 +275,8 @@ func _apply_player(screen: Dictionary, stage: Node2D, player_state: Dictionary) 
 				stage.add_child(proxy)
 				screen["proxy"] = proxy
 				screen["loaded_skin_id"] = skin_id
+				if ghost.has_method("play_spawn"):
+					ghost.play_spawn()
 			else:
 				ghost = _create_player_ghost(stage)
 		else:
