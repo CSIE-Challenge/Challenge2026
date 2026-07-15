@@ -25,7 +25,8 @@ func _process(delta):
 
 func play_spawn():
 	scale = Vector2.ZERO
-	# 沒有平滑過渡，直接分段放大 (仿 8-bit 卡頓感)
+	main_square.visible = true
+	trail_particles.emitting = true
 	var tween = create_tween()
 	tween.tween_property(self, "scale", Vector2(0.5, 0.5), 0.1)
 	tween.tween_interval(0.1)

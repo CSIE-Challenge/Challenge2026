@@ -8,6 +8,7 @@ extends BaseSkin
 
 func play_spawn():
 	scale = Vector2.ZERO
+	sprite.visible = true
 	var tween = create_tween()
 	tween.tween_property(self, "scale", Vector2.ONE, 0.2).set_trans(Tween.TRANS_EXPO).set_ease(
 		Tween.EASE_OUT

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://steelbrainskinres"]
+[gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://cm33sfpemndxe"]
 
 [ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_brain_scr"]
 [ext_resource type="Texture2D" uid="uid://bevp5kggljn50" path="res://Shapes/steel_brain_icon.svg" id="2_icon"]

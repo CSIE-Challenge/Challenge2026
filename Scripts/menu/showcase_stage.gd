@@ -23,17 +23,17 @@ func _play_loop():
 	while is_inside_tree():
 		# 1. Spawn (出生)
 		if current_skin.has_method("play_spawn"):
-			current_skin.play_spawn()
+			await current_skin.play_spawn()
 
-		await get_tree().create_timer(1.5).timeout
+		await get_tree().create_timer(0.5).timeout
 		if not is_inside_tree():
 			break
 
 		# 2. Eat Ball (吃球)
 		if current_skin.has_method("play_eat_ball"):
-			current_skin.play_eat_ball()
+			await current_skin.play_eat_ball()
 
-		await get_tree().create_timer(1.0).timeout
+		await get_tree().create_timer(0.5).timeout
 		if not is_inside_tree():
 			break
 
@@ -72,6 +72,6 @@ func _play_loop():
 
 		# 5. Die (死亡)
 		if current_skin.has_method("play_die"):
-			current_skin.play_die()
+			await current_skin.play_die()
 
-		await get_tree().create_timer(1.5).timeout
+		await get_tree().create_timer(1.0).timeout

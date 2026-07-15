@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg1"
+   inkscape:export-filename="battery.svg"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm">
+    <inkscape:page
+       x="0"
+       y="0"
+       width="210"
+       height="297"
+       id="page2"
+       margin="0"
+       bleed="0" />
+  </sodipodi:namedview>
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="圖層 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#333333;stroke-width:23.0886;paint-order:markers fill stroke"
+       id="rect2"
+       width="50.599369"
+       height="42.762474"
+       x="-56.619892"
+       y="58.314114"
+       rx="7.1266713"
+       ry="8.0522308"
+       transform="matrix(0.70540217,-0.70880729,0.71269718,0.70147183,0,0)" />
+    <rect
+       style="fill:#1a1a1a;stroke-width:23.0886;paint-order:markers fill stroke"
+       id="rect1"
+       width="124.97508"
+       height="205.61597"
+       x="-95.799423"
+       y="78.807808"
+       ry="35.655216"
+       transform="matrix(0.70540217,-0.70880729,0.71269718,0.70147183,0,0)" />
+    <path
+       id="rect1-8"
+       style="fill:#ff7f2a;stroke-width:23.0884;paint-order:markers fill stroke"
+       d="M 11.739684,95.648769 49.597739,57.607999 C 63.530777,43.607809 86.080976,43.491778 100.15891,57.347734 L 144.33874,101.18557 56.181166,189.76864 12.001219,145.93102 C -2.0201507,132.01829 -2.1933022,109.64891 11.739719,95.648613 Z"
+       sodipodi:nodetypes="sssccss" />
+    <path
+       id="rect3"
+       style="fill:#ffffff;stroke-width:20.7295;paint-order:markers fill stroke"
+       d="m 60.483872,118.22874 30.329543,-28.270654 9.05183,43.087264 17.429105,-13.39764 18.23185,67.67324 -30.69611,-34.97802 -19.719573,14.8293 z"
+       sodipodi:nodetypes="cccccccc" />
+  </g>
+</svg>
