@@ -94,6 +94,7 @@ func _serialize_player(p: Node) -> Dictionary:
 		"modulate_alpha": p.modulate.a if "modulate" in p else 1.0,
 		"energy": energy,
 		"energy_ball_count": ball_count,
+		"skin_id": p.get("skin_id") if "skin_id" in p else "",
 	}
 
 

@@ -28,6 +28,7 @@ var last_stepped_cell = Vector2i(-1, -1)
 var skin_instance: Node2D = null
 var is_in_water := false
 var juice_count := 0
+var skin_id: String = ""
 
 @onready var body_sprite = $BodySprite
 @onready var shadow_sprite = $ShadowSprite
@@ -54,6 +55,7 @@ func _ready() -> void:
 			all_sand_tiles.append(Vector2i(x, y))
 	# Multiplayer matches may temporarily use the skin assigned by the matchmaker.
 	var skin_id := Global.skin_override if Global.skin_override != "" else PlayerData.equipped_skin
+	self.skin_id = skin_id
 	var skin_path = "res://Assets/skins/" + skin_id + ".tres"
 	var skin_data = load(skin_path)
 	if skin_data and skin_data.skin_prefab:
