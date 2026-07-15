@@ -454,13 +454,12 @@ func finish_game(state: int = 0, authoritative_stats: Dictionary = {}) -> void:
 	game_over = true
 	if get_tree() != null:
 		get_tree().paused = true
-	_stop_gameplay_timers()
-	_clear_gameplay_backend_state()
-	_disconnect_runtime_signals()
-	_shutdown_running_agents()
-	ApiServer.clear_used_tokens()
-	NetworkManager.stop_network()
-	Global.game_manager = null
+		_stop_gameplay_timers()
+		_clear_gameplay_backend_state()
+		_disconnect_runtime_signals()
+		_shutdown_running_agents()
+		ApiServer.clear_used_tokens()
+		NetworkManager.stop_network()
 
 	player.set_physics_process(false)
 	player.collision_layer = 0
@@ -575,7 +574,6 @@ func _shutdown_gameplay_for_scene_change() -> void:
 	_shutdown_running_agents()
 	ApiServer.clear_used_tokens()
 	NetworkManager.stop_network()
-	Global.game_manager = null
 
 	if player != null:
 		player.set_physics_process(false)
