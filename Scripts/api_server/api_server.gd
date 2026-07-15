@@ -143,6 +143,14 @@ func register_connection() -> WebSocketConnection:
 	return conn
 
 
+func clear_used_tokens() -> void:
+	var all_connections: Array = used_token.values()
+	for conn in all_connections:
+		if is_instance_valid(conn) and conn is WebSocketConnection:
+			conn.disconnect_from_socket()
+	used_token.clear()
+
+
 func auth_connection(ws: WebSocketPeer) -> WebSocketConnection:
 	if ws.get_available_packet_count() <= 0:
 		return null

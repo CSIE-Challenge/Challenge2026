@@ -130,6 +130,8 @@ func _bundle_python() -> String:
 
 
 func _exit_tree() -> void:
+	if is_instance_valid(_conn):
+		_conn.disconnect_from_socket()
 	if _agent_script_path != "":
 		var pid_path := _agent_script_path.replace(".command", ".pid")
 		if FileAccess.file_exists(pid_path):
@@ -147,6 +149,11 @@ func _exit_tree() -> void:
 	if _agent_pid >= 0 and OS.is_process_running(_agent_pid):
 		OS.kill(_agent_pid)
 		print("[API Server] agent process %d stopped" % _agent_pid)
+
+
+func shutdown() -> void:
+	if is_instance_valid(_conn):
+		_conn.disconnect_from_socket()
 
 
 # Add one line per new API.

@@ -452,11 +452,16 @@ func finish_game(state: int = 0, authoritative_stats: Dictionary = {}) -> void:
 		Audio.play_sfx(Audio.SFX.PLAYER_DIE)
 	_close_pause_overlay_for_finish()
 	game_over = true
-	get_tree().paused = true
-	energy_increase_timer.stop()
-	player_invincibility_timer.stop()
-	if trap_request_scheduler != null:
-		trap_request_scheduler.clear()
+	if get_tree() != null:
+		get_tree().paused = true
+	_stop_gameplay_timers()
+	_clear_gameplay_backend_state()
+	_disconnect_runtime_signals()
+	_shutdown_running_agents()
+	ApiServer.clear_used_tokens()
+	NetworkManager.stop_network()
+	Global.game_manager = null
+
 	player.set_physics_process(false)
 	player.collision_layer = 0
 	player.collision_mask = 0
@@ -568,7 +573,9 @@ func _shutdown_gameplay_for_scene_change() -> void:
 	_clear_gameplay_backend_state()
 	_disconnect_runtime_signals()
 	_shutdown_running_agents()
+	ApiServer.clear_used_tokens()
 	NetworkManager.stop_network()
+	Global.game_manager = null
 
 	if player != null:
 		player.set_physics_process(false)
@@ -589,6 +596,17 @@ func _clear_gameplay_backend_state() -> void:
 func _disconnect_runtime_signals() -> void:
 	if Global.player_hit.is_connected(on_player_hit):
 		Global.player_hit.disconnect(on_player_hit)
+	if (
+		is_instance_valid(player)
+		and Global.energyball_collected.is_connected(player._on_energy_ball_collected)
+	):
+		Global.energyball_collected.disconnect(player._on_energy_ball_collected)
+
+	if (
+		agent_action_service != null
+		and agent_action_service.trap_approved.is_connected(_on_trap_approved)
+	):
+		agent_action_service.trap_approved.disconnect(_on_trap_approved)
 	if Global.energyball_collected.is_connected(_on_energyball_collected):
 		Global.energyball_collected.disconnect(_on_energyball_collected)
 
@@ -601,6 +619,7 @@ func _disconnect_runtime_signals() -> void:
 func _shutdown_running_agents() -> void:
 	for child in get_children():
 		if child is GameAgent:
+			child.shutdown()
 			child.queue_free()
 
 
