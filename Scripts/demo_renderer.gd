@@ -16,6 +16,9 @@ const FALLBACK_HEALTH_TEXTURE = preload("res://Shapes/feather.svg")
 @export var screen_a_health: Node2D
 @export var screen_b_energy: Node2D
 @export var screen_b_health: Node2D
+@export var stage_layer: CanvasLayer
+@export var high_stage_a: Node2D
+@export var high_stage_b: Node2D
 
 var _ghosts_a: Dictionary = {}
 var _ghosts_b: Dictionary = {}
@@ -49,6 +52,10 @@ func _ready() -> void:
 		stage_a = get_node_or_null("../ScreenA/SubViewport/StageA") as Node2D
 	if not stage_b:
 		stage_b = get_node_or_null("../ScreenB/SubViewport/StageB") as Node2D
+	if not high_stage_a:
+		high_stage_a = get_node_or_null("../HigherThanPlayerA/Stage") as Node2D
+	if not high_stage_b:
+		high_stage_b = get_node_or_null("../HigherThanPlayerB/Stage") as Node2D
 	#if stage_a:
 	#_setup_walls(stage_a)
 	#if stage_b:
@@ -59,6 +66,7 @@ func _ready() -> void:
 			"ghosts": _ghosts_a,
 			"balls": _balls_a,
 			"stage": stage_a,
+			"high_stage": high_stage_a,
 			"player": _player_a,
 			"prev_player": {},
 			"proxy": null,
@@ -73,6 +81,7 @@ func _ready() -> void:
 			"ghosts": _ghosts_b,
 			"balls": _balls_b,
 			"stage": stage_b,
+			"high_stage": high_stage_b,
 			"player": _player_b,
 			"prev_player": {},
 			"proxy": null,
@@ -110,7 +119,8 @@ func _apply_screen(screen: Dictionary, screen_data: Dictionary) -> void:
 		return
 	var ghosts: Dictionary = screen["ghosts"]
 
-	# Apply player ghost
+	Global.high_stage = screen.get("high_stage", stage)
+
 	var player_state: Dictionary = screen_data.get("player", {})
 	_apply_player(screen, stage, player_state)
 
@@ -326,8 +336,9 @@ func _apply_player(screen: Dictionary, stage: Node2D, player_state: Dictionary) 
 				var proxy: Node2D = ProxyClass.new()
 				proxy.name = "PlayerProxy"
 				ghost.set_meta("player", proxy)
-				stage.add_child(ghost)
-				stage.add_child(proxy)
+				var hs: Node2D = screen.get("high_stage", stage)
+				hs.add_child(ghost)
+				hs.add_child(proxy)
 				screen["proxy"] = proxy
 				screen["loaded_skin_id"] = skin_id
 				if ghost.has_method("play_spawn"):
