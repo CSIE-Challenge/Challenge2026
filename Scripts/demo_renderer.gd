@@ -40,10 +40,10 @@ func _ready() -> void:
 		stage_a = get_node_or_null("../ScreenA/SubViewport/StageA") as Node2D
 	if not stage_b:
 		stage_b = get_node_or_null("../ScreenB/SubViewport/StageB") as Node2D
-	if stage_a:
-		_setup_walls(stage_a)
-	if stage_b:
-		_setup_walls(stage_b)
+	#if stage_a:
+	#_setup_walls(stage_a)
+	#if stage_b:
+	#_setup_walls(stage_b)
 
 	_screens = [
 		{
@@ -358,68 +358,68 @@ func _create_player_ghost(stage: Node2D) -> Node2D:
 	stage.add_child(ghost)
 	return ghost
 
-
 ## Draws four thin wall rectangles on [param stage] to show the arena boundary.
 ## Arena is 500×500 centered at the stage origin, matching gameplay walls at ±250.
-func _setup_walls(stage: Node2D) -> void:
-	const WALL_COLOR := Color(0.7, 0.7, 0.7, 1.0)
-	const ARENA_HALF := 250.0
-	const THICKNESS := 4.0
-
-	var walls_data := [
-		{
-			"name": "RightWall",
-			"points":
-			PackedVector2Array(
-				[
-					Vector2(ARENA_HALF - THICKNESS, -ARENA_HALF),
-					Vector2(ARENA_HALF, -ARENA_HALF),
-					Vector2(ARENA_HALF, ARENA_HALF),
-					Vector2(ARENA_HALF - THICKNESS, ARENA_HALF),
-				]
-			),
-		},
-		{
-			"name": "LeftWall",
-			"points":
-			PackedVector2Array(
-				[
-					Vector2(-ARENA_HALF, -ARENA_HALF),
-					Vector2(-ARENA_HALF + THICKNESS, -ARENA_HALF),
-					Vector2(-ARENA_HALF + THICKNESS, ARENA_HALF),
-					Vector2(-ARENA_HALF, ARENA_HALF),
-				]
-			),
-		},
-		{
-			"name": "UpWall",
-			"points":
-			PackedVector2Array(
-				[
-					Vector2(-ARENA_HALF, ARENA_HALF - THICKNESS),
-					Vector2(ARENA_HALF, ARENA_HALF - THICKNESS),
-					Vector2(ARENA_HALF, ARENA_HALF),
-					Vector2(-ARENA_HALF, ARENA_HALF),
-				]
-			),
-		},
-		{
-			"name": "DownWall",
-			"points":
-			PackedVector2Array(
-				[
-					Vector2(-ARENA_HALF, -ARENA_HALF),
-					Vector2(ARENA_HALF, -ARENA_HALF),
-					Vector2(ARENA_HALF, -ARENA_HALF + THICKNESS),
-					Vector2(-ARENA_HALF, -ARENA_HALF + THICKNESS),
-				]
-			),
-		},
-	]
-
-	for w in walls_data:
-		var wall := Polygon2D.new()
-		wall.name = w["name"]
-		wall.polygon = w["points"]
-		wall.color = WALL_COLOR
-		stage.add_child(wall)
+#func _setup_walls(stage: Node2D) -> void:
+#const WALL_COLOR := Color(0.7, 0.7, 0.7, 1.0)
+#const ARENA_HALF := 250.0
+#const THICKNESS := 7.0
+#const BIAS := 0
+#
+#var walls_data := [
+#{
+#"name": "RightWall",
+#"points":
+#PackedVector2Array(
+#[
+#Vector2(ARENA_HALF - THICKNESS, -ARENA_HALF + BIAS),
+#Vector2(ARENA_HALF, -ARENA_HALF + BIAS),
+#Vector2(ARENA_HALF, ARENA_HALF + BIAS),
+#Vector2(ARENA_HALF - THICKNESS, ARENA_HALF + BIAS),
+#]
+#),
+#},
+#{
+#"name": "LeftWall",
+#"points":
+#PackedVector2Array(
+#[
+#Vector2(-ARENA_HALF, -ARENA_HALF + BIAS),
+#Vector2(-ARENA_HALF + THICKNESS, -ARENA_HALF + BIAS),
+#Vector2(-ARENA_HALF + THICKNESS, ARENA_HALF + BIAS),
+#Vector2(-ARENA_HALF, ARENA_HALF + BIAS),
+#]
+#),
+#},
+#{
+#"name": "UpWall",
+#"points":
+#PackedVector2Array(
+#[
+#Vector2(-ARENA_HALF, ARENA_HALF - THICKNESS + BIAS),
+#Vector2(ARENA_HALF, ARENA_HALF - THICKNESS + BIAS),
+#Vector2(ARENA_HALF, ARENA_HALF + BIAS),
+#Vector2(-ARENA_HALF, ARENA_HALF + BIAS),
+#]
+#),
+#},
+#{
+#"name": "DownWall",
+#"points":
+#PackedVector2Array(
+#[
+#Vector2(-ARENA_HALF, -ARENA_HALF + BIAS),
+#Vector2(ARENA_HALF, -ARENA_HALF + BIAS),
+#Vector2(ARENA_HALF, -ARENA_HALF + THICKNESS + BIAS),
+#Vector2(-ARENA_HALF, -ARENA_HALF + THICKNESS + BIAS),
+#]
+#),
+#},
+#]
+#
+#for w in walls_data:
+#var wall := Polygon2D.new()
+#wall.name = w["name"]
+#wall.polygon = w["points"]
+#wall.color = WALL_COLOR
+#stage.add_child(wall)
