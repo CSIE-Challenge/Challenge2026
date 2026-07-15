@@ -2,6 +2,8 @@ extends Area2D
 
 # 因為是動畫所以交給Gemini :)
 
+var has_hit: bool = false
+
 
 # 外部初始化長寬與持續時間
 func init(width: float, height: float, duration: float, player_node: Node2D) -> void:
@@ -22,7 +24,9 @@ func init(width: float, height: float, duration: float, player_node: Node2D) -> 
 		body_entered.connect(
 			func(body):
 				if body == player_node:
+					has_hit = true
 					player_node.die()
+					Audio.play_sfx(Audio.SFX.HIDDEN_GAME_NOTES_HIT)
 		)
 
 	# 4. 播放殘影展開與閃爍動畫
@@ -37,7 +41,18 @@ func init(width: float, height: float, duration: float, player_node: Node2D) -> 
 	tween.tween_interval(duration)
 
 	# 🌟【關鍵】0.1 秒傷害過後，立刻關閉 CollisionShape 碰撞，使其純粹變為視覺殘影，不影響玩家後續移動
-	tween.tween_callback(func(): $CollisionShape2D.disabled = true)
+	tween.tween_callback(
+		func():
+			$CollisionShape2D.disabled = true
+			if not has_hit:
+				var r = randi() % 3
+				if r == 0:
+					Audio.play_sfx(Audio.SFX.HIDDEN_GAME_NOTES_GLIDING_1)
+				elif r == 1:
+					Audio.play_sfx(Audio.SFX.HIDDEN_GAME_NOTES_GLIDING_2)
+				else:
+					Audio.play_sfx(Audio.SFX.HIDDEN_GAME_NOTES_GLIDING_3)
+	)
 
 	# 隨後在 0.3 秒內收縮並淡出消失 (視覺殘影收縮餘韻)
 	tween.tween_property(self, "scale:y", 0.0, 0.3).set_trans(Tween.TRANS_CUBIC).set_ease(
