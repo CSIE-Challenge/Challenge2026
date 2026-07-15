@@ -267,7 +267,6 @@ func _apply_player(screen: Dictionary, stage: Node2D, player_state: Dictionary) 
 		if desired_is_skin:
 			ghost = _load_skin(skin_id)
 			if ghost:
-				ghost.is_demo = true
 				ghost.z_index = Util.LAYERS["Player/BodySprite"]
 				var proxy: Node2D = ProxyClass.new()
 				proxy.name = "PlayerProxy"

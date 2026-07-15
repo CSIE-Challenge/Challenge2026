@@ -133,8 +133,8 @@ func _serialize_traps() -> Array[Dictionary]:
 ## Returns an empty Dictionary if the node is not a recognized trap.
 ## v2: delegates to the trap's own serialize_state() method.
 func _serialize_single_trap(node: Node) -> Dictionary:
-	if node.has_method("_serialize_state"):
-		var data: Dictionary = node._serialize_state()
+	if node.has_method("serialize_state"):
+		var data: Dictionary = node.serialize_state()
 		data["id"] = _get_trap_id(node)
 		return data
 	return {}
