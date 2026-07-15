@@ -24,13 +24,20 @@ func connect_to_socket(socket: WebSocketPeer) -> void:
 
 
 func disconnect_from_socket() -> void:
-	if _socket != null:
-		var state = _socket.get_ready_state()
-		if state != WebSocketPeer.STATE_CLOSING and state != WebSocketPeer.STATE_CLOSED:
-			_socket.close()
-		if state == WebSocketPeer.STATE_CLOSED:
-			_socket = null
-			client_disconnected.emit()
+	if _socket == null:
+		return
+
+	var state = _socket.get_ready_state()
+	if state != WebSocketPeer.STATE_CLOSING and state != WebSocketPeer.STATE_CLOSED:
+		_socket.close()
+	# Drop the peer reference immediately; the connection node should not keep sockets alive.
+	_socket = null
+	client_disconnected.emit()
+
+
+func _exit_tree() -> void:
+	# Scene shutdown may free this node before the agent disconnects cleanly.
+	disconnect_from_socket()
 
 
 func is_client_connected() -> bool:

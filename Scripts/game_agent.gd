@@ -130,6 +130,13 @@ func _bundle_python() -> String:
 
 
 func _exit_tree() -> void:
+	if _conn != null:
+		# Break the API-server references so repeated scene loads do not retain old agents.
+		if _conn.received_text.is_connected(_on_received_text):
+			_conn.received_text.disconnect(_on_received_text)
+		ApiServer.unregister_connection(_conn.get_token())
+		_conn.disconnect_from_socket()
+
 	if _agent_script_path != "":
 		var pid_path := _agent_script_path.replace(".command", ".pid")
 		if FileAccess.file_exists(pid_path):

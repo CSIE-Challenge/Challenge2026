@@ -143,6 +143,12 @@ func register_connection() -> WebSocketConnection:
 	return conn
 
 
+func unregister_connection(token: String) -> void:
+	# GameAgent owns the token lifecycle; remove it when the agent node exits.
+	if used_token.has(token):
+		used_token.erase(token)
+
+
 func auth_connection(ws: WebSocketPeer) -> WebSocketConnection:
 	if ws.get_available_packet_count() <= 0:
 		return null
