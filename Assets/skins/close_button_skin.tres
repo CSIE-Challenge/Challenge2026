@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://bkdpwtdnacuk7"]
+
+[ext_resource type="Texture2D" uid="uid://ccdax3xwx8oit" path="res://Shapes/hearts/button.svg" id="1_idl3v"]
+[ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="2_pymrk"]
+[ext_resource type="PackedScene" uid="uid://gyv76kg8udsl" path="res://Scenes/skins/close_button_skin_prefab.tscn" id="3_pymrk"]
+
+[resource]
+script = ExtResource("2_pymrk")
+skin_id = "close_button_skin"
+true_name = "推忑"
+description = "按下去會發生什麼呢？"
+hide_name = true
+price_text_override = "搬動石頭以解鎖"
+is_achievement_unlock = true
+is_silhouette = true
+skin_prefab = ExtResource("3_pymrk")
+health_icon_texture = ExtResource("1_idl3v")
+metadata/_custom_type_script = "uid://c6vuqckcyjdey"

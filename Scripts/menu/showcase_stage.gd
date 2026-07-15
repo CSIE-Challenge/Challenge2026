@@ -14,11 +14,17 @@ func setup(skin_prefab: PackedScene):
 			_play_loop()
 
 
+func set_shadow(shadow_on: bool):
+	if shadow_on:
+		shadow.scale = Vector2(0.2, 0.2)
+		shadow.modulate.a = 1.0
+	else:
+		shadow.scale = Vector2.ZERO
+		shadow.modulate.a = 0.0
+
+
 func _play_loop():
-	# 為了防止殘影，初始狀態設定
 	body_pivot.position.y = 0
-	shadow.scale = Vector2(0.2, 0.2)
-	shadow.modulate.a = 1.0
 
 	while is_inside_tree():
 		# 1. Spawn (出生)
