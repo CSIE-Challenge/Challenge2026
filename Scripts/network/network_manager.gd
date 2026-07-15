@@ -1123,7 +1123,10 @@ func _server_identify_as_demo() -> void:
 func _build_demo_state() -> Dictionary:
 	var screens: Array[Dictionary] = []
 	for peer_id in _client_states:
-		screens.append(_client_states[peer_id])
+		var client = _client_states[peer_id]
+		client["energy"] = energy_by_peer_id[peer_id]
+		client["health"] = health_by_peer_id[peer_id]
+		screens.append(client)
 
 	return {
 		"tick": Engine.get_physics_frames(),

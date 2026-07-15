@@ -5,6 +5,8 @@ class_name DemoRenderer
 extends Node
 
 const ProxyClass = preload("res://Scripts/demo_player_proxy.gd")
+const ENERGY_LABEL_SCENE = preload("res://Scenes/energy_label.tscn")
+const FALLBACK_HEALTH_TEXTURE = preload("res://Shapes/feather.svg")
 
 @export var stage_a: Node2D
 @export var stage_b: Node2D
@@ -54,6 +56,10 @@ func _ready() -> void:
 			"prev_player": {},
 			"proxy": null,
 			"loaded_skin_id": "",
+			"energy_label": null,
+			"energy_value": 0,
+			"health_icons": [],
+			"health_value": -1,
 		},
 		{
 			"ghosts": _ghosts_b,
@@ -63,6 +69,10 @@ func _ready() -> void:
 			"prev_player": {},
 			"proxy": null,
 			"loaded_skin_id": "",
+			"energy_label": null,
+			"energy_value": 0,
+			"health_icons": [],
+			"health_value": -1,
 		},
 	]
 
@@ -94,6 +104,25 @@ func _apply_screen(screen: Dictionary, screen_data: Dictionary) -> void:
 	# Apply energy ball ghosts
 	var balls: Array = screen_data.get("energy_balls", [])
 	_update_energy_balls(screen, stage, balls)
+
+	# Apply energy and health HUD (server-authoritative values)
+	_ensure_screen_hud(screen)
+	var energy: int = screen_data.get("energy", 0)
+	var health: int = screen_data.get("health", 0)
+	var skin_id: String = player_state.get("skin_id", "")
+	var max_health: int = 5
+	var nm := get_node_or_null("/root/NetworkManager")
+	if nm:
+		max_health = nm.get_max_health()
+	var max_energy: int = 35
+	if nm:
+		max_energy = nm.max_energy
+	var player_max_energy: int = screen_data.get("max_energy_cap", 0)
+	if player_max_energy > max_energy:
+		max_energy = player_max_energy
+	_update_energy_hud(screen, energy, max_energy)
+	_update_health_hud(screen, skin_id, max_health)
+	_refresh_health_display(screen, health)
 
 
 ## Recursively disables game logic callbacks on [param node] and its children.
@@ -330,6 +359,103 @@ func _apply_player(screen: Dictionary, stage: Node2D, player_state: Dictionary) 
 		"health": player_state.get("health", 0),
 		"energy_ball_count": player_state.get("energy_ball_count", 0),
 	}
+
+
+## Ensures the energy and health HUD nodes exist for [param screen].
+## Creates them on first call; subsequent calls are no-ops.
+func _ensure_screen_hud(screen: Dictionary) -> void:
+	if screen["energy_label"] != null:
+		return
+
+	var stage: Node2D = screen["stage"]
+	if not stage:
+		return
+
+	# Energy display: reuse gameplay energy_label scene, left side above arena
+	var energy_instance: Node2D = ENERGY_LABEL_SCENE.instantiate()
+	energy_instance.name = "EnergyHUD"
+	energy_instance.position = Vector2(-150, -280)
+	stage.add_child(energy_instance)
+	screen["energy_label"] = energy_instance
+
+	# Health display: right side above arena
+	var health_root := Node2D.new()
+	health_root.name = "HealthHUD"
+	health_root.position = Vector2(150, -280)
+	stage.add_child(health_root)
+	screen["health_icons"] = []
+
+
+## Updates the energy HUD for [param screen] from [param energy] and [param max_energy].
+func _update_energy_hud(screen: Dictionary, energy: int, max_energy: int) -> void:
+	var label = screen["energy_label"]
+	if label == null:
+		return
+	label._update_energy(energy)
+	label._update_max_energy(max_energy)
+
+
+## Rebuilds the health icon row for [param screen] based on [param skin_id]
+## and [param max_health]. Only recreates icons when skin or max_health changes.
+func _update_health_hud(screen: Dictionary, skin_id: String, max_health: int) -> void:
+	var stage: Node2D = screen["stage"]
+	if not stage:
+		return
+
+	var health_root: Node2D = stage.get_node_or_null("HealthHUD")
+	if not health_root:
+		return
+
+	var need_rebuild: bool = (
+		skin_id != screen.get("loaded_skin_id", "") or health_root.get_child_count() != max_health
+	)
+	if not need_rebuild:
+		return
+
+	# Clear old icons
+	for icon in screen["health_icons"]:
+		if is_instance_valid(icon):
+			icon.queue_free()
+	screen["health_icons"] = []
+
+	# Load skin-specific health textures
+	var icon_a: Texture2D = FALLBACK_HEALTH_TEXTURE
+	var icon_b: Texture2D = FALLBACK_HEALTH_TEXTURE
+	if not skin_id.is_empty():
+		var skin_path := "res://Assets/skins/" + skin_id + ".tres"
+		if ResourceLoader.exists(skin_path):
+			var skin_data = load(skin_path) as SkinData
+			if skin_data and skin_data.health_icon_texture:
+				icon_a = skin_data.health_icon_texture
+				icon_b = (
+					skin_data.health_icon_texture2 if skin_data.health_icon_texture2 else icon_a
+				)
+
+	# Create icon row
+	var icon_size := Vector2(30, 30)
+	var spacing := 36.0
+	var total_width := max_health * spacing - (spacing - icon_size.x)
+	var start_x := -total_width / 2.0
+
+	for i in range(max_health):
+		var tex_rect := TextureRect.new()
+		tex_rect.custom_minimum_size = icon_size
+		tex_rect.size = icon_size
+		tex_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		tex_rect.texture = icon_a if i % 2 == 0 else icon_b
+		tex_rect.position = Vector2(start_x + i * spacing, -icon_size.y / 2.0)
+		health_root.add_child(tex_rect)
+		screen["health_icons"].append(tex_rect)
+
+
+## Sets the alpha of each health icon: bright for alive, dim for lost.
+func _refresh_health_display(screen: Dictionary, health: int) -> void:
+	var icons: Array = screen.get("health_icons", [])
+	for i in range(icons.size()):
+		var icon: TextureRect = icons[i]
+		if is_instance_valid(icon):
+			icon.modulate = Color(1, 1, 1, 1.0 if i < health else 0.25)
 
 
 ## Loads a skin instance from its skin_id, or returns null on failure.
