@@ -225,6 +225,7 @@ autostart = true
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1199998352]
 
 [node name="BossHpBar" type="ProgressBar" parent="CanvasLayer" unique_id=900724363]
+modulate = Color(0.7863468, 0.78634685, 0.78634685, 1)
 material = SubResource("ShaderMaterial_hp")
 anchors_preset = 5
 anchor_left = 0.5
@@ -307,6 +308,32 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+
+[node name="BlackScreen" type="ColorRect" parent="CanvasLayer" unique_id=1635279759]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="WarningText" type="RichTextLabel" parent="CanvasLayer/BlackScreen" unique_id=501864394]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 75.0
+offset_top = 275.0
+offset_right = -75.0
+offset_bottom = -275.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/normal_font_size = 40
+bbcode_enabled = true
+text = "[shake rate=100.0 level=10 connected=0][color=red]你以為已經完全打敗我了嗎？"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [connection signal="body_entered" from="Panel/Stage/damagefield" to="Panel/Stage/coconut" method="_on_damagefield_body_entered"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

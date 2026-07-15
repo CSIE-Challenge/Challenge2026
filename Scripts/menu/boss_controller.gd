@@ -1,3 +1,4 @@
+# gdlint: disable=max-public-methods
 extends Node2D
 
 signal boss_hit
@@ -30,6 +31,7 @@ var current_difficulty: int = 2
 var is_paused: bool = false
 
 var time_elapsed: float = 0.0
+var is_change_stage: bool = false
 
 var _debug: bool = false
 
@@ -102,9 +104,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and _debug:
 		match event.keycode:
 			KEY_1:
-				rhythm_attack()
+				rocket_in_line()
 			KEY_2:
-				emit_rocket()
+				surround_boomerang()
 			KEY_3:
 				emit_boomerang(1)
 			KEY_4:
@@ -122,11 +124,15 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func rand_attack(new_difficulty: int = -1):
+	is_change_stage = false
 	if new_difficulty != -1:
 		current_difficulty = new_difficulty
 
 	while is_inside_tree():
 		if is_dead:
+			break
+		if is_change_stage:
+			is_change_stage = false
 			break
 
 		current_attack_interrupted = false
@@ -165,6 +171,49 @@ func rand_attack(new_difficulty: int = -1):
 			DifficultyParams.ATTACK_COOLDOWN, current_difficulty
 		)
 		await interruptible_wait(cooldown)
+
+
+func difficult_rand_attack(difficulty: int = 5) -> void:
+	is_change_stage = false
+	is_attacking = true
+	while is_inside_tree():
+		if is_dead or is_change_stage:
+			is_change_stage = false
+			break
+		current_attack_interrupted = false
+		if not is_paused:
+			var rand_val = randi_range(0, 12)
+			match rand_val:
+				0:
+					await rhythm_attack(difficulty)
+				1:
+					await test_sword_attack(difficulty)
+				2:
+					await rocket_in_line(difficulty)
+				3:
+					await surround_boomerang(difficulty)
+				4:
+					await difficult_squeeze_attack()
+				5:
+					await test_laser_attack(difficulty)
+				6:
+					await tracking_lazer(difficulty)
+				7:
+					await road_attack(difficulty)
+				8:
+					await sweeper_attack(difficulty)
+				9:
+					await boomerang_list()
+				10:
+					await emit_boomerang(2, difficulty)
+				11:
+					await emit_boomerang(5, difficulty)
+				12:
+					await emit_boomerang(4, difficulty)
+		var cooldown = DifficultyParams.get_val(DifficultyParams.ATTACK_COOLDOWN, difficulty)
+		if await interruptible_wait(cooldown):
+			break
+	is_attacking = false
 
 
 func rhythm_attack(difficulty: int = 3) -> void:
@@ -367,7 +416,7 @@ func emit_boomerang(mode: int, difficulty: int = 3) -> void:
 			if await interruptible_wait(fire_interval):
 				return
 
-		if await interruptible_wait(2.2):
+		if await interruptible_wait(3.5):
 			return
 
 	elif mode == 3:
@@ -392,7 +441,7 @@ func emit_boomerang(mode: int, difficulty: int = 3) -> void:
 			spawn_boomerang(spawn_pos, Vector2(1.05, 1.05), 16.0, 0.65, speed, dir, dist)
 
 		# 等待飛完並回收
-		if await interruptible_wait(2.6):
+		if await interruptible_wait(3.0):
 			return
 
 	elif mode == 4:
@@ -414,7 +463,7 @@ func emit_boomerang(mode: int, difficulty: int = 3) -> void:
 			# 飛行距離剛好為半徑，使它們在中心點聚攏成圓環
 			spawn_boomerang(spawn_pos, Vector2(1.0, 1.0), 18.0, 0.8, speed, to_center_dir, radius)
 
-		if await interruptible_wait(2.8):
+		if await interruptible_wait(4.0):
 			return
 
 	elif mode == 5:
@@ -444,7 +493,7 @@ func emit_boomerang(mode: int, difficulty: int = 3) -> void:
 			if await interruptible_wait(fire_interval):
 				return
 
-		if await interruptible_wait(2.2):
+		if await interruptible_wait(2.8):
 			return
 
 	is_attacking = false
@@ -802,6 +851,7 @@ func sweeper_attack(difficulty: int = 3) -> void:
 	is_attacking = false
 
 
+# only in dialogue
 func sneak_attack() -> void:
 	is_attacking = true
 	var walls = get_node_or_null("../Walls")
@@ -835,6 +885,278 @@ func sneak_attack() -> void:
 	)
 
 	if await interruptible_wait(1.0):
+		return
+	is_attacking = false
+
+
+# ==== difficult ====
+func rocket_in_line(difficulty: int = 5) -> void:
+	if not player:
+		return
+	is_attacking = true
+
+	var walls = get_node("../Walls")
+	if walls:
+		walls.tween_box(
+			Vector2(DifficultyParams.ROCKET_WALL_SIZE, DifficultyParams.ROCKET_WALL_SIZE),
+			Vector2(0, -100),
+			1.0
+		)
+
+	var count = 10
+	var dir = PI * 2 * randf_range(0.0, 1.0)
+	var arc_angle = PI * 0.7
+	for i in range(count):
+		var speed = DifficultyParams.get_val(DifficultyParams.ROCKET_INIT_SPEED, difficulty)
+		var radius = DifficultyParams.get_val(DifficultyParams.ROCKET_EXPLOSION_RADIUS, difficulty)
+		var duration = DifficultyParams.get_val(
+			DifficultyParams.ROCKET_EXPLOSION_DURATION, difficulty
+		)
+		var angle = (arc_angle / count) * i + dir
+		spawn_homing_rocket(
+			angle, speed, radius, duration, DifficultyParams.ROCKET_WARNING_DURATION
+		)
+		if await interruptible_wait(0.05):
+			return
+	if await interruptible_wait(3):
+		return
+	if walls:
+		walls.reset_box(0.7)
+	if await interruptible_wait(2.0):
+		return
+	is_attacking = false
+
+
+func surround_boomerang(difficulty: int = 5) -> void:
+	if not is_instance_valid(player):
+		return
+
+	is_attacking = true
+	var walls = get_node_or_null("../Walls")
+	if not walls:
+		is_attacking = false
+		return
+
+	var half = walls.current_half_size
+	var center = walls.position
+
+	var count = DifficultyParams.get_val(DifficultyParams.BOOMERANG_M4_COUNT, difficulty)
+	var speed = DifficultyParams.get_val(DifficultyParams.BOOMERANG_M4_SPEED, 3)
+	var radius = max(half.x, half.y) + 100.0
+	for i in range(count):
+		var angle = (PI * 2.0 / count) * i
+		var dir = Vector2.from_angle(angle)
+		var spawn_pos = center + dir * radius
+		var to_center_dir = -dir
+		spawn_boomerang(spawn_pos, Vector2(1.0, 1.0), 30.0, 0.8, speed, to_center_dir, radius)
+	if await interruptible_wait(0.8):
+		return
+	if not is_instance_valid(player):
+		is_attacking = false
+		return
+	for i in range(count):
+		var angle = (PI * 2.0 / count) * i + PI / 8
+		var dir = Vector2.from_angle(angle)
+		var spawn_pos = center + dir * radius
+		var to_center_dir = -dir
+		spawn_boomerang(spawn_pos, Vector2(1.0, 1.0), 30.0, 0.8, speed, to_center_dir, radius)
+	if await interruptible_wait(4.2):
+		return
+	is_attacking = false
+
+
+func tracking_lazer(_difficulty: int = 5) -> void:
+	if not is_instance_valid(player):
+		return
+	is_attacking = true
+	var walls = get_node_or_null("../Walls")
+	if not walls:
+		is_attacking = false
+		return
+
+	var half = walls.current_half_size
+	var center = walls.position
+
+	# 計算貫穿場地邊界的四個端點
+	var left_pt = center + Vector2(-half.x + 20.0, 0.0)
+	var right_pt = center + Vector2(half.x - 20.0, 0.0)
+	var top_pt = center + Vector2(0.0, -half.y + 20.0)
+	var bottom_pt = center + Vector2(0.0, half.y - 20.0)
+
+	var rounds = 5
+	var warn_time = 1.0
+	var round_interval = 0.2
+
+	for times in range(rounds):
+		if not is_instance_valid(player):
+			break
+		if times % 2 == 0:
+			spawn_laser_trap(
+				Vector2(player.position.x, top_pt.y),
+				Vector2(player.position.x, bottom_pt.y),
+				0.8,
+				0.7,
+				50.0
+			)
+			spawn_laser_trap(
+				Vector2(left_pt.x, player.position.y),
+				Vector2(right_pt.x, player.position.y),
+				0.8,
+				0.7,
+				50.0
+			)
+			if await interruptible_wait(round_interval):
+				return
+		else:
+			var dir1 = Vector2(1, 1).normalized()
+			var dir2 = Vector2(-1, 1).normalized()
+			var half_length = 600.0
+			var start1 = player.position - dir1 * half_length
+			var end1 = player.position + dir1 * half_length
+			var start2 = player.position - dir2 * half_length
+			var end2 = player.position + dir2 * half_length
+			spawn_laser_trap(start1, end1, 0.8, 0.7, 50.0)
+			spawn_laser_trap(start2, end2, 0.8, 0.7, 50.0)
+			if await interruptible_wait(round_interval):
+				return
+	if await interruptible_wait(1.2):
+		return
+	is_attacking = false
+
+
+func boomerang_list(_difficulty: int = 5) -> void:
+	if not is_instance_valid(player):
+		return
+
+	is_attacking = true
+	var walls = get_node_or_null("../Walls")
+	if not walls:
+		is_attacking = false
+		return
+
+	var half = walls.current_half_size
+	var center = walls.position
+
+	var count = 4
+	var speed = 350.0
+	var spawn_x = center.x + half.x + 60.0
+	var start_y = center.y - half.y + 35.0
+	var end_y = center.y + half.y - 35.0
+	for i in range(count):
+		var spawn_y = start_y + (end_y - start_y) * (float(i) / (count - 1))
+		var spawn_pos = Vector2(spawn_x, spawn_y)
+		spawn_boomerang(
+			spawn_pos, Vector2(2.0, 2.0), 15.0, 0.6, speed, Vector2.LEFT, half.x * 2.0 + 120.0
+		)
+		if await interruptible_wait(0.2):
+			return
+	if await interruptible_wait(0.8):
+		return
+	var start_x = center.x - half.x + 35.0
+	var end_x = center.x + half.x - 35.0
+	var spawn_y = center.y - half.y - 60.0
+	for i in range(count):
+		spawn_x = start_x + (end_x - start_x) * (float(i) / (count - 1))
+		var spawn_pos = Vector2(spawn_x, spawn_y)
+		spawn_boomerang(
+			spawn_pos, Vector2(2.0, 2.0), 15.0, 0.6, speed, Vector2.DOWN, half.y * 2.0 + 120.0
+		)
+		if await interruptible_wait(0.2):
+			return
+	if await interruptible_wait(3.6):
+		return
+
+	is_attacking = false
+
+
+func difficult_squeeze_attack(difficulty: int = 2) -> void:
+	if not is_instance_valid(player):
+		return
+	is_attacking = true
+	var target_height = 45.0
+	var walls = get_node("../Walls")
+	if not walls:
+		is_attacking = false
+		return
+	var original_min_y = -220.0
+	var original_max_y = 180.0
+	var original_min_x = -200.0
+	var original_max_x = 200.0
+	var arena_width = original_max_x - original_min_x
+	var arena_height = original_max_y - original_min_y
+	var cover_ratio = DifficultyParams.get_val(DifficultyParams.SQUEEZE_COVER_RATIO, difficulty)
+	var mode = randi_range(0, 3)
+	var wall_pos = Vector2.ZERO
+	var start_x = 0.0
+	var target_x = 0.0
+	var start_y = 0.0
+	var target_y = 0.0
+	if mode == 0:
+		wall_pos.x = original_min_x + target_height / 2.0
+		start_x = original_min_x - 20.0
+		target_x = original_min_x + (arena_width * cover_ratio)
+		wall_pos.y = original_min_y + target_height / 2.0
+		start_y = original_min_y - 20.0
+		target_y = original_min_y + (arena_height * cover_ratio)
+	elif mode == 1:
+		wall_pos.x = original_max_x - target_height / 2.0
+		start_x = original_max_x + 20.0
+		target_x = original_max_x - (arena_width * cover_ratio)
+		wall_pos.y = original_min_y + target_height / 2.0
+		start_y = original_min_y - 20.0
+		target_y = original_min_y + (arena_height * cover_ratio)
+	elif mode == 2:
+		wall_pos.x = original_min_x + target_height / 2.0
+		start_x = original_min_x - 20.0
+		target_x = original_min_x + (arena_width * cover_ratio)
+		wall_pos.y = original_max_y - target_height / 2.0
+		start_y = original_max_y + 20.0
+		target_y = original_max_y - (arena_height * cover_ratio)
+	else:
+		wall_pos.x = original_max_x - target_height / 2.0
+		start_x = original_max_x + 20.0
+		target_x = original_max_x - (arena_width * cover_ratio)
+		wall_pos.y = original_max_y - target_height / 2.0
+		start_y = original_max_y + 20.0
+		target_y = original_max_y - (arena_height * cover_ratio)
+	var compress_time = (
+		DifficultyParams.get_val(DifficultyParams.SQUEEZE_COMPRESS_TIME, difficulty) * 1.41421356
+	)
+	walls.tween_box(Vector2(target_height, target_height), wall_pos, compress_time)
+	if await interruptible_wait(compress_time + 0.02):
+		return
+	walls.reset_box(0.5)
+	var laser_count = DifficultyParams.SQUEEZE_LASER_COUNT
+	var spawn_interval = DifficultyParams.SQUEEZE_SPAWN_INTERVAL
+	var fire_interval = DifficultyParams.get_val(DifficultyParams.SQUEEZE_FIRE_INTERVAL, difficulty)
+	var t0 = float(laser_count - 1) * spawn_interval
+	var fire_time = DifficultyParams.SQUEEZE_FIRE_TIME
+	var laser_w = DifficultyParams.SQUEEZE_LASER_WIDTH
+	var last_warn_time = 0.0
+	for i in range(laser_count):
+		if boss_hp <= 0 or not is_instance_valid(player):
+			break
+		var curr_x = start_x + (target_x - start_x) * (float(i) / (laser_count - 1))
+		var curr_y = start_y + (target_y - start_y) * (float(i) / (laser_count - 1))
+		var current_warn_time = t0 + float(i) * (fire_interval - spawn_interval)
+		last_warn_time = current_warn_time
+		spawn_laser_trap(
+			Vector2(curr_x, original_min_y - 50.0),
+			Vector2(curr_x, original_max_y + 50.0),
+			current_warn_time,
+			fire_time,
+			laser_w
+		)
+		spawn_laser_trap(
+			Vector2(original_min_x - 50.0, curr_y),
+			Vector2(original_max_x + 50.0, curr_y),
+			current_warn_time,
+			fire_time,
+			laser_w
+		)
+		if await interruptible_wait(spawn_interval):
+			return
+	if await interruptible_wait(last_warn_time + fire_time + 0.1):
 		return
 	is_attacking = false
 
@@ -875,6 +1197,40 @@ func boss_appear_animation():
 
 	# 獵手降臨的畫面微震
 	hidden_game.shake_screen(0.3, 10.0)
+
+	invincible = false
+
+
+func boss_appear_animation_2():
+	if not boss or not boss_sprite:
+		return
+
+	invincible = true
+
+	boss_sprite.scale = Vector2(0.001, 0.001)
+	sprites.modulate.a = 0.0
+
+	var mat = boss_sprite.material as ShaderMaterial
+	if mat:
+		mat.set_shader_parameter("distortion_strength", 0.0)
+		mat.set_shader_parameter("hit_flash_strength", 0.0)
+
+	var tween = create_tween().set_parallel(true)
+
+	(
+		tween
+		. tween_property(boss_sprite, "scale", BASE_SCALE, 1.0)
+		. set_trans(Tween.TRANS_CUBIC)
+		. set_ease(Tween.EASE_OUT)
+	)
+
+	tween.tween_property(sprites, "modulate:a", 1.0, 1.0).set_trans(Tween.TRANS_SINE).set_ease(
+		Tween.EASE_IN_OUT
+	)
+
+	await tween.finished
+
+	hidden_game.shake_screen(1.5, 20.0)
 
 	invincible = false
 
@@ -1009,6 +1365,12 @@ func deal_damage(damage: int):
 		boss_hp_bar.value = boss_hp
 		_play_hit_flash()
 
+		if PlayerData.equipped_skin == "golden_skin":
+			is_dead = true
+			_cleanup_attack()
+			boss_defeated.emit()
+			return
+
 		if phase == 1:
 			phase = 2
 			boss_hp = 250
@@ -1044,6 +1406,9 @@ func _play_hit_flash():
 	flash_tween.tween_property(mat, "shader_parameter/hit_flash_strength", 0.0, 0.05)
 	flash_tween.tween_property(mat, "shader_parameter/hit_flash_strength", 1.0, 0.05)
 	flash_tween.tween_property(mat, "shader_parameter/hit_flash_strength", 0.0, 0.08)
+
+
+# ==== base element ====
 
 
 # 在場地半徑 radius 處，以 angle 角度（rad）生成飛劍，指向圓心，並在 wait 秒後以 speed 速度飛向對角
