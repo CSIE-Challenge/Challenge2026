@@ -576,10 +576,10 @@ func _run_difficult_boss_victory_sequence() -> void:
 	Dialogue.start_dialogue(["不可能！"])
 	await Dialogue.dialogue_finished
 
-	if not PlayerData.has_skin("sans_skin"):
-		PlayerData.unlocked_skins.append("sans_skin")
+	if not PlayerData.has_skin("golden_skin"):
+		PlayerData.unlocked_skins.append("golden_skin")
 		PlayerData.save_data()
-		PlayerData.skin_unlocked.emit("sans_skin")
+		PlayerData.skin_unlocked.emit("golden_skin")
 		SceneTransition.show_achievement("獲得成就：傳說之上！")
 
 	boss.play_death_animation()
