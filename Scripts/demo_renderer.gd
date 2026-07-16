@@ -140,8 +140,9 @@ func _apply_screen(screen: Dictionary, screen_data: Dictionary) -> void:
 	_apply_player(screen, stage, player_state)
 
 	# Apply trap ghosts
+	var player: Node2D = screen.get("player", null)
 	var traps: Array = screen_data.get("traps", [])
-	_update_ghosts(ghosts, stage, traps)
+	_update_ghosts(ghosts, stage, player, traps)
 
 	# Apply energy ball ghosts
 	var balls: Array = screen_data.get("energy_balls", [])
@@ -233,7 +234,7 @@ func _instantiate_ghost(type: String) -> Node:
 
 ## Diff loop: creates, updates, or removes ghost nodes based on [param traps_array].
 ## [param ghosts] maps trap_id → ghost Node.
-func _update_ghosts(ghosts: Dictionary, stage: Node2D, traps_array: Array) -> void:
+func _update_ghosts(ghosts: Dictionary, stage: Node2D, player: Node2D, traps_array: Array) -> void:
 	var active_ids: Array = []
 
 	for trap_data in traps_array:
@@ -251,7 +252,10 @@ func _update_ghosts(ghosts: Dictionary, stage: Node2D, traps_array: Array) -> vo
 			# New ghost — instantiate, suppress, apply
 			var trap_type: String = trap_data.get("type", "")
 			var ghost: Node = _instantiate_ghost(trap_type)
+			print("Creating Trap: %s" % trap_type)
 			if ghost:
+				if ghost.get("player") != null:
+					ghost.player = player
 				ghost.is_demo = true
 				stage.add_child(ghost)
 				_suppress_game_logic(ghost)
