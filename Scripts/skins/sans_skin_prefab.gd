@@ -48,7 +48,7 @@ func _process(_delta):
 		eye_effect.add_point(sprite.global_position + EYE_DISPLACEMENT)
 		if eye_effect.get_point_count() > max_trail_points:
 			eye_effect.remove_point(0)
-			eye_effect.remove_point(0)
+			# eye_effect.remove_point(0)
 	elif eye_effect.get_point_count() > 0:
 		eye_effect.remove_point(0)
 
