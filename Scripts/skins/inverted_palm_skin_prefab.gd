@@ -4,13 +4,13 @@ extends BaseSkin
 # 吃椰子會讓島底的樹成長：樹苗 → 小樹（5 顆）→ 椰子樹（20 顆）。
 # 島本體會緩緩上下漂浮；移動時倒吊的樹像鐘擺一樣晃動。
 
-const HOVER_AMP := 1.6      # 漂浮上下振幅（prefab 座標）
-const HOVER_FREQ := 1.6     # 漂浮頻率
-const PENDULUM_MAX := 0.3   # 鐘擺最大傾角（弧度）
+const HOVER_AMP := 1.6  # 漂浮上下振幅（prefab 座標）
+const HOVER_FREQ := 1.6  # 漂浮頻率
+const PENDULUM_MAX := 0.3  # 鐘擺最大傾角（弧度）
 
-const STAGE_SAPLING := 0    # 樹苗
-const STAGE_SMALL := 1      # 小樹
-const STAGE_FULL := 2       # 椰子樹
+const STAGE_SAPLING := 0  # 樹苗
+const STAGE_SMALL := 1  # 小樹
+const STAGE_FULL := 2  # 椰子樹
 const EVOLVE_EAT_COUNTS := [5, 20]  # 吃到第幾顆椰子時進化
 
 const STAGE_TEXTURES: Array[Texture2D] = [
@@ -85,8 +85,18 @@ func _evolve(new_stage: int) -> void:
 	flash.tween_property(body, "modulate", Color(2.0, 2.0, 1.7, 1), 0.08)
 	flash.tween_property(body, "modulate", Color(1, 1, 1, 1), 0.3)
 	var pop := create_tween()
-	pop.tween_property(self, "scale", Vector2(1.45, 1.45), 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	pop.tween_property(self, "scale", Vector2(1.0, 1.0), 0.35).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+	(
+		pop
+		. tween_property(self, "scale", Vector2(1.45, 1.45), 0.18)
+		. set_trans(Tween.TRANS_BACK)
+		. set_ease(Tween.EASE_OUT)
+	)
+	(
+		pop
+		. tween_property(self, "scale", Vector2(1.0, 1.0), 0.35)
+		. set_trans(Tween.TRANS_ELASTIC)
+		. set_ease(Tween.EASE_OUT)
+	)
 	var spin := create_tween()
 	spin.tween_property(plant, "rotation", 0.18, 0.1)
 	spin.tween_property(plant, "rotation", -0.14, 0.12)
@@ -107,8 +117,16 @@ func _spawn_level_up_text() -> void:
 	# 置中在星球正上方，往上浮出並淡出
 	label.position = Vector2(-label.size.x / 2.0, -32.0)
 	var tw := label.create_tween()
-	tw.parallel().tween_property(label, "position:y", label.position.y - 14.0, 0.8).set_ease(Tween.EASE_OUT)
-	tw.parallel().tween_property(label, "modulate:a", 0.0, 0.8).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tw.parallel().tween_property(label, "position:y", label.position.y - 14.0, 0.8).set_ease(
+		Tween.EASE_OUT
+	)
+	(
+		tw
+		. parallel()
+		. tween_property(label, "modulate:a", 0.0, 0.8)
+		. set_trans(Tween.TRANS_QUAD)
+		. set_ease(Tween.EASE_IN)
+	)
 	tw.tween_callback(label.queue_free)
 
 
@@ -159,11 +177,8 @@ func play_spawn():
 	# 小島從天而降般彈性浮現
 	scale = Vector2.ZERO
 	var tween = create_tween()
-	(
-		tween
-		. tween_property(self, "scale", Vector2.ONE, 0.5)
-		. set_trans(Tween.TRANS_ELASTIC)
-		. set_ease(Tween.EASE_OUT)
+	tween.tween_property(self, "scale", Vector2.ONE, 0.5).set_trans(Tween.TRANS_ELASTIC).set_ease(
+		Tween.EASE_OUT
 	)
 	if tween:
 		await tween.finished
@@ -222,7 +237,9 @@ func play_die():
 
 	# 反重力失效：整座島終於被正常重力抓住，往下墜、旋轉縮小消失
 	var tw := create_tween()
-	tw.parallel().tween_property(plant, "position:y", plant.position.y + 34.0, 0.5).set_ease(Tween.EASE_IN)
+	tw.parallel().tween_property(plant, "position:y", plant.position.y + 34.0, 0.5).set_ease(
+		Tween.EASE_IN
+	)
 	tw.parallel().tween_property(plant, "rotation", plant.rotation + PI * 2.0, 0.5)
 	(
 		tw
