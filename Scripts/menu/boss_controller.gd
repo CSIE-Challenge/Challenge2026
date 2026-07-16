@@ -125,6 +125,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func rand_attack(new_difficulty: int = -1):
 	is_change_stage = false
+	var guaranteed_attack = 0
 	if new_difficulty != -1:
 		current_difficulty = new_difficulty
 
@@ -138,20 +139,28 @@ func rand_attack(new_difficulty: int = -1):
 		current_attack_interrupted = false
 
 		if not is_attacking and not is_paused:
-			var rand_val = randi_range(0, 12)
+			var rand_val
+			if guaranteed_attack > 3 and new_difficulty >= 4:
+				rand_val = randi_range(0, 3)
+			else:
+				rand_val = randi_range(0, 12)
 			match rand_val:
 				0:
-					await rhythm_attack(current_difficulty)
+					await emit_boomerang(1, current_difficulty)
+					guaranteed_attack = 0
 				1:
-					await test_sword_attack(current_difficulty)
+					await emit_boomerang(2, current_difficulty)
+					guaranteed_attack = 0
 				2:
-					await emit_rocket(current_difficulty)
+					await test_laser_attack(current_difficulty)
+					guaranteed_attack = 0
 				3:
-					await emit_boomerang(5, current_difficulty)
+					await emit_rocket(current_difficulty)
+					guaranteed_attack = 0
 				4:
 					await squeeze_attack(current_difficulty)
 				5:
-					await test_laser_attack(current_difficulty)
+					await emit_boomerang(5, current_difficulty)
 				6:
 					await pong_attack(current_difficulty)
 				7:
@@ -159,14 +168,14 @@ func rand_attack(new_difficulty: int = -1):
 				8:
 					await sweeper_attack(current_difficulty)
 				9:
-					await emit_boomerang(1, current_difficulty)
+					await rhythm_attack(current_difficulty)
 				10:
-					await emit_boomerang(2, current_difficulty)
+					await test_sword_attack(current_difficulty)
 				11:
 					await emit_boomerang(3, current_difficulty)
 				12:
 					await emit_boomerang(4, current_difficulty)
-
+			guaranteed_attack += 1
 		var cooldown = DifficultyParams.get_val(
 			DifficultyParams.ATTACK_COOLDOWN, current_difficulty
 		)
@@ -176,28 +185,37 @@ func rand_attack(new_difficulty: int = -1):
 func difficult_rand_attack(difficulty: int = 5) -> void:
 	is_change_stage = false
 	is_attacking = true
+	var guaranteed_attack = 0
 	while is_inside_tree():
 		if is_dead or is_change_stage:
 			is_change_stage = false
 			break
 		current_attack_interrupted = false
 		if not is_paused:
-			var rand_val = randi_range(0, 12)
+			var rand_val
+			if not guaranteed_attack > 3:
+				rand_val = randi_range(0, 13)
+			else:
+				rand_val = randi_range(0, 3)
 			match rand_val:
 				0:
-					await rhythm_attack(difficulty)
+					await tracking_lazer(difficulty)
+					guaranteed_attack = 0
 				1:
-					await test_sword_attack(difficulty)
+					await emit_boomerang(2, difficulty)
+					guaranteed_attack = 0
 				2:
-					await rocket_in_line(difficulty)
+					await emit_boomerang(1, difficulty)
+					guaranteed_attack = 0
 				3:
-					await surround_boomerang(difficulty)
+					await test_laser_attack(difficulty)
+					guaranteed_attack = 0
 				4:
 					await difficult_squeeze_attack()
 				5:
-					await test_laser_attack(difficulty)
+					await surround_boomerang(difficulty)
 				6:
-					await tracking_lazer(difficulty)
+					await rhythm_attack(difficulty)
 				7:
 					await road_attack(difficulty)
 				8:
@@ -205,12 +223,15 @@ func difficult_rand_attack(difficulty: int = 5) -> void:
 				9:
 					await boomerang_list()
 				10:
-					await emit_boomerang(2, difficulty)
+					await test_sword_attack(difficulty)
 				11:
 					await emit_boomerang(5, difficulty)
 				12:
 					await emit_boomerang(4, difficulty)
+				13:
+					await rocket_in_line(difficulty)
 		var cooldown = DifficultyParams.get_val(DifficultyParams.ATTACK_COOLDOWN, difficulty)
+		guaranteed_attack += 1
 		if await interruptible_wait(cooldown):
 			break
 	is_attacking = false
@@ -474,13 +495,14 @@ func emit_boomerang(mode: int, difficulty: int = 3) -> void:
 		var speed = DifficultyParams.BOOMERANG_M5_SPEED
 		var fire_interval = DifficultyParams.BOOMERANG_M5_FIRE_INTERVAL
 		var radius = max(half.x, half.y) + 90.0  # 確保完全在牆外
+		var random_angle = randf_range(0, TAU)
 
 		for i in range(count):
 			if not is_instance_valid(player) or boss_hp <= 0:
 				break
 
 			# 順時針計算生成角度與發射方向
-			var angle = (PI * 2.0 / count) * i
+			var angle = (PI * 2.0 / count) * i + random_angle
 			var spawn_dir = Vector2.from_angle(angle)
 			var spawn_pos = center + spawn_dir * radius
 			var to_center_dir = -spawn_dir
@@ -946,15 +968,15 @@ func surround_boomerang(difficulty: int = 5) -> void:
 	var center = walls.position
 
 	var count = DifficultyParams.get_val(DifficultyParams.BOOMERANG_M4_COUNT, difficulty)
-	var speed = DifficultyParams.get_val(DifficultyParams.BOOMERANG_M4_SPEED, 3)
+	var speed = DifficultyParams.get_val(DifficultyParams.BOOMERANG_M4_SPEED, 5)
 	var radius = max(half.x, half.y) + 100.0
 	for i in range(count):
 		var angle = (PI * 2.0 / count) * i
 		var dir = Vector2.from_angle(angle)
 		var spawn_pos = center + dir * radius
 		var to_center_dir = -dir
-		spawn_boomerang(spawn_pos, Vector2(1.0, 1.0), 30.0, 1.2, speed, to_center_dir, radius)
-	if await interruptible_wait(0.8):
+		spawn_boomerang(spawn_pos, Vector2(1.0, 1.0), 30.0, 0.8, speed, to_center_dir, radius)
+	if await interruptible_wait(0.5):
 		return
 	if not is_instance_valid(player):
 		is_attacking = false
@@ -964,8 +986,8 @@ func surround_boomerang(difficulty: int = 5) -> void:
 		var dir = Vector2.from_angle(angle)
 		var spawn_pos = center + dir * radius
 		var to_center_dir = -dir
-		spawn_boomerang(spawn_pos, Vector2(1.0, 1.0), 30.0, 1.2, speed, to_center_dir, radius)
-	if await interruptible_wait(4.2):
+		spawn_boomerang(spawn_pos, Vector2(1.0, 1.0), 30.0, 0.8, speed, to_center_dir, radius)
+	if await interruptible_wait(3.2):
 		return
 	is_attacking = false
 

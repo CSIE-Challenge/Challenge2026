@@ -504,7 +504,7 @@ func run_difficult_hidden_game_sequence() -> void:
 		if is_player_dead or is_aborted:
 			return
 
-		timer.start(2.5)
+		timer.start(3.0)
 		boss.difficult_rand_attack(5)
 
 		while not is_player_dead and not is_aborted and not boss.is_dead:
@@ -530,7 +530,7 @@ func run_difficult_hidden_game_sequence() -> void:
 		if is_player_dead or is_aborted:
 			return
 
-		timer.start(2.5)
+		timer.start(3.0)
 		boss.rand_attack(4)
 
 		while not is_player_dead and not is_aborted and boss.boss_hp > 600 and not boss.is_dead:
