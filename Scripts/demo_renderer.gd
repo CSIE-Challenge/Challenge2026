@@ -10,6 +10,7 @@ const FALLBACK_HEALTH_TEXTURE = preload("res://Shapes/feather.svg")
 @export var stage_a: Node2D
 @export var stage_b: Node2D
 @export var time_label: Label
+@export var phase_label: Label
 @export var pregame_countdown: Label
 @export var screen_a_energy: Node2D
 @export var screen_a_health: Node2D
@@ -97,6 +98,7 @@ func _identify_as_demo(nm: Node) -> void:
 func _on_demo_state_received(combined: Dictionary) -> void:
 	var elapsed: float = combined.get("elapsed_time", 0.0)
 	_update_time_display(elapsed)
+	_update_phase_display(combined.get("current_phase", 0))
 
 	if not _countdown_triggered and elapsed < 0.0:
 		_countdown_triggered = true
@@ -156,6 +158,12 @@ func _update_time_display(elapsed: float) -> void:
 	var minute := int(floor(elapsed)) / 60
 	var second := int(floor(elapsed)) % 60
 	time_label.text = "%02d:%02d" % [minute, second]
+
+
+func _update_phase_display(phase: int) -> void:
+	if not phase_label:
+		return
+	phase_label.text = "Phase %d" % phase
 
 
 func _suppress_game_logic(node: Node) -> void:
@@ -413,6 +421,10 @@ func _update_health_hud(screen: Dictionary, skin_id: String, max_health: int) ->
 		skin_id != screen.get("loaded_skin_id", "") or health_root.get_child_count() != max_health
 	)
 	if not need_rebuild:
+		if screen["health_icons"].is_empty():
+			for child in health_root.get_children():
+				if child is TextureRect:
+					screen["health_icons"].append(child)
 		return
 
 	# Clear old icons

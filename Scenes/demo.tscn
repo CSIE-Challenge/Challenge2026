@@ -10,6 +10,7 @@
 [ext_resource type="FontFile" uid="uid://hp5u4fxb5ifw" path="res://Assets/fonts/PixeloidSans-Bold.ttf" id="4_font"]
 [ext_resource type="Texture2D" uid="uid://dle4xt8upfg42" path="res://Shapes/Square.svg" id="4_qdju7"]
 [ext_resource type="Script" uid="uid://d2y578q176xkm" path="res://Scripts/high_stage.gd" id="5_high_stage"]
+[ext_resource type="Texture2D" uid="uid://f5ertr28h6kq" path="res://Shapes/feather.svg" id="6_feather"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_f2jw5"]
 texture = ExtResource("1_glc8m")
@@ -303,6 +304,7 @@ anchor_left = 0.5
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -2.0
+offset_top = 125.0
 offset_right = 14.0
 color = Color(0.6, 0.6, 0.6, 1)
 
@@ -387,17 +389,14 @@ horizontal_alignment = 1
 script = ExtResource("2_countdown")
 
 [node name="TimeLabel" type="Label" parent="HUD" unique_id=985672380]
-anchors_preset = 8
+anchors_preset = 5
 anchor_left = 0.5
-anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 0.5
 offset_left = -60.0
-offset_top = -309.0
+offset_top = 20.0
 offset_right = 60.0
-offset_bottom = -254.0
+offset_bottom = 75.0
 grow_horizontal = 2
-grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
 theme_override_colors/font_color = Color(0.11764706, 0.11764706, 0.13725491, 1)
 theme_override_font_sizes/font_size = 44
@@ -406,23 +405,129 @@ label_settings = SubResource("LabelSettings_tcdmn")
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="PhaseLabel" type="Label" parent="HUD" unique_id=512031019]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -60.0
+offset_top = 80.0
+offset_right = 60.0
+offset_bottom = 115.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.11764706, 0.11764706, 0.13725491, 1)
+theme_override_font_sizes/font_size = 28
+label_settings = SubResource("LabelSettings_tcdmn")
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="ScreenA_Energy" parent="HUD" unique_id=1909958148 instance=ExtResource("3_energy")]
-position = Vector2(88, 44)
+position = Vector2(91, 112)
 
 [node name="ScreenA_Health" type="Node2D" parent="HUD" unique_id=261805975]
-position = Vector2(338, 44)
+position = Vector2(340, 112)
+
+[node name="Icon0" type="TextureRect" parent="HUD/ScreenA_Health" unique_id=1452463056]
+offset_left = -87.0
+offset_top = -15.0
+offset_right = -57.0
+offset_bottom = 15.0
+texture = ExtResource("6_feather")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon1" type="TextureRect" parent="HUD/ScreenA_Health" unique_id=1084471247]
+offset_left = -51.0
+offset_top = -15.0
+offset_right = -21.0
+offset_bottom = 15.0
+texture = ExtResource("6_feather")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon2" type="TextureRect" parent="HUD/ScreenA_Health" unique_id=1030381543]
+offset_left = -15.0
+offset_top = -15.0
+offset_right = 15.0
+offset_bottom = 15.0
+texture = ExtResource("6_feather")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon3" type="TextureRect" parent="HUD/ScreenA_Health" unique_id=2131930762]
+offset_left = 21.0
+offset_top = -15.0
+offset_right = 51.0
+offset_bottom = 15.0
+texture = ExtResource("6_feather")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon4" type="TextureRect" parent="HUD/ScreenA_Health" unique_id=21353598]
+offset_left = 57.0
+offset_top = -15.0
+offset_right = 87.0
+offset_bottom = 15.0
+texture = ExtResource("6_feather")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="ScreenB_Energy" parent="HUD" unique_id=1762839106 instance=ExtResource("3_energy")]
-position = Vector2(719, 44)
+position = Vector2(955, 112)
 
 [node name="ScreenB_Health" type="Node2D" parent="HUD" unique_id=1056993462]
-position = Vector2(969, 44)
+position = Vector2(812, 112)
 
-[node name="DemoRenderer" type="Node" parent="." unique_id=295691669 node_paths=PackedStringArray("stage_a", "stage_b", "time_label", "pregame_countdown", "screen_a_energy", "screen_a_health", "screen_b_energy", "screen_b_health", "stage_layer", "high_stage_a", "high_stage_b")]
+[node name="Icon0" type="TextureRect" parent="HUD/ScreenB_Health" unique_id=1352515971]
+offset_left = -87.0
+offset_top = -15.0
+offset_right = -57.0
+offset_bottom = 15.0
+texture = ExtResource("6_feather")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon1" type="TextureRect" parent="HUD/ScreenB_Health" unique_id=359298265]
+offset_left = -51.0
+offset_top = -15.0
+offset_right = -21.0
+offset_bottom = 15.0
+texture = ExtResource("6_feather")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon2" type="TextureRect" parent="HUD/ScreenB_Health" unique_id=1213276918]
+offset_left = -15.0
+offset_top = -15.0
+offset_right = 15.0
+offset_bottom = 15.0
+texture = ExtResource("6_feather")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon3" type="TextureRect" parent="HUD/ScreenB_Health" unique_id=425014722]
+offset_left = 21.0
+offset_top = -15.0
+offset_right = 51.0
+offset_bottom = 15.0
+texture = ExtResource("6_feather")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon4" type="TextureRect" parent="HUD/ScreenB_Health" unique_id=457022701]
+offset_left = 57.0
+offset_top = -15.0
+offset_right = 87.0
+offset_bottom = 15.0
+texture = ExtResource("6_feather")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DemoRenderer" type="Node" parent="." unique_id=295691669 node_paths=PackedStringArray("stage_a", "stage_b", "time_label", "phase_label", "pregame_countdown", "screen_a_energy", "screen_a_health", "screen_b_energy", "screen_b_health", "stage_layer", "high_stage_a", "high_stage_b")]
 script = ExtResource("1_demo")
 stage_a = NodePath("../ScreenA/SubViewport/StageA")
 stage_b = NodePath("../ScreenB/SubViewport/StageB")
 time_label = NodePath("../HUD/TimeLabel")
+phase_label = NodePath("../HUD/PhaseLabel")
 pregame_countdown = NodePath("../HUD/PregameCountdown")
 screen_a_energy = NodePath("../HUD/ScreenA_Energy")
 screen_a_health = NodePath("../HUD/ScreenA_Health")
