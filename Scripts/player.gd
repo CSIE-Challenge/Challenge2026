@@ -1,8 +1,8 @@
 class_name Player
 extends CharacterBody2D
 
-const DRIFT_REQUIREMENT = 1
-const DRIFT_SKIN_ID = "default_skin"  # change to the driftwood skin
+const DRIFT_REQUIREMENT = 15
+const DRIFT_SKIN_ID = "driftwood_skin"  # change to the driftwood skin
 
 @export var health: int
 @export var sand_particle: GradientTexture1D
@@ -33,6 +33,7 @@ var is_in_water := false
 var juice_count := 0
 var skin_id: String = ""
 var pressed_move: bool = false
+var drifted: bool = false
 
 @onready var body_sprite = $BodySprite
 @onready var shadow_sprite = $ShadowSprite
@@ -130,6 +131,13 @@ func _process(_delta: float) -> void:
 	if Global.single_player:
 		if (not pressed_move) and Global.game_manager.energy_ball_count >= DRIFT_REQUIREMENT:
 			Global.skin_override = DRIFT_SKIN_ID
+			if not drifted:
+				drifted = true
+				if not PlayerData.has_skin("driftwood_skin"):
+					var code = Marshalls.base64_to_utf8("SVFRN0hTSkc1TUFUSjQ2NFZQWEc=")
+					PlayerData.add_entered_code(code)
+					PlayerData.skin_unlocked.emit("driftwood_skin")
+					SceneTransition.show_achievement("成就解鎖：隨波逐流！")
 		else:
 			Global.skin_override = ""
 		update_skin()
