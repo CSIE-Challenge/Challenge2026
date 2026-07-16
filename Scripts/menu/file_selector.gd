@@ -34,9 +34,9 @@ func _ready() -> void:
 	selected_open_terminal = _load_open_terminal()
 	open_terminal_check_box.button_pressed = selected_open_terminal
 	if selected_open_terminal:
-		open_terminal_check_box.text = "✅ Open Terminal"
+		open_terminal_check_box.text = "✅ Terminal"
 	else:
-		open_terminal_check_box.text = "❎ Open Terminal"
+		open_terminal_check_box.text = "❎ Terminal"
 	_mark_chosen()
 	_update_selected_label()
 
@@ -145,9 +145,9 @@ func _on_agent_file_selected(path: String) -> void:
 func _on_open_terminal_button_toggled(toggled_on: bool) -> void:
 	selected_open_terminal = toggled_on
 	if selected_open_terminal:
-		open_terminal_check_box.text = "✅ Open Terminal"
+		open_terminal_check_box.text = "✅ Terminal"
 	else:
-		open_terminal_check_box.text = "❎ Open Terminal"
+		open_terminal_check_box.text = "❎ Terminal"
 	_save_open_terminal(selected_open_terminal)
 
 

@@ -110,7 +110,7 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 40
 toggle_mode = true
 button_pressed = true
-text = "✅ Open Terminal"
+text = "✅ Terminal"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer" unique_id=378196176]
 layout_mode = 2
