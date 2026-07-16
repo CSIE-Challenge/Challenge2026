@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://rbttresskin"]
 
 [ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_skindata"]
-[ext_resource type="PackedScene" uid="uid://ditjrfbfysv1d" path="res://Scenes/skins/red_black_tree_skin_prefab.tscn" id="2_prefab"]
+[ext_resource type="PackedScene" uid="uid://bt7b7aypikv78" path="res://Scenes/skins/red_black_tree_skin_prefab.tscn" id="2_prefab"]
 [ext_resource type="Texture2D" uid="uid://dgxei7y4lt0yx" path="res://Shapes/hearts/red_black_tree.svg" id="3_icon1"]
 [ext_resource type="Texture2D" uid="uid://cx425v5x6gb02" path="res://Shapes/hearts/red_black_tree2.svg" id="4_icon2"]
 
