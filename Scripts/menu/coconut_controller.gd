@@ -9,7 +9,7 @@ var is_immutable = false
 
 var skin_instance = null
 
-var _debug: bool = true
+var _debug: bool = false
 
 @onready var body_sprite = $BodySprite
 @onready var shadow_sprite = $ShadowSprite
@@ -90,5 +90,5 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
 		match event.keycode:
 			KEY_J:
-				if _debug:
+				if not OS.is_debug_build():
 					is_immutable = !is_immutable

@@ -265,6 +265,11 @@ func _on_redeem_submit_pressed():
 	var code_hash = code.sha256_text()
 	if redeem_codes.has(code_hash):
 		var skin_id = redeem_codes[code_hash]
+
+		if skin_id == "golden_skin":
+			show_message("兌換碼不存在或無效！")
+			return
+
 		if not PlayerData.has_skin(skin_id):
 			PlayerData.add_entered_code(code)
 			PlayerData.skin_unlocked.emit(skin_id)
