@@ -266,7 +266,13 @@ func _on_redeem_submit_pressed():
 	if redeem_codes.has(code_hash):
 		var skin_id = redeem_codes[code_hash]
 
-		if skin_id == "golden_skin":
+		if (
+			skin_id == "golden_skin"
+			or skin_id == "sans_skin"
+			or skin_id == "driftwood_skin"
+			or skin_id == "close_button_skin"
+			or skin_id == "walile_skin"
+		):
 			show_message("兌換碼不存在或無效！")
 			return
 
