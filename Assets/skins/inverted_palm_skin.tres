@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://invpalmres"]
+
+[ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_inv_scr"]
+[ext_resource type="Texture2D" uid="uid://invpalmbody" path="res://Shapes/inverted_palm.svg" id="2_icon"]
+[ext_resource type="PackedScene" uid="uid://w2x3hr7mynqr" path="res://Scenes/skins/inverted_palm_skin_prefab.tscn" id="3_prefab"]
+
+[resource]
+script = ExtResource("1_inv_scr")
+skin_id = "inverted_palm_skin"
+true_name = "椰子樹倒著長的小島"
+description = "吃椰子以提供椰子樹養分。"
+price = 1000
+is_achievement_unlock = true
+achievement_desc = "攻略椰子樹倒著長的小島。"
+preview_texture = ExtResource("2_icon")
+skin_prefab = ExtResource("3_prefab")
+health_icon_texture = ExtResource("2_icon")
+metadata/_custom_type_script = "uid://c6vuqckcyjdey"
