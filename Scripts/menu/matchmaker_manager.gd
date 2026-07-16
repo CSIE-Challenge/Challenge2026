@@ -388,7 +388,7 @@ func _on_check_server_response(result: int, body_str: String) -> void:
 
 	# Server confirmed — run whatever the player originally asked for.
 	if _check_intent == "create":
-		_post("/qiaohu/room", {}, "create_room")
+		_post("/qiaohu/room", {"game_version": Global.game_version}, "create_room")
 	else:
 		code_input.text = ""
 		_show_panel(Page.C)
@@ -459,7 +459,7 @@ func _on_confirm_join_button_up() -> void:
 	if _matchmaker_ip == "":
 		_handle_error("Please enter a server address")
 		return
-	_post("/qiaohu/join", {"code": code}, "join_room")
+	_post("/qiaohu/join", {"code": code, "game_version": Global.game_version}, "join_room")
 
 
 func _on_join_room_response(data: Dictionary) -> void:
@@ -818,4 +818,6 @@ func _error_message(error: String) -> String:
 			return "Authentication failed"
 		"game already started":
 			return "Game has already started"
+		"version mismatch":
+			return "Game version mismatch, please update your game"
 	return "Unable to connect to server"
