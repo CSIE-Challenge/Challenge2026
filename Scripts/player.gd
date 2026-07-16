@@ -1,6 +1,9 @@
 class_name Player
 extends CharacterBody2D
 
+const DRIFT_REQUIREMENT = 1
+const DRIFT_SKIN_ID = "default_skin"  # change to the driftwood skin
+
 @export var health: int
 @export var sand_particle: GradientTexture1D
 @export var water_particle: GradientTexture1D
@@ -29,6 +32,7 @@ var skin_instance: Node2D = null
 var is_in_water := false
 var juice_count := 0
 var skin_id: String = ""
+var pressed_move: bool = false
 
 @onready var body_sprite = $BodySprite
 @onready var shadow_sprite = $ShadowSprite
@@ -38,6 +42,33 @@ var skin_id: String = ""
 @onready var land_particle = $LandParticle
 @onready var remote_land_particle = $RemoteTransform2D
 @onready var trap_cleaner = $TrapCleaner
+
+
+func update_skin() -> void:
+	var new_skin_id = (
+		Global.skin_override if Global.skin_override != "" else PlayerData.equipped_skin
+	)
+	if new_skin_id == skin_id:
+		return
+	skin_id = new_skin_id
+	var new_skin_path = "res://Assets/skins/" + new_skin_id + ".tres"
+	var new_skin_data = load(new_skin_path)
+	var new_skin_instance: Node2D = null
+	if new_skin_data and new_skin_data.skin_prefab:
+		new_skin_instance = new_skin_data.skin_prefab.instantiate()
+		new_skin_instance.z_index = 1
+		new_skin_instance.set_meta("player", self)
+		stage_layer.add_child.call_deferred(new_skin_instance)
+		body_sprite.hide()
+		if is_instance_valid(skin_instance):
+			new_skin_instance.global_position = skin_instance.global_position
+			skin_instance.modulate.a = modulate.a
+			skin_instance.queue_free()
+		skin_instance = new_skin_instance
+		if skin_instance.has_method("play_spawn"):
+			if not skin_instance.is_node_ready():
+				await skin_instance.ready
+			skin_instance.play_spawn()
 
 
 func _ready() -> void:
@@ -54,21 +85,9 @@ func _ready() -> void:
 		for y in range(4):
 			all_sand_tiles.append(Vector2i(x, y))
 	# Multiplayer matches may temporarily use the skin assigned by the matchmaker.
-	var skin_id := Global.skin_override if Global.skin_override != "" else PlayerData.equipped_skin
-	self.skin_id = skin_id
-	var skin_path = "res://Assets/skins/" + skin_id + ".tres"
-	var skin_data = load(skin_path)
-	if skin_data and skin_data.skin_prefab:
-		skin_instance = skin_data.skin_prefab.instantiate()
-		skin_instance.z_index = 1
-		skin_instance.set_meta("player", self)
-		stage_layer.add_child.call_deferred(skin_instance)
-		body_sprite.hide()
-		if skin_instance.has_method("play_spawn"):
-			if not skin_instance.is_node_ready():
-				await skin_instance.ready
-			skin_instance.play_spawn()
-		Global.energyball_collected.connect(_on_energy_ball_collected)
+	update_skin()
+
+	Global.energyball_collected.connect(_on_energy_ball_collected)
 
 
 func _reload_from_game_data() -> void:
@@ -88,9 +107,12 @@ func reparent_land_particles() -> void:
 
 func _physics_process(delta: float) -> void:
 	var input_dir = Input.get_vector("move_left", "move_right", "move_up", "move_down")
+	if input_dir.length_squared() > 0:
+		pressed_move = true
 	move(input_dir, move_speed, delta)
 	if Input.is_action_just_pressed("jump"):
 		_jump()
+		pressed_move = true
 	if isjumping:
 		_jump_process(delta)
 	if isinvincible:
@@ -105,6 +127,13 @@ func _physics_process(delta: float) -> void:
 func _process(_delta: float) -> void:
 	if is_instance_valid(skin_instance):
 		skin_instance.global_position = self.global_position + Vector2(0, -current_sprite_y)
+	if Global.single_player:
+		if (not pressed_move) and Global.game_manager.energy_ball_count >= DRIFT_REQUIREMENT:
+			Global.skin_override = DRIFT_SKIN_ID
+		else:
+			Global.skin_override = ""
+		update_skin()
+		Global.game_manager.health_icon.update_icon()
 
 
 func move(dir: Vector2, speed: float, delta: float):

@@ -9,21 +9,24 @@ signal depleted
 @export var inactive_alpha: float = 0.25
 @export var reversed: bool = 0
 
+var skin_id: String = ""
 var unit_icon2: Texture2D
+var died: bool = false
 var _icons: Array[TextureRect] = []
 var _current_health: int = 0
 var _max_health: int = 0
 
 
-func _ready() -> void:
-	_set_max_health_safely(life_capacity)
-
+func update_icon():
 	if has_node("/root/PlayerData"):
 		var player_data_node = get_node("/root/PlayerData")
 		# Keep the UI icon in sync with the matchmaker-assigned player skin.
-		var skin_id: String = (
+		var new_skin_id: String = (
 			Global.skin_override if Global.skin_override != "" else player_data_node.equipped_skin
 		)
+		if new_skin_id == skin_id:
+			return
+		skin_id = new_skin_id
 		var skin_path = "res://Assets/skins/" + skin_id + ".tres"
 		if ResourceLoader.exists(skin_path):
 			var skin_data = load(skin_path) as SkinData
@@ -36,8 +39,13 @@ func _ready() -> void:
 
 	if unit_icon == null:
 		unit_icon = preload("res://Shapes/feather.svg")
-
 	_ensure_icons()
+	_refresh_display()
+
+
+func _ready() -> void:
+	_set_max_health_safely(life_capacity)
+	update_icon()
 	set_health(_max_health)
 
 
@@ -50,6 +58,8 @@ func set_max_health(max_hp: int) -> void:
 
 
 func set_health(current_health: int) -> void:
+	if died:
+		current_health = 0
 	var new_health: int = clampi(current_health, 0, _max_health)
 	if new_health == _current_health:
 		return

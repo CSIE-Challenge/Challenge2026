@@ -471,6 +471,9 @@ func finish_game(state: int = 0, authoritative_stats: Dictionary = {}) -> void:
 	if _is_multiplayer_game() and opponent_peer_id != -1:
 		# ResultScreen treats -1 as "hide opponent count", so only fill this in multiplayer.
 		opponent_energy_balls = NetworkManager.get_energy_ball_count(opponent_peer_id)
+	var health = player.health
+	if survival_time < game_duration and (state == 0 or state == 4):
+		health = 0
 	(
 		result_screen
 		. show_results(
@@ -481,7 +484,7 @@ func finish_game(state: int = 0, authoritative_stats: Dictionary = {}) -> void:
 				"jump_count": player.jump_count,
 				"distance_traveled": player.distance_traveled,
 				"survival_time": survival_time,
-				"remaining_health": player.health,
+				"remaining_health": health,
 				"trap_count": authoritative_stats.get("trap_count", 0),
 			},
 			state
@@ -666,6 +669,7 @@ func _on_network_health_changed(peer_id: int, health: int) -> void:
 		if player == null:
 			return
 		if player.health <= 0 and not _is_multiplayer_game():
+			health_icon.died = true
 			await player.die()
 		_finish_game_if_peer_defeated(peer_id, health)
 		return
