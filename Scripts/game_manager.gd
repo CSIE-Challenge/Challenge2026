@@ -220,6 +220,7 @@ func _spawn_agents(bundle: String, agent_file: String) -> void:
 	agent.game = self
 	agent.bundle_dir = bundle
 	agent.agent_file = agent_file
+	agent.open_terminal = Global.open_agent_terminal
 	add_child(agent)
 
 
