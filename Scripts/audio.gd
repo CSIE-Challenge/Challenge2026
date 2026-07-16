@@ -110,7 +110,7 @@ func set_bgm(bgm: BGM) -> void:
 		_fade_tween.kill()
 
 	_current_bgm = bgm
-	_bgm_playlist = _as_audio_stream_array(_bgm_playlists.get(BGM.find_key(bgm), []))
+	_bgm_playlist = _bgm_playlists.get(BGM.find_key(bgm), []) as Array[AudioStream]
 	_last_track_index = -1
 
 	# swap available players
@@ -250,16 +250,6 @@ func play_coconut_sfx(combo: int) -> void:
 			play_sfx(SFX.ENERGY_COMBO_6)
 
 
-func _as_audio_stream_array(value: Variant) -> Array:
-	var tracks: Array = []
-	if not value is Array:
-		return tracks
-	for stream in value:
-		if stream is AudioStream:
-			tracks.append(stream)
-	return tracks
-
-
 func _get_property_list() -> Array[Dictionary]:
 	var properties: Array[Dictionary] = []
 
@@ -304,7 +294,7 @@ func _get(property):
 func _set(property, value):
 	if property.ends_with("_tracks"):
 		var bgm_type = property.left(-7)
-		_bgm_playlists[bgm_type.to_upper()] = _as_audio_stream_array(value)
+		_bgm_playlists[bgm_type.to_upper()] = value as Array[AudioStream]
 		return true
 	elif property.ends_with("_sfx"):
 		var sfx_name = property.left(-4)

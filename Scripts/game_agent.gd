@@ -276,11 +276,12 @@ func _coerce_to_vector2(value: Variant) -> Dictionary:
 		return {"ok": true, "value": value}
 
 	if typeof(value) == TYPE_ARRAY:
-		if value.size() != 2:
+		var arr: Array = value
+		if arr.size() != 2:
 			return {"ok": false, "value": Vector2.ZERO}
-		if not _is_number(value[0]) or not _is_number(value[1]):
+		if not _is_number(arr[0]) or not _is_number(arr[1]):
 			return {"ok": false, "value": Vector2.ZERO}
-		return {"ok": true, "value": Vector2(float(value[0]), float(value[1]))}
+		return {"ok": true, "value": Vector2(float(arr[0]), float(arr[1]))}
 
 	if typeof(value) == TYPE_DICTIONARY:
 		var dict: Dictionary = value
