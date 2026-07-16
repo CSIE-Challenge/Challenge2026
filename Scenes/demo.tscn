@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://dle4xt8upfg42" path="res://Shapes/Square.svg" id="4_qdju7"]
 [ext_resource type="Script" uid="uid://d2y578q176xkm" path="res://Scripts/high_stage.gd" id="5_high_stage"]
 [ext_resource type="Texture2D" uid="uid://f5ertr28h6kq" path="res://Shapes/feather.svg" id="6_feather"]
+[ext_resource type="Script" uid="uid://cxd17lrphypsv" path="res://Scripts/game_camera.gd" id="7_camera"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_f2jw5"]
 texture = ExtResource("1_glc8m")
@@ -136,6 +137,12 @@ render_target_update_mode = 4
 position = Vector2(576, 384)
 offset = Vector2(0, -130)
 zoom = Vector2(0.833333, 0.833333)
+script = ExtResource("7_camera")
+screen_center = Vector2(0, -130)
+shake_time = 0.1
+shake_magnitude = 8.0
+
+[node name="ShakeTimer" type="Timer" parent="ScreenA/SubViewport/Camera2D"]
 
 [node name="StageA" type="Node2D" parent="ScreenA/SubViewport" unique_id=1595512188]
 position = Vector2(576, 324)
@@ -228,6 +235,12 @@ render_target_update_mode = 4
 position = Vector2(576, 384)
 offset = Vector2(0, -130)
 zoom = Vector2(0.833333, 0.833333)
+script = ExtResource("7_camera")
+screen_center = Vector2(0, -130)
+shake_time = 0.1
+shake_magnitude = 8.0
+
+[node name="ShakeTimer" type="Timer" parent="ScreenB/SubViewport/Camera2D"]
 
 [node name="StageB" type="Node2D" parent="ScreenB/SubViewport" unique_id=397604795]
 position = Vector2(576, 324)
@@ -526,7 +539,7 @@ texture = ExtResource("6_feather")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="DemoRenderer" type="Node" parent="." unique_id=295691669 node_paths=PackedStringArray("stage_a", "stage_b", "time_label", "phase_label", "pregame_countdown", "screen_a_energy", "screen_a_health", "screen_b_energy", "screen_b_health", "stage_layer", "high_stage_a", "high_stage_b")]
+[node name="DemoRenderer" type="Node" parent="." unique_id=295691669 node_paths=PackedStringArray("stage_a", "stage_b", "time_label", "phase_label", "pregame_countdown", "screen_a_energy", "screen_a_health", "screen_b_energy", "screen_b_health", "stage_layer", "high_stage_a", "high_stage_b", "camera_a", "camera_b")]
 script = ExtResource("1_demo")
 stage_a = NodePath("../ScreenA/SubViewport/StageA")
 stage_b = NodePath("../ScreenB/SubViewport/StageB")
@@ -540,3 +553,5 @@ screen_b_health = NodePath("../HUD/ScreenB_Health")
 stage_layer = NodePath("../StageLayer")
 high_stage_a = NodePath("../HigherThanPlayerA/Stage")
 high_stage_b = NodePath("../HigherThanPlayerB/Stage")
+camera_a = NodePath("../ScreenA/SubViewport/Camera2D")
+camera_b = NodePath("../ScreenB/SubViewport/Camera2D")

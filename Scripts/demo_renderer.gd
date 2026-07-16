@@ -19,6 +19,8 @@ const FALLBACK_HEALTH_TEXTURE = preload("res://Shapes/feather.svg")
 @export var stage_layer: CanvasLayer
 @export var high_stage_a: Node2D
 @export var high_stage_b: Node2D
+@export var camera_a: Camera2D
+@export var camera_b: Camera2D
 
 var _ghosts_a: Dictionary = {}
 var _ghosts_b: Dictionary = {}
@@ -78,6 +80,7 @@ func _ready() -> void:
 			"health_root": screen_a_health,
 			"health_icons": [],
 			"health_value": -1,
+			"camera": camera_a,
 		},
 		{
 			"ghosts": _ghosts_b,
@@ -93,6 +96,7 @@ func _ready() -> void:
 			"health_root": screen_b_health,
 			"health_icons": [],
 			"health_value": -1,
+			"camera": camera_b,
 		},
 	]
 
@@ -484,11 +488,19 @@ func _update_health_hud(screen: Dictionary, skin_id: String, max_health: int) ->
 
 ## Sets the alpha of each health icon: bright for alive, dim for lost.
 func _refresh_health_display(screen: Dictionary, health: int) -> void:
+	var prev_health: int = screen.get("health_value", -1)
+	screen["health_value"] = health
+
 	var icons: Array = screen.get("health_icons", [])
 	for i in range(icons.size()):
 		var icon: TextureRect = icons[i]
 		if is_instance_valid(icon):
 			icon.modulate = Color(1, 1, 1, 1.0 if i < health else 0.25)
+
+	if prev_health != -1 and health < prev_health:
+		var cam: Camera2D = screen.get("camera")
+		if cam and cam.has_method("shake_cam"):
+			cam.shake_cam()
 
 
 ## Loads a skin instance from its skin_id, or returns null on failure.
