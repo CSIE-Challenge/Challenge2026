@@ -117,7 +117,6 @@ func _update_fall_physics(t: float) -> void:
 
 func _on_max_point_timer_timeout() -> void:
 	max_trail_points = clampi(max_trail_points - 1, 0, max_point)
-	print(max_trail_points)
 
 
 func _spawn_ring():
