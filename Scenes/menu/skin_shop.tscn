@@ -273,7 +273,7 @@ horizontal_alignment = 1
 [node name="RedeemInput" type="LineEdit" parent="RedeemPopup/CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1352494103]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-placeholder_text = "🗲 請輸入兌換碼 🗲"
+placeholder_text = "⚡ 請輸入兌換碼 ⚡"
 alignment = 1
 
 [node name="MessageLabel" type="Label" parent="RedeemPopup/CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=983312105]
