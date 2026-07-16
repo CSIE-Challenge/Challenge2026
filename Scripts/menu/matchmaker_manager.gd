@@ -10,6 +10,7 @@ const SETTINGS_SECTION := "matchmaker"
 const DEFAULT_AGENT_DIR := "agent/scripts"
 const UPLOADED_AGENT_DIR := "uploaded_agents"
 const MAX_AGENT_BYTES := 262144
+const HOST_MIN_LEN := 4
 
 var _matchmaker_ip := ""
 var _room_code := ""
@@ -29,6 +30,7 @@ var _countdown_timer: Timer
 var _poll_timer: Timer
 var _pending_request := ""
 var _poll_pending := false
+var _check_intent := ""  # "create" or "join" — action to run after a successful probe
 
 var _countdown_text_d: String = ""
 var _status_text_d: String = ""
@@ -178,9 +180,35 @@ func _show_panel(panel: Page) -> void:
 	panel_d.visible = (panel == Page.D)
 
 
+func _matchmaker_base() -> String:
+	# Accept "ip:port". Reject a host shorter than Godot's HOST_MIN_LEN.
+	var addr := _matchmaker_ip.strip_edges()
+	addr = addr.trim_prefix("http://").trim_prefix("https://")
+	var slash := addr.find("/")
+	if slash != -1:
+		addr = addr.substr(0, slash)
+	if addr == "":
+		return ""
+	var host := addr
+	var colon := addr.rfind(":")
+	if colon != -1:
+		host = addr.substr(0, colon)
+	if host.strip_edges().length() < HOST_MIN_LEN:
+		return ""
+	return "http://" + addr
+
+
+func _valid_game_endpoint() -> bool:
+	return _game_ip != "" and _game_port >= 1 and _game_port <= 65535
+
+
 func _post(path: String, body: Dictionary, tag: String) -> void:
+	var base := _matchmaker_base()
+	if base == "":
+		_handle_error("Invalid server address")
+		return
 	_pending_request = tag
-	var url := "http://" + _matchmaker_ip + path
+	var url := base + path
 	var json_body := JSON.stringify(body)
 	var headers := PackedStringArray(["Content-Type: application/json"])
 	var err := http_request.request(url, headers, HTTPClient.METHOD_POST, json_body)
@@ -189,8 +217,13 @@ func _post(path: String, body: Dictionary, tag: String) -> void:
 
 
 func _http_get(path: String, _tag: String) -> void:
+	var base := _matchmaker_base()
+	if base == "":
+		_poll_pending = false
+		_handle_error("Invalid server address")
+		return
 	_poll_pending = true
-	var url := "http://" + _matchmaker_ip + path
+	var url := base + path
 	var err := poll_http_request.request(url)
 	if err != OK:
 		_poll_pending = false
@@ -215,6 +248,10 @@ func _on_request_completed(
 	var body_str := body.get_string_from_utf8()
 	var tag := _pending_request
 	_pending_request = ""
+
+	if tag == "check_server":
+		_on_check_server_response(result, body_str)
+		return
 
 	var data: Dictionary
 	var test_json := JSON.new()
@@ -276,10 +313,7 @@ func _on_ip_text_changed(new_text: String) -> void:
 
 func _on_create_room_button_up() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
-	if _matchmaker_ip == "":
-		_handle_error("Please enter a server address")
-		return
-	_post("/qiaohu/room", {}, "create_room")
+	_begin_server_check("create")
 
 
 func _on_create_room_response(data: Dictionary) -> void:
@@ -292,6 +326,10 @@ func _on_create_room_response(data: Dictionary) -> void:
 	_player_id = data.get("player_id", "")
 
 	print("[Matchmaker] Room created: ", _room_code, " game at ", _game_ip, ":", _game_port)
+
+	if not _valid_game_endpoint():
+		_handle_error("Invalid response from server")
+		return
 
 	var err := NetworkManager.join_server(_game_ip, _game_port)
 	if err != OK:
@@ -308,9 +346,65 @@ func _on_create_room_response(data: Dictionary) -> void:
 
 func _on_join_room_button_up() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
-	code_input.text = ""
-	_show_panel(Page.C)
-	code_input.grab_focus()
+	_begin_server_check("join")
+
+
+# Probe the address and confirm it is our matchmaker before create/join proceeds.
+func _begin_server_check(intent: String) -> void:
+	if _matchmaker_ip == "":
+		_handle_error("Please enter a server address")
+		return
+	var base := _matchmaker_base()
+	if base == "":
+		_handle_error("Invalid server address")
+		return
+
+	_check_intent = intent
+	create_room_button.disabled = true
+	join_room_button.disabled = true
+
+	_pending_request = "check_server"
+	http_request.timeout = 5.0
+	var err := http_request.request(base + "/qiaohu/status")
+	if err != OK:
+		_on_check_server_response(HTTPRequest.RESULT_CANT_CONNECT, "")
+
+
+func _on_check_server_response(result: int, body_str: String) -> void:
+	http_request.timeout = 0.0
+	create_room_button.disabled = false
+	join_room_button.disabled = false
+
+	if result != HTTPRequest.RESULT_SUCCESS:
+		_handle_error("Cannot reach server")
+		return
+
+	if not _is_matchmaker_response(body_str):
+		_handle_error("Cannot reach server")
+		return
+
+	error_label_a.visible = false
+	error_label_a.text = ""
+
+	# Server confirmed — run whatever the player originally asked for.
+	if _check_intent == "create":
+		_post("/qiaohu/room", {"game_version": Global.game_version}, "create_room")
+	else:
+		code_input.text = ""
+		_show_panel(Page.C)
+		code_input.grab_focus()
+
+
+func _is_matchmaker_response(body_str: String) -> bool:
+	# GET /qiaohu/status with no code is answered by our matchmaker with
+	# {"error":"room not found"}
+	var json := JSON.new()
+	if json.parse(body_str) != OK:
+		return false
+	var data: Variant = json.get_data()
+	if typeof(data) != TYPE_DICTIONARY:
+		return false
+	return (data as Dictionary).get("error", "") == "room not found"
 
 
 func _on_back_button_up() -> void:
@@ -365,7 +459,7 @@ func _on_confirm_join_button_up() -> void:
 	if _matchmaker_ip == "":
 		_handle_error("Please enter a server address")
 		return
-	_post("/qiaohu/join", {"code": code}, "join_room")
+	_post("/qiaohu/join", {"code": code, "game_version": Global.game_version}, "join_room")
 
 
 func _on_join_room_response(data: Dictionary) -> void:
@@ -378,6 +472,10 @@ func _on_join_room_response(data: Dictionary) -> void:
 	_room_code = code_input.text.strip_edges().to_upper()
 
 	print("[Matchmaker] Joined room ", _room_code, " game at ", _game_ip, ":", _game_port)
+
+	if not _valid_game_endpoint():
+		_handle_error("Invalid response from server")
+		return
 
 	var err := NetworkManager.join_server(_game_ip, _game_port)
 	if err != OK:
@@ -720,4 +818,6 @@ func _error_message(error: String) -> String:
 			return "Authentication failed"
 		"game already started":
 			return "Game has already started"
+		"version mismatch":
+			return "Game version mismatch, please update your game"
 	return "Unable to connect to server"

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg1"
+   inkscape:export-filename="Godot\Challenge2026\Shapes\walile\walile_tire.svg"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   sodipodi:docname="Walile.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm">
+    <inkscape:page
+       x="0"
+       y="0"
+       width="210"
+       height="297"
+       id="page2"
+       margin="0"
+       bleed="0" />
+  </sodipodi:namedview>
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="圖層 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       id="rect3"
+       style="stroke-width:6.80007;stroke-dasharray:none;paint-order:markers fill stroke"
+       d="m 107.38902,143.77883 c 0.87542,1.46774 1.75082,2.93549 2.62625,4.4032 0.99338,1.66557 -0.65493,5.00239 -2.47249,5.00525 -1.69649,0.002 -3.39298,0.006 -5.08948,0.009 -1.95106,0.002 -3.768003,-3.42418 -2.725417,-5.14088 0.863797,-1.42233 1.727607,-2.84465 2.591407,-4.26697 0.85345,-1.40528 4.23328,-1.41103 5.06973,-0.009 z"
+       sodipodi:nodetypes="sssssss" />
+    <path
+       id="rect3-1"
+       style="fill:#333333;stroke-width:4.81664;stroke-dasharray:none;paint-order:markers fill stroke"
+       d="m 106.64535,145.25516 c 0.62056,1.03886 1.24107,2.0777 1.86165,3.11653 0.70416,1.17885 -0.46428,3.54062 -1.75265,3.54264 -1.20258,0.002 -2.40515,0.003 -3.60772,0.006 -1.38303,0.002 -2.67099,-2.42358 -1.93194,-3.63866 0.61231,-1.00668 1.22463,-2.01338 1.83694,-3.02009 0.60498,-0.99464 3.0008,-0.9987 3.59372,-0.006 z"
+       sodipodi:nodetypes="sssssss" />
+  </g>
+</svg>

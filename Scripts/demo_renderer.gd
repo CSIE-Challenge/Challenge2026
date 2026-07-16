@@ -4,6 +4,8 @@
 class_name DemoRenderer
 extends Node
 
+const ProxyClass = preload("res://Scripts/demo_player_proxy.gd")
+
 @export var stage_a: Node2D
 @export var stage_b: Node2D
 
@@ -44,8 +46,24 @@ func _ready() -> void:
 		_setup_walls(stage_b)
 
 	_screens = [
-		{"ghosts": _ghosts_a, "balls": _balls_a, "stage": stage_a, "player": _player_a},
-		{"ghosts": _ghosts_b, "balls": _balls_b, "stage": stage_b, "player": _player_b},
+		{
+			"ghosts": _ghosts_a,
+			"balls": _balls_a,
+			"stage": stage_a,
+			"player": _player_a,
+			"prev_player": {},
+			"proxy": null,
+			"loaded_skin_id": "",
+		},
+		{
+			"ghosts": _ghosts_b,
+			"balls": _balls_b,
+			"stage": stage_b,
+			"player": _player_b,
+			"prev_player": {},
+			"proxy": null,
+			"loaded_skin_id": "",
+		},
 	]
 
 
@@ -217,37 +235,126 @@ func _instantiate_energy_ball() -> Node:
 
 
 ## Creates or updates the player ghost on [param stage] from [param player_state].
-## Uses a simplified colored circle sprite to represent the player.
+## Instantiates the player's skin prefab (same as gameplay) with full animations,
+## falling back to a blue circle sprite if skin loading fails.
 func _apply_player(screen: Dictionary, stage: Node2D, player_state: Dictionary) -> void:
 	if player_state.is_empty():
 		return
 
+	var skin_id: String = player_state.get("skin_id", "")
 	var ghost: Node2D = screen["player"]
+	var prev: Dictionary = screen.get("prev_player", {})
+
+	# Determine desired skin class: non-empty skin_id → BaseSkin, otherwise fallback
+	var desired_is_skin := not skin_id.is_empty()
+	var current_is_skin := ghost and ghost is BaseSkin
+	var skin_changed: bool = (
+		desired_is_skin and (not current_is_skin or skin_id != screen.get("loaded_skin_id", ""))
+	)
+
+	# Destroy old ghost if type or skin_id changed
+	if ghost and (skin_changed or (not desired_is_skin and current_is_skin)):
+		if is_instance_valid(ghost):
+			ghost.queue_free()
+		ghost = null
+		screen["player"] = null
+		screen["proxy"] = null
+		screen["loaded_skin_id"] = ""
+		prev = {}
+
+	# Create ghost if needed
 	if not is_instance_valid(ghost):
-		ghost = _create_player_ghost(stage)
+		if desired_is_skin:
+			ghost = _load_skin(skin_id)
+			if ghost:
+				ghost.z_index = Util.LAYERS["Player/BodySprite"]
+				var proxy: Node2D = ProxyClass.new()
+				proxy.name = "PlayerProxy"
+				ghost.set_meta("player", proxy)
+				stage.add_child(ghost)
+				stage.add_child(proxy)
+				screen["proxy"] = proxy
+				screen["loaded_skin_id"] = skin_id
+				if ghost.has_method("play_spawn"):
+					ghost.play_spawn()
+			else:
+				ghost = _create_player_ghost(stage)
+		else:
+			ghost = _create_player_ghost(stage)
 		screen["player"] = ghost
 
+	# Update position
 	var pos: Vector2 = player_state.get("position", Vector2.ZERO)
-	ghost.global_position = pos
-
-	# Jump visual: sprite bobs upward during jump
 	var sprite_y: float = player_state.get("sprite_y", 0.0)
-	ghost.position.y -= sprite_y
+	ghost.global_position = Vector2(pos.x, pos.y - sprite_y)
 
-	# Invincibility flicker via modulate alpha
+	# Update velocity for skin _process() animations
+	var vel: Vector2 = player_state.get("velocity", Vector2.ZERO)
+	if ghost is BaseSkin:
+		var proxy = screen.get("proxy")
+		if is_instance_valid(proxy):
+			proxy.velocity = vel
+
+	# Update invincibility flicker
 	var alpha: float = player_state.get("modulate_alpha", 1.0)
 	ghost.modulate.a = alpha
 
+	# Detect animation transitions
+	if ghost is BaseSkin:
+		# Jump → call play_jump()
+		var was_jumping: bool = prev.get("is_jumping", false)
+		var is_jumping: bool = player_state.get("is_jumping", false)
+		if is_jumping and not was_jumping and ghost.has_method("play_jump"):
+			ghost.play_jump()
 
-## Creates a simple player ghost sprite on [param stage].
-## Returns the created Node2D.
+		# Land → call play_land()
+		if not is_jumping and was_jumping and ghost.has_method("play_land"):
+			ghost.play_land()
+
+		# Death → call play_die() (only once, when health drops to 0)
+		var prev_health: int = prev.get("health", 0)
+		var health: int = player_state.get("health", 0)
+		if health <= 0 and prev_health > 0 and ghost.has_method("play_die"):
+			ghost.play_die()
+
+		# Ball collected → call play_eat_ball()
+		var prev_balls: int = prev.get("energy_ball_count", 0)
+		var balls: int = player_state.get("energy_ball_count", 0)
+		if balls > prev_balls and ghost.has_method("play_eat_ball"):
+			for _i in range(balls - prev_balls):
+				ghost.play_eat_ball()
+
+	# Store state for next comparison
+	screen["prev_player"] = {
+		"is_jumping": player_state.get("is_jumping", false),
+		"health": player_state.get("health", 0),
+		"energy_ball_count": player_state.get("energy_ball_count", 0),
+	}
+
+
+## Loads a skin instance from its skin_id, or returns null on failure.
+func _load_skin(skin_id: String) -> Node2D:
+	if skin_id.is_empty():
+		return null
+	var skin_path := "res://Assets/skins/" + skin_id + ".tres"
+	if not ResourceLoader.exists(skin_path):
+		push_warning("[DemoRenderer] Skin resource not found: %s" % skin_path)
+		return null
+	var skin_data = load(skin_path) as SkinData
+	if not skin_data or not skin_data.skin_prefab:
+		push_warning("[DemoRenderer] Invalid SkinData or missing prefab: %s" % skin_id)
+		return null
+	return skin_data.skin_prefab.instantiate()
+
+
+## Creates a fallback blue circle player ghost when skin loading fails.
 func _create_player_ghost(stage: Node2D) -> Node2D:
 	var ghost := Sprite2D.new()
 	ghost.name = "PlayerGhost"
 	ghost.texture = preload("res://Shapes/Circle.svg")
 	ghost.scale = Vector2(0.2, 0.2)
 	ghost.z_index = Util.LAYERS["Player/BodySprite"]
-	ghost.modulate = Color(0.2, 0.6, 1.0, 1.0)  # Blue tint to distinguish from energy balls
+	ghost.modulate = Color(0.2, 0.6, 1.0, 1.0)
 	stage.add_child(ghost)
 	return ghost
 

@@ -101,6 +101,7 @@ func _ready() -> void:
 
 	get_tree().paused = true
 	await get_tree().create_timer(0.3).timeout
+	Audio.set_bgm(Audio.BGM.NONE)
 	if _is_multiplayer_game():
 		pregame_countdown.text = "Waiting for opponent..."
 		pregame_countdown.show()
@@ -219,6 +220,7 @@ func _spawn_agents(bundle: String, agent_file: String) -> void:
 	agent.game = self
 	agent.bundle_dir = bundle
 	agent.agent_file = agent_file
+	agent.open_terminal = Global.open_agent_terminal
 	add_child(agent)
 
 
@@ -366,6 +368,9 @@ func on_player_hit(damage: int) -> void:
 	camera.shake_cam()
 	NetworkManager.request_damage_health(damage)
 	Audio.play_sfx(Audio.SFX.TAKE_DAMAGE)
+	if is_instance_valid(player) and is_instance_valid(player.skin_instance):
+		if player.skin_instance.has_method("play_hit"):
+			player.skin_instance.play_hit()
 
 
 func _on_game_duration_timeout() -> void:
@@ -452,11 +457,15 @@ func finish_game(state: int = 0, authoritative_stats: Dictionary = {}) -> void:
 		Audio.play_sfx(Audio.SFX.PLAYER_DIE)
 	_close_pause_overlay_for_finish()
 	game_over = true
-	get_tree().paused = true
-	energy_increase_timer.stop()
-	player_invincibility_timer.stop()
-	if trap_request_scheduler != null:
-		trap_request_scheduler.clear()
+	if get_tree() != null:
+		get_tree().paused = true
+		_stop_gameplay_timers()
+		_clear_gameplay_backend_state()
+		_disconnect_runtime_signals()
+		_shutdown_running_agents()
+		ApiServer.clear_used_tokens()
+		NetworkManager.stop_network()
+
 	player.set_physics_process(false)
 	player.collision_layer = 0
 	player.collision_mask = 0
@@ -466,6 +475,9 @@ func finish_game(state: int = 0, authoritative_stats: Dictionary = {}) -> void:
 	if _is_multiplayer_game() and opponent_peer_id != -1:
 		# ResultScreen treats -1 as "hide opponent count", so only fill this in multiplayer.
 		opponent_energy_balls = NetworkManager.get_energy_ball_count(opponent_peer_id)
+	var health = player.health
+	if survival_time < game_duration and (state == 0 or state == 4):
+		health = 0
 	(
 		result_screen
 		. show_results(
@@ -476,7 +488,7 @@ func finish_game(state: int = 0, authoritative_stats: Dictionary = {}) -> void:
 				"jump_count": player.jump_count,
 				"distance_traveled": player.distance_traveled,
 				"survival_time": survival_time,
-				"remaining_health": player.health,
+				"remaining_health": health,
 				"trap_count": authoritative_stats.get("trap_count", 0),
 			},
 			state
@@ -568,6 +580,7 @@ func _shutdown_gameplay_for_scene_change() -> void:
 	_clear_gameplay_backend_state()
 	_disconnect_runtime_signals()
 	_shutdown_running_agents()
+	ApiServer.clear_used_tokens()
 	NetworkManager.stop_network()
 
 	if player != null:
@@ -589,6 +602,17 @@ func _clear_gameplay_backend_state() -> void:
 func _disconnect_runtime_signals() -> void:
 	if Global.player_hit.is_connected(on_player_hit):
 		Global.player_hit.disconnect(on_player_hit)
+	if (
+		is_instance_valid(player)
+		and Global.energyball_collected.is_connected(player._on_energy_ball_collected)
+	):
+		Global.energyball_collected.disconnect(player._on_energy_ball_collected)
+
+	if (
+		agent_action_service != null
+		and agent_action_service.trap_approved.is_connected(_on_trap_approved)
+	):
+		agent_action_service.trap_approved.disconnect(_on_trap_approved)
 	if Global.energyball_collected.is_connected(_on_energyball_collected):
 		Global.energyball_collected.disconnect(_on_energyball_collected)
 
@@ -601,6 +625,7 @@ func _disconnect_runtime_signals() -> void:
 func _shutdown_running_agents() -> void:
 	for child in get_children():
 		if child is GameAgent:
+			child.shutdown()
 			child.queue_free()
 
 
@@ -648,6 +673,7 @@ func _on_network_health_changed(peer_id: int, health: int) -> void:
 		if player == null:
 			return
 		if player.health <= 0 and not _is_multiplayer_game():
+			health_icon.died = true
 			await player.die()
 		_finish_game_if_peer_defeated(peer_id, health)
 		return

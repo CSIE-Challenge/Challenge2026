@@ -7,7 +7,14 @@ var current_preview_model: Node = null  # 紀錄目前在 SubViewport 裡的皮�
 var instanced_items: Array[Control] = []  # 紀錄畫面上所有的商品節點
 
 var detail_viewport: SubViewport
+var detail_viewport_container: SubViewportContainer
 var close_btn: TextureButton
+var mouse_offset: Vector2
+var close_btn_pressed_time: float
+var drag_threshold = 0.25
+var close_btn_dragging: bool
+var close_btn_item: Node
+var target_position: Vector2
 
 var current_detail_data: SkinData = null
 var redeem_codes = {}
@@ -66,6 +73,12 @@ func _ready():
 		+ "SubViewportContainer/SubViewport"
 	)
 	detail_viewport = get_node(dv_path)
+	detail_viewport_container = get_node(
+		(
+			"DetailPopup/CenterContainer/PopupPanel/MarginContainer/HBoxContainer/PreviewVBox/"
+			+ "SubViewportContainer"
+		)
+	)
 	var cb_path = "DetailPopup/LeaveBtn"
 	close_btn = get_node(cb_path)
 
@@ -102,7 +115,8 @@ func _input(event: InputEvent) -> void:
 
 
 func _on_main_close_pressed():
-	# 離開商店回到主畫面
+	if close_btn_pressed_time > drag_threshold:
+		return
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	SceneTransition.transition_to("res://Scenes/menu.tscn")
 
@@ -144,6 +158,9 @@ func populate_shop():
 		# 初始化商品狀態
 		item.setup(data)
 		instanced_items.append(item)
+
+		if data.skin_id == "close_button_skin":
+			close_btn_item = item
 
 
 # ==========================================
@@ -249,6 +266,16 @@ func _on_redeem_submit_pressed():
 	if redeem_codes.has(code_hash):
 		var skin_id = redeem_codes[code_hash]
 
+		if (
+			skin_id == "golden_skin"
+			or skin_id == "sans_skin"
+			or skin_id == "driftwood_skin"
+			or skin_id == "close_button_skin"
+			or skin_id == "walile_skin"
+		):
+			show_message("兌換碼不存在或無效！")
+			return
+
 		if not PlayerData.has_skin(skin_id):
 			PlayerData.add_entered_code(code)
 			PlayerData.skin_unlocked.emit(skin_id)
@@ -258,7 +285,14 @@ func _on_redeem_submit_pressed():
 		else:
 			show_message("已經兌換過此皮膚！")
 	else:
-		show_message("兌換碼不存在或無效！")
+		if code.length() >= 31 and not PlayerData.has_skin("walile_skin"):
+			var wale_code = Marshalls.base64_to_utf8("Mk0yMzQ4NTdOMDI0ODdOVzg3RVI=")
+			PlayerData.add_entered_code(wale_code)
+			PlayerData.skin_unlocked.emit("walile_skin")
+			SceneTransition.show_achievement("獲得成就：蓄勢待發！")
+			refresh_all_items()
+		else:
+			show_message("兌換碼不存在或無效！")
 
 
 # 重新整理所有商品的狀態
@@ -289,6 +323,15 @@ func _on_item_detail_requested(data: SkinData):
 		current_preview_model.queue_free()
 		current_preview_model = null
 
+	# 把皮膚丟到展示舞台上預覽！
+	var ShowcaseStageScene = preload("res://Scenes/menu/showcase_stage.tscn")
+	var stage
+	if data.skin_prefab:
+		stage = ShowcaseStageScene.instantiate()
+		detail_viewport.add_child(stage)
+		stage.setup(data.skin_prefab)
+		current_preview_model = stage
+
 	# 2. 根據狀態更新視窗內容
 	if is_locked_silhouette:
 		if data.hide_name:
@@ -302,7 +345,10 @@ func _on_item_detail_requested(data: SkinData):
 		action_btn.text = "未解鎖"
 		action_btn.disabled = true
 		lock_icon.visible = true
-		# 鎖定狀態不載入模型
+
+		# 讓舞台設定並開始表演全黑畫面
+		detail_viewport_container.modulate = Color(0, 0, 0)
+		stage.set_shadow(false)
 	else:
 		detail_title.text = data.true_name
 		detail_desc.text = data.description
@@ -338,18 +384,9 @@ func _on_item_detail_requested(data: SkinData):
 			action_btn.modulate = Color(0.8, 0.8, 0.8, 1)  # 顯示為灰色標籤
 			action_btn.visible = false
 
-		# 預先載入舞台場景
-		var ShowcaseStageScene = preload("res://Scenes/menu/showcase_stage.tscn")
-
-		# 把皮膚丟到展示舞台上預覽！
-		if data.skin_prefab:
-			var stage = ShowcaseStageScene.instantiate()
-			detail_viewport.add_child(stage)
-
-			# 讓舞台去設定並開始表演
-			stage.setup(data.skin_prefab)
-
-			current_preview_model = stage
+		# 讓舞台去設定並開始表演
+		detail_viewport_container.modulate = Color(1, 1, 1, 1)
+		stage.set_shadow(true)
 
 	# 3. 播放超 Q 彈的彈出特效
 	detail_popup.visible = true
@@ -391,3 +428,31 @@ func _on_close_popup_pressed():
 	if current_preview_model:
 		current_preview_model.queue_free()
 		current_preview_model = null
+
+
+func _process(delta: float) -> void:
+	if main_close_btn.is_hovered() and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		close_btn_pressed_time += delta
+		if close_btn_pressed_time > drag_threshold:
+			close_btn_dragging = true
+		else:
+			mouse_offset = main_close_btn.global_position - get_global_mouse_position()
+	elif not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		close_btn_pressed_time = 0
+		close_btn_dragging = false
+
+	if close_btn_dragging:
+		main_close_btn.global_position = get_global_mouse_position() + mouse_offset
+
+	target_position = close_btn_item.global_position + Vector2(76, 65.2)
+	if (
+		(main_close_btn.global_position - target_position).length() < 5
+		and not PlayerData.has_skin("close_button_skin")
+	):
+		main_close_btn.global_position += (target_position - main_close_btn.global_position) * 0.1
+		if (main_close_btn.global_position - target_position).length() < 0.1:
+			var twi_code = Marshalls.base64_to_utf8("Q0xPU0VGUVdSMjMxOFJORjJBU0Q=")
+			PlayerData.add_entered_code(twi_code)
+			PlayerData.skin_unlocked.emit("close_button_skin")
+			SceneTransition.show_achievement("獲得成就：嚴絲合縫！")
+			refresh_all_items()

@@ -14,26 +14,32 @@ func setup(skin_prefab: PackedScene):
 			_play_loop()
 
 
+func set_shadow(shadow_on: bool):
+	if shadow_on:
+		shadow.scale = Vector2(0.2, 0.2)
+		shadow.modulate.a = 1.0
+	else:
+		shadow.scale = Vector2.ZERO
+		shadow.modulate.a = 0.0
+
+
 func _play_loop():
-	# 為了防止殘影，初始狀態設定
 	body_pivot.position.y = 0
-	shadow.scale = Vector2(0.2, 0.2)
-	shadow.modulate.a = 1.0
 
 	while is_inside_tree():
 		# 1. Spawn (出生)
 		if current_skin.has_method("play_spawn"):
-			current_skin.play_spawn()
+			await current_skin.play_spawn()
 
-		await get_tree().create_timer(1.5).timeout
+		await get_tree().create_timer(0.5).timeout
 		if not is_inside_tree():
 			break
 
 		# 2. Eat Ball (吃球)
 		if current_skin.has_method("play_eat_ball"):
-			current_skin.play_eat_ball()
+			await current_skin.play_eat_ball()
 
-		await get_tree().create_timer(1.0).timeout
+		await get_tree().create_timer(0.5).timeout
 		if not is_inside_tree():
 			break
 
@@ -72,6 +78,6 @@ func _play_loop():
 
 		# 5. Die (死亡)
 		if current_skin.has_method("play_die"):
-			current_skin.play_die()
+			await current_skin.play_die()
 
-		await get_tree().create_timer(1.5).timeout
+		await get_tree().create_timer(1.0).timeout

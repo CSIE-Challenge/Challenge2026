@@ -44,6 +44,7 @@ func _spawn_afterimage():
 
 func play_spawn():
 	scale = Vector2.ZERO
+	body.modulate.a = 1.0
 	smoke_particles.restart()
 	smoke_particles.emitting = true
 	var tween = create_tween()

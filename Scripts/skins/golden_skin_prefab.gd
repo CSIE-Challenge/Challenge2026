@@ -11,6 +11,11 @@ var died = false
 func _process(_delta: float) -> void:
 	if !died:
 		sprite.material.set_shader_parameter("alpha", modulate.a)
+	if modulate == Color(0, 0, 0, 1):
+		var tween = create_tween()
+		tween.parallel().tween_property(
+			sprite.material, "shader_parameter/base_color", Color(0, 0, 0, 1), 0
+		)
 
 
 func play_spawn():

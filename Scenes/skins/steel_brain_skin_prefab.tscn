@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://steelbrainprefab"]
+[gd_scene format=3 uid="uid://diujhb0dnb2d2"]
 
 [ext_resource type="Script" uid="uid://steelbrainskinscript" path="res://Scripts/skins/steel_brain_skin_prefab.gd" id="1_brain"]
 [ext_resource type="Texture2D" uid="uid://bevp5kggljn50" path="res://Shapes/steel_brain_icon.svg" id="2_brain"]

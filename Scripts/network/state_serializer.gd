@@ -94,6 +94,7 @@ func _serialize_player(p: Node) -> Dictionary:
 		"modulate_alpha": p.modulate.a if "modulate" in p else 1.0,
 		"energy": energy,
 		"energy_ball_count": ball_count,
+		"skin_id": p.get("skin_id") if "skin_id" in p else "",
 	}
 
 
@@ -132,8 +133,8 @@ func _serialize_traps() -> Array[Dictionary]:
 ## Returns an empty Dictionary if the node is not a recognized trap.
 ## v2: delegates to the trap's own serialize_state() method.
 func _serialize_single_trap(node: Node) -> Dictionary:
-	if node.has_method("_serialize_state"):
-		var data: Dictionary = node._serialize_state()
+	if node.has_method("serialize_state"):
+		var data: Dictionary = node.serialize_state()
 		data["id"] = _get_trap_id(node)
 		return data
 	return {}

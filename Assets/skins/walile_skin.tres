@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://dsn4c7df8o3dy"]
+
+[ext_resource type="Texture2D" uid="uid://guw7tk5vftd4" path="res://Shapes/walile/battery.svg" id="1_ekjd2"]
+[ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="2_hr0pa"]
+[ext_resource type="PackedScene" uid="uid://dlkk6ykujefjn" path="res://Scenes/skins/walile_skin_prefab.tscn" id="3_hr0pa"]
+
+[resource]
+script = ExtResource("2_hr0pa")
+skin_id = "walile_skin"
+true_name = "瓦力裂"
+description = "對到眼了就要決鬥，這是規矩！"
+price = 0
+is_achievement_unlock = true
+achievement_desc = "幫核心能源電池充飽電"
+skin_prefab = ExtResource("3_hr0pa")
+health_icon_texture = ExtResource("1_ekjd2")
+metadata/_custom_type_script = "uid://c6vuqckcyjdey"

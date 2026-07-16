@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://dlkk6ykujefjn"]
+
+[ext_resource type="Script" uid="uid://dwpygc3ayt6ui" path="res://Scripts/skins/walile_skin_prefab.gd" id="1_326hu"]
+[ext_resource type="Texture2D" uid="uid://bgpg10230ewfo" path="res://Shapes/walile/walile_neck.svg" id="2_3ncjv"]
+[ext_resource type="Texture2D" uid="uid://c4p3gwthqljye" path="res://Shapes/walile/walile_body.svg" id="3_j73sy"]
+[ext_resource type="Texture2D" uid="uid://dpt4ytsbhrhcv" path="res://Shapes/walile/walile_eye.svg" id="3_lhqmj"]
+[ext_resource type="Texture2D" uid="uid://c5oyyxarm4pxb" path="res://Shapes/walile/walile_tire.svg" id="4_lhqmj"]
+[ext_resource type="Texture2D" uid="uid://c7nndc6jfut2f" path="res://Shapes/walile/walile_wheel.svg" id="5_j73sy"]
+
+[node name="WalileSkinPrefab" type="Node2D" unique_id=738337618]
+scale = Vector2(0.8, 0.8)
+script = ExtResource("1_326hu")
+
+[node name="Neck" type="Sprite2D" parent="." unique_id=2009114525]
+position = Vector2(0, -20)
+texture = ExtResource("2_3ncjv")
+
+[node name="Body" type="Sprite2D" parent="." unique_id=1324828014]
+texture = ExtResource("3_j73sy")
+
+[node name="LeftEye" type="Sprite2D" parent="." unique_id=1861004871]
+position = Vector2(-18, -40)
+texture = ExtResource("3_lhqmj")
+
+[node name="RightEye" type="Sprite2D" parent="." unique_id=751792986]
+position = Vector2(18.75, -41.25)
+scale = Vector2(-1, 1)
+texture = ExtResource("3_lhqmj")
+
+[node name="LeftTire" type="Sprite2D" parent="." unique_id=128781138]
+position = Vector2(-24, 24)
+texture = ExtResource("4_lhqmj")
+
+[node name="LeftWheel" type="Sprite2D" parent="LeftTire" unique_id=1800149238]
+scale = Vector2(0.99999994, 0.99999994)
+texture = ExtResource("5_j73sy")
+
+[node name="RightTire" type="Sprite2D" parent="." unique_id=1861201530]
+position = Vector2(24, 24)
+texture = ExtResource("4_lhqmj")
+
+[node name="RightWheel" type="Sprite2D" parent="RightTire" unique_id=1091267217]
+scale = Vector2(0.99999994, 0.99999994)
+texture = ExtResource("5_j73sy")

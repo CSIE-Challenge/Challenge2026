@@ -1,0 +1,147 @@
+[gd_scene format=3 uid="uid://dybuhi2pvg53v"]
+
+[ext_resource type="Script" uid="uid://driftwoodscript" path="res://Scripts/skins/driftwood_skin_prefab.gd" id="1_dw"]
+[ext_resource type="Texture2D" uid="uid://driftwoodbody" path="res://Shapes/driftwood.svg" id="2_body"]
+[ext_resource type="Texture2D" uid="uid://driftwooddrop" path="res://Shapes/water_drop.svg" id="3_drop"]
+[ext_resource type="Texture2D" uid="uid://dybuhi2pyf4fy" path="res://Shapes/water_puddle.svg" id="4_puddle"]
+
+[sub_resource type="Curve" id="Curve_dw"]
+_data = [Vector2(0, 0.4), 0.0, 0.0, 0, 0, Vector2(0.5, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_fade"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="Gradient" id="Gradient_bubble"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 1, 1, 0.8, 1, 1, 1, 0)
+
+[node name="DriftwoodSkinPrefab" type="Node2D"]
+script = ExtResource("1_dw")
+
+[node name="Puddle" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(0, 15)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("4_puddle")
+
+[node name="Wood" type="Node2D" parent="."]
+
+[node name="Body" type="Sprite2D" parent="Wood"]
+position = Vector2(0, -2)
+scale = Vector2(0.38, 0.38)
+texture = ExtResource("2_body")
+
+[node name="Pennant" type="Polygon2D" parent="Wood"]
+visible = false
+position = Vector2(-1.5, -19.5)
+scale = Vector2(1, 0)
+polygon = PackedVector2Array(0, -5.5, 11, -2.75, 0, 0)
+color = Color(0.18, 0.5, 0.66, 1)
+
+[node name="Ripples" type="CPUParticles2D" parent="."]
+position = Vector2(0, 13)
+local_coords = false
+emitting = true
+amount = 6
+texture = ExtResource("3_drop")
+lifetime = 1.4
+emission_shape = 3
+emission_rect_extents = Vector2(17, 3)
+direction = Vector2(0, -1)
+spread = 25.0
+gravity = Vector2(0, -18)
+initial_velocity_min = 4.0
+initial_velocity_max = 12.0
+angular_velocity_min = -40.0
+angular_velocity_max = 40.0
+scale_amount_min = 0.35
+scale_amount_max = 0.6
+scale_amount_curve = SubResource("Curve_dw")
+color_ramp = SubResource("Gradient_bubble")
+
+[node name="SplashParticles" type="CPUParticles2D" parent="."]
+position = Vector2(0, 12)
+emitting = false
+amount = 14
+texture = ExtResource("3_drop")
+lifetime = 0.6
+one_shot = true
+explosiveness = 0.9
+emission_shape = 3
+emission_rect_extents = Vector2(15, 2)
+direction = Vector2(0, -1)
+spread = 65.0
+gravity = Vector2(0, 260)
+initial_velocity_min = 70.0
+initial_velocity_max = 150.0
+angular_velocity_min = -180.0
+angular_velocity_max = 180.0
+scale_amount_min = 0.4
+scale_amount_max = 0.8
+scale_amount_curve = SubResource("Curve_dw")
+color_ramp = SubResource("Gradient_fade")
+
+[node name="WaveSplash" type="CPUParticles2D" parent="."]
+position = Vector2(0, 13)
+emitting = false
+amount = 28
+texture = ExtResource("3_drop")
+lifetime = 0.85
+one_shot = true
+explosiveness = 1.0
+emission_shape = 3
+emission_rect_extents = Vector2(20, 3)
+direction = Vector2(0, -1)
+spread = 75.0
+gravity = Vector2(0, 320)
+initial_velocity_min = 140.0
+initial_velocity_max = 270.0
+angular_velocity_min = -240.0
+angular_velocity_max = 240.0
+scale_amount_min = 0.6
+scale_amount_max = 1.15
+scale_amount_curve = SubResource("Curve_dw")
+color_ramp = SubResource("Gradient_fade")
+
+[node name="WakeSpray" type="CPUParticles2D" parent="."]
+position = Vector2(0, 13)
+local_coords = false
+emitting = false
+amount = 12
+texture = ExtResource("3_drop")
+lifetime = 0.5
+emission_shape = 3
+emission_rect_extents = Vector2(16, 2)
+direction = Vector2(0, -1)
+spread = 40.0
+gravity = Vector2(0, 200)
+initial_velocity_min = 50.0
+initial_velocity_max = 100.0
+angular_velocity_min = -160.0
+angular_velocity_max = 160.0
+scale_amount_min = 0.3
+scale_amount_max = 0.55
+scale_amount_curve = SubResource("Curve_dw")
+color_ramp = SubResource("Gradient_fade")
+
+[node name="BubbleParticles" type="CPUParticles2D" parent="."]
+local_coords = false
+emitting = false
+amount = 10
+texture = ExtResource("3_drop")
+lifetime = 0.9
+one_shot = true
+explosiveness = 0.4
+emission_shape = 3
+emission_rect_extents = Vector2(12, 4)
+direction = Vector2(0, -1)
+spread = 30.0
+gravity = Vector2(0, -70)
+initial_velocity_min = 20.0
+initial_velocity_max = 55.0
+scale_amount_min = 0.3
+scale_amount_max = 0.55
+scale_amount_curve = SubResource("Curve_dw")
+color_ramp = SubResource("Gradient_bubble")

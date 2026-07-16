@@ -37,6 +37,13 @@ func _ready():
 func setup(data: SkinData):
 	skin_data = data
 
+	if skin_data.skin_id == "close_button_skin":
+		sub_viewport_container.scale = Vector2.ONE * 1.25
+		sub_viewport_container.position = Vector2(-19, -13.6)
+	else:
+		sub_viewport_container.scale = Vector2.ONE
+		sub_viewport_container.position = Vector2.ZERO
+
 	# 活體預覽：把 Prefab 塞進卡片的 SubViewport
 	if skin_data.skin_prefab:
 		# 為了避免和詳細展示衝突，我們為卡片創建獨立實例

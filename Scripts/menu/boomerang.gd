@@ -42,7 +42,7 @@ func _ready() -> void:
 	if particles:
 		particles.emitting = true
 	if particles2:
-		particles.emitting = true
+		particles2.emitting = true
 
 	# 計算目標點位置 (依方向與距離) 與 移動時間 (距離 / 速度)
 	var target_pos = start_pos + velocity.normalized() * travel_range

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg1"
+   inkscape:export-filename="walile_axle.svg"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   sodipodi:docname="walile_tire.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm">
+    <inkscape:page
+       x="0"
+       y="0"
+       width="210"
+       height="297"
+       id="page2"
+       margin="0"
+       bleed="0" />
+  </sodipodi:namedview>
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="圖層 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <ellipse
+       style="fill:#b3b3b3;stroke-width:3.94249;stroke-dasharray:none;paint-order:markers fill stroke"
+       id="path4-4"
+       cx="105.0163"
+       cy="146.57697"
+       rx="1.3434169"
+       ry="1.389007" />
+    <ellipse
+       style="fill:#b3b3b3;stroke-width:3.94249;stroke-dasharray:none;paint-order:markers fill stroke"
+       id="path4-6-3"
+       cx="103.39373"
+       cy="149.32663"
+       rx="1.3434169"
+       ry="1.389007" />
+    <ellipse
+       style="fill:#b3b3b3;stroke-width:3.94249;stroke-dasharray:none;paint-order:markers fill stroke"
+       id="path4-6-1-1"
+       cx="106.46664"
+       cy="149.37849"
+       rx="1.3434169"
+       ry="1.389007" />
+  </g>
+</svg>

@@ -5,7 +5,11 @@ extends BaseSkin
 
 
 func play_spawn():
-	await get_tree().process_frame
+	sprite.scale = Vector2.ZERO
+	var tween = create_tween()
+	tween.tween_property(sprite, "modulate:a", 1.0, 0.2)
+	tween.parallel().tween_property(sprite, "scale", Vector2.ONE * 0.2, 0.2)
+	await tween.finished
 
 
 func play_die():

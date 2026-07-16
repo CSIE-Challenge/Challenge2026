@@ -46,14 +46,6 @@ func init(
 	# 初始為 3D 透視遠處的大小 (縮小 0.3 倍)
 	scale = Vector2(0.3, 0.3)
 
-	var r = randi() % 3
-	if r == 0:
-		Audio.play_sfx(Audio.SFX.HIDDEN_GAME_NOTES_GLIDING_1)
-	elif r == 1:
-		Audio.play_sfx(Audio.SFX.HIDDEN_GAME_NOTES_GLIDING_2)
-	else:
-		Audio.play_sfx(Audio.SFX.HIDDEN_GAME_NOTES_GLIDING_3)
-
 
 func _process(delta: float) -> void:
 	if not is_instance_valid(player):
@@ -108,7 +100,6 @@ func _process(delta: float) -> void:
 
 
 func _trigger_judgment() -> void:
-	Audio.play_sfx(Audio.SFX.HIDDEN_GAME_NOTES_HIT)
 	# 停止 process，防止重複觸發
 	set_process(false)
 

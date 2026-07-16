@@ -1,0 +1,111 @@
+[gd_scene format=3 uid="uid://w2x3hr7mynqr"]
+
+[ext_resource type="Script" uid="uid://invpalmscript" path="res://Scripts/skins/inverted_palm_skin_prefab.gd" id="1_inv"]
+[ext_resource type="Texture2D" uid="uid://invpalmst1" path="res://Shapes/inverted_palm_stage1.svg" id="2_body"]
+[ext_resource type="Texture2D" uid="uid://invpalmleaf" path="res://Shapes/palm_leaf.svg" id="3_leaf"]
+[ext_resource type="Texture2D" uid="uid://invpalmcoco" path="res://Shapes/coconut_mini.svg" id="4_coco"]
+
+[sub_resource type="Curve" id="Curve_inv"]
+_data = [Vector2(0, 0.4), 0.0, 0.0, 0, 0, Vector2(0.5, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_fade"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[node name="InvertedPalmSkinPrefab" type="Node2D"]
+script = ExtResource("1_inv")
+
+[node name="Plant" type="Node2D" parent="."]
+
+[node name="Body" type="Sprite2D" parent="Plant"]
+position = Vector2(0, 8.64)
+scale = Vector2(0.54, 0.54)
+texture = ExtResource("2_body")
+
+[node name="Leaves" type="CPUParticles2D" parent="."]
+position = Vector2(0, 22)
+local_coords = false
+emitting = false
+amount = 8
+texture = ExtResource("3_leaf")
+lifetime = 1.5
+emission_shape = 1
+emission_sphere_radius = 10.0
+direction = Vector2(0, -1)
+spread = 55.0
+gravity = Vector2(0, -35)
+initial_velocity_min = 6.0
+initial_velocity_max = 18.0
+angular_velocity_min = -120.0
+angular_velocity_max = 120.0
+scale_amount_min = 0.18
+scale_amount_max = 0.32
+scale_amount_curve = SubResource("Curve_inv")
+color_ramp = SubResource("Gradient_fade")
+
+[node name="EvolveBurst" type="CPUParticles2D" parent="."]
+position = Vector2(0, 20)
+emitting = false
+amount = 6
+texture = ExtResource("4_coco")
+lifetime = 0.9
+one_shot = true
+explosiveness = 0.9
+emission_shape = 1
+emission_sphere_radius = 6.0
+direction = Vector2(0, -1)
+spread = 70.0
+gravity = Vector2(0, -40)
+initial_velocity_min = 25.0
+initial_velocity_max = 55.0
+angular_velocity_min = -120.0
+angular_velocity_max = 120.0
+scale_amount_min = 0.3
+scale_amount_max = 0.45
+scale_amount_curve = SubResource("Curve_inv")
+color_ramp = SubResource("Gradient_fade")
+
+[node name="CoconutDrop" type="CPUParticles2D" parent="."]
+position = Vector2(0, 20)
+local_coords = false
+emitting = false
+amount = 3
+texture = ExtResource("4_coco")
+lifetime = 1.0
+one_shot = true
+explosiveness = 1.0
+emission_shape = 1
+emission_sphere_radius = 7.0
+direction = Vector2(0, 1)
+spread = 40.0
+gravity = Vector2(0, 220)
+initial_velocity_min = 15.0
+initial_velocity_max = 45.0
+angular_velocity_min = -180.0
+angular_velocity_max = 180.0
+scale_amount_min = 0.35
+scale_amount_max = 0.5
+scale_amount_curve = SubResource("Curve_inv")
+color_ramp = SubResource("Gradient_fade")
+
+[node name="SpawnParticles" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 12
+texture = ExtResource("3_leaf")
+lifetime = 0.7
+one_shot = true
+explosiveness = 0.9
+emission_shape = 1
+emission_sphere_radius = 12.0
+direction = Vector2(0, -1)
+spread = 120.0
+gravity = Vector2(0, -40)
+initial_velocity_min = 40.0
+initial_velocity_max = 90.0
+angular_velocity_min = -180.0
+angular_velocity_max = 180.0
+scale_amount_min = 0.16
+scale_amount_max = 0.3
+scale_amount_curve = SubResource("Curve_inv")
+color_ramp = SubResource("Gradient_fade")

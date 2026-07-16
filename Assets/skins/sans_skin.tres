@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://8fjvexvxryqw"]
+
+[ext_resource type="Texture2D" uid="uid://dqgpl1tapp0ru" path="res://Shapes/sans_idle.png" id="1_dr7qq"]
+[ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_haa4h"]
+[ext_resource type="PackedScene" uid="uid://dnvpoihtrbefe" path="res://Scenes/skins/sans_skin_prefab.tscn" id="3_y8x13"]
+
+[resource]
+script = ExtResource("1_haa4h")
+skin_id = "sans_skin"
+true_name = "《傳說之上》"
+description = "The birds are singing, flowers are blooming..."
+hide_name = true
+price_text_override = "用「黃金傳說」擊敗老對手"
+is_silhouette = true
+skin_prefab = ExtResource("3_y8x13")
+health_icon_texture = ExtResource("1_dr7qq")
+metadata/_custom_type_script = "uid://c6vuqckcyjdey"

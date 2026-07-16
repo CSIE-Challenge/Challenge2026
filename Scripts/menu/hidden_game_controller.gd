@@ -6,6 +6,8 @@ const HIDDEN_SCENE_PATH = "res://Scenes/menu/hidden_game.tscn"
 static var has_reached_fight: bool = false
 static var has_reached_phase_2: bool = false
 static var seen_dialogues: Dictionary = {}
+static var has_shown_difficult_warning: bool = false
+static var has_reached_difficult_phase_2: bool = false
 
 @export var skip_to_fight: bool = false
 
@@ -21,11 +23,16 @@ var is_aborted: bool = false  # 是否已經在 change scene
 @onready var boss = $Panel/Stage/boss
 @onready var player = $Panel/Stage/coconut
 
+@onready var black_screen = $CanvasLayer/BlackScreen
+@onready var warning_text = $CanvasLayer/BlackScreen/WarningText
+
 
 static func reset_dialogue_state() -> void:
 	seen_dialogues.clear()
 	has_reached_fight = false
 	has_reached_phase_2 = false
+	has_shown_difficult_warning = false
+	has_reached_difficult_phase_2 = false
 
 
 # Called when the node enters the scene tree for the first time.
@@ -45,9 +52,15 @@ func _ready() -> void:
 		walls.reset_box(0.7)
 	Dialogue.custom_event_triggered.connect(_on_dialogue_event)
 
+	black_screen.visible = false
+	warning_text.visible = false
+
 	# 隱藏關卡開始時，先等待 0.8 秒讓黑幕轉場拉開
-	await get_tree().create_timer(0.8).timeout
-	run_hidden_game_sequence()
+	if PlayerData.equipped_skin == "golden_skin":
+		run_difficult_hidden_game_sequence()
+	else:
+		await get_tree().create_timer(0.8).timeout
+		run_hidden_game_sequence()
 	# await get_tree().create_timer(1.0).timeout
 	# boss.rand_attack(5)
 
@@ -414,6 +427,7 @@ func _run_phase_5_final() -> bool:
 		complete_screen.show()
 		var cr = complete_screen.get_node("ColorRect")
 		var lbl = complete_screen.get_node("Label")
+		lbl.text = "Complete!"
 		var particles = complete_screen.get_node("CPUParticles2D")
 
 		particles.emitting = true
@@ -455,6 +469,164 @@ func _run_phase_5_final() -> bool:
 		return true
 
 	return false
+
+
+func run_difficult_hidden_game_sequence() -> void:
+	Dialogue.is_disabled = false
+	player.auto_restart = false
+	timer.stop()
+	walls.reset_box(1.0)
+
+	if not has_shown_difficult_warning and not has_reached_difficult_phase_2:
+		has_shown_difficult_warning = true
+		black_screen.visible = true
+		await get_tree().create_timer(2.0).timeout
+		warning_text.visible = true
+		await get_tree().create_timer(3.0).timeout
+		black_screen.visible = false
+		warning_text.visible = false
+
+	if is_player_dead or is_aborted:
+		return
+
+	if has_reached_difficult_phase_2:
+		boss.boss_hp = 600
+		boss.boss_hp_bar.max_value = 1200
+		boss.boss_hp_bar.value = boss.boss_hp
+		boss.invincible = false
+
+		boss.boss_appear_animation_2()
+		if not is_inside_tree():
+			return
+		is_aborted = false
+		await get_tree().create_timer(3.2).timeout
+
+		if is_player_dead or is_aborted:
+			return
+
+		timer.start(3.0)
+		boss.difficult_rand_attack(5)
+
+		while not is_player_dead and not is_aborted and not boss.is_dead:
+			await get_tree().process_frame
+
+		if is_player_dead:
+			SceneTransition.transition_to(HIDDEN_SCENE_PATH)
+			return
+		if is_aborted:
+			return
+	else:
+		boss.boss_hp = 1200
+		boss.boss_hp_bar.max_value = 1200
+		boss.boss_hp_bar.value = boss.boss_hp
+		boss.invincible = false
+
+		boss.boss_appear_animation_2()
+		if not is_inside_tree():
+			return
+		is_aborted = false
+		await get_tree().create_timer(3.2).timeout
+
+		if is_player_dead or is_aborted:
+			return
+
+		timer.start(3.0)
+		boss.rand_attack(4)
+
+		while not is_player_dead and not is_aborted and boss.boss_hp > 600 and not boss.is_dead:
+			await get_tree().process_frame
+
+		if is_player_dead:
+			SceneTransition.transition_to(HIDDEN_SCENE_PATH)
+			return
+		if is_aborted:
+			return
+
+		if boss.boss_hp <= 600 and not boss.is_dead:
+			has_reached_difficult_phase_2 = true
+			boss.is_change_stage = true
+			boss._cleanup_attack()
+			await get_tree().process_frame
+			if is_player_dead or is_aborted:
+				return
+			boss.is_paused = true
+			walls.reset_box(1.0)
+			await get_tree().create_timer(2.0).timeout
+			boss.is_paused = false
+
+			boss.difficult_rand_attack(5)
+
+			while not is_player_dead and not is_aborted and not boss.is_dead:
+				await get_tree().process_frame
+
+			if is_player_dead:
+				SceneTransition.transition_to(HIDDEN_SCENE_PATH)
+				return
+			if is_aborted:
+				return
+
+	if boss.is_dead:
+		timer.stop()
+		await _run_difficult_boss_victory_sequence()
+
+
+func _run_difficult_boss_victory_sequence() -> void:
+	if Dialogue.current_state != Dialogue.State.IDLE:
+		Dialogue.interrupt_dialogue()
+	Dialogue.start_dialogue(["不可能！"])
+	await Dialogue.dialogue_finished
+
+	if not PlayerData.has_skin("sans_skin"):
+		var code = Marshalls.base64_to_utf8("SlJJNEpEOTNPRzk2TktSSTdORTM=")
+		PlayerData.add_entered_code(code)
+		PlayerData.skin_unlocked.emit("sans_skin")
+		SceneTransition.show_achievement("獲得成就：傳說之上！")
+
+	boss.play_death_animation()
+
+	await get_tree().create_timer(3.5).timeout
+
+	Audio.play_sfx(Audio.SFX.HIDDEN_GAME_COMPLETE)
+	var complete_screen = $CanvasLayer/CompleteScreen
+	complete_screen.show()
+	var cr = complete_screen.get_node("ColorRect")
+	var lbl = complete_screen.get_node("Label")
+	var particles = complete_screen.get_node("CPUParticles2D")
+
+	particles.emitting = true
+
+	cr.modulate = Color(1, 1, 1, 0)
+	lbl.scale = Vector2(0, 0)
+	lbl.modulate = Color(2, 2, 2, 1)
+	lbl.text = "Victory!!"
+	lbl.get_node("ShineRect").material.set_shader_parameter("shine_progress", 0.0)
+
+	var tw = create_tween()
+	tw.set_parallel(true)
+	tw.tween_property(cr, "modulate", Color(1, 1, 1, 1), 0.5)
+	tw.tween_property(lbl, "scale", Vector2(1, 1), 0.8).set_trans(Tween.TRANS_ELASTIC).set_ease(
+		Tween.EASE_OUT
+	)
+	tw.tween_property(lbl, "modulate", Color(1, 1, 1, 1), 1.0)
+
+	var tw_shine = create_tween()
+	tw_shine.tween_interval(0.8)
+	tw_shine.tween_property(
+		lbl.get_node("ShineRect").material, "shader_parameter/shine_progress", 1.0, 1.5
+	)
+
+	await get_tree().create_timer(5.0).timeout
+
+	while true:
+		if not is_inside_tree():
+			return
+		await get_tree().process_frame
+		if Input.is_action_just_pressed("ui_accept") or Input.is_action_just_pressed("jump"):
+			break
+
+	Dialogue.is_disabled = true
+	Audio.stop_all_sfx()
+	SceneTransition.transition_to_fade(MENU_SCENE_PATH)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

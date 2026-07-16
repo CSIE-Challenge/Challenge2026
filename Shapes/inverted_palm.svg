@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="100" height="100" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="grassg" cx="0.35" cy="0.3" r="0.95">
+      <stop offset="0" stop-color="#9ede6a"/>
+      <stop offset="0.6" stop-color="#58b23a"/>
+      <stop offset="1" stop-color="#2f7d22"/>
+    </radialGradient>
+    <radialGradient id="seag" cx="0.4" cy="0.35" r="0.95">
+      <stop offset="0" stop-color="#5fd4e8"/>
+      <stop offset="0.6" stop-color="#2ba3cf"/>
+      <stop offset="1" stop-color="#1b6fa8"/>
+    </radialGradient>
+    <radialGradient id="coco" cx="0.4" cy="0.35" r="0.72">
+      <stop offset="0" stop-color="#a9743f"/>
+      <stop offset="1" stop-color="#5f3a1a"/>
+    </radialGradient>
+    <linearGradient id="sandg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f9ecc0"/>
+      <stop offset="1" stop-color="#e4c47f"/>
+    </linearGradient>
+    <linearGradient id="trunkg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8a6a42"/>
+      <stop offset="1" stop-color="#a8845a"/>
+    </linearGradient>
+    <linearGradient id="leafg" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2f9e44"/>
+      <stop offset="1" stop-color="#7bd94a"/>
+    </linearGradient>
+    <g id="frond">
+      <path d="M8,-2.5 Q22,-8 34,-1.5 Q36.5,0 34,1.5 Q22,8 8,2.5 Q6,0 8,-2.5 Z"/>
+      <path d="M10,0 L32,0" stroke="#27822f" stroke-width="0.8" fill="none"/>
+    </g>
+  </defs>
+  <!-- ===== 迷你小星球：上半是海、中間草帶、下面沙島（圓心 50,34、半徑 25 = 玩家碰撞圓） ===== -->
+  <circle cx="50" cy="34" r="25" fill="url(#grassg)"/>
+  <!-- 草帶紋理與泥土（y36~48） -->
+  <path d="M36,45 Q35,41.5 33,40 M36,45 Q37,41 38,40 M36,45 Q36,42 35,40.5" stroke="#2d6e1c" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.75"/>
+  <path d="M58,43 Q57,39.5 55,38 M58,43 Q59,38.5 60,38" stroke="#245c14" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.7"/>
+  <ellipse cx="66" cy="43" rx="3" ry="1.8" fill="#8a6a42" opacity="0.5"/>
+  <ellipse cx="45" cy="44" rx="2.6" ry="1.5" fill="#8a6a42" opacity="0.45"/>
+  <!-- 上半球的海 -->
+  <path d="M25.1,36 A25,25 0 1 1 74.9,36 Z" fill="url(#seag)"/>
+  <path d="M37,25 Q41,22 45,25 M51,18 Q55,15 59,18 M58,29 Q62,26 66,29" stroke="#a8ecf5" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="0.85"/>
+  <ellipse cx="40" cy="17" rx="8" ry="4" fill="#bff2fa" opacity="0.5" transform="rotate(-18 40 17)"/>
+  <!-- 海岸泡沫線 -->
+  <path d="M25.1,36 Q29,38 33,36 Q37,34 41,36 Q45,38 49,36 Q53,34 57,36 Q61,38 65,36 Q69,34 72,36 L74.9,36" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.9" stroke-linecap="round"/>
+  <!-- 外框：海的上弧（深藍）+ 陸的下弧（深綠） -->
+  <path d="M25.1,36 A25,25 0 1 1 74.9,36" stroke="#15537f" stroke-width="1.5" fill="none"/>
+  <path d="M25.1,36 A25,25 0 0 0 74.9,36" stroke="#2d5a16" stroke-width="1.5" fill="none"/>
+  <!-- 倒著的沙島（長在星球下面） -->
+  <path d="M29.3,48 A25,25 0 0 0 70.7,48 Z" fill="url(#sandg)"/>
+  <path d="M29.3,48 Q33,50.5 37,48 Q41,45.5 45,48 Q48,50.5 52,48 Q56,45.5 60,48 Q64,50.5 68,48 L70.7,48" stroke="#8fd45f" stroke-width="2.2" fill="none" opacity="0.95" stroke-linecap="round"/>
+  <!-- 貼著星球的小雲 -->
+  <g fill="#ffffff" opacity="0.92">
+    <ellipse cx="27" cy="14" rx="6" ry="3.2"/>
+    <ellipse cx="32" cy="12.5" rx="4" ry="2.6"/>
+    <ellipse cx="74" cy="23" rx="5" ry="2.8"/>
+    <ellipse cx="78" cy="21.5" rx="3.2" ry="2.2"/>
+  </g>
+  <!-- ===== 階段三：倒著長的椰子樹（加粗加大） ===== -->
+  <path d="M46.6,58.5 Q46,66 47.4,73 L52.6,73 Q54,66 53.4,58.5 Z" fill="url(#trunkg)" stroke="#6f532f" stroke-width="1"/>
+  <path d="M46.4,63.5 L53.6,63.5 M46.9,68.5 L53.1,68.5" stroke="#6f532f" stroke-width="0.9" fill="none"/>
+  <!-- 葉冠（朝下張開） -->
+  <g fill="url(#leafg)" stroke="#27822f" stroke-width="1" transform="translate(50,75.5)">
+    <use href="#frond" transform="rotate(-15) scale(0.68)"/>
+    <use href="#frond" transform="rotate(20) scale(0.68)"/>
+    <use href="#frond" transform="rotate(55) scale(0.68)"/>
+    <use href="#frond" transform="rotate(90) scale(0.68)"/>
+    <use href="#frond" transform="rotate(125) scale(0.68)"/>
+    <use href="#frond" transform="rotate(160) scale(0.68)"/>
+    <use href="#frond" transform="rotate(195) scale(0.68)"/>
+  </g>
+  <!-- 椰子串（長在葉冠根部） -->
+  <circle cx="44.5" cy="71.5" r="4" fill="url(#coco)" stroke="#4a2d14" stroke-width="1"/>
+  <circle cx="55.5" cy="71.5" r="4" fill="url(#coco)" stroke="#4a2d14" stroke-width="1"/>
+  <circle cx="50" cy="68" r="3.5" fill="url(#coco)" stroke="#4a2d14" stroke-width="1"/>
+</svg>

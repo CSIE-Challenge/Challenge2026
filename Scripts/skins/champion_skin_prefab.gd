@@ -29,10 +29,8 @@ func play_spawn():
 func play_die():
 	death_particles.restart()
 	death_particles.emitting = true
-	var tween = create_tween().set_parallel(true)
-	tween.tween_property(core, "scale", Vector2.ZERO, 0.2)
-	tween.tween_property(ring1, "scale", Vector2.ZERO, 0.2)
-	tween.tween_property(ring2, "scale", Vector2.ZERO, 0.2)
+	var tween = create_tween()
+	tween.tween_property(self, "scale", Vector2.ZERO, 0.2)
 	if tween:
 		await tween.finished
 	else:

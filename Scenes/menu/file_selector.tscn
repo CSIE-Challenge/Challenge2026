@@ -103,6 +103,15 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "Use Default Agent"
 
+[node name="OpenTerminalButton" type="Button" parent="Panel/VBoxContainer" unique_id=1225890545]
+modulate = Color(0.53333336, 0.61960787, 0.5647059, 1)
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+toggle_mode = true
+button_pressed = true
+text = "✅ Terminal"
+
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer" unique_id=378196176]
 layout_mode = 2
 size_flags_horizontal = 4
@@ -122,5 +131,6 @@ text = "Start!"
 
 [connection signal="button_up" from="Panel/VBoxContainer/ChooseButton" to="." method="_on_choose_button_up"]
 [connection signal="button_up" from="Panel/VBoxContainer/DefaultButton" to="." method="_on_default_button_up"]
+[connection signal="toggled" from="Panel/VBoxContainer/OpenTerminalButton" to="." method="_on_open_terminal_button_toggled"]
 [connection signal="button_up" from="Panel/VBoxContainer/HBoxContainer/BackButton" to="." method="_on_back_button_up"]
 [connection signal="button_up" from="Panel/VBoxContainer/HBoxContainer/EnterGameButton" to="." method="_on_enter_game_button_up"]

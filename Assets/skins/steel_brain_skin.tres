@@ -1,8 +1,8 @@
-[gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://steelbrainskinres"]
+[gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://cm33sfpemndxe"]
 
 [ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_brain_scr"]
 [ext_resource type="Texture2D" uid="uid://bevp5kggljn50" path="res://Shapes/steel_brain_icon.svg" id="2_icon"]
-[ext_resource type="PackedScene" uid="uid://steelbrainprefab" path="res://Scenes/skins/steel_brain_skin_prefab.tscn" id="3_prefab"]
+[ext_resource type="PackedScene" uid="uid://diujhb0dnb2d2" path="res://Scenes/skins/steel_brain_skin_prefab.tscn" id="3_prefab"]
 
 [resource]
 script = ExtResource("1_brain_scr")
@@ -10,7 +10,6 @@ skin_id = "steel_brain_skin"
 true_name = "鋼鐵大腦"
 description = "智慧鐵人挑戰的榮耀獎勵。金屬光澤的大腦，思考時迸發智慧電流。"
 price = 800
-is_achievement_unlock = false
 price_text_override = "有一顆智慧的鋼鐵腦袋"
 preview_texture = ExtResource("2_icon")
 skin_prefab = ExtResource("3_prefab")

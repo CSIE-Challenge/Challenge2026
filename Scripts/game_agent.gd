@@ -27,6 +27,7 @@ var game: Node2D
 
 var bundle_dir := ""
 var agent_file := ""
+var open_terminal := true
 var _conn: WebSocketConnection
 var _command_handlers: Dictionary[String, Callable] = {}
 var _agent_pid := -1
@@ -68,10 +69,11 @@ func _spawn_agent_process(token: String) -> void:
 	var python := _bundle_python()
 	var runner := bundle_dir + "/runner.py"
 	var libs := bundle_dir + "/libs"
+	var launch_in_terminal := Global.single_player and (agent_file != "") and open_terminal
 	if OS.has_feature("linux") or OS.has_feature("macos"):
 		OS.execute("chmod", ["+x", python])
 
-	if OS.has_feature("macos") and Global.single_player and agent_file != "":
+	if OS.has_feature("macos") and launch_in_terminal:
 		_spawn_agent_process_macos_terminal(token, python, runner, libs)
 		return
 
@@ -84,7 +86,7 @@ func _spawn_agent_process(token: String) -> void:
 		OS.unset_environment("CHALLENGE_AGENT_PATH")
 	if (Global.single_player) and agent_file != "":
 		OS.set_environment("CHALLENGE_AGENT_LOG", "1")
-		_agent_pid = OS.create_process(python, ["-s", runner], true)
+		_agent_pid = OS.create_process(python, ["-s", runner], launch_in_terminal)
 	else:
 		OS.unset_environment("CHALLENGE_AGENT_LOG")
 		_agent_pid = OS.create_process(python, ["-s", runner])
@@ -130,6 +132,8 @@ func _bundle_python() -> String:
 
 
 func _exit_tree() -> void:
+	if is_instance_valid(_conn):
+		_conn.disconnect_from_socket()
 	if _agent_script_path != "":
 		var pid_path := _agent_script_path.replace(".command", ".pid")
 		if FileAccess.file_exists(pid_path):
@@ -147,6 +151,11 @@ func _exit_tree() -> void:
 	if _agent_pid >= 0 and OS.is_process_running(_agent_pid):
 		OS.kill(_agent_pid)
 		print("[API Server] agent process %d stopped" % _agent_pid)
+
+
+func shutdown() -> void:
+	if is_instance_valid(_conn):
+		_conn.disconnect_from_socket()
 
 
 # Add one line per new API.

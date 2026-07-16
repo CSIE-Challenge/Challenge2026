@@ -28,8 +28,14 @@
 [ext_resource type="Resource" uid="uid://rbttresskin" path="res://Assets/skins/red_black_tree_skin.tres" id="25_rbt"]
 [ext_resource type="Resource" uid="uid://dsj57msqxqnjy" path="res://Assets/skins/perry_skin.tres" id="26_perry"]
 [ext_resource type="Resource" uid="uid://byoxln6hdbrny" path="res://Assets/skins/claude_skin.tres" id="27_claude"]
-[ext_resource type="Resource" uid="uid://steelbrainskinres" path="res://Assets/skins/steel_brain_skin.tres" id="28_steel_brain"]
+[ext_resource type="Resource" uid="uid://cm33sfpemndxe" path="res://Assets/skins/steel_brain_skin.tres" id="28_steel_brain"]
+[ext_resource type="Resource" uid="uid://dsn4c7df8o3dy" path="res://Assets/skins/walile_skin.tres" id="28_v4wv5"]
 [ext_resource type="Resource" uid="uid://bjmt7uss2sq4u" path="res://Assets/skins/three_body_coconut_skin.tres" id="29_tbc"]
+[ext_resource type="Resource" uid="uid://driftwoodres" path="res://Assets/skins/driftwood_skin.tres" id="31_te67l"]
+[ext_resource type="Resource" uid="uid://driveskintres" path="res://Assets/skins/drive_skin.tres" id="30_drive_skin"]
+[ext_resource type="Resource" uid="uid://invpalmres" path="res://Assets/skins/inverted_palm_skin.tres" id="30_invpalm"]
+[ext_resource type="Resource" uid="uid://bkdpwtdnacuk7" path="res://Assets/skins/close_button_skin.tres" id="31_te67l2"]
+[ext_resource type="Resource" uid="uid://8fjvexvxryqw" path="res://Assets/skins/sans_skin.tres" id="32_so6hm"]
 
 [node name="SkinShop" type="Control" unique_id=1696416848]
 layout_mode = 3
@@ -41,7 +47,7 @@ grow_vertical = 2
 theme = ExtResource("7_theme")
 script = ExtResource("1_0p25h")
 skin_item_scene = ExtResource("2_5rtp3")
-all_skins = Array[ExtResource("2_h3ndm")]([ExtResource("4_bliee"), ExtResource("10_advanced"), ExtResource("11_phantom"), ExtResource("12_magma"), ExtResource("13_slime"), ExtResource("14_meteor"), ExtResource("15_cyber"), ExtResource("16_thunder"), ExtResource("5_ta6b8"), ExtResource("6_dap7d"), ExtResource("9_ta6b8"), ExtResource("3_5rtp3"), ExtResource("17_sing"), ExtResource("18_abs"), ExtResource("19_retro"), ExtResource("20_vfdo8"), ExtResource("21_amongus"), ExtResource("22_matrix"), ExtResource("23_ut"), ExtResource("24_coconut_king"), ExtResource("25_rbt"), ExtResource("26_perry"), ExtResource("27_claude"), ExtResource("28_steel_brain"), ExtResource("29_tbc")])
+all_skins = Array[ExtResource("2_h3ndm")]([ExtResource("4_bliee"), ExtResource("10_advanced"), ExtResource("11_phantom"), ExtResource("12_magma"), ExtResource("13_slime"), ExtResource("14_meteor"), ExtResource("15_cyber"), ExtResource("16_thunder"), ExtResource("5_ta6b8"), ExtResource("6_dap7d"), ExtResource("9_ta6b8"), ExtResource("3_5rtp3"), ExtResource("17_sing"), ExtResource("18_abs"), ExtResource("19_retro"), ExtResource("20_vfdo8"), ExtResource("21_amongus"), ExtResource("22_matrix"), ExtResource("23_ut"), ExtResource("24_coconut_king"), ExtResource("25_rbt"), ExtResource("26_perry"), ExtResource("27_claude"), ExtResource("28_steel_brain"), ExtResource("29_tbc"), ExtResource("28_v4wv5"), ExtResource("31_te67l"), ExtResource("30_drive_skin"), ExtResource("31_te67l2"), ExtResource("30_invpalm"), ExtResource("32_so6hm")])
 
 [node name="Background" type="TextureRect" parent="." unique_id=1385573461]
 modulate = Color(1, 1, 1, 0.7490196)
@@ -81,18 +87,6 @@ offset_bottom = 72.0
 grow_horizontal = 0
 text = "兌換碼"
 
-[node name="CloseButton" type="Button" parent="." unique_id=1021904816]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -80.0
-offset_top = 24.0
-offset_right = -32.0
-offset_bottom = 72.0
-grow_horizontal = 0
-text = "X"
-
 [node name="ScrollContainer" type="ScrollContainer" parent="." unique_id=1120197911]
 layout_mode = 1
 anchors_preset = 15
@@ -111,6 +105,18 @@ size_flags_horizontal = 3
 theme_override_constants/h_separation = 32
 theme_override_constants/v_separation = 32
 columns = 4
+
+[node name="CloseButton" type="Button" parent="." unique_id=1021904816]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -80.0
+offset_top = 24.0
+offset_right = -32.0
+offset_bottom = 72.0
+grow_horizontal = 0
+text = "X"
 
 [node name="DetailPopup" type="ColorRect" parent="." unique_id=1286263443]
 layout_mode = 1
@@ -268,7 +274,7 @@ horizontal_alignment = 1
 [node name="RedeemInput" type="LineEdit" parent="RedeemPopup/CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=1352494103]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-placeholder_text = "請輸入兌換碼..."
+placeholder_text = "⚡ 請輸入兌換碼 ⚡"
 alignment = 1
 
 [node name="MessageLabel" type="Label" parent="RedeemPopup/CenterContainer/PanelContainer/MarginContainer/VBoxContainer" unique_id=983312105]
@@ -290,4 +296,4 @@ text = "確認兌換"
 [node name="RedeemCloseBtn" type="Button" parent="RedeemPopup/CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=581568753]
 custom_minimum_size = Vector2(160, 48)
 layout_mode = 2
-text = "取消"
+text = "關閉"
