@@ -26,13 +26,17 @@ var _pause_timer: float = 0.0
 @onready var selected_label: Label = $Panel/VBoxContainer/MarqueeText/SelectedFileLabel
 @onready var marquee_node: Control = $Panel/VBoxContainer/MarqueeText
 @onready var enter_button: Button = $Panel/VBoxContainer/HBoxContainer/EnterGameButton
-@onready var open_terminal_check_box: CheckBox = $Panel/VBoxContainer/OpenTerminalCheckBox
+@onready var open_terminal_check_box: Button = $Panel/VBoxContainer/OpenTerminalButton
 
 
 func _ready() -> void:
 	selected_agent_file = _load_last_selected_file()
 	selected_open_terminal = _load_open_terminal()
 	open_terminal_check_box.button_pressed = selected_open_terminal
+	if selected_open_terminal:
+		open_terminal_check_box.text = "✅ Open Terminal"
+	else:
+		open_terminal_check_box.text = "❎ Open Terminal"
 	_mark_chosen()
 	_update_selected_label()
 
@@ -138,9 +142,13 @@ func _on_agent_file_selected(path: String) -> void:
 	_update_selected_label()
 
 
-func _on_open_terminal_toggled(button_pressed: bool) -> void:
-	selected_open_terminal = button_pressed
-	_save_open_terminal(button_pressed)
+func _on_open_terminal_button_toggled(toggled_on: bool) -> void:
+	selected_open_terminal = toggled_on
+	if selected_open_terminal:
+		open_terminal_check_box.text = "✅ Open Terminal"
+	else:
+		open_terminal_check_box.text = "❎ Open Terminal"
+	_save_open_terminal(selected_open_terminal)
 
 
 func _load_last_selected_file() -> String:
