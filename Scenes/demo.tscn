@@ -1,63 +1,63 @@
-[gd_scene format=3 uid="uid://c4uh65xhqtck1"]
+[gd_scene format=4]
 
-[ext_resource type="Script" uid="uid://dwpnag6ymsmow" path="res://Scripts/demo_renderer.gd" id="1_demo"]
+[ext_resource type="Script" path="res://Scripts/demo_renderer.gd" id="1_demo"]
 
-[node name="DemoMain" type="Control" unique_id=1841591757]
+[node name="DemoMain" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
 
-[node name="ScreenA" type="SubViewportContainer" parent="." unique_id=2032995430]
+[node name="ScreenA" type="SubViewportContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
+anchor_left = 0.0
 anchor_right = 0.5
+anchor_top = 0.0
 anchor_bottom = 1.0
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="ScreenA" unique_id=942856468]
-handle_input_locally = false
-size = Vector2i(576, 648)
-render_target_update_mode = 4
+[node name="SubViewport" type="SubViewport" parent="ScreenA"]
+size = Vector2i(960, 540)
 
-[node name="StageA" type="Node2D" parent="ScreenA/SubViewport" unique_id=108969399]
+[node name="StageA" type="Node2D" parent="ScreenA/SubViewport"]
 position = Vector2(576, 324)
 
-[node name="Camera2D" type="Camera2D" parent="ScreenA/SubViewport/StageA" unique_id=1867338822]
+[node name="Camera2D" type="Camera2D" parent="ScreenA/SubViewport/StageA"]
 zoom = Vector2(0.833333, 0.833333)
+current = true
 
-[node name="ScreenB" type="SubViewportContainer" parent="." unique_id=1313917146]
+[node name="ScreenB" type="SubViewportContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 1.0
+anchor_top = 0.0
 anchor_bottom = 1.0
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="ScreenB" unique_id=64903781]
-handle_input_locally = false
-size = Vector2i(576, 648)
-render_target_update_mode = 4
+[node name="SubViewport" type="SubViewport" parent="ScreenB"]
+size = Vector2i(960, 540)
 
-[node name="StageB" type="Node2D" parent="ScreenB/SubViewport" unique_id=1240190076]
+[node name="StageB" type="Node2D" parent="ScreenB/SubViewport"]
 position = Vector2(576, 324)
 
-[node name="Camera2D" type="Camera2D" parent="ScreenB/SubViewport/StageB" unique_id=1694701101]
+[node name="Camera2D" type="Camera2D" parent="ScreenB/SubViewport/StageB"]
 zoom = Vector2(0.833333, 0.833333)
+current = true
 
-[node name="Divider" type="ColorRect" parent="." unique_id=1751316047]
+[node name="Divider" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
 anchor_right = 0.5
+anchor_top = 0.0
 anchor_bottom = 1.0
 offset_left = -2.0
 offset_right = 2.0
 color = Color(0.6, 0.6, 0.6, 1)
 
-[node name="DemoRenderer" type="Node" parent="." unique_id=1956611578]
+[node name="DemoRenderer" type="Node" parent="."]
 script = ExtResource("1_demo")
 stage_a = NodePath("ScreenA/SubViewport/StageA")
 stage_b = NodePath("ScreenB/SubViewport/StageB")
