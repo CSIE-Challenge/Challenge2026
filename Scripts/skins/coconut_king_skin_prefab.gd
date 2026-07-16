@@ -245,9 +245,12 @@ func _spawn_escorts():
 		_escorts.append(e)
 		# 蹦出來（位置交給 _process 繞圈，這裡只彈縮放）
 		var t := create_tween()
-		t.tween_property(e, "scale", Vector2(ESCORT_SCALE, ESCORT_SCALE), 0.2).set_trans(
-			Tween.TRANS_BACK
-		).set_ease(Tween.EASE_OUT)
+		(
+			t
+			. tween_property(e, "scale", Vector2(ESCORT_SCALE, ESCORT_SCALE), 0.2)
+			. set_trans(Tween.TRANS_BACK)
+			. set_ease(Tween.EASE_OUT)
+		)
 
 
 func _clear_escorts():
