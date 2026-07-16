@@ -99,6 +99,14 @@ func _ready() -> void:
 			"camera": camera_b,
 		},
 	]
+	var creator_name := ApiServer.cmdline_value("--creator-name")
+	var joiner_name := ApiServer.cmdline_value("--joiner-name")
+	var name_label_a = get_node_or_null("../HUD/NameLabelA")
+	if name_label_a and creator_name != "":
+		name_label_a.text = creator_name
+	var name_label_b = get_node_or_null("../HUD/NameLabelB")
+	if name_label_b and joiner_name != "":
+		name_label_b.text = joiner_name
 
 
 func _identify_as_demo(nm: Node) -> void:
