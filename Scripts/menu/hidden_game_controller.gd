@@ -490,8 +490,8 @@ func run_difficult_hidden_game_sequence() -> void:
 		return
 
 	if has_reached_difficult_phase_2:
-		boss.boss_hp = 750
-		boss.boss_hp_bar.max_value = 1500
+		boss.boss_hp = 600
+		boss.boss_hp_bar.max_value = 1200
 		boss.boss_hp_bar.value = boss.boss_hp
 		boss.invincible = false
 
@@ -516,8 +516,8 @@ func run_difficult_hidden_game_sequence() -> void:
 		if is_aborted:
 			return
 	else:
-		boss.boss_hp = 1500
-		boss.boss_hp_bar.max_value = 1500
+		boss.boss_hp = 1200
+		boss.boss_hp_bar.max_value = 1200
 		boss.boss_hp_bar.value = boss.boss_hp
 		boss.invincible = false
 
@@ -533,7 +533,7 @@ func run_difficult_hidden_game_sequence() -> void:
 		timer.start(2.5)
 		boss.rand_attack(4)
 
-		while not is_player_dead and not is_aborted and boss.boss_hp > 750 and not boss.is_dead:
+		while not is_player_dead and not is_aborted and boss.boss_hp > 600 and not boss.is_dead:
 			await get_tree().process_frame
 
 		if is_player_dead:
@@ -542,7 +542,7 @@ func run_difficult_hidden_game_sequence() -> void:
 		if is_aborted:
 			return
 
-		if boss.boss_hp <= 750 and not boss.is_dead:
+		if boss.boss_hp <= 600 and not boss.is_dead:
 			has_reached_difficult_phase_2 = true
 			boss.is_change_stage = true
 			boss._cleanup_attack()
@@ -576,10 +576,10 @@ func _run_difficult_boss_victory_sequence() -> void:
 	Dialogue.start_dialogue(["不可能！"])
 	await Dialogue.dialogue_finished
 
-	if not PlayerData.has_skin("golden_skin"):
-		PlayerData.unlocked_skins.append("golden_skin")
+	if not PlayerData.has_skin("sans_skin"):
+		PlayerData.unlocked_skins.append("sans_skin")
 		PlayerData.save_data()
-		PlayerData.skin_unlocked.emit("golden_skin")
+		PlayerData.skin_unlocked.emit("sans_skin")
 		SceneTransition.show_achievement("獲得成就：傳說之上！")
 
 	boss.play_death_animation()

@@ -368,7 +368,7 @@ func emit_boomerang(mode: int, difficulty: int = 3) -> void:
 
 			# 飛行長度為：場地寬度 + 120 像素，確保能穿牆飛到左側外再折返
 			spawn_boomerang(
-				spawn_pos, Vector2(2.0, 2.0), 15.0, 0.6, speed, Vector2.LEFT, half.x * 2.0 + 120.0
+				spawn_pos, Vector2(2.0, 2.0), 15.0, 0.7, speed, Vector2.LEFT, half.x * 2.0 + 120.0
 			)
 			if await interruptible_wait(0.2):
 				return
@@ -412,11 +412,11 @@ func emit_boomerang(mode: int, difficulty: int = 3) -> void:
 			var target_dir = (player.position - spawn_pos).normalized()
 
 			# 飛距 550 像素確保能完全貫穿場地至另一側外
-			spawn_boomerang(spawn_pos, Vector2(2.0, 2.0), 18.0, 0.5, speed, target_dir, 550.0)
+			spawn_boomerang(spawn_pos, Vector2(2.0, 2.0), 18.0, 1.2, speed, target_dir, 550.0)
 			if await interruptible_wait(fire_interval):
 				return
 
-		if await interruptible_wait(3.5):
+		if await interruptible_wait(4.5):
 			return
 
 	elif mode == 3:
@@ -438,7 +438,7 @@ func emit_boomerang(mode: int, difficulty: int = 3) -> void:
 			# 飛行距離：剛好是到玩家位置的距離 + 40 像素 (確保穿透交點)
 			var dist = spawn_pos.distance_to(player_target) + 40.0
 
-			spawn_boomerang(spawn_pos, Vector2(1.05, 1.05), 16.0, 0.65, speed, dir, dist)
+			spawn_boomerang(spawn_pos, Vector2(1.05, 1.05), 16.0, 0.5, speed, dir, dist)
 
 		# 等待飛完並回收
 		if await interruptible_wait(3.0):
@@ -487,8 +487,13 @@ func emit_boomerang(mode: int, difficulty: int = 3) -> void:
 
 			# 發射狙擊
 			var b_scale = Vector2(0.95, 0.95)
-			spawn_boomerang(spawn_pos, b_scale, 18.0, 0.5, speed, to_center_dir, radius)
-
+			spawn_boomerang(spawn_pos, b_scale, 18.0, 0.8, speed, to_center_dir, radius)
+			if difficulty == 5 or difficulty == 4:
+				angle = angle + PI / 2
+				spawn_dir = Vector2.from_angle(angle)
+				spawn_pos = center + spawn_dir * radius
+				to_center_dir = -spawn_dir
+				spawn_boomerang(spawn_pos, b_scale, 18.0, 0.8, speed, to_center_dir, radius)
 			# 高頻率極速連射
 			if await interruptible_wait(fire_interval):
 				return
@@ -948,7 +953,7 @@ func surround_boomerang(difficulty: int = 5) -> void:
 		var dir = Vector2.from_angle(angle)
 		var spawn_pos = center + dir * radius
 		var to_center_dir = -dir
-		spawn_boomerang(spawn_pos, Vector2(1.0, 1.0), 30.0, 0.8, speed, to_center_dir, radius)
+		spawn_boomerang(spawn_pos, Vector2(1.0, 1.0), 30.0, 1.2, speed, to_center_dir, radius)
 	if await interruptible_wait(0.8):
 		return
 	if not is_instance_valid(player):
@@ -959,7 +964,7 @@ func surround_boomerang(difficulty: int = 5) -> void:
 		var dir = Vector2.from_angle(angle)
 		var spawn_pos = center + dir * radius
 		var to_center_dir = -dir
-		spawn_boomerang(spawn_pos, Vector2(1.0, 1.0), 30.0, 0.8, speed, to_center_dir, radius)
+		spawn_boomerang(spawn_pos, Vector2(1.0, 1.0), 30.0, 1.2, speed, to_center_dir, radius)
 	if await interruptible_wait(4.2):
 		return
 	is_attacking = false
@@ -1043,10 +1048,10 @@ func boomerang_list(_difficulty: int = 5) -> void:
 	var start_y = center.y - half.y + 35.0
 	var end_y = center.y + half.y - 35.0
 	for i in range(count):
-		var spawn_y = start_y + (end_y - start_y) * (float(i) / (count - 1))
+		var spawn_y = start_y + (end_y - start_y) * (float(i) / (count - 1)) + randi_range(-20, 20)
 		var spawn_pos = Vector2(spawn_x, spawn_y)
 		spawn_boomerang(
-			spawn_pos, Vector2(2.0, 2.0), 15.0, 0.6, speed, Vector2.LEFT, half.x * 2.0 + 120.0
+			spawn_pos, Vector2(2.0, 2.0), 15.0, 1.2, speed, Vector2.LEFT, half.x * 2.0 + 120.0
 		)
 		if await interruptible_wait(0.2):
 			return
@@ -1056,14 +1061,14 @@ func boomerang_list(_difficulty: int = 5) -> void:
 	var end_x = center.x + half.x - 35.0
 	var spawn_y = center.y - half.y - 60.0
 	for i in range(count):
-		spawn_x = start_x + (end_x - start_x) * (float(i) / (count - 1))
+		spawn_x = start_x + (end_x - start_x) * (float(i) / (count - 1)) + randi_range(-20, 20)
 		var spawn_pos = Vector2(spawn_x, spawn_y)
 		spawn_boomerang(
-			spawn_pos, Vector2(2.0, 2.0), 15.0, 0.6, speed, Vector2.DOWN, half.y * 2.0 + 120.0
+			spawn_pos, Vector2(2.0, 2.0), 15.0, 1.2, speed, Vector2.DOWN, half.y * 2.0 + 120.0
 		)
 		if await interruptible_wait(0.2):
 			return
-	if await interruptible_wait(3.6):
+	if await interruptible_wait(4.6):
 		return
 
 	is_attacking = false
@@ -1128,7 +1133,7 @@ func difficult_squeeze_attack(difficulty: int = 2) -> void:
 	walls.reset_box(0.5)
 	var laser_count = DifficultyParams.SQUEEZE_LASER_COUNT
 	var spawn_interval = DifficultyParams.SQUEEZE_SPAWN_INTERVAL
-	var fire_interval = DifficultyParams.get_val(DifficultyParams.SQUEEZE_FIRE_INTERVAL, difficulty)
+	var fire_interval = 0.13
 	var t0 = float(laser_count - 1) * spawn_interval
 	var fire_time = DifficultyParams.SQUEEZE_FIRE_TIME
 	var laser_w = DifficultyParams.SQUEEZE_LASER_WIDTH
