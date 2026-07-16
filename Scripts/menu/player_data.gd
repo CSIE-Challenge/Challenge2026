@@ -35,7 +35,8 @@ const REDEEM_CODES = {
 	"1cc387c72e4c302f5d8bb28c4c4074b8114dcb6a25ef61860d2a1bd5aae5486f": "driftwood_skin",
 	"f5180b81379222e56781cdeb70a6458e77b70ef5aafd81b8ebac1cd5229f3f3c": "drive_skin",
 	"b355c1e254a16eec13b5b41a6460c6ada838ae6e9ce8b53c29c89861f98ef2f4": "inverted_palm_skin",
-	"880467377209f84a74e1379d52067614d62162b88f1a63a9ea13d6f13f167ee1": "close_button_skin"
+	"880467377209f84a74e1379d52067614d62162b88f1a63a9ea13d6f13f167ee1": "close_button_skin",
+	"6b3fa673194d764cc52a0526717c3619efa8d2be0cc85e0f45c16ae05a14cb3c": "sans_skin"
 }
 
 var entered_codes: Array = []
