@@ -33,7 +33,6 @@ const DEFAULT_PORT := 7777
 const DEFAULT_SERVER_ADDRESS := "127.0.0.1"
 const MAX_CLIENTS := 3
 const READY_TIMEOUT_SECONDS := 90.0
-const COUNTDOWN_DURATION := 3.0
 
 var max_energy: int = DEFAULT_MAX_ENERGY
 var connected_peer_ids: Array[int] = []
@@ -558,7 +557,7 @@ func _server_release_countdown_start() -> void:
 			_match_peer_ids.append(peer_id)
 
 	_countdown_start_released = true
-	_game_elapsed_time = -COUNTDOWN_DURATION
+	_game_elapsed_time = -4.1  # client countdown: 0.9 * 3 (numbers) + 1.4 (go)
 	_game_timer_started = true
 	_gameplay_loaded_peer_ids.clear()
 	countdown_start_released.emit()
