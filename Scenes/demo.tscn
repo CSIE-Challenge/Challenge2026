@@ -81,7 +81,7 @@ shader_parameter/color_bands = 3
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qdju7"]
 shader = ExtResource("2_divider")
-shader_parameter/thickness = 0.5
+shader_parameter/thickness = 0.30000001355148
 shader_parameter/noise_strength = 1.0
 shader_parameter/noise_scale = 9.7630004162425
 shader_parameter/color = Color(0.65, 0.58, 0.31, 1)
@@ -103,7 +103,11 @@ variation_transform = Transform2D(1, 0.15, 0, 1, 0, 0)
 
 [sub_resource type="LabelSettings" id="LabelSettings_tcdmn"]
 font = ExtResource("4_font")
-font_size = 40
+font_size = 56
+
+[sub_resource type="LabelSettings" id="LabelSettings_nynt4"]
+font = ExtResource("4_font")
+font_size = 36
 
 [node name="DemoMain" type="Control" unique_id=1296044060]
 layout_mode = 3
@@ -392,10 +396,10 @@ script = ExtResource("2_countdown")
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -60.0
-offset_top = 20.0
-offset_right = 60.0
-offset_bottom = 75.0
+offset_left = -74.0
+offset_top = 15.0
+offset_right = 75.0
+offset_bottom = 84.0
 grow_horizontal = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
 theme_override_colors/font_color = Color(0.11764706, 0.11764706, 0.13725491, 1)
@@ -416,7 +420,7 @@ offset_bottom = 115.0
 grow_horizontal = 2
 theme_override_colors/font_color = Color(0.11764706, 0.11764706, 0.13725491, 1)
 theme_override_font_sizes/font_size = 28
-label_settings = SubResource("LabelSettings_tcdmn")
+label_settings = SubResource("LabelSettings_nynt4")
 horizontal_alignment = 1
 vertical_alignment = 1
 

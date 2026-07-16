@@ -28,9 +28,15 @@ var _player_a: Node2D
 var _player_b: Node2D
 var _screens: Array = []
 var _countdown_triggered: bool = false
+var _phase_duration: Array = []
+var _max_phase: int = 0
 
 
 func _ready() -> void:
+	var game_data := GameData.new()
+	_phase_duration = game_data.data.get("game_manager", {}).get("phase_duration", [])
+	_max_phase = game_data.data.get("game_manager", {}).get("max_phase", _phase_duration.size())
+
 	# Resize window for dual 960×540 viewports side by side
 	DisplayServer.window_set_size(Vector2i(1920, 540))
 
@@ -98,7 +104,7 @@ func _identify_as_demo(nm: Node) -> void:
 func _on_demo_state_received(combined: Dictionary) -> void:
 	var elapsed: float = combined.get("elapsed_time", 0.0)
 	_update_time_display(elapsed)
-	_update_phase_display(combined.get("current_phase", 0))
+	_update_phase_display(_compute_phase(elapsed))
 
 	if not _countdown_triggered and elapsed < 0.0:
 		_countdown_triggered = true
@@ -164,6 +170,15 @@ func _update_phase_display(phase: int) -> void:
 	if not phase_label:
 		return
 	phase_label.text = "Phase %d" % phase
+
+
+func _compute_phase(time: float) -> int:
+	for i in range(_max_phase):
+		if time >= _phase_duration[i]:
+			time -= _phase_duration[i]
+		else:
+			return i
+	return _max_phase
 
 
 func _suppress_game_logic(node: Node) -> void:
@@ -253,6 +268,7 @@ func _update_energy_balls(screen: Dictionary, stage: Node2D, balls_array: Array)
 			continue
 
 		var collected: bool = ball_data.get("collected", false)
+		var combo: int = ball_data.get("combo", 0)
 		if collected:
 			if balls.has(ball_id):
 				var old: Node = balls[ball_id]
@@ -269,10 +285,12 @@ func _update_energy_balls(screen: Dictionary, stage: Node2D, balls_array: Array)
 			if is_instance_valid(ghost):
 				ghost.global_position = pos
 				ghost.visible = true
+				ghost.now_combo = combo
 		else:
 			var ghost: Node = _instantiate_energy_ball()
 			if ghost:
 				ghost.is_demo = true
+				ghost.z_index = Util.LAYERS["EnergyBall"]
 				stage.add_child(ghost)
 				_suppress_energy_ball(ghost)
 				ghost.global_position = pos

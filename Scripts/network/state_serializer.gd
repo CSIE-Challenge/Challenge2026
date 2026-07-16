@@ -155,6 +155,7 @@ func _serialize_energy_balls() -> Array[Dictionary]:
 						"id": child.get_instance_id(),
 						"position": child.global_position if child is Node2D else Vector2.ZERO,
 						"collected": not child.visible if "visible" in child else false,
+						"combo": child.get("now_combo") if "now_combo" in child else 0,
 					}
 				)
 			)
