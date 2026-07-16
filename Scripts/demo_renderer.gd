@@ -5,7 +5,6 @@ class_name DemoRenderer
 extends Node
 
 const ProxyClass = preload("res://Scripts/demo_player_proxy.gd")
-const ENERGY_LABEL_SCENE = preload("res://Scenes/energy_label.tscn")
 const FALLBACK_HEALTH_TEXTURE = preload("res://Shapes/feather.svg")
 
 @export var stage_a: Node2D
@@ -56,10 +55,6 @@ func _ready() -> void:
 		high_stage_a = get_node_or_null("../HigherThanPlayerA/Stage") as Node2D
 	if not high_stage_b:
 		high_stage_b = get_node_or_null("../HigherThanPlayerB/Stage") as Node2D
-	#if stage_a:
-	#_setup_walls(stage_a)
-	#if stage_b:
-	#_setup_walls(stage_b)
 
 	_screens = [
 		{
@@ -398,31 +393,6 @@ func _apply_player(screen: Dictionary, stage: Node2D, player_state: Dictionary) 
 	}
 
 
-## Ensures the energy and health HUD nodes exist for [param screen].
-## Creates them on first call; subsequent calls are no-ops.
-func _ensure_screen_hud(screen: Dictionary) -> void:
-	if screen["energy_label"] != null:
-		return
-
-	var stage: Node2D = screen["stage"]
-	if not stage:
-		return
-
-	# Energy display: reuse gameplay energy_label scene, left side above arena
-	var energy_instance: Node2D = ENERGY_LABEL_SCENE.instantiate()
-	energy_instance.name = "EnergyHUD"
-	energy_instance.position = Vector2(-150, -280)
-	stage.add_child(energy_instance)
-	screen["energy_label"] = energy_instance
-
-	# Health display: right side above arena
-	var health_root := Node2D.new()
-	health_root.name = "HealthHUD"
-	health_root.position = Vector2(150, -280)
-	stage.add_child(health_root)
-	screen["health_icons"] = []
-
-
 ## Updates the energy HUD for [param screen] from [param energy] and [param max_energy].
 func _update_energy_hud(screen: Dictionary, energy: int, max_energy: int) -> void:
 	var label = screen["energy_label"]
@@ -516,69 +486,3 @@ func _create_player_ghost(stage: Node2D) -> Node2D:
 	ghost.modulate = Color(0.2, 0.6, 1.0, 1.0)
 	stage.add_child(ghost)
 	return ghost
-
-## Draws four thin wall rectangles on [param stage] to show the arena boundary.
-## Arena is 500×500 centered at the stage origin, matching gameplay walls at ±250.
-#func _setup_walls(stage: Node2D) -> void:
-#const WALL_COLOR := Color(0.7, 0.7, 0.7, 1.0)
-#const ARENA_HALF := 250.0
-#const THICKNESS := 7.0
-#const BIAS := 0
-#
-#var walls_data := [
-#{
-#"name": "RightWall",
-#"points":
-#PackedVector2Array(
-#[
-#Vector2(ARENA_HALF - THICKNESS, -ARENA_HALF + BIAS),
-#Vector2(ARENA_HALF, -ARENA_HALF + BIAS),
-#Vector2(ARENA_HALF, ARENA_HALF + BIAS),
-#Vector2(ARENA_HALF - THICKNESS, ARENA_HALF + BIAS),
-#]
-#),
-#},
-#{
-#"name": "LeftWall",
-#"points":
-#PackedVector2Array(
-#[
-#Vector2(-ARENA_HALF, -ARENA_HALF + BIAS),
-#Vector2(-ARENA_HALF + THICKNESS, -ARENA_HALF + BIAS),
-#Vector2(-ARENA_HALF + THICKNESS, ARENA_HALF + BIAS),
-#Vector2(-ARENA_HALF, ARENA_HALF + BIAS),
-#]
-#),
-#},
-#{
-#"name": "UpWall",
-#"points":
-#PackedVector2Array(
-#[
-#Vector2(-ARENA_HALF, ARENA_HALF - THICKNESS + BIAS),
-#Vector2(ARENA_HALF, ARENA_HALF - THICKNESS + BIAS),
-#Vector2(ARENA_HALF, ARENA_HALF + BIAS),
-#Vector2(-ARENA_HALF, ARENA_HALF + BIAS),
-#]
-#),
-#},
-#{
-#"name": "DownWall",
-#"points":
-#PackedVector2Array(
-#[
-#Vector2(-ARENA_HALF, -ARENA_HALF + BIAS),
-#Vector2(ARENA_HALF, -ARENA_HALF + BIAS),
-#Vector2(ARENA_HALF, -ARENA_HALF + THICKNESS + BIAS),
-#Vector2(-ARENA_HALF, -ARENA_HALF + THICKNESS + BIAS),
-#]
-#),
-#},
-#]
-#
-#for w in walls_data:
-#var wall := Polygon2D.new()
-#wall.name = w["name"]
-#wall.polygon = w["points"]
-#wall.color = WALL_COLOR
-#stage.add_child(wall)
