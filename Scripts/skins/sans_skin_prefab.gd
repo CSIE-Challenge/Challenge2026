@@ -62,6 +62,8 @@ func play_land() -> void:
 
 func play_die() -> void:
 	is_active = false
+	var tween = create_tween()
+	tween.tween_property(sprite, "modulate:a", 0.0, 0.15)
 	$DieEffect.emitting = true
 
 
