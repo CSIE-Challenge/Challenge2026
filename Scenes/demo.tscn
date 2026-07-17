@@ -106,7 +106,7 @@ variation_transform = Transform2D(1, 0.15, 0, 1, 0, 0)
 font = ExtResource("4_font")
 font_size = 56
 
-[sub_resource type="LabelSettings" id="LabelSettings_nynt4"]
+[sub_resource type="LabelSettings" id="LabelSettings_6hfpq"]
 font = ExtResource("4_font")
 font_size = 36
 
@@ -433,7 +433,7 @@ offset_bottom = 115.0
 grow_horizontal = 2
 theme_override_colors/font_color = Color(0.11764706, 0.11764706, 0.13725491, 1)
 theme_override_font_sizes/font_size = 28
-label_settings = SubResource("LabelSettings_tcdmn")
+label_settings = SubResource("LabelSettings_6hfpq")
 horizontal_alignment = 1
 vertical_alignment = 1
 
