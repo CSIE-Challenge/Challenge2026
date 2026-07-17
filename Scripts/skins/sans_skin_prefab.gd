@@ -25,6 +25,7 @@ var eye_is_blue := true
 @onready var sprite: Sprite2D = $Sprite
 @onready var max_point_timer: Timer = $MaxPointTimer
 @onready var spawn_anim: AnimationPlayer = $SpawnBones/AnimationPlayer
+@onready var die_effect: GPUParticles2D = $DieEffect
 
 
 func _ready() -> void:
@@ -64,7 +65,8 @@ func play_die() -> void:
 	is_active = false
 	var tween = create_tween()
 	tween.tween_property(sprite, "modulate:a", 0.0, 0.15)
-	$DieEffect.emitting = true
+	die_effect.emitting = true
+	await die_effect.finished
 
 
 func play_jump() -> void:
