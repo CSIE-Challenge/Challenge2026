@@ -61,6 +61,8 @@ func _collect_state() -> Dictionary:
 	var player_node: Node = (
 		game_manager.player if game_manager and "player" in game_manager else null
 	)
+	var queued_sfx := Audio.queued_sfx if Audio else []
+	Audio.queued_sfx = []
 	return {
 		"peer_id": multiplayer.get_unique_id(),
 		"tick": Engine.get_physics_frames(),
@@ -68,6 +70,7 @@ func _collect_state() -> Dictionary:
 		"max_energy_cap": _collect_max_energy_cap(),
 		"traps": _serialize_traps(),
 		"energy_balls": _serialize_energy_balls(),
+		"queued_sfx": queued_sfx
 	}
 
 

@@ -11,7 +11,6 @@
 [ext_resource type="Texture2D" uid="uid://dle4xt8upfg42" path="res://Shapes/Square.svg" id="4_qdju7"]
 [ext_resource type="Script" uid="uid://d2y578q176xkm" path="res://Scripts/high_stage.gd" id="5_high_stage"]
 [ext_resource type="PackedScene" uid="uid://dao1hqwdldnlw" path="res://Scenes/demo_result_screen.tscn" id="6_a1i4p"]
-[ext_resource type="Texture2D" uid="uid://f5ertr28h6kq" path="res://Shapes/feather.svg" id="6_feather"]
 [ext_resource type="Script" uid="uid://cxd17lrphypsv" path="res://Scripts/game_camera.gd" id="7_camera"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_f2jw5"]

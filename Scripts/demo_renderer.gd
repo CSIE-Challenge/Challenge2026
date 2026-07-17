@@ -37,6 +37,7 @@ var _max_phase: int = 0
 
 
 func _ready() -> void:
+	Audio.process_mode = Node.PROCESS_MODE_ALWAYS
 	var game_data := GameData.new()
 	_phase_duration = game_data.data.get("game_manager", {}).get("phase_duration", [])
 	_max_phase = game_data.data.get("game_manager", {}).get("max_phase", _phase_duration.size())
@@ -133,6 +134,7 @@ func _on_demo_state_received(combined: Dictionary) -> void:
 	if not _countdown_triggered and elapsed < 0.0:
 		_countdown_triggered = true
 		if pregame_countdown and pregame_countdown.has_method("play_countdown"):
+			Audio.play_sfx(Audio.SFX.PREGAME_COUNTDOWN)
 			pregame_countdown.play_countdown()
 
 	var screens: Array = combined.get("screens", [])
@@ -180,6 +182,11 @@ func _apply_screen(screen: Dictionary, screen_data: Dictionary) -> void:
 	_update_energy_hud(screen, energy, max_energy)
 	_update_health_hud(screen, skin_id, max_health)
 	_refresh_health_display(screen, health)
+	var queued_sfx = screen_data.get("queued_sfx", [])
+	for sfx_id in queued_sfx:
+		var sfx: Audio.SFX = sfx_id as Audio.SFX
+		if sfx != Audio.SFX.PREGAME_COUNTDOWN:
+			Audio.play_sfx(sfx)
 
 
 ## Recursively disables game logic callbacks on [param node] and its children.

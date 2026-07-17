@@ -173,6 +173,7 @@ func show_demo_results(
 	health_icon.modulate.a = 1.0
 	health_icon_b.modulate.a = 1.0
 
+	Audio.stop_all_sfx()
 	Audio.set_bgm(Audio.BGM.RESULT_SCREEN)
 	_fade_in(3.0)
 
