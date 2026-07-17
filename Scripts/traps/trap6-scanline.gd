@@ -80,7 +80,7 @@ func _physics_process(delta: float) -> void:
 			else:
 				visual_line.rotation = PI
 
-		if abs(position.x) > 500 or abs(position.y) > 500:
+		if abs(position.x) > 1000 or abs(position.y) > 1000:
 			queue_free()
 
 
