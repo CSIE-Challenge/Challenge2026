@@ -28,13 +28,15 @@ func _ready() -> void:
 
 		# 3. 隱藏原本白色的預設圖片
 		body_sprite.hide()
-		# 你也可以選擇把陰影也隱藏：shadow_sprite.hide()
+		shadow_sprite.hide()
 
 		if skin_instance.has_method("play_spawn"):
 			can_move = false
 			is_immutable = true
 
+			scale = Vector2.ZERO
 			await get_tree().create_timer(0.8).timeout
+			scale = Vector2.ONE
 			await skin_instance.play_spawn()
 
 			can_move = true
