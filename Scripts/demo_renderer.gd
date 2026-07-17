@@ -631,7 +631,7 @@ func _load_skin(skin_id: String) -> Node2D:
 func _create_player_ghost(stage: Node2D) -> Node2D:
 	var ghost := Sprite2D.new()
 	ghost.name = "PlayerGhost"
-	ghost.texture = preload("res://Shapes/Circle.svg")
+	ghost.texture = PLAYER_SHADOW_TEXTURE
 	ghost.scale = Vector2(0.2, 0.2)
 	ghost.z_index = Util.LAYERS["Player/BodySprite"]
 	ghost.modulate = Color(0.2, 0.6, 1.0, 1.0)

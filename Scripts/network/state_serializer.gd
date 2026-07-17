@@ -171,9 +171,11 @@ func _serialize_energy_balls() -> Array[Dictionary]:
 						"last_collect_combo":
 						child.get("last_collect_combo") if "last_collect_combo" in child else 0,
 						"last_collect_position":
-						child.get("last_collect_position")
-						if "last_collect_position" in child
-						else Vector2.ZERO,
+						(
+							child.get("last_collect_position")
+							if "last_collect_position" in child
+							else Vector2.ZERO
+						),
 					}
 				)
 			)
