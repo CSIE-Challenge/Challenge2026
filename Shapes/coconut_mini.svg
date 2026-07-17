@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="16" height="16" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="coco" cx="0.4" cy="0.35" r="0.72">
+      <stop offset="0" stop-color="#a9743f"/>
+      <stop offset="1" stop-color="#5f3a1a"/>
+    </radialGradient>
+  </defs>
+  <circle cx="8" cy="8" r="6.8" fill="url(#coco)" stroke="#4a2d14" stroke-width="1"/>
+  <ellipse cx="6" cy="6.5" rx="1" ry="1.2" fill="#3a2410"/>
+  <ellipse cx="10" cy="6.5" rx="1" ry="1.2" fill="#3a2410"/>
+  <ellipse cx="8" cy="10" rx="1.1" ry="0.9" fill="#3a2410"/>
+</svg>

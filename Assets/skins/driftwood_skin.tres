@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://driftwoodres"]
+
+[ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_dw_scr"]
+[ext_resource type="Texture2D" uid="uid://driftwoodbody" path="res://Shapes/driftwood.svg" id="2_icon"]
+[ext_resource type="PackedScene" uid="uid://dybuhi2pvg53v" path="res://Scenes/skins/driftwood_skin_prefab.tscn" id="3_prefab"]
+
+[resource]
+script = ExtResource("1_dw_scr")
+skin_id = "driftwood_skin"
+true_name = "漂流木"
+description = "用漂流木紮成的小帆筏，掛著一面拼拼補補的舊帆。漂進海浪裡會升起信號旗、破浪前行。"
+price = 1000
+is_achievement_unlock = true
+achievement_desc = "單人模式中，不按鍵盤吃到 15 個能量球。"
+preview_texture = ExtResource("2_icon")
+skin_prefab = ExtResource("3_prefab")
+health_icon_texture = ExtResource("2_icon")
+metadata/_custom_type_script = "uid://c6vuqckcyjdey"

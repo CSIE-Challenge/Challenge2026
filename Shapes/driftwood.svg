@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="120" height="120" viewBox="0 0 120 120" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="drift" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b3a08a"/>
+      <stop offset="0.5" stop-color="#8f7660"/>
+      <stop offset="1" stop-color="#6b5544"/>
+    </linearGradient>
+    <linearGradient id="drift2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9c8871"/>
+      <stop offset="1" stop-color="#5f4b3a"/>
+    </linearGradient>
+    <radialGradient id="stubface" cx="0.45" cy="0.45" r="0.6">
+      <stop offset="0" stop-color="#b09a80"/>
+      <stop offset="1" stop-color="#8a6f56"/>
+    </radialGradient>
+    <linearGradient id="sailcloth" x1="0" y1="0" x2="1" y2="0.3">
+      <stop offset="0" stop-color="#ecab63"/>
+      <stop offset="1" stop-color="#d0763a"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(60,60)">
+    <!-- ===== 腳下的漂流木筏（三根老樹枝） ===== -->
+    <g transform="translate(0,-18)">
+    <!-- 後排上層：最暗的一根 -->
+    <path d="M-54,34 Q-58,38 -53,42 Q-30,46 -6,44 Q20,46 40,43 Q46,41 44,36 Q42,33 34,34 Q10,37 -14,35 Q-36,32 -54,34 Z" fill="#7d6650" stroke="#4d3c2b" stroke-width="1.8"/>
+    <ellipse cx="-51" cy="38" rx="3.2" ry="4" fill="#8a7258" stroke="#4d3c2b" stroke-width="1.1"/>
+    <path d="M-40,37 Q-16,40 8,39 M18,41 Q30,41 38,39" fill="none" stroke="#5c4936" stroke-width="1" stroke-linecap="round"/>
+    <!-- 中排前層：主枝幹（帶分岔殘枝） -->
+    <path d="M-38,42 Q-46,34 -45,26 L-38,28 Q-38,36 -32,41 Z" fill="#87705a" stroke="#54422f" stroke-width="1.8"/>
+    <ellipse transform="rotate(15 -41.5 27)" cx="-41.5" cy="27" rx="2.8" ry="4" fill="url(#stubface)" stroke="#54422f" stroke-width="1.2"/>
+    <path d="M-50,40 Q-56,44 -50,48 Q-30,53 -8,51 Q18,53 40,50 Q52,48 52,43 Q50,38 42,39 Q18,43 -6,41 Q-28,38 -50,40 Z" fill="url(#drift)" stroke="#54422f" stroke-width="2"/>
+    <ellipse cx="49" cy="45" rx="3.8" ry="4.8" fill="url(#stubface)" stroke="#54422f" stroke-width="1.3"/>
+    <ellipse cx="49" cy="45" rx="1.7" ry="2.3" fill="none" stroke="#6d573f" stroke-width="1"/>
+    <path d="M-42,44 Q-20,47 4,46 M12,48 Q26,49 38,47" fill="none" stroke="#6d573f" stroke-width="1.1" stroke-linecap="round"/>
+    <path d="M-22,40 Q-21,44 -22,48 M20,43 Q21,46 20,50" fill="none" stroke="#54422f" stroke-width="1.2" stroke-linecap="round"/>
+    <!-- 下排：泡在水裡的一根 -->
+    <path d="M-42,49 Q-48,53 -42,57 Q-20,61 4,59 Q28,61 48,58 Q56,56 54,51 Q52,47 44,48 Q20,52 -4,50 Q-26,47 -42,49 Z" fill="url(#drift2)" stroke="#4d3c2b" stroke-width="1.8"/>
+    <ellipse cx="51" cy="53" rx="3.4" ry="4.2" fill="url(#stubface)" stroke="#4d3c2b" stroke-width="1.2"/>
+    <path d="M-34,53 Q-12,56 12,55 M22,57 Q32,57 42,55" fill="none" stroke="#54422f" stroke-width="1" stroke-linecap="round"/>
+    <!-- 附著的藤壺 -->
+    <g fill="#d8cfc0" stroke="#9a8f7d" stroke-width="0.8">
+      <circle cx="-30" cy="48" r="2.4"/>
+      <circle cx="28" cy="50" r="2.1"/>
+      <circle cx="-10" cy="58" r="1.9"/>
+    </g>
+    <g fill="#7f7566">
+      <circle cx="-30" cy="48" r="0.8"/>
+      <circle cx="28" cy="50" r="0.7"/>
+      <circle cx="-10" cy="58" r="0.65"/>
+    </g>
+    <!-- 垂掛的海草 -->
+    <path d="M-18,57 Q-19,63 -15,67 Q-16,61 -16,58 Z" fill="#3f8f5a" stroke="#2f6b44" stroke-width="0.9"/>
+    </g>
+    <!-- ===== 船帆（本體）：立在木筏上的鼓風三角帆 ===== -->
+    <!-- 桅杆（微微後傾） -->
+    <path d="M2,22 L-4,-46" fill="none" stroke="#6b4a2e" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="-4" cy="-46" r="2.2" fill="#6b4a2e"/>
+    <!-- 帆布：日曬帆布橘，往右鼓滿風 -->
+    <path d="M-3.5,-42 Q-2,-12 -1,12 Q14,15 28,9 Q26,-20 -3.5,-42 Z" fill="url(#sailcloth)" stroke="#b05e28" stroke-width="1.8"/>
+    <!-- 帆面縫線 -->
+    <path d="M0,-28 Q17,-12 22,4 M-1,-12 Q10,-2 14,10" fill="none" stroke="#b96a2e" stroke-width="1.1" opacity="0.65" stroke-linecap="round"/>
+    <!-- 補丁：漂流物拼湊感 -->
+    <rect x="8" y="-14" width="8" height="7" rx="1" fill="#c96f33" stroke="#a4551f" stroke-width="0.9" transform="rotate(-12 12 -10.5)"/>
+    <!-- 帆腳橫桿 -->
+    <path d="M-1,12 Q14,15 28,9" fill="none" stroke="#6b4a2e" stroke-width="2.6" stroke-linecap="round"/>
+  </g>
+</svg>

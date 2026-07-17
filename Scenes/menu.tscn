@@ -6,9 +6,9 @@
 [ext_resource type="Texture2D" uid="uid://bcnx3b286mcb7" path="res://Shapes/background_blue.jpg" id="3_wbdvm"]
 [ext_resource type="Theme" uid="uid://cmvy433xb5tse" path="res://Assets/themes/main_menu_buttons.tres" id="4_q3rjx"]
 [ext_resource type="Texture2D" uid="uid://cu7uscm4tcnjo" path="res://Shapes/about_icon.svg" id="4_wbdvm"]
+[ext_resource type="FontFile" uid="uid://vmmbbrsm1jdl" path="res://Assets/fonts/PixelMplus12-Bold.ttf" id="5_jsrd8"]
 [ext_resource type="Texture2D" uid="uid://buro076xqgfiy" path="res://Shapes/audio_icon.svg" id="5_q3rjx"]
 [ext_resource type="Texture2D" uid="uid://cmsifmvfmf64x" path="res://Shapes/exit_icon.svg" id="6_6swd7"]
-[ext_resource type="FontFile" uid="uid://vmmbbrsm1jdl" path="res://Assets/fonts/PixelMplus12-Bold.ttf" id="5_jsrd8"]
 
 [node name="Menu" type="Control" unique_id=1229865894]
 layout_mode = 3
