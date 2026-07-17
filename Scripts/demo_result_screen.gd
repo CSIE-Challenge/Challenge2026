@@ -53,7 +53,7 @@ func show_demo_results(
 	# "Remaining Health" 行設定為空字串 ""，因為血量 Icon 會動態對齊覆蓋在此行
 	var names: Array[String] = [
 		"",
-		"Survival Time",
+		"",
 		"Remaining Health",
 		"Energy Balls Collected",
 		"Jumps",
@@ -64,7 +64,8 @@ func show_demo_results(
 	# 使用傳入的真實名稱
 	var values_a: Array[String] = [
 		name_a,
-		"%02d:%02d" % [survival_seconds_a / 60, survival_seconds_a % 60],
+		# "%02d:%02d" % [survival_seconds_a / 60, survival_seconds_a % 60],
+		"",
 		"",
 		str(int(results_a.get("energy_ball_count", 0))),
 		str(int(results_a.get("jump_count", 0))),
@@ -74,7 +75,8 @@ func show_demo_results(
 
 	var values_b: Array[String] = [
 		name_b,
-		"%02d:%02d" % [survival_seconds_b / 60, survival_seconds_b % 60],
+		# "%02d:%02d" % [survival_seconds_b / 60, survival_seconds_b % 60],
+		"",
 		"",
 		str(int(results_b.get("energy_ball_count", 0))),
 		str(int(results_b.get("jump_count", 0))),
@@ -91,28 +93,40 @@ func show_demo_results(
 	var display_name_b := name_b.trim_suffix(" (Right)")
 
 	if draw:
-		title_label.text = "DRAW"
+		title_label.text = "DRAW at %s" % "05:00"
 		title_label.modulate = draw_color
 	else:
 		var a_won := peer_id_a in winner_peer_ids
 		var b_won := peer_id_b in winner_peer_ids
 		if a_won and b_won:
-			title_label.text = "DRAW"
+			title_label.text = "BOTH WIN (invalid state)"
 			title_label.modulate = draw_color
 		elif a_won:
 			if forfeit:
-				title_label.text = "%s WINS (by forfeit)" % display_name_a.to_upper()
+				title_label.text = (
+					"%s WINS (by forfeit) at %02d:%02d"
+					% [display_name_a.to_upper(), survival_seconds_b / 60, survival_seconds_b % 60]
+				)
 			else:
-				title_label.text = "%s WINS" % display_name_a.to_upper()
+				title_label.text = (
+					"%s WINS at %02d:%02d"
+					% [display_name_a.to_upper(), survival_seconds_a / 60, survival_seconds_a % 60]
+				)
 			title_label.modulate = win_color
 		elif b_won:
 			if forfeit:
-				title_label.text = "%s WINS (by forfeit)" % display_name_b.to_upper()
+				title_label.text = (
+					"%s WINS (by forfeit) at %02d:%02d"
+					% [display_name_b.to_upper(), survival_seconds_a / 60, survival_seconds_a % 60]
+				)
 			else:
-				title_label.text = "%s WINS" % display_name_b.to_upper()
+				title_label.text = (
+					"%s WINS at %02d:%02d"
+					% [display_name_b.to_upper(), survival_seconds_b / 60, survival_seconds_b % 60]
+				)
 			title_label.modulate = win_color
 		else:
-			title_label.text = "NO WINNER"
+			title_label.text = "BOTH LOSE (invalid state)"
 			title_label.modulate = draw_color
 
 	var panel_style_box = StyleBoxFlat.new()

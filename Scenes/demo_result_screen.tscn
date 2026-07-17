@@ -49,7 +49,6 @@ corner_radius_bottom_left = 7
 [node name="DemoResultScreen" type="CanvasLayer" unique_id=250910659]
 process_mode = 3
 layer = 100
-visible = false
 script = ExtResource("1_dcoi0")
 
 [node name="ResultRoot" type="Control" parent="." unique_id=80173994]
@@ -133,7 +132,7 @@ size_flags_horizontal = 3
 theme_override_constants/line_spacing = 7
 theme_override_fonts/font = ExtResource("3_5u2eh")
 theme_override_font_sizes/font_size = 22
-text = "Survival Time
+text = "
 Remaining Health
 Energy Balls Collected
 Jumps
