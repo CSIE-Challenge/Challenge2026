@@ -162,8 +162,18 @@ func _serialize_energy_balls() -> Array[Dictionary]:
 					{
 						"id": child.get_instance_id(),
 						"position": child.global_position if child is Node2D else Vector2.ZERO,
+						"scale": child.scale if child is Node2D else Vector2.ONE,
 						"collected": not child.visible if "visible" in child else false,
 						"combo": child.get("now_combo") if "now_combo" in child else 0,
+						"collect_seq": child.get("collect_seq") if "collect_seq" in child else 0,
+						"last_collect_gain":
+						child.get("last_collect_gain") if "last_collect_gain" in child else 0,
+						"last_collect_combo":
+						child.get("last_collect_combo") if "last_collect_combo" in child else 0,
+						"last_collect_position":
+						child.get("last_collect_position")
+						if "last_collect_position" in child
+						else Vector2.ZERO,
 					}
 				)
 			)

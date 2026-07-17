@@ -6,6 +6,8 @@ extends Node
 
 const ProxyClass = preload("res://Scripts/demo_player_proxy.gd")
 const FALLBACK_HEALTH_TEXTURE = preload("res://Shapes/feather.svg")
+const ENERGY_TEXT_SCENE = preload("res://Scenes/energy_text.tscn")
+const PLAYER_SHADOW_TEXTURE = preload("res://Shapes/Circle.svg")
 
 @export var stage_a: Node2D
 @export var stage_b: Node2D
@@ -77,9 +79,11 @@ func _ready() -> void:
 		{
 			"ghosts": _ghosts_a,
 			"balls": _balls_a,
+			"energy_collect_seq": {},
 			"stage": stage_a,
 			"high_stage": high_stage_a,
 			"player": _player_a,
+			"shadow": null,
 			"prev_player": {},
 			"proxy": null,
 			"loaded_skin_id": "",
@@ -94,9 +98,11 @@ func _ready() -> void:
 		{
 			"ghosts": _ghosts_b,
 			"balls": _balls_b,
+			"energy_collect_seq": {},
 			"stage": stage_b,
 			"high_stage": high_stage_b,
 			"player": _player_b,
+			"shadow": null,
 			"prev_player": {},
 			"proxy": null,
 			"loaded_skin_id": "",
@@ -308,6 +314,14 @@ func _update_energy_balls(screen: Dictionary, stage: Node2D, balls_array: Array)
 		if ball_id == -1:
 			continue
 
+		var collect_seq_by_id: Dictionary = screen["energy_collect_seq"]
+		var collect_seq: int = ball_data.get("collect_seq", 0)
+		if collect_seq_by_id.has(ball_id):
+			var previous_seq: int = collect_seq_by_id.get(ball_id, 0)
+			if collect_seq > previous_seq:
+				_spawn_demo_energy_text(screen, ball_data)
+		collect_seq_by_id[ball_id] = collect_seq
+
 		var collected: bool = ball_data.get("collected", false)
 		var combo: int = ball_data.get("combo", 0)
 		if collected:
@@ -325,6 +339,7 @@ func _update_energy_balls(screen: Dictionary, stage: Node2D, balls_array: Array)
 			var ghost: Node2D = balls[ball_id]
 			if is_instance_valid(ghost):
 				ghost.global_position = pos
+				ghost.scale = ball_data.get("scale", ghost.scale)
 				ghost.visible = true
 				ghost.now_combo = combo
 		else:
@@ -335,6 +350,7 @@ func _update_energy_balls(screen: Dictionary, stage: Node2D, balls_array: Array)
 				stage.add_child(ghost)
 				_suppress_energy_ball(ghost)
 				ghost.global_position = pos
+				ghost.scale = ball_data.get("scale", Vector2.ONE)
 				ghost.visible = true
 				balls[ball_id] = ghost
 
@@ -345,6 +361,33 @@ func _update_energy_balls(screen: Dictionary, stage: Node2D, balls_array: Array)
 			if is_instance_valid(old):
 				old.queue_free()
 			balls.erase(ball_id)
+			screen["energy_collect_seq"].erase(ball_id)
+
+
+func _spawn_demo_energy_text(screen: Dictionary, ball_data: Dictionary) -> void:
+	var stage: Node2D = screen.get("stage", null) as Node2D
+	if not stage:
+		return
+
+	var gain: int = ball_data.get("last_collect_gain", 0)
+	if gain <= 0:
+		return
+	var combo: int = ball_data.get("last_collect_combo", 0)
+	combo = mini(maxi(combo, 0), 5)
+	var pos: Vector2 = ball_data.get(
+		"last_collect_position", ball_data.get("position", Vector2.ZERO)
+	)
+
+	var text := ENERGY_TEXT_SCENE.instantiate() as Label
+	if not text:
+		return
+	stage.add_child(text)
+	text.text = "+%d" % gain
+	text.z_index = Util.LAYERS.get("EnergyBall", 0) + 1
+	var text_offset: Vector2 = Vector2(text.size.x / 2.0, 0.0)
+	text.global_position = pos - text_offset
+	if text.has_method("initialize"):
+		text.initialize(combo)
 
 
 ## Lightweight suppression for energy ball ghosts: keeps _physics_process
@@ -414,6 +457,7 @@ func _apply_player(screen: Dictionary, stage: Node2D, player_state: Dictionary) 
 	# Update position
 	var pos: Vector2 = player_state.get("position", Vector2.ZERO)
 	var sprite_y: float = player_state.get("sprite_y", 0.0)
+	_update_player_shadow(screen, stage, pos, sprite_y, player_state.get("is_jumping", false))
 	ghost.global_position = Vector2(pos.x, pos.y - sprite_y)
 
 	# Update velocity for skin _process() animations
@@ -458,6 +502,32 @@ func _apply_player(screen: Dictionary, stage: Node2D, player_state: Dictionary) 
 		"health": player_state.get("health", 0),
 		"energy_ball_count": player_state.get("energy_ball_count", 0),
 	}
+
+
+func _update_player_shadow(
+	screen: Dictionary, stage: Node2D, pos: Vector2, sprite_y: float, is_jumping: bool
+) -> void:
+	if not stage:
+		return
+	var shadow: Sprite2D = screen.get("shadow", null)
+	if not is_instance_valid(shadow):
+		shadow = Sprite2D.new()
+		shadow.name = "PlayerShadowGhost"
+		shadow.texture = PLAYER_SHADOW_TEXTURE
+		shadow.z_index = Util.LAYERS.get("Player/ShadowSprite", 0)
+		shadow.modulate = Color(0, 0, 0, 0.5)
+		stage.add_child(shadow)
+		screen["shadow"] = shadow
+
+	shadow.global_position = pos
+	var should_show: bool = is_jumping or sprite_y > 0.0
+	shadow.visible = should_show
+	if not should_show:
+		return
+
+	var jump_ratio: float = clamp(sprite_y / 120.0, 0.0, 1.0)
+	shadow.scale = Vector2.ONE * lerp(0.2, 0.1, jump_ratio)
+	shadow.modulate.a = lerp(0.5, 0.15, jump_ratio)
 
 
 ## Updates the energy HUD for [param screen] from [param energy] and [param max_energy].

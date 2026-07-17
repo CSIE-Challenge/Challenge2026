@@ -15,6 +15,10 @@ var now_combo := 0
 var time_elapsed := 0.0
 var energy_gain: Array
 var energy_ball_phase: int = 0
+var collect_seq := 0
+var last_collect_gain := 0
+var last_collect_combo := 0
+var last_collect_position := Vector2.ZERO
 
 var rng := RandomNumberGenerator.new()
 
@@ -52,8 +56,13 @@ func _reload_from_game_data() -> void:
 func _on_body_entered(body: Node2D) -> void:
 	if collision_shape.disabled or body != player_node:
 		return
+	var gain: int = energy_gain[energy_ball_phase][now_combo]
+	collect_seq += 1
+	last_collect_gain = gain
+	last_collect_combo = now_combo
+	last_collect_position = global_position
 	collision_shape.set_deferred("disabled", true)
-	Global.energyball_collected.emit(energy_gain[energy_ball_phase][now_combo])
+	Global.energyball_collected.emit(gain)
 	Audio.play_coconut_sfx(now_combo)
 	_spawn_energy_text()
 	now_combo = min(now_combo + 1, energy_gain[energy_ball_phase].size() - 1)
