@@ -365,10 +365,6 @@ func _update_energy_balls(screen: Dictionary, stage: Node2D, balls_array: Array)
 
 
 func _spawn_demo_energy_text(screen: Dictionary, ball_data: Dictionary) -> void:
-	var stage: Node2D = screen.get("stage", null) as Node2D
-	if not stage:
-		return
-
 	var gain: int = ball_data.get("last_collect_gain", 0)
 	if gain <= 0:
 		return
@@ -381,13 +377,36 @@ func _spawn_demo_energy_text(screen: Dictionary, ball_data: Dictionary) -> void:
 	var text := ENERGY_TEXT_SCENE.instantiate() as Label
 	if not text:
 		return
-	stage.add_child(text)
+	if stage_layer:
+		stage_layer.add_child(text)
+	else:
+		var stage: Node2D = screen.get("stage", null) as Node2D
+		if not stage:
+			text.queue_free()
+			return
+		stage.add_child(text)
 	text.text = "+%d" % gain
 	text.z_index = Util.LAYERS.get("EnergyBall", 0) + 1
 	var text_offset: Vector2 = Vector2(text.size.x / 2.0, 0.0)
-	text.global_position = pos - text_offset
+	if stage_layer:
+		text.global_position = _world_to_demo_canvas(screen, pos) - text_offset
+	else:
+		text.global_position = pos - text_offset
 	if text.has_method("initialize"):
 		text.initialize(combo)
+
+
+func _world_to_demo_canvas(screen: Dictionary, world_position: Vector2) -> Vector2:
+	var stage: Node2D = screen.get("stage", null) as Node2D
+	if not stage:
+		return world_position
+
+	var viewport := stage.get_viewport()
+	var canvas_position: Vector2 = viewport.canvas_transform * world_position
+	var viewport_parent := viewport.get_parent()
+	if viewport_parent is Control:
+		canvas_position += (viewport_parent as Control).get_global_rect().position
+	return canvas_position
 
 
 ## Lightweight suppression for energy ball ghosts: keeps _physics_process

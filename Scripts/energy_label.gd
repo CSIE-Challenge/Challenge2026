@@ -9,6 +9,7 @@ var time: float = 0
 func _ready() -> void:
 	scale = Vector2(0.8, 0.8)
 	energy_label.text = "0"
+	_refresh_limitation_position()
 
 
 func _process(delta: float) -> void:
@@ -18,8 +19,13 @@ func _process(delta: float) -> void:
 
 func _update_energy(energy_amount: int) -> void:
 	energy_label.text = str(energy_amount)
-	limitation_label.position = Vector2(energy_label.text.length() * 32 + 52, 0)
+	_refresh_limitation_position()
 
 
 func _update_max_energy(max_energy: int) -> void:
 	limitation_label.text = "/%d" % max_energy
+	_refresh_limitation_position()
+
+
+func _refresh_limitation_position() -> void:
+	limitation_label.position = Vector2(energy_label.text.length() * 32 + 52, 0)
