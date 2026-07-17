@@ -100,12 +100,15 @@ func _on_wait_timer_out():
 
 
 func serialize_state() -> Dictionary:
+	var feather_effect_emitting := false
+	if feather_effect:
+		feather_effect_emitting = feather_effect.emitting
 	return {
 		"type": "trap3-tracing_bullet",
 		"position": global_position,
 		"rotation": rotation,
 		"scale": sprite.scale,
-		"feather_effect": feather_effect.emitting
+		"feather_effect": feather_effect_emitting
 	}
 
 
@@ -113,7 +116,8 @@ func apply_demo_state(data: Dictionary) -> void:
 	global_position = data.get("position", Vector2.ZERO)
 	rotation = data.get("rotation", 0.0)
 	sprite.scale = data.get("scale", Vector2.ZERO)
-	feather_effect.emitting = data.get("feather_effect", false)
+	if feather_effect:
+		feather_effect.emitting = data.get("feather_effect", false)
 	feather_effect.global_position = global_position
 	if !effect_reparented:
 		effect_reparented = true
