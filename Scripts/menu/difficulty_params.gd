@@ -93,7 +93,7 @@ const ROCKET_EXPLOSION_RADIUS: Array = [20.0, 40.0, 65.0, 70.0, 80.0]  # 請填�
 
 ## 爆炸持續時間（秒）
 ## 更長 = 危險區域停留更久 = 更難
-const ROCKET_EXPLOSION_DURATION: Array = [1.0, 1.2, 1.5, 1.5, 2.0]  # 請填入
+const ROCKET_EXPLOSION_DURATION: Array = [1.0, 1.2, 1.2, 1.2, 1.2]  # 請填入
 
 ## ── 以下參數所有難度相同，不需修改 ──
 const ROCKET_WARNING_DURATION: float = 0.8  ## 預警時間（秒）
@@ -142,7 +142,7 @@ const BOOMERANG_MODE_RANGE_MIN: int = 1  ## 隨機模式最小值
 const BOOMERANG_MODE_RANGE_MAX: int = 5  ## 隨機模式最大值
 const BOOMERANG_M2_TOTAL_COUNT: int = 8  ## Mode2 狙擊總數
 const BOOMERANG_M5_SPEED: float = 350.0  ## Mode5 飛行速度
-const BOOMERANG_M5_FIRE_INTERVAL: float = 0.16  ## Mode5 連射間隔（秒）
+const BOOMERANG_M5_FIRE_INTERVAL: float = 0.1  ## Mode5 連射間隔（秒）
 
 # ╔══════════════════════════════════════════════════════════════════╗
 # ║            5. squeeze_attack — 擠壓雷射攻擊                    ║
@@ -182,11 +182,11 @@ const LASER_ROUNDS: Array = [1, 3, 5, 5, 5]  # 請填入
 
 ## 雷射預警時間（秒）
 ## 更短 = 反應時間更少 = 更難
-const LASER_WARN_TIME: Array = [1.2, 0.8, 0.5, 0.5, 0.4]  # 請填入
+const LASER_WARN_TIME: Array = [1.2, 0.8, 0.65, 0.55, 0.45]  # 請填入
 
 ## 每輪之間的間隔（秒）
 ## 更短 = 更密集 = 更難
-const LASER_ROUND_INTERVAL: Array = [1.2, 1.2, 1.0, 0.9, 0.8]  # 請填入
+const LASER_ROUND_INTERVAL: Array = [1.2, 1.2, 1.0, 0.9, 0.9]  # 請填入
 
 ## ── 以下參數所有難度相同，不需修改 ──
 const LASER_FIRE_TIME: float = 0.3  ## 雷射發射持續時間（秒）

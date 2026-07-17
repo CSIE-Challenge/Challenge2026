@@ -7,11 +7,13 @@ const GAMEPLAY_SCENE := "res://Scenes/gameplay.tscn"
 const SETTINGS_FILE_PATH := "user://player_settings.cfg"
 const SETTINGS_SECTION := "file_selector"
 const SETTINGS_KEY := "last_agent_file"
+const SETTINGS_TERMINAL_KEY := "open_terminal"
 
 const DEFAULT_AGENT_DIR := "agent/scripts"
 
 # "" for the repo default.
 var selected_agent_file := ""
+var selected_open_terminal := true
 var _file_dialog: FileDialog
 
 var _pause_duration: float = 2.0
@@ -24,10 +26,17 @@ var _pause_timer: float = 0.0
 @onready var selected_label: Label = $Panel/VBoxContainer/MarqueeText/SelectedFileLabel
 @onready var marquee_node: Control = $Panel/VBoxContainer/MarqueeText
 @onready var enter_button: Button = $Panel/VBoxContainer/HBoxContainer/EnterGameButton
+@onready var open_terminal_check_box: Button = $Panel/VBoxContainer/OpenTerminalButton
 
 
 func _ready() -> void:
 	selected_agent_file = _load_last_selected_file()
+	selected_open_terminal = _load_open_terminal()
+	open_terminal_check_box.button_pressed = selected_open_terminal
+	if selected_open_terminal:
+		open_terminal_check_box.text = "✅ Terminal"
+	else:
+		open_terminal_check_box.text = "❎ Terminal"
 	_mark_chosen()
 	_update_selected_label()
 
@@ -86,6 +95,7 @@ func _on_enter_game_button_up() -> void:
 	Audio.play_sfx(Audio.SFX.BUTTON_PRESS)
 	Global.single_player = true
 	Global.agent_file = selected_agent_file
+	Global.open_agent_terminal = selected_open_terminal
 	SceneTransition.transition_to_wave(GAMEPLAY_SCENE)
 
 
@@ -132,6 +142,15 @@ func _on_agent_file_selected(path: String) -> void:
 	_update_selected_label()
 
 
+func _on_open_terminal_button_toggled(toggled_on: bool) -> void:
+	selected_open_terminal = toggled_on
+	if selected_open_terminal:
+		open_terminal_check_box.text = "✅ Terminal"
+	else:
+		open_terminal_check_box.text = "❎ Terminal"
+	_save_open_terminal(selected_open_terminal)
+
+
 func _load_last_selected_file() -> String:
 	var cfg: ConfigFile = ConfigFile.new()
 	var err: int = cfg.load(SETTINGS_FILE_PATH)
@@ -152,6 +171,20 @@ func _load_last_selected_file() -> String:
 	return path
 
 
+func _load_open_terminal() -> bool:
+	var cfg := ConfigFile.new()
+	var err: int = cfg.load(SETTINGS_FILE_PATH)
+	if err != OK:
+		return true
+
+	var saved: Variant = cfg.get_value(SETTINGS_SECTION, SETTINGS_TERMINAL_KEY, true)
+	if typeof(saved) == TYPE_BOOL:
+		return bool(saved)
+	if typeof(saved) == TYPE_INT:
+		return saved != 0
+	return true
+
+
 func _save_last_selected_file(path: String) -> void:
 	var cfg := ConfigFile.new()
 	cfg.load(SETTINGS_FILE_PATH)
@@ -160,6 +193,13 @@ func _save_last_selected_file(path: String) -> void:
 			cfg.erase_section_key(SETTINGS_SECTION, SETTINGS_KEY)
 	else:
 		cfg.set_value(SETTINGS_SECTION, SETTINGS_KEY, path)
+	cfg.save(SETTINGS_FILE_PATH)
+
+
+func _save_open_terminal(enabled: bool) -> void:
+	var cfg := ConfigFile.new()
+	cfg.load(SETTINGS_FILE_PATH)
+	cfg.set_value(SETTINGS_SECTION, SETTINGS_TERMINAL_KEY, enabled)
 	cfg.save(SETTINGS_FILE_PATH)
 
 

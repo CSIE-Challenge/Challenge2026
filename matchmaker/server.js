@@ -33,6 +33,19 @@ const UPLOAD_AGENT_FLAG_PATH =
     process.env.UPLOAD_AGENT_FLAG_PATH ||
     new URL("upload_agent_enabled.txt", import.meta.url).pathname;
 
+const GAME_VERSION = (() => {
+    try {
+        const versionPath = new URL("../version.txt", import.meta.url).pathname;
+        const version = fs.readFileSync(versionPath, "utf8").trim();
+        if (!version) throw new Error("version.txt is empty");
+        console.log(`[Matchmaker] Game version: ${version}`);
+        return version;
+    } catch (err) {
+        console.warn(`[Matchmaker] Could not read version.txt: ${err.message}`);
+        return "0.0.0";
+    }
+})();
+
 /** @type {Set<number>} */
 const freePorts = new Set();
 for (let p = PORT_START; p <= PORT_END; p++) {
@@ -225,6 +238,13 @@ const server = http.createServer(async (req, res) => {
 
     // ── POST /qiaohu/room ──────────────────────────────────────────
     if (method === "POST" && url.pathname === "/qiaohu/room") {
+        const body = await parseBody(req);
+        if (body.game_version !== GAME_VERSION) {
+            res.writeHead(400);
+            res.end(JSON.stringify({ error: "version mismatch" }));
+            return;
+        }
+
         if (freePorts.size === 0) {
             res.writeHead(503);
             res.end(JSON.stringify({ error: "no free ports" }));
@@ -277,6 +297,12 @@ const server = http.createServer(async (req, res) => {
     // ── POST /qiaohu/join ──────────────────────────────────────────
     if (method === "POST" && url.pathname === "/qiaohu/join") {
         const body = await parseBody(req);
+        if (body.game_version !== GAME_VERSION) {
+            res.writeHead(400);
+            res.end(JSON.stringify({ error: "version mismatch" }));
+            return;
+        }
+
         const code = body.code?.toUpperCase?.() || "";
 
         const room = rooms.get(code);

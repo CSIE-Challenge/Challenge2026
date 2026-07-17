@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_skindata"]
 [ext_resource type="Texture2D" uid="uid://driveskinrun1" path="res://Shapes/drive_skin/run1.png" id="2_preview"]
 [ext_resource type="Texture2D" uid="uid://kgjk2ek1padf" path="res://Shapes/drive_skin/health_block_teal.svg" id="3_health1"]
-[ext_resource type="PackedScene" uid="uid://driveskinscene" path="res://Scenes/skins/drive_skin_prefab.tscn" id="4_prefab"]
+[ext_resource type="PackedScene" uid="uid://dkna3uw3t84wg" path="res://Scenes/skins/drive_skin_prefab.tscn" id="4_prefab"]
 [ext_resource type="Texture2D" uid="uid://ckalvj75edk0c" path="res://Shapes/drive_skin/health_block_orange.svg" id="5_health2"]
 
 [resource]

@@ -52,6 +52,9 @@ var _gameplay_loaded_peer_ids: Array[int] = []
 var _countdown_start_released := false
 var _time_up_peer_ids: Array[int] = []
 var _match_peer_ids: Array[int] = []
+var _game_elapsed_time: float = 0.0
+var _game_timer_started: bool = false
+var _game_duration: float = 180.0
 
 
 ## Called on startup. Connects multiplayer signals and handles command-line launch.
@@ -62,6 +65,7 @@ func _ready() -> void:
 	var initial_caps: Array = _read_game_max_energy_caps()
 	max_energy = int(initial_caps[0]) if initial_caps.size() > 0 else DEFAULT_MAX_ENERGY
 	max_health = _load_max_health_from_game_json()
+	_game_duration = _load_game_duration_from_game_json()
 	_start_from_command_line(OS.get_cmdline_user_args())
 
 	if multiplayer.is_server() and not _has_demo_flag(OS.get_cmdline_user_args()):
@@ -85,6 +89,8 @@ func start_server(port := DEFAULT_PORT) -> Error:
 		return error
 
 	game_finished = false
+	_game_elapsed_time = 0.0
+	_game_timer_started = false
 	multiplayer.multiplayer_peer = peer
 	connected_peer_ids.clear()
 	energy_by_peer_id.clear()
@@ -155,6 +161,8 @@ func stop_network() -> void:
 	_reset_countdown_start_sync()
 	_time_up_peer_ids.clear()
 	game_finished = false
+	_game_elapsed_time = 0.0
+	_game_timer_started = false
 	_refresh_game_max_energy_caps()
 	var initial_caps: Array = _read_game_max_energy_caps()
 	max_energy = int(initial_caps[0]) if initial_caps.size() > 0 else DEFAULT_MAX_ENERGY
@@ -218,6 +226,24 @@ func get_energy_ball_count(peer_id: int) -> int:
 ## Returns the configured gameplay health cap loaded from Data/game.json.
 func get_max_health() -> int:
 	return max_health
+
+
+func _physics_process(delta: float) -> void:
+	if not multiplayer.is_server():
+		return
+	if not _game_timer_started or game_finished:
+		return
+	_game_elapsed_time = minf(_game_elapsed_time + delta, _game_duration)
+
+
+func _load_game_duration_from_game_json() -> float:
+	if typeof(_game_data) != TYPE_DICTIONARY:
+		return 180.0
+	var gm_data: Dictionary = _game_data.get("game_manager", {})
+	if typeof(gm_data) != TYPE_DICTIONARY:
+		return 180.0
+	var duration = gm_data.get("game_duration", 180.0)
+	return float(duration) if typeof(duration) in [TYPE_INT, TYPE_FLOAT] else 180.0
 
 
 func _load_max_health_from_game_json() -> int:
@@ -531,6 +557,8 @@ func _server_release_countdown_start() -> void:
 			_match_peer_ids.append(peer_id)
 
 	_countdown_start_released = true
+	_game_elapsed_time = -4.1  # client countdown: 0.9 * 3 (numbers) + 1.4 (go)
+	_game_timer_started = true
 	_gameplay_loaded_peer_ids.clear()
 	countdown_start_released.emit()
 	rpc("_client_release_countdown_start")
@@ -1123,10 +1151,15 @@ func _server_identify_as_demo() -> void:
 func _build_demo_state() -> Dictionary:
 	var screens: Array[Dictionary] = []
 	for peer_id in _client_states:
-		screens.append(_client_states[peer_id])
+		var client = _client_states[peer_id]
+		client["energy"] = energy_by_peer_id[peer_id]
+		client["health"] = health_by_peer_id[peer_id]
+		screens.append(client)
 
 	return {
 		"tick": Engine.get_physics_frames(),
+		"elapsed_time": _game_elapsed_time,
+		"game_duration": _game_duration,
 		"screens": screens,
 	}
 

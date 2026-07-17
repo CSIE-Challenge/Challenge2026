@@ -220,6 +220,7 @@ func _spawn_agents(bundle: String, agent_file: String) -> void:
 	agent.game = self
 	agent.bundle_dir = bundle
 	agent.agent_file = agent_file
+	agent.open_terminal = Global.open_agent_terminal
 	add_child(agent)
 
 
@@ -367,6 +368,9 @@ func on_player_hit(damage: int) -> void:
 	camera.shake_cam()
 	NetworkManager.request_damage_health(damage)
 	Audio.play_sfx(Audio.SFX.TAKE_DAMAGE)
+	if is_instance_valid(player) and is_instance_valid(player.skin_instance):
+		if player.skin_instance.has_method("play_hit"):
+			player.skin_instance.play_hit()
 
 
 func _on_game_duration_timeout() -> void:
