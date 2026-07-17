@@ -9,7 +9,8 @@
 script = ExtResource("1_perry_scr")
 skin_id = "perry_skin"
 true_name = "鴨嘴獸泰瑞"
-description = "咕嚕嚕嚕嚕嚕⋯⋯（特務 P 登場！）"
+description = "咕嚕嚕嚕嚕嚕⋯⋯（特務 P 登
+場！）"
 price = 300
 price_text_override = "成為特務P的繼承者"
 is_achievement_unlock = true

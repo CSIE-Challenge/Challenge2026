@@ -8,7 +8,10 @@
 script = ExtResource("1_tbc_scr")
 skin_id = "three_body_coconut_skin"
 true_name = "三體椰"
-description = "三顆椰子受混沌的三體引力糾纏。不定時在恆紀元與亂紀元之間輪替，亂紀元降臨時墜入黑暗、狂舞不休。"
+description = "三顆椰子受混沌的三體引力糾纏。
+不定時在恆紀元與亂紀元之間輪
+替，亂紀元降臨時墜入黑暗、狂舞
+不休。"
 price = 1200
 is_achievement_unlock = true
 achievement_desc = "成為黑暗椰林的倖存者。"

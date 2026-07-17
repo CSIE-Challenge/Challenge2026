@@ -8,8 +8,11 @@
 script = ExtResource("1_skindata")
 skin_id = "undertale_skin"
 true_name = "決心"
-description = "「充滿決心的靈魂。即使碎裂了，也要保持決心！」
-對經典遊戲的致敬也許會增加閃避率......或者，能聽到一些熟悉的音樂響起？"
+description = "「充滿決心的靈魂。即使碎裂了，
+也要保持決心！」
+對經典遊戲的致敬也許會增加閃避
+率......或者，能聽到一些熟悉的音
+樂響起？"
 price = 80
 is_achievement_unlock = true
 achievement_desc = "積分兌換"

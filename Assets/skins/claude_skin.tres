@@ -8,7 +8,8 @@
 script = ExtResource("1_claude_scr")
 skin_id = "claude_skin"
 true_name = "Claude 星芒"
-description = "AI 活動限定獎勵。走起路來還會灑落 Gemini 的星光。"
+description = "AI 活動限定獎勵。走起路來還會
+灑落 Gemini 的星光。"
 price = 500
 is_achievement_unlock = true
 achievement_desc = "很會用AI"

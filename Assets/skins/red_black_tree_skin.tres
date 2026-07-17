@@ -9,7 +9,8 @@
 script = ExtResource("1_skindata")
 skin_id = "red_black_tree_skin"
 true_name = "紅黑樹"
-description = "每次插入都是紅色，然後默默 recolor。
+description = "每次插入都是紅色，然後默默
+recolor。
 穩定，平衡，但內心住著一把火。"
 price = 0
 price_text_override = "Tung Tung Tung Tung Tung Tung Tung Tung Tung Sahur 的得力助手"
