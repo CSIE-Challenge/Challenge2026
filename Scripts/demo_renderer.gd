@@ -122,7 +122,7 @@ func _identify_as_demo(nm: Node) -> void:
 func _on_demo_state_received(combined: Dictionary) -> void:
 	var elapsed: float = combined.get("elapsed_time", 0.0)
 	_update_time_display(elapsed)
-	_update_phase_display(combined.get("current_phase", 0))
+	_update_phase_display(_compute_phase(elapsed))
 
 	if not _countdown_triggered and elapsed < 0.0:
 		_countdown_triggered = true
