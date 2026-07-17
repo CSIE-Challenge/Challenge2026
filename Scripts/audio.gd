@@ -213,6 +213,8 @@ func set_phase_bgm(phase: int) -> void:
 			set_bgm(BGM.GAMEPLAY_PHASE_4)
 		5:
 			set_bgm(BGM.GAMEPLAY_PHASE_5)
+		_:
+			set_bgm(BGM.NONE)
 
 
 func _play_random_bgm_track(player: AudioStreamPlayer) -> void:

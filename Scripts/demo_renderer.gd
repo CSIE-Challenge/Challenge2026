@@ -31,6 +31,7 @@ var _player_a: Node2D
 var _player_b: Node2D
 var _screens: Array = []
 var _countdown_triggered: bool = false
+var _current_phase: int = -2
 var _phase_duration: Array = []
 var _max_phase: int = 0
 
@@ -124,7 +125,10 @@ func _identify_as_demo(nm: Node) -> void:
 func _on_demo_state_received(combined: Dictionary) -> void:
 	var elapsed: float = combined.get("elapsed_time", 0.0)
 	_update_time_display(elapsed)
-	_update_phase_display(_compute_phase(elapsed))
+	var new_phase: int = _compute_phase(elapsed)
+	if new_phase != _current_phase:
+		_current_phase = new_phase
+		_update_phase_display(_current_phase)
 
 	if not _countdown_triggered and elapsed < 0.0:
 		_countdown_triggered = true
@@ -194,9 +198,12 @@ func _update_phase_display(phase: int) -> void:
 	if not phase_label:
 		return
 	phase_label.text = "Phase %d" % phase
+	Audio.set_phase_bgm(phase)
 
 
 func _compute_phase(time: float) -> int:
+	if time <= 0:
+		return -1
 	for i in range(_max_phase):
 		if time >= _phase_duration[i]:
 			time -= _phase_duration[i]
