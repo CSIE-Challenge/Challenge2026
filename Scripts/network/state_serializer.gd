@@ -78,6 +78,7 @@ func _serialize_player(p: Node) -> Dictionary:
 
 	var energy := 0
 	var ball_count := 0
+	var total_energy_spent := 0
 	if game_manager:
 		energy = game_manager.get("energy_amount") if "energy_amount" in game_manager else 0
 		ball_count = (
@@ -95,6 +96,10 @@ func _serialize_player(p: Node) -> Dictionary:
 		"energy": energy,
 		"energy_ball_count": ball_count,
 		"skin_id": p.get("skin_id") if "skin_id" in p else "",
+		"jump_count": p.get("jump_count") if "jump_count" in p else 0,
+		"distance_traveled": p.get("distance_traveled") if "distance_traveled" in p else 0.0,
+		"energy_spent": total_energy_spent,
+		"elapsed_time": game_manager.get("elapsed_time") if game_manager else 0.0,
 	}
 
 

@@ -21,6 +21,7 @@ const FALLBACK_HEALTH_TEXTURE = preload("res://Shapes/feather.svg")
 @export var high_stage_b: Node2D
 @export var camera_a: Camera2D
 @export var camera_b: Camera2D
+@export var result_screen: CanvasLayer
 
 var _ghosts_a: Dictionary = {}
 var _ghosts_b: Dictionary = {}
@@ -53,6 +54,11 @@ func _ready() -> void:
 	# Identify as demo to server — wait for connection to be ready
 	if nm.has_signal("connection_succeeded"):
 		nm.connection_succeeded.connect(_identify_as_demo.bind(nm))
+
+	if nm.has_signal("multiplayer_finish"):
+		nm.multiplayer_finish.connect(_on_multiplayer_finish)
+	if not result_screen:
+		result_screen = get_node_or_null("../DemoResultScreen")
 
 	# Draw arena walls on both stages
 	# Use get_node as fallback — exported NodePath may fail across SubViewport boundaries
@@ -134,9 +140,12 @@ func _apply_screen(screen: Dictionary, screen_data: Dictionary) -> void:
 		return
 	var ghosts: Dictionary = screen["ghosts"]
 
+	screen["peer_id"] = screen_data.get("peer_id", -1)
+	var player_state: Dictionary = screen_data.get("player", {})
+	screen["last_player_state"] = player_state
+
 	Global.high_stage = screen.get("high_stage", stage)
 
-	var player_state: Dictionary = screen_data.get("player", {})
 	_apply_player(screen, stage, player_state)
 
 	# Apply trap ghosts
@@ -540,3 +549,31 @@ func _create_player_ghost(stage: Node2D) -> Node2D:
 	ghost.modulate = Color(0.2, 0.6, 1.0, 1.0)
 	stage.add_child(ghost)
 	return ghost
+
+
+func _on_multiplayer_finish(winner_peer_ids: Array, draw: bool, forfeit: bool) -> void:
+	var nm := get_node_or_null("/root/NetworkManager")
+	if nm and nm.demo_state_received.is_connected(_on_demo_state_received):
+		nm.demo_state_received.disconnect(_on_demo_state_received)
+
+	get_tree().paused = true
+
+	if result_screen:
+		var state_a: Dictionary = _screens[0].get("last_player_state", {})
+		var state_b: Dictionary = _screens[1].get("last_player_state", {})
+		var peer_id_a: int = _screens[0].get("peer_id", -1)
+		var peer_id_b: int = _screens[1].get("peer_id", -1)
+
+		# 獲取 HUD 上的玩家名稱，若無則預設為 Player A / Player B
+		var name_a := "Player A (Left)"
+		var name_b := "Player B (Right)"
+		var name_label_a = get_node_or_null("../HUD/NameLabelA")
+		if name_label_a and name_label_a.text != "":
+			name_a = name_label_a.text + " (Left)"
+		var name_label_b = get_node_or_null("../HUD/NameLabelB")
+		if name_label_b and name_label_b.text != "":
+			name_b = name_label_b.text + " (Right)"
+
+		result_screen.show_demo_results(
+			state_a, state_b, winner_peer_ids, draw, forfeit, peer_id_a, peer_id_b, name_a, name_b
+		)
