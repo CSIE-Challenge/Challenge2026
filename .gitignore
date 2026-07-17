@@ -32,3 +32,6 @@ agent/requirements.lock
 # agent logs
 agent_log.txt
 agent.log
+
+# test
+test_env.sh

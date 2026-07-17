@@ -229,6 +229,8 @@ func get_max_health() -> int:
 
 
 func _physics_process(delta: float) -> void:
+	if not _can_process_local_network_request():
+		return
 	if not multiplayer.is_server():
 		return
 	if not _game_timer_started or game_finished:
@@ -507,6 +509,7 @@ func _on_connection_failed() -> void:
 func _on_server_disconnected() -> void:
 	server_disconnected.emit()
 	print("Disconnected from server")
+	stop_network()
 
 
 @rpc("any_peer", "call_remote", "reliable")
