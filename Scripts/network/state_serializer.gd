@@ -78,7 +78,7 @@ func _serialize_player(p: Node) -> Dictionary:
 
 	var energy := 0
 	var ball_count := 0
-	var total_energy_spent := 0
+	var total_energy_spent = game_manager.total_energy_spent if game_manager else 0
 	if game_manager:
 		energy = game_manager.get("energy_amount") if "energy_amount" in game_manager else 0
 		ball_count = (

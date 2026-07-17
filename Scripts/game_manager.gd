@@ -489,7 +489,6 @@ func finish_game(state: int = 0, authoritative_stats: Dictionary = {}) -> void:
 				"distance_traveled": player.distance_traveled,
 				"survival_time": survival_time,
 				"remaining_health": health,
-				"trap_count": authoritative_stats.get("trap_count", 0),
 			},
 			state
 		)
