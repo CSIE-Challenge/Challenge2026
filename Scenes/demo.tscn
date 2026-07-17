@@ -421,101 +421,11 @@ position = Vector2(91, 112)
 [node name="ScreenA_Health" type="Node2D" parent="HUD" unique_id=261805975]
 position = Vector2(340, 112)
 
-[node name="Icon0" type="TextureRect" parent="HUD/ScreenA_Health" unique_id=1452463056]
-offset_left = -87.0
-offset_top = -15.0
-offset_right = -57.0
-offset_bottom = 15.0
-texture = ExtResource("6_feather")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Icon1" type="TextureRect" parent="HUD/ScreenA_Health" unique_id=1084471247]
-offset_left = -51.0
-offset_top = -15.0
-offset_right = -21.0
-offset_bottom = 15.0
-texture = ExtResource("6_feather")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Icon2" type="TextureRect" parent="HUD/ScreenA_Health" unique_id=1030381543]
-offset_left = -15.0
-offset_top = -15.0
-offset_right = 15.0
-offset_bottom = 15.0
-texture = ExtResource("6_feather")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Icon3" type="TextureRect" parent="HUD/ScreenA_Health" unique_id=2131930762]
-offset_left = 21.0
-offset_top = -15.0
-offset_right = 51.0
-offset_bottom = 15.0
-texture = ExtResource("6_feather")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Icon4" type="TextureRect" parent="HUD/ScreenA_Health" unique_id=21353598]
-offset_left = 57.0
-offset_top = -15.0
-offset_right = 87.0
-offset_bottom = 15.0
-texture = ExtResource("6_feather")
-expand_mode = 1
-stretch_mode = 5
-
 [node name="ScreenB_Energy" parent="HUD" unique_id=1762839106 instance=ExtResource("3_energy")]
 position = Vector2(955, 112)
 
 [node name="ScreenB_Health" type="Node2D" parent="HUD" unique_id=1056993462]
 position = Vector2(812, 112)
-
-[node name="Icon0" type="TextureRect" parent="HUD/ScreenB_Health" unique_id=1352515971]
-offset_left = -87.0
-offset_top = -15.0
-offset_right = -57.0
-offset_bottom = 15.0
-texture = ExtResource("6_feather")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Icon1" type="TextureRect" parent="HUD/ScreenB_Health" unique_id=359298265]
-offset_left = -51.0
-offset_top = -15.0
-offset_right = -21.0
-offset_bottom = 15.0
-texture = ExtResource("6_feather")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Icon2" type="TextureRect" parent="HUD/ScreenB_Health" unique_id=1213276918]
-offset_left = -15.0
-offset_top = -15.0
-offset_right = 15.0
-offset_bottom = 15.0
-texture = ExtResource("6_feather")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Icon3" type="TextureRect" parent="HUD/ScreenB_Health" unique_id=425014722]
-offset_left = 21.0
-offset_top = -15.0
-offset_right = 51.0
-offset_bottom = 15.0
-texture = ExtResource("6_feather")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Icon4" type="TextureRect" parent="HUD/ScreenB_Health" unique_id=457022701]
-offset_left = 57.0
-offset_top = -15.0
-offset_right = 87.0
-offset_bottom = 15.0
-texture = ExtResource("6_feather")
-expand_mode = 1
-stretch_mode = 5
 
 [node name="NameLabelA" type="Label" parent="HUD" unique_id=599978977]
 anchors_preset = 5

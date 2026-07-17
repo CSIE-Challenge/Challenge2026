@@ -81,6 +81,7 @@ func _ready() -> void:
 			"prev_player": {},
 			"proxy": null,
 			"loaded_skin_id": "",
+			"loaded_health_skin_id": "",
 			"energy_label": screen_a_energy,
 			"energy_value": 0,
 			"health_root": screen_a_health,
@@ -97,6 +98,7 @@ func _ready() -> void:
 			"prev_player": {},
 			"proxy": null,
 			"loaded_skin_id": "",
+			"loaded_health_skin_id": "",
 			"energy_label": screen_b_energy,
 			"energy_value": 0,
 			"health_root": screen_b_health,
@@ -461,7 +463,8 @@ func _update_health_hud(screen: Dictionary, skin_id: String, max_health: int) ->
 		return
 
 	var need_rebuild: bool = (
-		skin_id != screen.get("loaded_skin_id", "") or health_root.get_child_count() != max_health
+		skin_id != screen.get("loaded_health_skin_id", "")
+		or health_root.get_child_count() != max_health
 	)
 	if not need_rebuild:
 		if screen["health_icons"].is_empty():
@@ -469,6 +472,7 @@ func _update_health_hud(screen: Dictionary, skin_id: String, max_health: int) ->
 				if child is TextureRect:
 					screen["health_icons"].append(child)
 		return
+	screen["loaded_health_skin_id"] = skin_id
 
 	# Clear old icons
 	for icon in screen["health_icons"]:
