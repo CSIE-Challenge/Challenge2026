@@ -182,9 +182,9 @@ func serialize_state() -> Dictionary:
 		"line0_end": lines[0].get_point_position(1),
 		"line1_end": lines[1].get_point_position(1),
 		"line2_end": lines[2].get_point_position(1),
-		"bullet0_emitting": bullets[0].effect.emitting,
-		"bullet1_emitting": bullets[1].effect.emitting,
-		"bullet2_emitting": bullets[2].effect.emitting,
+		"bullet0_emitting": bullets[0].effect.emitting if bullets[0].effect else false,
+		"bullet1_emitting": bullets[1].effect.emitting if bullets[1].effect else false,
+		"bullet2_emitting": bullets[2].effect.emitting if bullets[2].effect else false,
 		"bullet0_visibility": bullets[0].visible,
 		"bullet1_visibility": bullets[1].visible,
 		"bullet2_visibility": bullets[2].visible,
@@ -220,6 +220,9 @@ func apply_demo_state(data: Dictionary) -> void:
 		particles_reparented = true
 		for b in bullets:
 			b.effect.reparent($"../..")
-	bullets[0].effect.emitting = data.get("bullet0_emitting", false)
-	bullets[1].effect.emitting = data.get("bullet1_emitting", false)
-	bullets[2].effect.emitting = data.get("bullet2_emitting", false)
+	if bullets[0].effect:
+		bullets[0].effect.emitting = data.get("bullet0_emitting", false)
+	if bullets[1].effect:
+		bullets[1].effect.emitting = data.get("bullet1_emitting", false)
+	if bullets[2].effect:
+		bullets[2].effect.emitting = data.get("bullet2_emitting", false)

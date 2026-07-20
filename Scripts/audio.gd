@@ -66,6 +66,9 @@ enum BGM {
 @export var sfx_pool_size := 8
 @export var bgm_fade_out_time := 0.3125
 
+# sfx queue
+var queued_sfx: Array[int] = []
+
 # the audio collection
 var _sfx_streams: Dictionary = {}
 var _bgm_playlists: Dictionary = {}
@@ -131,6 +134,7 @@ func set_bgm(bgm: BGM) -> void:
 
 
 func play_sfx(sfx: SFX) -> AudioStreamPlayer:
+	queued_sfx.append(sfx as int)
 	var stream := _sfx_streams.get(SFX.find_key(sfx)) as AudioStream
 	if stream == null:
 		return
@@ -213,6 +217,8 @@ func set_phase_bgm(phase: int) -> void:
 			set_bgm(BGM.GAMEPLAY_PHASE_4)
 		5:
 			set_bgm(BGM.GAMEPLAY_PHASE_5)
+		_:
+			set_bgm(BGM.NONE)
 
 
 func _play_random_bgm_track(player: AudioStreamPlayer) -> void:

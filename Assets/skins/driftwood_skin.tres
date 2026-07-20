@@ -8,7 +8,9 @@
 script = ExtResource("1_dw_scr")
 skin_id = "driftwood_skin"
 true_name = "漂流木"
-description = "用漂流木紮成的小帆筏，掛著一面拼拼補補的舊帆。漂進海浪裡會升起信號旗、破浪前行。"
+description = "用漂流木紮成的小帆筏，掛著一面
+拼拼補補的舊帆。漂進海浪裡會升
+起信號旗、破浪前行。"
 price = 1000
 is_achievement_unlock = true
 achievement_desc = "單人模式中，不按鍵盤吃到 15 個能量球。"

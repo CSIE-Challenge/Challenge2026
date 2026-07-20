@@ -2,6 +2,12 @@
 
 [ext_resource type="Script" uid="uid://84k2kj1mhr7t" path="res://Scripts/skins/close_button_skin_prefab.gd" id="1_smidf"]
 [ext_resource type="Texture2D" uid="uid://o2f6esmik2fp" path="res://Shapes/close_button/close_button.svg" id="2_7lwc4"]
+[ext_resource type="FontFile" uid="uid://hp5u4fxb5ifw" path="res://Assets/fonts/PixeloidSans-Bold.ttf" id="3_7lwc4"]
+[ext_resource type="FontFile" uid="uid://uwn4vst4fceu" path="res://Assets/fonts/Cubic_11.ttf" id="4_1rv2q"]
+
+[sub_resource type="FontVariation" id="FontVariation_3el5r"]
+fallbacks = Array[Font]([ExtResource("4_1rv2q")])
+base_font = ExtResource("3_7lwc4")
 
 [node name="CloseButtonSkinPrefab" type="Node2D" unique_id=841851277]
 script = ExtResource("1_smidf")
@@ -9,3 +15,20 @@ script = ExtResource("1_smidf")
 [node name="ButtonSprite" type="Sprite2D" parent="." unique_id=1307291244]
 position = Vector2(0, -2)
 texture = ExtResource("2_7lwc4")
+
+[node name="TextLabel" type="Label" parent="ButtonSprite" unique_id=685626522]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -254.5
+offset_top = -272.5
+offset_right = -156.5
+offset_bottom = -118.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = SubResource("FontVariation_3el5r")
+theme_override_font_sizes/font_size = 120
+text = "X"
+

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="SkinData" format=3 uid="uid://c1lvf816dp64b"]
+
+[ext_resource type="Script" uid="uid://c6vuqckcyjdey" path="res://Scripts/menu/skin_data.gd" id="1_e2jk5"]
+[ext_resource type="Texture2D" uid="uid://b46klevd24a5r" path="res://Shapes/worship/worship_normal_left.svg" id="1_ht3yg"]
+[ext_resource type="Texture2D" uid="uid://yd6ehqueog1x" path="res://Shapes/worship/worship_normal_right.svg" id="2_64nct"]
+[ext_resource type="PackedScene" uid="uid://ddo8g7x58nje7" path="res://Scenes/skins/worship_skin_prefab.tscn" id="4_5lhjx"]
+
+[resource]
+script = ExtResource("1_e2jk5")
+skin_id = "worship_skin"
+true_name = "膜拜大佬"
+description = "✋😭🤚大佬你贏了✋😭🤚"
+price_text_override = "在挑戰遊戲長活動中獲勝"
+skin_prefab = ExtResource("4_5lhjx")
+health_icon_texture = ExtResource("1_ht3yg")
+health_icon_texture2 = ExtResource("2_64nct")
+metadata/_custom_type_script = "uid://c6vuqckcyjdey"

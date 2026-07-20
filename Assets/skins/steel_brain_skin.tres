@@ -8,7 +8,8 @@
 script = ExtResource("1_brain_scr")
 skin_id = "steel_brain_skin"
 true_name = "鋼鐵大腦"
-description = "智慧鐵人挑戰的榮耀獎勵。金屬光澤的大腦，思考時迸發智慧電流。"
+description = "智慧鐵人挑戰的榮耀獎勵。金屬光
+澤的大腦，思考時迸發智慧電流。"
 price = 800
 price_text_override = "有一顆智慧的鋼鐵腦袋"
 preview_texture = ExtResource("2_icon")

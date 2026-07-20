@@ -22,7 +22,6 @@ var arc_on: bool
 var activated: bool
 var is_demo := false
 
-@onready var player: CharacterBody2D = $"../Player"
 @onready var crack: Sprite2D = $Crack
 @onready var start_point: Node2D = $StartPoint
 @onready var end_point: Node2D = $EndPoint

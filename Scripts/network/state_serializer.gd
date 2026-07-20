@@ -61,6 +61,8 @@ func _collect_state() -> Dictionary:
 	var player_node: Node = (
 		game_manager.player if game_manager and "player" in game_manager else null
 	)
+	var queued_sfx := Audio.queued_sfx if Audio else []
+	Audio.queued_sfx = []
 	return {
 		"peer_id": multiplayer.get_unique_id(),
 		"tick": Engine.get_physics_frames(),
@@ -68,6 +70,7 @@ func _collect_state() -> Dictionary:
 		"max_energy_cap": _collect_max_energy_cap(),
 		"traps": _serialize_traps(),
 		"energy_balls": _serialize_energy_balls(),
+		"queued_sfx": queued_sfx
 	}
 
 
@@ -78,6 +81,7 @@ func _serialize_player(p: Node) -> Dictionary:
 
 	var energy := 0
 	var ball_count := 0
+	var total_energy_spent = game_manager.total_energy_spent if game_manager else 0
 	if game_manager:
 		energy = game_manager.get("energy_amount") if "energy_amount" in game_manager else 0
 		ball_count = (
@@ -95,6 +99,10 @@ func _serialize_player(p: Node) -> Dictionary:
 		"energy": energy,
 		"energy_ball_count": ball_count,
 		"skin_id": p.get("skin_id") if "skin_id" in p else "",
+		"jump_count": p.get("jump_count") if "jump_count" in p else 0,
+		"distance_traveled": p.get("distance_traveled") if "distance_traveled" in p else 0.0,
+		"energy_spent": total_energy_spent,
+		"elapsed_time": game_manager.get("elapsed_time") if game_manager else 0.0,
 	}
 
 
@@ -154,7 +162,20 @@ func _serialize_energy_balls() -> Array[Dictionary]:
 					{
 						"id": child.get_instance_id(),
 						"position": child.global_position if child is Node2D else Vector2.ZERO,
+						"scale": child.scale if child is Node2D else Vector2.ONE,
 						"collected": not child.visible if "visible" in child else false,
+						"combo": child.get("now_combo") if "now_combo" in child else 0,
+						"collect_seq": child.get("collect_seq") if "collect_seq" in child else 0,
+						"last_collect_gain":
+						child.get("last_collect_gain") if "last_collect_gain" in child else 0,
+						"last_collect_combo":
+						child.get("last_collect_combo") if "last_collect_combo" in child else 0,
+						"last_collect_position":
+						(
+							child.get("last_collect_position")
+							if "last_collect_position" in child
+							else Vector2.ZERO
+						),
 					}
 				)
 			)

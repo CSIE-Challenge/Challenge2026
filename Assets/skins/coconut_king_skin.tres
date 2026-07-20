@@ -9,7 +9,8 @@
 script = ExtResource("1_skindata")
 skin_id = "coconut_king_skin"
 true_name = "椰島之王"
-description = "頭戴海賊帽的椰子霸主，跳躍落地時金幣四濺。"
+description = "頭戴海賊帽的椰子霸主，跳躍落地
+時金幣四濺。"
 price_text_override = "大地遊戲冠軍"
 is_achievement_unlock = true
 achievement_desc = "成為海賊王"

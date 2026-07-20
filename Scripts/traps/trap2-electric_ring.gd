@@ -9,15 +9,15 @@ var standard_radius = trap_data["trap2-electric_ring"]["standard_radius"]
 var player_radius = trap_data["trap2-electric_ring"]["player_radius"]
 var stay_time = trap_data["trap2-electric_ring"]["stay_time"]
 var ring_thickness = trap_data["trap2-electric_ring"]["ring_thickness"]
-# @export var test_player: CharacterBody2D
 var test_player: CharacterBody2D
 var player: CharacterBody2D
 var current_fill: float
 var radius: float
 var fill_speed: float
 var electric_on: bool
-var current_stay_time
+var current_stay_time: float
 var died: bool
+var is_demo: bool = false
 @onready var ring_sprite = $ElectricRing
 @onready var warning_sprite = $ElectricRingWarning
 @onready var animation = $AnimationPlayer
@@ -91,3 +91,46 @@ func _detect_player():
 	else:
 		if dist - player_radius <= radius:
 			Global.player_hit.emit(damage)
+
+
+func serialize_state() -> Dictionary:
+	return {
+		"type": "trap2-electric_ring",
+		"position": global_position,
+		"scale": ring_sprite.scale.x,
+		"current_fill": current_fill,
+		"electric_on": electric_on,
+		"ring_offset": ring_sprite.material.get_shader_parameter("ring_offset"),
+		"noise_strength": ring_sprite.material.get_shader_parameter("noise_strength"),
+		"ring_thickness": ring_sprite.material.get_shader_parameter("thickness"),
+		"died": died,
+	}
+
+
+func apply_demo_state(data: Dictionary) -> void:
+	global_position = data.get("position", Vector2.ZERO)
+
+	var sc: float = data.get("scale", 1.0)
+	ring_sprite.scale = Vector2(sc, sc)
+	warning_sprite.scale = Vector2(sc, sc)
+
+	warning_sprite.material.set_shader_parameter("thickness", ring_thickness / sc)
+	var is_on: bool = data.get("electric_on", false)
+	var fill: float = data.get("current_fill", 0.0)
+	var has_died: bool = data.get("died", false)
+	if has_died:
+		ring_sprite.visible = false
+		warning_sprite.visible = false
+	elif is_on:
+		warning_sprite.visible = false
+		ring_sprite.visible = true
+	else:
+		warning_sprite.visible = true
+		ring_sprite.visible = false
+		warning_sprite.material.set_shader_parameter("fill", fill)
+	var ring_thickness = data.get("ring_thickness", 0.0)
+	var ring_offset = data.get("ring_offset", 0.0)
+	var noise_strength = data.get("noise_strength", 0.0)
+	ring_sprite.material.set_shader_parameter("ring_offset", ring_offset)
+	ring_sprite.material.set_shader_parameter("thickness", ring_thickness)
+	ring_sprite.material.set_shader_parameter("noise_strength", noise_strength)
